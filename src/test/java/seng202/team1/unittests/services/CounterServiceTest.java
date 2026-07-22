@@ -1,8 +1,8 @@
-package seng202.team0.unittests.services;
+package seng202.team1.unittests.services;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import seng202.team0.services.CounterService;
+import seng202.team1.services.CounterService;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
