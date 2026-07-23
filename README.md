@@ -37,6 +37,8 @@ IntelliJ has built-in support for Gradle. To import your project:
 **Note:** *If you run into dependency issues when running the app or the Gradle pop up doesn't appear then open the Gradle sidebar and click the Refresh icon.*
 
 # TODO
+- todo: nice readme
+
 
 ## Rename Project
 - Open `build.gradle` and change all references to `team0` with your team number eg. `team13`
@@ -49,3 +51,8 @@ IntelliJ has built-in support for Gradle. To import your project:
 - If you haven't already, Build the project.
 - Open a command line interface inside the project directory and run `cd target` to change into the target directory.
 - Run the command `java -jar seng202_team0-1.0-SNAPSHOT.jar` to open the application.
+
+# Credits
+- Icons: https://www.svgrepo.com (CC0)
+- Font: https://fontlibrary.org (OFL)
+
