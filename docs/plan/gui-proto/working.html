@@ -1,0 +1,159 @@
+<!-- Impl note: svg colours hardcoded here, will change incode if javafx supports as html doesnt -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="app">
+
+    <div class="sidebar">
+        <div class="logo">
+
+            <img src="../../../src/main/resources/images/logo.svg">
+            <h1>TrashApp</h1>
+
+        </div>
+
+        <div class="navbar">
+
+            <div class="navitem active">
+                <img src="../../../src/main/resources/images/dashboard.svg">
+                <a>Dashboard</a>
+            </div>
+
+            <div class="navitem hover">
+                <img src="../../../src/main/resources/images/map.svg">
+                <a>Map</a>
+            </div>
+
+            <div class="navitem">
+                <img src="../../../src/main/resources/images/leaderboard.svg">
+                <a>Leaderboard</a>
+            </div>
+
+            <div class="navitem">
+                <img src="../../../src/main/resources/images/timeline.svg">
+                <a>Trash Timeline</a>
+            </div>
+
+            <div class="navitem bottom">
+                <img src="../../../src/main/resources/images/settings.svg">
+                <a>Settings</a>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="page">
+
+        <div class="header">
+
+            <div class="search-bar">
+                <img src="../../../src/main/resources/images/search.svg">
+                <p>Enter address...</p>
+            </div>
+
+            <div class="account end">
+                Account (DB)
+            </div>
+
+        </div>
+
+        <div class="content">
+
+            <div class="dashboard">
+
+                <div class="card active-grad">
+                    <p class="card-title">Leaderboard Position:</p>
+                    <div class="text-by-img">
+                        <div class="stat-text">
+                            <p class="maintext">#4</p>
+                            <p class="subtext">(Top 10%)</p>
+                        </div>
+
+                        <img src="../../../src/main/resources/images/uarr.svg">
+                    </div>
+                </div>
+
+                <div class="card active-grad">
+                    <p class="card-title">Trees Saved:</p>
+                    <div class="text-by-img">
+                        <div class="stat-text">
+                            <p class="maintext">1.1</p>
+                            <p class="subtext">Trees</p>
+                        </div>
+
+                        <img src="../../../src/main/resources/images/tree.png">
+                    </div>
+                </div>
+
+                <div class="card active-grad">
+                    <p> 3 </p>
+                </div>
+
+                <div class="card active-grad full">
+                    <p class="card-title">Recent Activity:</p>
+                    <div class="text-by-img-long">
+                        <div class="key-text">
+                            <p class="maintext">Logged entry at recycling bin in Hagley Park</p>
+                            <p class="subtext">(27/03/2026)</p>
+                        </div>
+
+                        <img class="end" src="../../../src/main/resources/images/bin.png">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <p class="card-title">Total Items:</p>
+                    <div class="text-by-img-long">
+                        <div class="key-text">
+                            <p class="maintext">450</p>
+                        </div>
+                        <img class="icon end" src="../../../src/main/resources/images/throw.svg">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <p class="card-title">Total Recycled:</p>
+                    <div class="text-by-img-long">
+                        <div class="key-text">
+                            <p class="maintext">150</p>
+                        </div>
+                        <img class="icon end" src="../../../src/main/resources/images/recycle.svg">
+                    </div>
+                </div>
+
+                <div class="card">
+                    <p class="card-title">Total Rubbish:</p>
+                    <div class="text-by-img-long">
+                        <div class="key-text">
+                            <p class="maintext">300</p>
+                        </div>
+                        <img class="icon end" src="../../../src/main/resources/images/bin.svg">
+                    </div>
+                </div>
+
+                <div class="card full">
+                    <div class="map-overview">
+                        <div>
+                            <p class="card-title">Nearby Areas</p>
+                        </div>
+                          <div>
+                            <div>
+                                <p>{map placeholder}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>
