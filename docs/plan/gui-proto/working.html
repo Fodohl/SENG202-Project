@@ -5,6 +5,12 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="styles.css">
+
+    <!-- leaflet -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet/leaflet-maplibre-gl.js"></script>
 </head>
 <body>
 
@@ -65,97 +71,59 @@
 
         <div class="content">
 
-            <div class="dashboard">
+            <div class="map">
 
-                <div class="card active-grad">
-                    <p class="card-title">Leaderboard Position:</p>
-                    <div class="text-by-img">
-                        <div class="stat-text">
-                            <p class="maintext">#4</p>
-                            <p class="subtext">(Top 10%)</p>
-                        </div>
-
-                        <img src="../../../src/main/resources/images/uarr.svg">
-                    </div>
+                <div id="map" class="map-container dark-tiles">
                 </div>
 
-                <div class="card active-grad">
-                    <p class="card-title">Trees Saved:</p>
-                    <div class="text-by-img">
-                        <div class="stat-text">
-                            <p class="maintext">1.1</p>
-                            <p class="subtext">Trees</p>
-                        </div>
-
-                        <img src="../../../src/main/resources/images/tree.png">
+                <div class="pop-over-side-bar">
+                    <div class="section title">
+                        <p>Bin Details</p>
                     </div>
-                </div>
 
-                <div class="card active-grad">
-                    <p class="card-title">Dataset:</p>
-                    <div class="text-by-img">
-                        <div class="stat-text">
-                            <p class="maintext">184</p>
-                            <p class="subtext">Bins Loaded</p>
+                    <div class="section">
+                        <div class="kv-pair">
+                            <p class="key">ID:</p>
+                            <p class="value">1234</p>
+                        </div>
+                        <div class="bin-icon">
+                            <img src="../../../src/main/resources/images/bin.png">
+                        </div>
+                         <div class="kv-pair">
+                            <p class="key">Type:</p>
+                            <p class="value">Recycling</p>
+                        </div>
+                         <div class="kv-pair">
+                            <p class="key">Status:</p>
+                            <p class="value">15% Full (estimate)</p>
+                        </div>
+                         <div class="kv-pair">
+                            <p class="key">Updated:</p>
+                            <p class="value">26 August 2026 (11:00PM)</p>
                         </div>
 
-                        <img src="../../../src/main/resources/images/data.svg">
                     </div>
-                </div>
 
-                <div class="card active-grad full">
-                    <p class="card-title">Recent Activity:</p>
-                    <div class="text-by-img-long">
-                        <div class="key-text">
-                            <p class="maintext">Logged entry at recycling bin in Hagley Park</p>
-                            <p class="subtext">(27/03/2026)</p>
-                        </div>
-
-                        <img class="end" src="../../../src/main/resources/images/bin.png">
-                    </div>
-                </div>
-
-                <div class="card">
-                    <p class="card-title">Total Items:</p>
-                    <div class="text-by-img-long">
-                        <div class="key-text">
-                            <p class="maintext">450</p>
-                        </div>
-                        <img class="icon end" src="../../../src/main/resources/images/throw.svg">
-                    </div>
-                </div>
-
-                <div class="card">
-                    <p class="card-title">Total Recycled:</p>
-                    <div class="text-by-img-long">
-                        <div class="key-text">
-                            <p class="maintext">150</p>
-                        </div>
-                        <img class="icon end" src="../../../src/main/resources/images/recycle.svg">
-                    </div>
-                </div>
-
-                <div class="card">
-                    <p class="card-title">Total Rubbish:</p>
-                    <div class="text-by-img-long">
-                        <div class="key-text">
-                            <p class="maintext">300</p>
-                        </div>
-                        <img class="icon end" src="../../../src/main/resources/images/bin.svg">
-                    </div>
-                </div>
-
-                <div class="card full">
-                    <div class="map-overview">
-                        <div>
-                            <p class="card-title">Nearby Areas</p>
-                        </div>
-                          <div>
-                            <div>
-                                <p>{map placeholder}</p>
-                            </div>
+                    <div class="section">
+                          <div class="kv-pair">
+                            <p class="key">Address:</p>
+                            <p class="value">7 Hagely Park Street</p>
                         </div>
                     </div>
+
+                      <div class="section">
+                          <div class="kv-pair">
+                            <p class="key">Next Collection:</p>
+                            <p class="value">5th May (Thursday)</p>
+                        </div>
+                    </div>
+
+                     <div class="section buttons">
+                         <button> Get Directions </button>
+                         <button> Log Entry </button>
+                         <button> Report Issue </button>
+                     </div>
+
                 </div>
 
             </div>
@@ -163,5 +131,19 @@
         </div>
     </div>
 </div>
+
+<!-- credit: https://gist.github.com/jscarto/9276103 -->
+<script>
+var coords = [-43.5233, 172.5822];
+var zoomLevel = 17;
+var map = L.map('map').setView(coords, zoomLevel);
+var snazzyStyle = 's.e%3Al.i%7Cp.v%3Aoff%2Cs.t%3A2%7Cp.v%3Aoff%2Cp.il%3Atrue%2Cp.s%3A10%2Cp.l%3A38%2Cp.g%3A0.5%2Cp.h%3A%23435158';
+L.tileLayer(`https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&apistyle=${snazzyStyle}`, {
+    maxZoom: 20,
+    subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+    attribution: '&copy; Google Maps'
+}).addTo(map);
+</script>
+
 </body>
 </html>
