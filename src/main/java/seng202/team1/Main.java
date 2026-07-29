@@ -32,6 +32,7 @@ public class Main extends Application {
      * @param args Command line arguments, unused
      */
     public static void main(String[] args) {
+        System.setProperty("javafx.verbose", "true");
         launch();
     }
 

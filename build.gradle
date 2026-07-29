@@ -29,6 +29,7 @@ java {
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -82,6 +83,11 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.mockito/mockito-core
     testImplementation 'org.mockito:mockito-core:5.4.0'
+
+    // https://github.com/hervegirod/fxsvgimage
+    implementation 'com.github.hervegirod:fxsvgimage:1.7.3'
+    implementation 'com.github.hervegirod:fxsvgimage:1.7.3:cssparser'
+
 }
 
 application {
