@@ -6,6 +6,13 @@
     font-display: swap;
 }
 
+
+* {
+    -fx-transition-property: -fx-background-color;
+    -fx-transition-duration: 0.3s;
+    -fx-transition-timing-function: ease-out;
+}
+
 .root {
     -bg-primary: #232c33;
     -bg-secondary: #374051;
@@ -42,7 +49,7 @@
 .logo{
     -fx-alignment: center-left;
     -fx-spacing: 10px;
-    -fx-padding: 10px 10px 45px 5px;
+    -fx-padding: 10px 10px 55px 5px;
 }
 
 .logo-h1{
@@ -54,34 +61,39 @@
 .navitem{
     -fx-alignment: center-left;
     -fx-spacing: 12px;
-    -fx-padding: 10px 15px;
+    -fx-padding: 15px 15px;
     -fx-background-radius: 10px;
     -fx-cursor: hand;
-
 }
 
-.nav-item:hover {
+.navitem:hover {
     -fx-background-color: -bg-secondary;
+
 }
 
-.nav-item.active {
+.navitem.active {
     -fx-background-color: -active-secondary;
 }
 
-.navitem img{
+.navitem.active:hover {
+    -fx-background-color: -active-dark;
+}
+
+.nav-icon{
     width: 15%;
 }
 
-.navitem a{
-    margin-top: 3px;
+.nav-icon * {
+    -fx-stroke: -text-secondary;
 }
 
-.vbreak{
-    height: 50%;
+.active .nav-icon * {
+    -fx-stroke: -active-bright;
 }
 
-.hbreak{
-    width: 50%;
+
+.nav-text{
+    -fx-font-size: 24px;
 }
 
 

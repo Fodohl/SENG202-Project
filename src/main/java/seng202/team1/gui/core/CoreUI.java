@@ -8,6 +8,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import seng202.team1.gui.components.UIImage;
+import seng202.team1.gui.components.UINavButton;
+import seng202.team1.gui.screens.ScreenType;
 
 import java.util.Objects;
 
@@ -15,7 +17,8 @@ import static seng202.team1.gui.GraphicsCommon.precentX;
 
 public class CoreUI extends LayoutElement {
 
-    public CoreUI() {
+    public CoreUI(ScreenManager screenManager) {
+        super(screenManager, null);
 
     }
 
@@ -33,19 +36,14 @@ public class CoreUI extends LayoutElement {
 
         // Navigation Menu
         VBox navbar = new VBox(8);
-
-        HBox navDashboard = createNavItem("/images/dashboard.svg", "Dashboard", true);
-        HBox navMap = createNavItem("/images/map.svg", "Map", false);
-        HBox navLeaderboard = createNavItem("/images/leaderboard.svg", "Leaderboard", false);
-        HBox navTimeline = createNavItem("/images/timeline.svg", "Trash Timeline", false);
-
-        navbar.getChildren().addAll(navDashboard, navMap, navLeaderboard, navTimeline);
+        for (ScreenType option : ScreenType.values())
+            if(option != ScreenType.SETTINGS)
+                navbar.getChildren().add(new UINavButton(screenManager, option));
 
         // Settings at the bottom
         Region spacer = new Region();
         VBox.setVgrow(spacer, Priority.ALWAYS);
-
-        HBox navSettings = createNavItem("/images/settings.svg", "Settings", false);
+        HBox navSettings = new UINavButton(screenManager, ScreenType.SETTINGS);
 
         // Combine
         VBox sidebar = new VBox();
@@ -72,5 +70,4 @@ public class CoreUI extends LayoutElement {
         return root;
 
     }
-
 }

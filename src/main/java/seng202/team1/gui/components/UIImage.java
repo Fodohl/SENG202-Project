@@ -43,13 +43,18 @@ public class UIImage extends StackPane {
         // Load image
         URL fullpath = getClass().getResource(path);
         SVGImage img = SVGLoader.load(fullpath);
-        Image fxImage = img.toImage((int) width);
 
-        ImageView imageView = new ImageView(fxImage);
-        imageView.setFitWidth(width);
-        imageView.setFitHeight(height);
-        imageView.setPreserveRatio(true);
+        // Preserve raito
+        double scaleX = width / img.getLayoutBounds().getWidth();
+        double scaleY = height / img.getLayoutBounds().getHeight();
+        double scale = Math.min(scaleX, scaleY);
 
+        // Scale image to size
+        img.setScaleX(scale);
+        img.setScaleY(scale);
+
+        // @todo change to svg-icon & svg-icon-fill
+        img.getStyleClass().add("svg-icon");
         return img;
 
     }
@@ -67,6 +72,4 @@ public class UIImage extends StackPane {
 
         return imageView;
     }
-
-
 }

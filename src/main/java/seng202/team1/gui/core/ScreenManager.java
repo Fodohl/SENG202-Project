@@ -5,7 +5,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import seng202.team1.gui.screens.ScreenType;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 import static seng202.team1.gui.GraphicsCommon.WINDOW_HEIGHT;
 import static seng202.team1.gui.GraphicsCommon.WINDOW_WIDTH;
@@ -13,7 +16,11 @@ import static seng202.team1.gui.GraphicsCommon.WINDOW_WIDTH;
 public class ScreenManager {
 
     private Stage currentStage;
-    private final CoreUI layout = new CoreUI();
+    private ScreenType currentScreen;
+
+    private final List<Consumer<ScreenType>> sceneChangeCallbacks = new ArrayList<>();
+
+    private final CoreUI layout = new CoreUI(this);
 
     public ScreenManager(Stage currentStage){
 
@@ -35,11 +42,35 @@ public class ScreenManager {
         // todo: load screens
     }
 
-    private void showScreen(ScreenType screenType) {
+    public void showScreen(ScreenType screenType) {
 
-        // select the screen
+        // Update screens to show latest data pre render
+        for (Consumer<ScreenType> callback : sceneChangeCallbacks)
+            callback.accept(screenType);
+
+        // Select the screen
+        currentScreen = screenType;
+        System.out.println(screenType);
+        // cache.get(..)
+
         // store history
         // layout -> swap(scr)
 
+
+    }
+
+    public ScreenType getCurrentScreen() {
+        return currentScreen;
+    }
+
+    public boolean registerSceneChangeCallback(Consumer<ScreenType> callback){
+
+        // Prevent a callback being triggered
+        if(sceneChangeCallbacks.contains(callback))
+            return false;
+
+        // Store
+        sceneChangeCallbacks.add(callback);
+        return false;
     }
 }
