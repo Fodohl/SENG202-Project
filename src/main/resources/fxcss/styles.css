@@ -96,7 +96,6 @@
     -fx-font-size: 24px;
 }
 
-
 .page{
     display: grid;
     grid-template-rows: 0.1fr 0.9fr;
@@ -104,39 +103,41 @@
 }
 
 .header{
-    background-color: var(--bg-primary);
-    padding: 0 1%;
-    display: grid;
-    grid-template-columns: 0.4fr 0.8fr 0.1fr;
-    align-items: center;
-    border-bottom: var(--text-secondary-half) 1px solid;
+    -fx-background-color: -bg-primary;
+    -fx-padding: 15px 20px;
+    -fx-alignment: center-left;
+    -fx-border-color: transparent transparent -text-secondary-half transparent;
+    -fx-border-width: 1px;
 }
 
 .search-bar{
-    background: var(--bg-third);
-    padding: 10px 25px;
-    border-radius: 50px;
-    margin-left: 10px;
-    color: var(--text-secondary);
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 10px;
-    border: var(--text-secondary-half) solid 1px;
+    -fx-background-color: -bg-third;
+    -fx-padding: 10px 25px;
+    -fx-background-radius: 50px;
+    -fx-text-fill: -text-secondary;
+    -fx-alignment: center-left;
+    -fx-spacing: 10px;
+    -fx-max-width: 350px;
+    -fx-border-color: -text-secondary-half;
+    -fx-border-radius: 50px;
 }
 
-.search-bar img{
-    width: 5%;
-    margin-top: -2px;
+.search-input {
+    -fx-background-color: transparent;
+    -fx-text-fill: -text-primary;
+    -fx-prompt-text-fill: -text-secondary;
+    -fx-border-width: 0;
+    -fx-padding: 0;
 }
 
-.content{
-    background: var(--bg-primary);
-    display: grid;
-    align-items: center;
-    justify-items: center;
-    font-size: 60px;
-    overflow-y: auto;
+.account-text {
+    -fx-text-fill: -text-primary;
+    -fx-font-weight: bold;
+}
+
+.content, .content *{
+    -fx-background-color: white;
+    -fx-text-fill: red;
 }
 
 .dashboard{

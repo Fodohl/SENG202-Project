@@ -1,6 +1,8 @@
 package seng202.team1.gui.core;
 
 import javafx.geometry.Pos;
+import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -16,6 +18,8 @@ import java.util.Objects;
 import static seng202.team1.gui.GraphicsCommon.precentX;
 
 public class CoreUI extends LayoutElement {
+
+    private Pane content = null;
 
     public CoreUI(ScreenManager screenManager) {
         super(screenManager, null);
@@ -55,19 +59,54 @@ public class CoreUI extends LayoutElement {
     }
 
     private Parent header() {
-        return null;
+
+        // Search images
+        UIImage searchIcon = new UIImage("/images/search.svg", 16, 16);
+
+        // Search text
+        TextField searchInput = new TextField();
+        searchInput.setPromptText("Enter address...");
+        searchInput.getStyleClass().add("search-input");
+
+        // Build Search Bar
+        HBox searchBar = new HBox(searchIcon, searchInput);
+        searchBar.getStyleClass().add("search-bar");
+
+        // Account
+        Label accountLabel = new Label("Account (DB)");
+        accountLabel.getStyleClass().add("account-text");
+        BorderPane.setAlignment(accountLabel, Pos.CENTER_RIGHT);
+
+        // Combine
+        BorderPane header = new BorderPane();
+        header.getStyleClass().add("header");
+        header.setPrefHeight(60);
+        header.setRight(accountLabel);
+        header.setLeft(searchBar);
+
+        return header;
     }
 
     @Override
     protected Parent render_self() {
 
+        // Debug content
+        content = new StackPane();
+        content.getStyleClass().add("content");
+        Label contentText = new Label("Content");
+        content.getChildren().add(contentText);
+
+        // Page
+        BorderPane page = new BorderPane();
+        page.getStyleClass().add("page");
+        page.setTop(header());
+        page.setCenter(content);
+
         // Root
         BorderPane root = new BorderPane();
         root.getStyleClass().add("root");
-
         root.setLeft(sidebar());
-//        root.setCenter(page);
+        root.setCenter(page);
         return root;
-
     }
 }
