@@ -3,11 +3,12 @@ package seng202.team1.gui.core;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import seng202.team1.gui.screens.ScreenType;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+import seng202.team1.gui.components.UIImage;
+import seng202.team1.gui.screens.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 
 import static seng202.team1.gui.GraphicsCommon.WINDOW_HEIGHT;
@@ -15,10 +16,14 @@ import static seng202.team1.gui.GraphicsCommon.WINDOW_WIDTH;
 
 public class ScreenManager {
 
+    private static final Logger log = LogManager.getLogger(UIImage.class);
+
     private Stage currentStage;
     private ScreenType currentScreen;
+    private Stack<ScreenType> history = new Stack<>();
 
-    private final List<Consumer<ScreenType>> sceneChangeCallbacks = new ArrayList<>();
+    private final List<Consumer<ScreenType>> screenChangeCallbacks = new ArrayList<>();
+    private final Map<ScreenType, LayoutElement> screens = new HashMap<>();
 
     private final CoreUI layout = new CoreUI(this);
 
@@ -39,24 +44,44 @@ public class ScreenManager {
     }
 
     private void loadScreens() {
-        // todo: load screens
+        loadScreen(ScreenType.DASHBOARD, new DashboardScreen(this));
+        loadScreen(ScreenType.MAP, new MapScreen(this));
+        loadScreen(ScreenType.LEADERBOARD, new LeaderboardScreen(this));
+        loadScreen(ScreenType.TIMELINE, new TimelineScreen(this));
+        loadScreen(ScreenType.SETTINGS, new SettingsScreen(this));
+        loadScreen(ScreenType.DATA, new DataScreen(this));
+    }
+
+    private void loadScreen(ScreenType type, LayoutElement screen){
+
+        // Should never have two of the same screen types
+        if(screens.get(type) != null){
+            log.error("Screen type already exists: {}", type.name());
+            return;
+        }
+
+        screens.put(type, screen);
     }
 
     public void showScreen(ScreenType screenType) {
 
         // Update screens to show latest data pre render
-        for (Consumer<ScreenType> callback : sceneChangeCallbacks)
+        for (Consumer<ScreenType> callback : screenChangeCallbacks)
             callback.accept(screenType);
 
         // Select the screen
         currentScreen = screenType;
-        System.out.println(screenType);
-        // cache.get(..)
+        LayoutElement screen = screens.get(screenType);
 
-        // store history
-        // layout -> swap(scr)
+        // Screen not stored
+        if(screen == null){
+            log.warn("Screen not loaded for type: {}", screenType.name());
+            return;
+        }
 
-
+        // Show the screen
+        history.add(currentScreen);
+        layout.swap(screen.getRendered());
     }
 
     public ScreenType getCurrentScreen() {
@@ -65,12 +90,12 @@ public class ScreenManager {
 
     public boolean registerSceneChangeCallback(Consumer<ScreenType> callback){
 
-        // Prevent a callback being triggered
-        if(sceneChangeCallbacks.contains(callback))
+        // Prevent a callback being triggered twice
+        if(screenChangeCallbacks.contains(callback))
             return false;
 
         // Store
-        sceneChangeCallbacks.add(callback);
+        screenChangeCallbacks.add(callback);
         return false;
     }
 }

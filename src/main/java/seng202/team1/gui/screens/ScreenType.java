@@ -7,5 +7,6 @@ public enum ScreenType {
     LEADERBOARD,
     TIMELINE,
     SETTINGS,
+    DATA,
 
 }

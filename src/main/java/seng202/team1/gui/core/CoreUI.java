@@ -19,7 +19,8 @@ import static seng202.team1.gui.GraphicsCommon.precentX;
 
 public class CoreUI extends LayoutElement {
 
-    private Pane content = null;
+    private Parent content = null;
+    private BorderPane page = null;
 
     public CoreUI(ScreenManager screenManager) {
         super(screenManager, null);
@@ -90,14 +91,8 @@ public class CoreUI extends LayoutElement {
     @Override
     protected Parent render_self() {
 
-        // Debug content
-        content = new StackPane();
-        content.getStyleClass().add("content");
-        Label contentText = new Label("Content");
-        content.getChildren().add(contentText);
-
         // Page
-        BorderPane page = new BorderPane();
+        page = new BorderPane();
         page.getStyleClass().add("page");
         page.setTop(header());
         page.setCenter(content);
@@ -108,5 +103,13 @@ public class CoreUI extends LayoutElement {
         root.setLeft(sidebar());
         root.setCenter(page);
         return root;
+    }
+
+    public void swap(Parent rendered) {
+
+        // Change the content to the new page
+        content = rendered;
+        content.getStyleClass().add("content");
+        page.setCenter(content);
     }
 }
