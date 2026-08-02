@@ -8,13 +8,9 @@ import org.apache.logging.log4j.Logger;
 import java.io.IOException;
 import java.io.InputStream;
 
-//@todo lag - preload
-//@todo find gpu accelerated map support
-
 public class UIMap extends StackPane {
 
-    private static final Logger log = LogManager.getLogger(UIImage.class);
-
+    private static final Logger log = LogManager.getLogger(UIMap.class);
 
     public UIMap(){
 
@@ -34,8 +30,6 @@ public class UIMap extends StackPane {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        System.out.println(content);
 
         // Render the map as mini website
         WebView map = new WebView();

@@ -46,11 +46,15 @@ public class ScreenManager {
 
     private void loadScreens() {
         loadScreen(ScreenType.DASHBOARD, new DashboardScreen(this));
-        loadScreen(ScreenType.MAP, new MapScreen(this));
         loadScreen(ScreenType.LEADERBOARD, new LeaderboardScreen(this));
         loadScreen(ScreenType.TIMELINE, new TimelineScreen(this));
         loadScreen(ScreenType.SETTINGS, new SettingsScreen(this));
         loadScreen(ScreenType.DATA, new DataScreen(this));
+
+        // Preload the map so that it doesn't lag
+        LayoutElement map = new MapScreen(this);
+        map.rerender();
+        loadScreen(ScreenType.MAP, map);
     }
 
     private void loadScreen(ScreenType type, LayoutElement screen){
