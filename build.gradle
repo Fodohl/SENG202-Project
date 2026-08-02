@@ -166,5 +166,12 @@ jacocoTestReport {
     reports {
         html.outputLocation = layout.buildDirectory.dir("reports/tests/coverage")
     }
+}
 
+// Suppress warnings
+tasks.withType(JavaExec).configureEach {
+    jvmArgs += [
+        '--enable-native-access=ALL-UNNAMED',
+        '--enable-native-access=javafx.web'
+    ]
 }

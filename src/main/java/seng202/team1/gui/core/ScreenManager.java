@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import seng202.team1.gui.components.UIImage;
 import seng202.team1.gui.screens.*;
 
+import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -55,10 +56,8 @@ public class ScreenManager {
     private void loadScreen(ScreenType type, LayoutElement screen){
 
         // Should never have two of the same screen types
-        if(screens.get(type) != null){
-            log.error("Screen type already exists: {}", type.name());
-            return;
-        }
+        if(screens.get(type) != null)
+            throw new InvalidParameterException("Screen type already exists");
 
         screens.put(type, screen);
     }
