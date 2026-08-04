@@ -4,6 +4,7 @@ import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -15,7 +16,7 @@ import org.json.simple.parser.JSONParser;
 
 /**
  * DataLoader
- * Loads bin location data from a GeoJSON file into BinObject instances
+ * Loads bin data from a GeoJSON file into BinObject instances
  * @author Stanley Easthope
  */
 public class DataLoader {
@@ -28,13 +29,25 @@ public class DataLoader {
      * @return List of BinObject instances
      */
     public List<BinObject> getBinObjects() {
-        return binObjects;
+        return Collections.unmodifiableList(binObjects);
+    }
+
+    /**
+     * Find bin by  ID
+     * @param binID ID of the bin
+     * @return The BinObject or Null if not found
+     */
+    public BinObject getBinById(int binID) {
+        return binObjects.stream()
+                .filter(bin -> bin.getBinID() == binID)
+                .findFirst()
+                .orElse(null);
     }
 
 
     /**
-     * Reads the GeoJSON file and populates the binObjects list
-     * Logs an error if the file cannot be read or parsed
+     * Reads the GeoJSON file and puts it in a binObjects list
+     * Logs an error if the file can't be read
      */
     public void readGeoJSON(){
         JSONParser parser = new JSONParser();
@@ -71,10 +84,11 @@ public class DataLoader {
     private BinObject parseFeature(JSONObject feature) {
         JSONObject geometry = (JSONObject) feature.get("geometry");
         JSONArray coordinates = (JSONArray) geometry.get("coordinates");
-        double longitude = (double) coordinates.get(0);
-        double latitude = (double) coordinates.get(1);
+        double longitude = ((Number) coordinates.get(0)).doubleValue();
+        double latitude = ((Number) coordinates.get(1)).doubleValue();
 
         JSONObject properties = (JSONObject) feature.get("properties");
+        int binID = ((Number) properties.get("BinID")).intValue();
         Object wasteTypeObj = properties.get("WasteType");
         String wasteType = wasteTypeObj == null ? "" : wasteTypeObj.toString();
         BinObject.BinType binType = switch (wasteType.toUpperCase(Locale.ROOT)) {
@@ -82,7 +96,7 @@ public class DataLoader {
             case "COMPOST" -> BinObject.BinType.ORGANIC;
             default -> BinObject.BinType.GENERAL_WASTE;
         };
-        return new BinObject(binObjects.size() + 1, longitude, latitude, binType);
+        return new BinObject(binID, latitude, longitude, binType);
     }
     
 }
