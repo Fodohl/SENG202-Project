@@ -16,9 +16,11 @@ public class GlobalState {
 
     public GlobalState(Stage stage){
 
-            this.screenManager = new ScreenManager(this, stage);
-            this.dataLoader = new DataLoader();
-            dataLoader.readGeoJSON();
+        // Data must be loaded first as UI depends on it
+        this.dataLoader = new DataLoader();
+        dataLoader.readGeoJSON();
+
+        this.screenManager = new ScreenManager(this, stage);
     }
 
     public ScreenManager getScreenManager() {

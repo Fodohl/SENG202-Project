@@ -6,7 +6,7 @@ plugins {
 }
 
 base {
-    archivesName = 'seng202_team1'
+    archivesName = 'seng202_team1_trashapp'
 }
 
 group = 'seng202.team1'

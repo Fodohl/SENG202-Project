@@ -44,7 +44,7 @@ public class ScreenManager extends StateReferrer {
 
         // Show dashboard
         loadScreens();
-        showScreen(ScreenType.DASHBOARD);
+        showScreen(ScreenType.DATA);
     }
 
     private void loadScreens() {

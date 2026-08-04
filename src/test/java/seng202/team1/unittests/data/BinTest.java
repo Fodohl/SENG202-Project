@@ -1,4 +1,4 @@
-package seng202.team1.unittests.data_managers;
+package seng202.team1.unittests.data;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
@@ -9,7 +9,7 @@ import seng202.team1.data.Bin;
  * Test BinObject
  * @author Stanley Easthope
  */
-public class BinObjectTest {
+public class BinTest {
 
     /**
      * Test that getters work correctly

@@ -136,8 +136,17 @@
 }
 
 .content, .content *{
-    -fx-background-color: white;
-    -fx-text-fill: red;
+    -fx-max-width: infinity;
+    -fx-max-height: infinity;
+    -fx-background-color: -bg-primary;
+    -fx-text-fill: -text-primary;
+}
+
+.title{
+    -fx-font-size: 40px;
+    -fx-font-weight: bold;
+    -fx-padding: 14px;
+    -fx-text-alignment: center;
 }
 
 .dashboard{

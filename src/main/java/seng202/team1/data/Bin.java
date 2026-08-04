@@ -13,10 +13,10 @@ public class Bin {
         ORGANIC
     }
 
-    private int binID;
-    private double latitude;
-    private double longitude;
-    private BinType type;
+    protected int binID;
+    protected double latitude;
+    protected double longitude;
+    protected BinType type;
 
     /**
      * Constructor for BinObject class
