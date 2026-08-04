@@ -7,6 +7,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import seng202.team1.gui.components.UIImage;
 import seng202.team1.gui.screens.*;
+import seng202.team1.state.GlobalState;
+import seng202.team1.state.StateReferrer;
 
 import java.security.InvalidParameterException;
 import java.util.*;
@@ -15,7 +17,7 @@ import java.util.function.Consumer;
 import static seng202.team1.gui.GraphicsCommon.WINDOW_HEIGHT;
 import static seng202.team1.gui.GraphicsCommon.WINDOW_WIDTH;
 
-public class ScreenManager {
+public class ScreenManager extends StateReferrer {
 
     private static final Logger log = LogManager.getLogger(UIImage.class);
 
@@ -28,7 +30,8 @@ public class ScreenManager {
 
     private final CoreUI layout = new CoreUI(this);
 
-    public ScreenManager(Stage currentStage){
+    public ScreenManager(GlobalState state, Stage currentStage){
+        super(state);
 
         // Load core ui
         this.currentStage = currentStage;

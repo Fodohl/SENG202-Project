@@ -8,8 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import seng202.team1.data_managers.BinObject;
-import seng202.team1.data_managers.DataLoader;
+import seng202.team1.data.Bin;
+import seng202.team1.data.DataLoader;
 
 /**
  * Test DataLoader
@@ -41,9 +41,9 @@ public class DataLoaderTest {
      */
     @Test
     public void testGetBinObjectsIsNotChangable() {
-        List<BinObject> bins = dataLoader.getBinObjects();
+        List<Bin> bins = dataLoader.getBinObjects();
         assertThrows(UnsupportedOperationException.class, () ->
-                bins.add(new BinObject(0, 0, 0, BinObject.BinType.GENERAL_WASTE)));
+                bins.add(new Bin(0, 0, 0, Bin.BinType.GENERAL_WASTE)));
     }
 
     /**
@@ -51,8 +51,8 @@ public class DataLoaderTest {
      */
     @Test
     public void testRecyclingBin() {
-        BinObject bin = dataLoader.getBinById(2463);
-        assertEquals(BinObject.BinType.RECYCLING, bin.getBinType());
+        Bin bin = dataLoader.getBinById(2463);
+        assertEquals(Bin.BinType.RECYCLING, bin.getBinType());
     }
 
     /**
@@ -60,8 +60,8 @@ public class DataLoaderTest {
      */
     @Test
     public void testCompostBinMappedCorrectly() {
-        BinObject bin = dataLoader.getBinById(2537);
-        assertEquals(BinObject.BinType.ORGANIC, bin.getBinType());
+        Bin bin = dataLoader.getBinById(2537);
+        assertEquals(Bin.BinType.ORGANIC, bin.getBinType());
     }
 
     /**
@@ -69,7 +69,7 @@ public class DataLoaderTest {
      */
     @Test
     public void testGeneralWasteBinMappedCorrectly() {
-        BinObject bin = dataLoader.getBinById(197);
-        assertEquals(BinObject.BinType.GENERAL_WASTE, bin.getBinType());
+        Bin bin = dataLoader.getBinById(197);
+        assertEquals(Bin.BinType.GENERAL_WASTE, bin.getBinType());
     }
 }

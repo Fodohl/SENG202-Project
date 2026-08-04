@@ -2,7 +2,9 @@ package seng202.team1;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import seng202.team1.data.DataLoader;
 import seng202.team1.gui.core.ScreenManager;
+import seng202.team1.state.GlobalState;
 
 import static javafx.application.Application.launch;
 
@@ -21,7 +23,7 @@ public class Main extends Application {
         stage.setTitle("TrashApp v1");
 
         // Setup app state
-        ScreenManager screenManager = new ScreenManager(stage);
+        GlobalState globalState = new GlobalState(stage);
         stage.show();
     }
 

@@ -1,4 +1,4 @@
-package seng202.team1.data_managers;
+package seng202.team1.data;
 
 /**
  * BinObject
@@ -6,7 +6,7 @@ package seng202.team1.data_managers;
  * @author Stanley Easthope
  */
 
-public class BinObject {
+public class Bin {
     public enum BinType {
         GENERAL_WASTE,
         RECYCLING,
@@ -25,7 +25,7 @@ public class BinObject {
      * @param longitude - longitude of the bin
      * @param type - type of bin (general waste, recycling, organic)
      */
-    public BinObject(int binID, double latitude, double longitude, BinType type) {
+    public Bin(int binID, double latitude, double longitude, BinType type) {
         this.binID = binID;
         this.latitude = latitude;
         this.longitude = longitude;

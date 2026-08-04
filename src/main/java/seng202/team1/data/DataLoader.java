@@ -1,4 +1,4 @@
-package seng202.team1.data_managers;
+package seng202.team1.data;
 
 import java.io.FileReader;
 import java.io.InputStream;
@@ -21,14 +21,14 @@ import org.json.simple.parser.JSONParser;
  */
 public class DataLoader {
     private static final Logger log = LogManager.getLogger(DataLoader.class);
-    private final String filePath = "GeoJson/bin.geojson";
-    private final List<BinObject> binObjects = new ArrayList<>();
+    private final String filePath = "geojson/bin.geojson";
+    private final List<Bin> binObjects = new ArrayList<>();
 
     /**
      * Get loaded bins list
      * @return List of BinObject instances
      */
-    public List<BinObject> getBinObjects() {
+    public List<Bin> getBinObjects() {
         return Collections.unmodifiableList(binObjects);
     }
 
@@ -37,7 +37,7 @@ public class DataLoader {
      * @param binID ID of the bin
      * @return The BinObject or Null if not found
      */
-    public BinObject getBinById(int binID) {
+    public Bin getBinById(int binID) {
         return binObjects.stream()
                 .filter(bin -> bin.getBinID() == binID)
                 .findFirst()
@@ -52,8 +52,12 @@ public class DataLoader {
     public void readGeoJSON(){
         JSONParser parser = new JSONParser();
         try {
+
+            // Load the whole data file
             JSONObject geoObj = parseGeoJson(parser);
             JSONArray features = (JSONArray) geoObj.get("features");
+
+            // Each bin is stored as a feature
             for (Object obj : features) {
                 binObjects.add(parseFeature((JSONObject) obj));
             }
@@ -81,22 +85,27 @@ public class DataLoader {
      * @param feature - JSONObject representing a feature
      * @return BinObject instance
      */
-    private BinObject parseFeature(JSONObject feature) {
+    private Bin parseFeature(JSONObject feature) {
+
+
         JSONObject geometry = (JSONObject) feature.get("geometry");
         JSONArray coordinates = (JSONArray) geometry.get("coordinates");
+
         double longitude = ((Number) coordinates.get(0)).doubleValue();
         double latitude = ((Number) coordinates.get(1)).doubleValue();
 
         JSONObject properties = (JSONObject) feature.get("properties");
         int binID = ((Number) properties.get("BinID")).intValue();
         Object wasteTypeObj = properties.get("WasteType");
+
         String wasteType = wasteTypeObj == null ? "" : wasteTypeObj.toString();
-        BinObject.BinType binType = switch (wasteType.toUpperCase(Locale.ROOT)) {
-            case "RECYCLE", "RECYCLING" -> BinObject.BinType.RECYCLING;
-            case "COMPOST" -> BinObject.BinType.ORGANIC;
-            default -> BinObject.BinType.GENERAL_WASTE;
+        Bin.BinType binType = switch (wasteType.toUpperCase(Locale.ROOT)) {
+            case "RECYCLE", "RECYCLING" -> Bin.BinType.RECYCLING;
+            case "COMPOST" -> Bin.BinType.ORGANIC;
+            default -> Bin.BinType.GENERAL_WASTE;
         };
-        return new BinObject(binID, latitude, longitude, binType);
+
+        return new Bin(binID, latitude, longitude, binType);
     }
     
 }
