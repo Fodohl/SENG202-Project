@@ -5,10 +5,13 @@ import javafx.scene.Parent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import seng202.team1.data.Bin;
+import seng202.team1.gui.components.UITable;
 import seng202.team1.gui.components.UITitle;
 import seng202.team1.gui.core.LayoutElement;
 import seng202.team1.gui.core.ScreenManager;
 import javafx.scene.control.Label;
+
+import java.util.List;
 
 
 public class DataScreen extends LayoutElement {
@@ -26,26 +29,12 @@ public class DataScreen extends LayoutElement {
         UITitle pageTitle = new UITitle("Raw Data");
 
         // Data
-        VBox data = new VBox(10);
+        List<String> order = List.of("ID", "Latitude", "Longitude", "Type");
+        UITable table = new UITable(screenManager.getGlobalState().getDataLoader().toStringTable(), order, false);
 
-        System.out.println(screenManager.getGlobalState().getDataLoader().toStringTable());
-
-        // Data row for each bin
-        for(Bin bin : screenManager.getGlobalState().getDataLoader().getBinObjects())
-            data.getChildren().add(renderBinRow(bin));
-
-        VBox root = new VBox(20, pageTitle, data);
+        // Combine
+        VBox root = new VBox(20, pageTitle, table);
         root.setAlignment(Pos.CENTER);
         return root;
-    }
-
-    private HBox renderBinRow(Bin bin){
-
-        Label id = new Label(String.format("%d", bin.getBinID()));
-        Label latitude = new Label(String.format("%f", bin.getBinLatitude()));
-        Label longitude = new Label(String.format("%f", bin.getBinLongitude()));
-        Label type = new Label(bin.getBinType().name());
-
-        return new HBox(id, latitude, longitude, type);
     }
 }

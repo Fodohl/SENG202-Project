@@ -37,7 +37,7 @@ public class DataLoader {
         // Set up the table
         Map<String, String> keys = Map.of(
                                         "binID", "ID",
-                                        "latitude", "Latititidue",
+                                        "latitude", "Latitude",
                                         "longitude","Longitude",
                                         "type", "Type"
                                         );

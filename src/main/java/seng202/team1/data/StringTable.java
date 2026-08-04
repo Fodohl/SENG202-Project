@@ -23,14 +23,33 @@ public class StringTable extends HashMap<String, List<String>> {
         this.colMap = cols;
 
         // Setup cols
-        for(String key : cols.keySet())
-            put(key, new ArrayList<>());
-
+        colMap.forEach((data, display) -> {
+            put(display, new ArrayList<>());
+        });
     }
 
-    public Set<String> getCols(){
+    public Set<String> getHeaderRow(){
         return keySet();
     }
+
+
+    // Todo test check bounds
+
+    public HashMap<String, String> getDataRow(int index){
+
+        HashMap<String, String> row = new HashMap<>();
+
+        // Check bounds
+        if(index < 0 || index > dataSize())
+            return row;
+
+        colMap.forEach((data, display) -> {
+            row.put(display, get(display).get(index));
+        });
+
+        return row;
+    }
+
 
     public boolean add(Object object){
 
@@ -58,12 +77,12 @@ public class StringTable extends HashMap<String, List<String>> {
         }
 
         // Add each value to the table
-        colMap.forEach((key, value) -> {
+        colMap.forEach((data, display) -> {
             try {
 
                 // Store the value from the object
-                Object objectValue = object.getClass().getDeclaredField(key).get(object);
-                get(key).add(objectValue.toString());
+                Object objectValue = object.getClass().getDeclaredField(data).get(object);
+                get(display).add(objectValue.toString());
 
             } catch (IllegalAccessException | NoSuchFieldException e) {
 
@@ -78,7 +97,11 @@ public class StringTable extends HashMap<String, List<String>> {
 
     @Override
     public int size() {
-        return 1 + get(keySet().stream().toList().getFirst()).size();
+        return 1 + dataSize();
+    }
+
+    public int dataSize() {
+        return get(keySet().stream().toList().getFirst()).size();
     }
 
     //@todo maybe to complicated
