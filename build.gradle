@@ -9,7 +9,7 @@ base {
     archivesName = 'seng202_team1'
 }
 
-group = 'seng202.team0'
+group = 'seng202.team1'
 version = '1.0-SNAPSHOT'
 
 def mainClassName = 'seng202.team1.TrashApp'
@@ -104,7 +104,7 @@ test {
     useJUnitPlatform()
 
     filter {
-        includeTestsMatching "seng202.team0.unittests.*"
+        includeTestsMatching "seng202.team1.unittests.*"
     }
 
     finalizedBy jacocoTestReport
