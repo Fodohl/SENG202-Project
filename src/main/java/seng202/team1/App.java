@@ -1,10 +1,10 @@
 package seng202.team1;
 
-import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import seng202.team1.data_managers.DataLoader;
 import seng202.team1.gui.MainWindow;
-import seng202.team0.data_managers.*;
 
 /**
  * Default entry point class
@@ -20,11 +20,11 @@ public class App {
      */
     public static void main(String[] args) {
         //tests
-        // DataLoader dataLoader = new DataLoader();
-        // dataLoader.readGeoJSON();
-        // System.out.println("Number of bins loaded: " + dataLoader.binObjects.size());
-        // System.out.println("First bin coordinates: " + dataLoader.binObjects.get(0).getBinLatitude() + ", " + dataLoader.binObjects.get(0).getBinLongitude());
-        // System.out.println(dataLoader.binObjects.get(0));
+        DataLoader dataLoader = new DataLoader();
+        dataLoader.readGeoJSON();
+        System.out.println("Number of bins loaded: " + dataLoader.getBinObjects().size());
+        System.out.println("First bin coordinates: " + dataLoader.getBinObjects().get(0).getBinLatitude() + ", " + dataLoader.getBinObjects().get(0).getBinLongitude());
+        System.out.println(dataLoader.getBinObjects().get(0));
 
         MainWindow.main(args);
 
