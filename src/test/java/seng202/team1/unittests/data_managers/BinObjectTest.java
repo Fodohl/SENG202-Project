@@ -23,4 +23,13 @@ public class BinObjectTest {
         assertEquals(-43.605467593, bin.getBinLatitude());
         assertEquals(BinObject.BinType.RECYCLING, bin.getBinType());
     }
+
+    /**
+     * Test that to string is formatted properly
+     */
+    @Test
+    public void testToString() {
+        BinObject bin = new BinObject(197, -43.605467593, 172.693149814, BinObject.BinType.RECYCLING);
+        assertEquals("BinObject{binID=197, latitude=-43.605467593, longitude=172.693149814, type=RECYCLING}", bin.toString());
+    }
 }
