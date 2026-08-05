@@ -5,6 +5,7 @@ import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -19,7 +20,7 @@ import static seng202.team1.gui.GraphicsCommon.precentX;
 
 public class CoreUI extends LayoutElement {
 
-    private Parent content = null;
+    private ScrollPane content = new ScrollPane();
     private BorderPane page = null;
 
     public CoreUI(ScreenManager screenManager) {
@@ -95,7 +96,12 @@ public class CoreUI extends LayoutElement {
         page = new BorderPane();
         page.getStyleClass().add("page");
         page.setTop(header());
+
+        // Setup page content
         page.setCenter(content);
+        content.getStyleClass().add("content");
+        content.setFitToWidth(true);
+        content.setFitToHeight(true);
 
         // Root
         BorderPane root = new BorderPane();
@@ -108,8 +114,7 @@ public class CoreUI extends LayoutElement {
     public void swap(Parent rendered) {
 
         // Change the content to the new page
-        content = rendered;
-        content.getStyleClass().add("content");
+        content.setContent(rendered);
         page.setCenter(content);
     }
 }
