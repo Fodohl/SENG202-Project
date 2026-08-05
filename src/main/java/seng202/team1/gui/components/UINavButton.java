@@ -8,15 +8,30 @@ import seng202.team1.common.StringHelpers;
 import seng202.team1.gui.core.ScreenManager;
 import seng202.team1.gui.screens.ScreenType;
 
-
-//@todo - abstract icons?
-//@todo - screenmn ref to auto active (&refresh)
-
+/**
+ * A UI Component to handle rendering navigation buttons
+ *
+ * Renders a button for a given screen type, expects a svg of the same name (lowercase) to exist for it's icon. This nav
+ * button will react to navigation changes and indicate if it represents the active page.
+ *
+ * Note: No onClick needed, will automatically handle navigation calls
+ *
+ * @todo maybe abstract away screen manager into UIComponent?
+ */
 public class UINavButton extends HBox {
 
+    /// The screen manager responsible for the active screen and switching to others
     private ScreenManager screenManager;
+
+    /// The screen type this nav button represents as a clickable destination
     private ScreenType dest;
 
+    /**
+     * Constructs a new UINavButton
+     *
+     * @param screenManager The current screen manger for the screen this button is on
+     * @param dest The navigation destination
+     */
     public UINavButton(ScreenManager screenManager, ScreenType dest) {
 
         // Setup state
@@ -24,6 +39,7 @@ public class UINavButton extends HBox {
         this.screenManager = screenManager;
         this.dest = dest;
 
+        // Extract info from screen type
         String iconPath = String.format("/images/%s.svg", dest.name().toLowerCase());
         String title = StringHelpers.toTitleCase(dest.name());
 
@@ -47,6 +63,11 @@ public class UINavButton extends HBox {
         screenManager.registerSceneChangeCallback(this::updateIsActive);
     }
 
+    /**
+     * Updates the style of this nav button to indicate whether this button's page is currently being shown or not
+     *
+     * @param currentActive The currently active screen
+     */
     private void updateIsActive(ScreenType currentActive){
 
         // No active screen

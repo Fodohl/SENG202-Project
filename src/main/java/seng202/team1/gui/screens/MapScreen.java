@@ -27,8 +27,7 @@ public class MapScreen extends LayoutElement {
         // Populate the map
         map = new UIMap();
         for(Bin bin : screenManager.getGlobalState().getDataLoader().getBinObjects())
-            map.addPoint(bin.getBinLatitude(), bin.getBinLongitude(), bin.getBinID().toString());
-
+            map.addPoint(bin.getBinLatitude(), bin.getBinLongitude());
 
         return new StackPane(sidebar, map);
     }

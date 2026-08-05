@@ -14,12 +14,25 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Objects;
 
+/**
+ * A UI Component to handle rendering images
+ *
+ * Supports loading the default set of javafx supported images, aswell as svgs. Safely loads such that a empty node will
+ * be returned if file doesn't exist, and will log an warning.
+ */
 public class UIImage extends StackPane {
 
+    /// UImage specific logger
     private static final Logger log = LogManager.getLogger(UIImage.class);
 
+    /**
+     * Constructs a new UI Image
+     *
+     * @param path The path to the image file
+     * @param width How many pixels across the image should be rendered as
+     * @param height How many pixels tall the image should be rendered as
+     */
     public UIImage(String path, double width, double height){
-        super();
 
         // Ensure stack pane is same dimensions
         setPrefSize(width, height);
@@ -38,6 +51,14 @@ public class UIImage extends StackPane {
 
     }
 
+    /**
+     * Load a Scalable Vector Graphics (SVG) image file
+     *
+     * @param path The path to the svg
+     * @param width How many pixels across the svg should be scaled to
+     * @param height How many pixels tall the svg should be scaled to
+     * @return A scaled SVG container
+     */
     private Node loadSvgImage(String path, double width, double height) {
 
         // Load image
@@ -59,6 +80,14 @@ public class UIImage extends StackPane {
 
     }
 
+    /**
+     * Load a standard image file from a stream
+     *
+     * @param stream The opened image file stream
+     * @param width How many pixels across the image should be rendered as
+     * @param height How many pixels tall the image should be rendered as
+     * @return The resized image view for the image
+     */
     private ImageView loadImage(InputStream stream, double width, double height){
 
         // Load image
