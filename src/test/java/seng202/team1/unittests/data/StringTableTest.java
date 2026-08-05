@@ -1,24 +1,14 @@
-package seng202.team1.data;
+package seng202.team1.unittests.data;
 
-import org.junit.Test;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
+import seng202.team1.data.Bin;
+import seng202.team1.data.StringTable;
 
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class StringTableTestEntry{
-
-    String name;
-    int value;
-
-    public StringTableTestEntry(String name, int value){
-        this.name = name;
-        this.value = value;
-    }
-
-}
 
 public class StringTableTest
 {
@@ -30,20 +20,20 @@ public class StringTableTest
 
         // Set up the table
         Map<String, String> keys = Map.of(
-                                        "Name", "name",
-                                        "Value", "val"
+                                         "latitude", "lat",
+                                        "longitude", "long"
                                         );
         table = new StringTable(keys);
 
         // Add test data
-        table.add(new StringTableTestEntry("One", 1));
-        table.add(new StringTableTestEntry("Two", 2));
-        table.add(new StringTableTestEntry("Three", 3));
+        table.add(new Bin(1,1,1,null));
+        table.add(new Bin(2,2,2, null));
+        table.add(new Bin(3,3,3, null));
     }
 
     @Test
     public void headersShouldBeKeys(){
-        assertArrayEquals(table.getCols().toArray(), table.keySet().toArray());
+        assertArrayEquals(table.getHeaderRow().toArray(), table.keySet().toArray());
     }
 
      @Test
@@ -83,11 +73,10 @@ public class StringTableTest
 
     public boolean addPrivate() throws NoSuchFieldException {
 
-        StringTableTestEntry test = new StringTableTestEntry("Four", 4);
-        test.getClass().getDeclaredField("Name").setAccessible(false);
+        Bin test = new Bin(4,4,4, null);
+        test.getClass().getDeclaredField("latitude").setAccessible(false);
 
         return table.add(test);
 
     }
-
 }

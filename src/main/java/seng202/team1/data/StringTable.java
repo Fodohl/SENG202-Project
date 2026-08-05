@@ -113,7 +113,7 @@ public class StringTable extends HashMap<String, List<String>> {
             } catch (IllegalAccessException | NoSuchFieldException e) {
 
                 // Should never happen as prechecked above, unrecoverable as data may have been added here
-                throw new ArrayIndexOutOfBoundsException("Failed mid object add to StringTable");
+                throw new RuntimeException(String.format("Failed mid object add to StringTable: %s", e.getMessage()));
             }
         });
 
