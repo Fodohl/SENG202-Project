@@ -40,7 +40,7 @@ public class DataLoaderTest {
      * Test that the list can't be changed
      */
     @Test
-    public void testGetBinObjectsIsNotChangable() {
+    public void testGetBinObjectsIsNotChangeable() {
         List<BinObject> bins = dataLoader.getBinObjects();
         assertThrows(UnsupportedOperationException.class, () ->
                 bins.add(new BinObject(0, 0, 0, BinObject.BinType.GENERAL_WASTE)));
@@ -70,6 +70,15 @@ public class DataLoaderTest {
     @Test
     public void testGeneralWasteBinMappedCorrectly() {
         BinObject bin = dataLoader.getBinById(197);
+        assertEquals(BinObject.BinType.GENERAL_WASTE, bin.getBinType());
+    }
+
+    /**
+     * Test that a Canine littler waste bin maps to general waste
+     */
+    @Test
+    public void testCanineLittlerBinMappedToGeneralWaste() {
+        BinObject bin = dataLoader.getBinById(63534);
         assertEquals(BinObject.BinType.GENERAL_WASTE, bin.getBinType());
     }
 }
