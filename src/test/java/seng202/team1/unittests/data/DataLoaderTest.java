@@ -10,23 +10,13 @@ import org.junit.jupiter.api.Test;
 
 import seng202.team1.data.Bin;
 import seng202.team1.data.DataLoader;
+import seng202.team1.unittests.TrashAppTest;
 
 /**
  * Test DataLoader
  * @author Stanley Easthope
  */
-public class DataLoaderTest {
-    private DataLoader dataLoader;
-
-    /**
-     * Setup before each test
-     * Gets a new read from the GeoJSON file
-     */
-    @BeforeEach
-    public void setupTest() {
-        dataLoader = new DataLoader();
-        dataLoader.readGeoJSON();
-    }
+public class DataLoaderTest extends TrashAppTest {
 
     /**
      * Check that the bins aren't empty

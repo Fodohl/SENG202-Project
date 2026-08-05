@@ -4,31 +4,26 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import seng202.team1.data.Bin;
 import seng202.team1.data.StringTable;
+import seng202.team1.unittests.TrashAppTest;
 
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 
-public class StringTableTest
-{
+public class StringTableTest extends TrashAppTest {
 
     private StringTable table;
+
+    private int numRows;
+
 
     @BeforeEach
     public void init(){
 
         // Set up the table
-        Map<String, String> keys = Map.of(
-                                         "latitude", "lat",
-                                        "longitude", "long"
-                                        );
-        table = new StringTable(keys);
-
-        // Add test data
-        table.add(new Bin(1,1,1,null));
-        table.add(new Bin(2,2,2, null));
-        table.add(new Bin(3,3,3, null));
+        table = testDataTable();
+        numRows = table.dataSize();
     }
 
     @Test
@@ -39,9 +34,7 @@ public class StringTableTest
      @Test
     public void sizeShouldBeNumRows(){
 
-        int numRows = 3;
         int rowsIncHeader = 1 + numRows;
-
         assertEquals(rowsIncHeader, table.size());
     }
 

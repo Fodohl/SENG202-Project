@@ -213,4 +213,20 @@ public class UITable extends GridPane {
             cell.getStyleClass().addAll("cell-round ", "cell-round-br");
         }
     }
+
+    /**
+     * Helper method to fetch the contents of a cell in the table
+     *
+     * @param col The column that the cell is in
+     * @param row THe row that the cell is in
+     * @return The cell, or null if col/row out of bounds
+     */
+    public Node get(int col, int row) {
+
+        for (Node node : getChildren())
+            if (GridPane.getColumnIndex(node) == col && GridPane.getRowIndex(node) == row)
+                return node;
+
+        return null;
+    }
 }

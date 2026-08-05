@@ -6,6 +6,8 @@ import seng202.team1.gui.core.ScreenManager;
 
 public class GlobalState {
 
+    public static boolean IS_HEADLESS_MODE = false;
+
     private ScreenManager screenManager;
 
     public DataLoader getDataLoader() {

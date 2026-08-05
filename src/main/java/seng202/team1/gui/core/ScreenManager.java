@@ -36,7 +36,10 @@ public class ScreenManager extends StateReferrer {
         // Load core ui
         this.currentStage = currentStage;
         Scene scene = new Scene(layout.getRendered(), WINDOW_WIDTH, WINDOW_HEIGHT);
-        currentStage.setScene(scene);
+
+        // Dont load stage if not running with a window
+        if(!GlobalState.IS_HEADLESS_MODE)
+            currentStage.setScene(scene);
 
         // Load CSS
         String cssPath = Objects.requireNonNull(getClass().getResource("/fxcss/styles.css")).toExternalForm();
@@ -53,6 +56,10 @@ public class ScreenManager extends StateReferrer {
         loadScreen(ScreenType.TIMELINE, new TimelineScreen(this));
         loadScreen(ScreenType.SETTINGS, new SettingsScreen(this));
         loadScreen(ScreenType.DATA, new DataScreen(this));
+
+        // No need to preload if not being shown
+        if(GlobalState.IS_HEADLESS_MODE)
+            return;
 
         // Preload the map so that it doesn't lag
         LayoutElement map = new MapScreen(this);

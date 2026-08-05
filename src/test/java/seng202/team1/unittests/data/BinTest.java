@@ -4,12 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
 import seng202.team1.data.Bin;
+import seng202.team1.unittests.TrashAppTest;
 
 /**
  * Test BinObject
  * @author Stanley Easthope
  */
-public class BinTest {
+public class BinTest extends TrashAppTest {
 
     /**
      * Test that getters work correctly

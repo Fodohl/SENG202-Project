@@ -6,6 +6,7 @@ import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import seng202.team1.state.GlobalState;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -58,6 +59,10 @@ public class UIMap extends StackPane {
             // Map file must exist to work, panic otherwise
             throw new RuntimeException(e);
         }
+
+        // Webview unavailable in headless mode
+        if(GlobalState.IS_HEADLESS_MODE)
+            return;
 
         // Render the map as mini website
         WebView map = new WebView();
