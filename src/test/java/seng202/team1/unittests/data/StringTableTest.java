@@ -62,21 +62,37 @@ public class StringTableTest
     }
 
      @Test
-    public void shouldSafelyFailIfFieldDoesntExist(){
-
+    public void shouldSafelyFailIfFieldDoesntExist() throws NoSuchFieldException {
+         assertEquals(false, addPartial());
     }
 
     @Test
-    public void shouldNotAddIfDoesntExist(){
+    public void shouldNotAddIfDoesntExist() throws NoSuchFieldException {
+        int sizeBefore = table.size();
+        addPartial();
+        int sizeAfter = table.size();
 
+        assertEquals(sizeBefore, sizeAfter);
     }
 
     public boolean addPrivate() throws NoSuchFieldException {
 
-        Bin test = new Bin(4,4,4, null);
-        test.getClass().getDeclaredField("latitude").setAccessible(false);
+         class PrivateTestObj {
+            private double latitude = 4;
+            private double longitude = 4;
+        }
 
-        return table.add(test);
+        return table.add(new PrivateTestObj());
+
+    }
+
+    public boolean addPartial() throws NoSuchFieldException {
+
+         class PrivateTestObj {
+            private double latitude = 5;
+        }
+
+        return table.add(new PrivateTestObj());
 
     }
 }
