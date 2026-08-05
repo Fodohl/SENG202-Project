@@ -6,7 +6,6 @@ package seng202.team1.data_managers;
  * @author Stanley Easthope
  */
 
-
 public class BinObject {
     public enum BinType {
         GENERAL_WASTE,
