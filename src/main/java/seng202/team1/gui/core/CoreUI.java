@@ -1,30 +1,37 @@
 package seng202.team1.gui.core;
 
 import javafx.geometry.Pos;
-import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
-import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import seng202.team1.gui.components.UIImage;
 import seng202.team1.gui.components.UINavButton;
-import seng202.team1.gui.screens.ScreenType;
-
-import java.util.Objects;
+import seng202.team1.gui.pages.PageType;
 
 import static seng202.team1.gui.GraphicsCommon.precentX;
 
+/**
+ * Composite UI component that contains elements consistent across the whole app
+ *
+ * Note: there should be only one per window
+ */
 public class CoreUI extends LayoutElement {
 
+    /// The element that contains the content of the current page
     private ScrollPane content = new ScrollPane();
+
+    /// The element that contains the {@link #content} container
     private BorderPane page = null;
 
-    public CoreUI(ScreenManager screenManager) {
-        super(screenManager, null);
+    /**
+     * Construct a new CoreUI for a given window
+     *
+     * @param windowManager The reference to the
+     */
+    public CoreUI(WindowManager windowManager) {
+        super(windowManager, null);
 
     }
 
@@ -42,14 +49,14 @@ public class CoreUI extends LayoutElement {
 
         // Navigation Menu
         VBox navbar = new VBox(8);
-        for (ScreenType option : ScreenType.values())
-            if(option != ScreenType.SETTINGS)
-                navbar.getChildren().add(new UINavButton(screenManager, option));
+        for (PageType option : PageType.values())
+            if(option != PageType.SETTINGS)
+                navbar.getChildren().add(new UINavButton(windowManager, option));
 
         // Settings at the bottom
         Region spacer = new Region();
         VBox.setVgrow(spacer, Priority.ALWAYS);
-        HBox navSettings = new UINavButton(screenManager, ScreenType.SETTINGS);
+        HBox navSettings = new UINavButton(windowManager, PageType.SETTINGS);
 
         // Combine
         VBox sidebar = new VBox();
@@ -115,6 +122,9 @@ public class CoreUI extends LayoutElement {
 
         // Change the content to the new page
         content.setContent(rendered);
-        page.setCenter(content);
+    }
+
+    public BorderPane getPage(){
+        return page;
     }
 }

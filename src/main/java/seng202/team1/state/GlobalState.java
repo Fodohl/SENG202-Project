@@ -2,13 +2,13 @@ package seng202.team1.state;
 
 import javafx.stage.Stage;
 import seng202.team1.data.DataLoader;
-import seng202.team1.gui.core.ScreenManager;
+import seng202.team1.gui.core.WindowManager;
 
 public class GlobalState {
 
     public static boolean IS_HEADLESS_MODE = false;
 
-    private ScreenManager screenManager;
+    private WindowManager windowManager;
 
     public DataLoader getDataLoader() {
         return dataLoader;
@@ -22,10 +22,10 @@ public class GlobalState {
         this.dataLoader = new DataLoader();
         dataLoader.readGeoJSON();
 
-        this.screenManager = new ScreenManager(this, stage);
+        this.windowManager = new WindowManager(this, stage);
     }
 
-    public ScreenManager getScreenManager() {
-        return screenManager;
+    public WindowManager getWindowManager() {
+        return windowManager;
     }
 }

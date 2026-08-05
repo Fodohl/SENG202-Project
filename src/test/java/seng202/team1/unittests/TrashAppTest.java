@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import seng202.team1.data.Bin;
 import seng202.team1.data.DataLoader;
 import seng202.team1.data.StringTable;
-import seng202.team1.gui.core.ScreenManager;
+import seng202.team1.gui.core.WindowManager;
 import seng202.team1.state.GlobalState;
 
 import java.util.Map;
@@ -18,7 +18,7 @@ public class TrashAppTest {
 
     protected GlobalState state;
 
-    protected ScreenManager screenManager;
+    protected WindowManager windowManager;
     protected DataLoader dataLoader;
 
     @BeforeAll
@@ -44,7 +44,7 @@ public class TrashAppTest {
         state = new GlobalState(null);
 
         // Extract state for easier access
-        screenManager = state.getScreenManager();
+        windowManager = state.getWindowManager();
         dataLoader = state.getDataLoader();
     }
 

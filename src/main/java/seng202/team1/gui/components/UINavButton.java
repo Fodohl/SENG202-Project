@@ -1,51 +1,50 @@
 package seng202.team1.gui.components;
 
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import seng202.team1.common.StringHelpers;
-import seng202.team1.gui.core.ScreenManager;
-import seng202.team1.gui.screens.ScreenType;
+import seng202.team1.gui.core.WindowManager;
+import seng202.team1.gui.pages.PageType;
 
 /**
  * A UI Component to handle rendering navigation buttons
  *
- * Renders a button for a given screen type, expects a svg of the same name (lowercase) to exist for it's icon. This nav
+ * Renders a button for a given page type, expects a svg of the same name (lowercase) to exist for it's icon. This nav
  * button will react to navigation changes and indicate if it represents the active page.
  *
  * Note: No onClick needed, will automatically handle navigation calls
  *
- * @todo maybe abstract away screen manager into UIComponent?
+ * @todo maybe abstract away window manager refrence into UIComponent?
  */
 public class UINavButton extends HBox {
 
-    /// The screen manager responsible for the active screen and switching to others
-    private ScreenManager screenManager;
+    /// The window manager responsible for the active page and switching to others
+    private WindowManager windowManager;
 
-    /// The screen type this nav button represents as a clickable destination
-    private ScreenType dest;
+    /// The page type this nav button represents as a clickable destination
+    private PageType dest;
 
     /**
      * Constructs a new UINavButton
      *
-     * @param screenManager The current screen manger for the screen this button is on
+     * @param windowManager The current window manger for the page this button is on
      * @param dest The navigation destination
      */
-    public UINavButton(ScreenManager screenManager, ScreenType dest) {
+    public UINavButton(WindowManager windowManager, PageType dest) {
 
         // Setup state
         super();
-        this.screenManager = screenManager;
+        this.windowManager = windowManager;
         this.dest = dest;
 
-        // Extract info from screen type
+        // Extract info from page type
         String iconPath = String.format("/images/%s.svg", dest.name().toLowerCase());
         String title = StringHelpers.toTitleCase(dest.name());
 
         // Apply styles
         getStyleClass().add("navitem");
-        updateIsActive(screenManager.getCurrentScreen());
+        updateIsActive(windowManager.getCurrentPage());
 
         // Add icon
         StackPane icon = new UIImage(iconPath, 25, 25);
@@ -59,18 +58,18 @@ public class UINavButton extends HBox {
         getChildren().addAll(icon, label);
 
         // Handle events
-        setOnMouseClicked(e -> screenManager.showScreen(dest));
-        screenManager.registerSceneChangeCallback(this::updateIsActive);
+        setOnMouseClicked(e -> windowManager.switchPage(dest));
+        windowManager.registerPageChangeCallback(this::updateIsActive);
     }
 
     /**
      * Updates the style of this nav button to indicate whether this button's page is currently being shown or not
      *
-     * @param currentActive The currently active screen
+     * @param currentActive The currently active page
      */
-    private void updateIsActive(ScreenType currentActive){
+    private void updateIsActive(PageType currentActive){
 
-        // No active screen
+        // No active page
         if(currentActive == null || dest == null)
             return;
 

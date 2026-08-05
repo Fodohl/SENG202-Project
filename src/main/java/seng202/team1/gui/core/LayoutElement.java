@@ -1,18 +1,18 @@
 package seng202.team1.gui.core;
 
 import javafx.scene.Parent;
-import seng202.team1.gui.screens.ScreenType;
+import seng202.team1.gui.pages.PageType;
 
 public abstract class LayoutElement {
 
     private Parent rendered = null;
-    protected ScreenManager screenManager = null;
-    protected ScreenType screenType = null;
+    protected WindowManager windowManager = null;
+    protected PageType pageType = null;
 
-    public LayoutElement(ScreenManager screenManager, ScreenType screenType){
+    public LayoutElement(WindowManager windowManager, PageType pageType){
 
         // Setup state
-        this.screenManager = screenManager;
+        this.windowManager = windowManager;
 
         // Register handler
 
@@ -40,10 +40,10 @@ public abstract class LayoutElement {
         // overridden if needed
     }
 
-    public void onSceneChange(ScreenType destScene){
+    public void onSceneChange(PageType destScene){
 
         // Dont rerender if not being shown
-        if(screenType == destScene)
+        if(pageType == destScene)
             return;
 
         // Update self

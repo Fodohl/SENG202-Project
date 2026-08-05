@@ -1,21 +1,20 @@
-package seng202.team1.gui.screens;
+package seng202.team1.gui.pages;
 
 import javafx.scene.Parent;
-import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import seng202.team1.data.Bin;
 import seng202.team1.gui.components.UIMap;
 import seng202.team1.gui.core.LayoutElement;
-import seng202.team1.gui.core.ScreenManager;
+import seng202.team1.gui.core.WindowManager;
 
-public class MapScreen extends LayoutElement {
+public class MapPage extends LayoutElement {
 
     private UIMap map = null;
 
-    public MapScreen(ScreenManager screenManager) {
+    public MapPage(WindowManager windowManager) {
 
-        super(screenManager, ScreenType.DASHBOARD);
+        super(windowManager, PageType.DASHBOARD);
 
     }
 
@@ -26,7 +25,7 @@ public class MapScreen extends LayoutElement {
 
         // Populate the map
         map = new UIMap();
-        for(Bin bin : screenManager.getGlobalState().getDataLoader().getBinObjects())
+        for(Bin bin : windowManager.getGlobalState().getDataLoader().getBinObjects())
             map.addPoint(bin.getBinLatitude(), bin.getBinLongitude());
 
         return new StackPane(sidebar, map);

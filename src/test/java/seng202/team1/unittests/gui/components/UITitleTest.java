@@ -5,10 +5,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import seng202.team1.gui.components.UITable;
 import seng202.team1.gui.components.UITitle;
+import seng202.team1.unittests.TrashAppTest;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class UITitleTest {
+class UITitleTest extends TrashAppTest {
 
     private UITitle title;
 
