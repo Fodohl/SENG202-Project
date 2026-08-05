@@ -81,4 +81,13 @@ public class DataLoaderTest {
         BinObject bin = dataLoader.getBinById(63534);
         assertEquals(BinObject.BinType.GENERAL_WASTE, bin.getBinType());
     }
+
+    /**
+     * Test that a litter and recycling waste bin maps to general waste
+     */
+    @Test
+    public void testLitterAndRecyclingBinMappedToGeneralWaste() {
+        BinObject bin = dataLoader.getBinById(311361);
+        assertEquals(BinObject.BinType.GENERAL_WASTE, bin.getBinType());
+    }
 }
