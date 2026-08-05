@@ -4,13 +4,16 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import seng202.team1.data.Bin;
 import seng202.team1.gui.components.UIMap;
 import seng202.team1.gui.core.LayoutElement;
 import seng202.team1.gui.core.ScreenManager;
 
 public class MapScreen extends LayoutElement {
 
-   public MapScreen(ScreenManager screenManager){
+    private UIMap map = null;
+
+    public MapScreen(ScreenManager screenManager) {
 
         super(screenManager, ScreenType.DASHBOARD);
 
@@ -21,7 +24,11 @@ public class MapScreen extends LayoutElement {
 
         VBox sidebar = new VBox();
 
-        UIMap map = new UIMap();
+        // Populate the map
+        map = new UIMap();
+        for(Bin bin : screenManager.getGlobalState().getDataLoader().getBinObjects())
+            map.addPoint(bin.getBinLatitude(), bin.getBinLongitude(), bin.getBinID().toString());
+
 
         return new StackPane(sidebar, map);
     }

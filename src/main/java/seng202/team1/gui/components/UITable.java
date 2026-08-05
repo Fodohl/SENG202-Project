@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import seng202.team1.data.StringTable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -55,6 +56,8 @@ public class UITable extends GridPane {
         headerColumns.clear();
         rowWidth = headers.size();
 
+        System.out.println(headers);
+
         for (int i = 0; i < headers.size(); i++){
 
             // Get the header
@@ -68,6 +71,8 @@ public class UITable extends GridPane {
 
     private void addTableRow(HashMap<String, String> dataRow){
 
+        // Order the data
+        String[] data = new String[dataRow.size()];
         for (String header : dataRow.keySet()){
 
             // Check if this header is displayed
@@ -75,10 +80,14 @@ public class UITable extends GridPane {
             if(col == null)
                 return;
 
-            // Add
+            // Add to its correct place
             String value = dataRow.get(header);
-            addCell(value);
+            data[col] = value;
         }
+
+        // Add
+        for (String value : data)
+          addCell(value);
     }
 
 

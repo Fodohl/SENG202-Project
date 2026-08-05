@@ -13,7 +13,7 @@ public class Bin {
         ORGANIC
     }
 
-    protected int binID;
+    protected Integer binID;
     protected double latitude;
     protected double longitude;
     protected BinType type;
@@ -25,7 +25,7 @@ public class Bin {
      * @param longitude - longitude of the bin
      * @param type - type of bin (general waste, recycling, organic)
      */
-    public Bin(int binID, double latitude, double longitude, BinType type) {
+    public Bin(Integer binID, double latitude, double longitude, BinType type) {
         this.binID = binID;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -36,7 +36,7 @@ public class Bin {
      * Get the bin's ID
      * @return Bin ID
      */
-    public int getBinID() {
+    public Integer getBinID() {
         return binID;
     }
 

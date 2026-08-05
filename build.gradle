@@ -88,6 +88,8 @@ dependencies {
     implementation 'com.github.hervegirod:fxsvgimage:1.7.3'
     implementation 'com.github.hervegirod:fxsvgimage:1.7.3:cssparser'
 
+    // https://github.com/makbn/java_leaflet
+    implementation 'io.github.makbn:jlmap-fx:2.0.0'
 }
 
 application {

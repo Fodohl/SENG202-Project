@@ -47,7 +47,7 @@ public abstract class LayoutElement {
             return;
 
         // Update self
-        rerender();
+        updateContents();
     }
 
 }
