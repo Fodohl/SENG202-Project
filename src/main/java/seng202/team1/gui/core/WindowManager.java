@@ -57,13 +57,17 @@ public class WindowManager extends StateReferrer {
         this.currentStage = currentStage;
         Scene scene = new Scene(layout.getRendered(), WINDOW_WIDTH, WINDOW_HEIGHT);
 
+        // Dont load stage if not running with a window
+        if(!GlobalState.IS_HEADLESS_MODE)
+            currentStage.setScene(scene);
+
         // Load CSS
         String cssPath = Objects.requireNonNull(getClass().getResource("/fxcss/styles.css")).toExternalForm();
         scene.getStylesheets().add(cssPath);
 
         // Show dashboard
         loadPages();
-        switchPage(PageType.DATA);
+        switchPage(PageType.DASHBOARD);
     }
 
     /**
@@ -157,6 +161,10 @@ public class WindowManager extends StateReferrer {
      */
     public void backPage(){
 
+        // Remove this page from history
+        history.pop();
+
+        // Show the previous page
         PageType dest = history.pop();
         switchPage(dest);
 

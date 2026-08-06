@@ -14,7 +14,7 @@ class WindowManagerTest extends TrashAppTest {
 
     @Test
     public void entryPageShouldBeDashboard() {
-        assertEquals(PageType.DATA, windowManager.getCurrentPage());
+        assertEquals(PageType.DASHBOARD, windowManager.getCurrentPage());
     }
 
     @Test

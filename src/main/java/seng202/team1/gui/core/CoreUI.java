@@ -10,7 +10,7 @@ import seng202.team1.gui.components.UIImage;
 import seng202.team1.gui.components.UINavButton;
 import seng202.team1.gui.pages.PageType;
 
-import static seng202.team1.gui.GraphicsCommon.precentX;
+import static seng202.team1.gui.GraphicsCommon.precentWindowX;
 
 /**
  * Composite UI component that contains elements consistent across the whole app
@@ -66,7 +66,7 @@ public class CoreUI extends LayoutElement {
         // Combine
         VBox sidebar = new VBox();
         sidebar.getStyleClass().add("sidebar");
-        sidebar.setPrefWidth(precentX(0.15));
+        sidebar.setPrefWidth(precentWindowX(0.15));
         sidebar.getChildren().addAll(logo, navbar, spacer, navSettings);
         return sidebar;
 

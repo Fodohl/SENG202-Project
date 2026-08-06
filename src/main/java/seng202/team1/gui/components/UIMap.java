@@ -108,7 +108,7 @@ public class UIMap extends StackPane {
     private void call(String js){
 
         // Map not ready
-        if(engine.getLoadWorker().getState() != Worker.State.SUCCEEDED){
+        if(GlobalState.IS_HEADLESS_MODE || engine.getLoadWorker().getState() != Worker.State.SUCCEEDED){
             engineCalls.add(js);
             return;
         }
