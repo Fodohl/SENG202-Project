@@ -18,8 +18,6 @@ import static seng202.team1.gui.GraphicsCommon.WINDOW_WIDTH;
 
 /**
  * Manages loading all pages and switching between them
- *
- * @todo decide if switching pages == same will result in a event fire
  */
 public class WindowManager extends StateReferrer {
 

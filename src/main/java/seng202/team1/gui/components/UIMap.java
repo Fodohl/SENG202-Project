@@ -20,9 +20,6 @@ import java.util.Queue;
  * Map JS errors will be logged to stdio
  *
  * Warning: API calls are NOT synchronous, calls may be queued to run later when web engine is ready to run them
- *
- * @todo thread js call queue
- * @todo GPU acx
  */
 public class UIMap extends StackPane {
 
@@ -121,8 +118,6 @@ public class UIMap extends StackPane {
      *
      * @param lat The latitudinal position of the marker
      * @param lng The longitudinal position of the marker
-     *
-     * @todo allow for onClick callbacks
      */
     public void addPoint(double lat, double lng) {
         String js = String.format("L.marker([%f, %f]).addTo(map);", lat, lng);

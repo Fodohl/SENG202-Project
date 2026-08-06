@@ -1,12 +1,4 @@
-/**
- * @todo figure out a rem system
- * @todo remove old styles
- * @todo fix 60px hack for table
- *
- */
-
-
-@font-face {
+s@font-face {
     font-family: 'noto-sans';
     src: url('../fonts/NotoSans-Medium.ttf') format('ttf');
     font-weight: normal;

@@ -7,16 +7,18 @@ package seng202.team1.data;
  */
 
 public class Bin {
-    public enum BinType {
-        GENERAL_WASTE,
-        RECYCLING,
-        ORGANIC
-    }
 
+    /// The bin's unique identifier number
     protected Integer binID;
+
+    /// The bin's latitudinal location
     protected double latitude;
+
+    /// The bin's longitudinal location
     protected double longitude;
-    protected BinType type;
+
+    /// The type of rubish the bin takes
+    protected WasteType type;
 
     /**
      * Constructor for BinObject class
@@ -25,7 +27,7 @@ public class Bin {
      * @param longitude - longitude of the bin
      * @param type - type of bin (general waste, recycling, organic)
      */
-    public Bin(Integer binID, double latitude, double longitude, BinType type) {
+    public Bin(Integer binID, double latitude, double longitude, WasteType type) {
         this.binID = binID;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -58,7 +60,7 @@ public class Bin {
      * Get the bin's type
      * @return Bin Type
      */
-    public BinType getBinType() {
+    public WasteType getBinType() {
         return type;
     }
 

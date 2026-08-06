@@ -11,15 +11,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import static seng202.team1.gui.GraphicsCommon.precentX;
 
 /**
  * A UI Component to handle rendering tables
  *
  * Takes a given {@link StringTable} and converts it into a viewable table
- *
- * @todo Allow for certain rows to be styled as active
- * @todo row hover anim
  */
 public class UITable extends GridPane {
 
@@ -59,7 +55,9 @@ public class UITable extends GridPane {
     /**
      * Constructs a new UI table with a desired header ordering and highlight rules
      *
-     * @see #UITable(StringTable, List, boolean)
+     * @param data The data to show in the table
+     * @param headerOrder The order of the header columns (from left to right)
+     * @param highlightFirst Whether to highlight the first row or not
      */
     public UITable(StringTable data, List<String> headerOrder, boolean highlightFirst){
 

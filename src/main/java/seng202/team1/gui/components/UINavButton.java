@@ -14,8 +14,6 @@ import seng202.team1.gui.pages.PageType;
  * button will react to navigation changes and indicate if it represents the active page.
  *
  * Note: No onClick needed, will automatically handle navigation calls
- *
- * @todo maybe abstract away window manager refrence into UIComponent?
  */
 public class UINavButton extends HBox {
 

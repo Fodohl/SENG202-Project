@@ -6,6 +6,9 @@ import seng202.team1.state.GlobalState;
 
 import static javafx.application.Application.launch;
 
+/**
+ * Setups the JavaFX application and launches the app
+ */
 public class Main extends Application {
 
      /**

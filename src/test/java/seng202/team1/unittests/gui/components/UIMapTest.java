@@ -13,6 +13,4 @@ class UIMapTest extends TrashAppTest {
         this.map = new UIMap();
     }
 
-    // @todo for now nothing public to test. future test api calls
-
 }

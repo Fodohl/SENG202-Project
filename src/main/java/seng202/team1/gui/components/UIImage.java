@@ -74,7 +74,7 @@ public class UIImage extends StackPane {
         img.setScaleX(scale);
         img.setScaleY(scale);
 
-        // @todo change to svg-icon & svg-icon-fill
+        // Allow for the svg to CSS targetable
         img.getStyleClass().add("svg-icon");
         return img;
 

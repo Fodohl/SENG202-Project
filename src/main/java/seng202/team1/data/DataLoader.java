@@ -14,15 +14,23 @@ import org.json.simple.parser.JSONParser;
 /**
  * DataLoader
  * Loads bin data from a GeoJSON file into BinObject instances
+ *
  * @author Stanley Easthope
  */
 public class DataLoader {
+
+    /// DataLoader specific logger
     private static final Logger log = LogManager.getLogger(DataLoader.class);
-    private final String filePath = "geojson/bin.geojson";
+
+    /// Where to load the bins from
+    private static final String BIN_DATA = "geojson/bin.geojson";
+
+    /// The list of bins loaded
     private final List<Bin> binObjects = new ArrayList<>();
 
     /**
      * Get loaded bins list
+     *
      * @return List of BinObject instances
      */
     public List<Bin> getBinObjects() {
@@ -30,7 +38,7 @@ public class DataLoader {
     }
 
     /**
-     *
+     * Converts the bin data to a string table for displaying
      */
     public StringTable toStringTable(){
 
@@ -53,6 +61,7 @@ public class DataLoader {
 
     /**
      * Find bin by  ID
+     *
      * @param binID ID of the bin
      * @return The BinObject or Null if not found
      */
@@ -87,20 +96,22 @@ public class DataLoader {
 
     /**
      * Parses the GeoJSON file into a JSONObject
+     *
      * @param parser - JSONParser instance
      * @return JSONObject with the GeoJSON data
      * @throws Exception
      */
     private JSONObject parseGeoJson(JSONParser parser) throws Exception {
-        InputStream is = DataLoader.class.getClassLoader().getResourceAsStream(filePath);
+        InputStream is = DataLoader.class.getClassLoader().getResourceAsStream(BIN_DATA);
         if (is != null) {
             return (JSONObject) parser.parse(new InputStreamReader(is));
         }
-        return (JSONObject) parser.parse(new FileReader(filePath));
+        return (JSONObject) parser.parse(new FileReader(BIN_DATA));
     }
 
     /**
      * Parses a feature from the GeoJSON data into a BinObject
+     *
      * @param feature - JSONObject representing a feature
      * @return BinObject instance
      */
@@ -118,10 +129,10 @@ public class DataLoader {
         Object wasteTypeObj = properties.get("WasteType");
 
         String wasteType = wasteTypeObj == null ? "" : wasteTypeObj.toString();
-        Bin.BinType binType = switch (wasteType.toUpperCase(Locale.ROOT)) {
-            case "RECYCLE", "RECYCLING" -> Bin.BinType.RECYCLING;
-            case "COMPOST" -> Bin.BinType.ORGANIC;
-            default -> Bin.BinType.GENERAL_WASTE;
+        WasteType binType = switch (wasteType.toUpperCase(Locale.ROOT)) {
+            case "RECYCLE", "RECYCLING" -> WasteType.RECYCLING;
+            case "COMPOST" -> WasteType.ORGANIC;
+            default -> WasteType.GENERAL_WASTE;
         };
 
         return new Bin(binID, latitude, longitude, binType);
