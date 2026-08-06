@@ -3,17 +3,31 @@ package seng202.team1.gui.pages;
 import seng202.team1.gui.core.LayoutElement;
 import seng202.team1.gui.core.WindowManager;
 
+/**
+ * A {@link LayoutElement} that represents a page
+ */
 public abstract class Page extends LayoutElement {
 
 
     /// The type of page this UI component represents
     protected PageType pageType = null;
 
-
+    /**
+     * Constructs a new Page
+     *
+     * @see #Page(WindowManager, PageType, boolean)
+     */
     public Page(WindowManager windowManager, PageType pageType) {
         this(windowManager, pageType, false);
     }
 
+    /**
+     * Constructs a new Page
+     *
+     * @param windowManager The window this page is on
+     * @param pageType The type of page this is
+     * @param preRender Whether to render during construction or not
+     */
     public Page(WindowManager windowManager, PageType pageType, boolean preRender){
 
         super(windowManager, preRender);
@@ -24,12 +38,19 @@ public abstract class Page extends LayoutElement {
 
     }
 
-
-    public void updateContents(){
+    /**
+     * Update the contents of the page without performing a full re-render
+     */
+    protected void updateContents(){
         // overridden only if needed
     }
 
-    public void onPageChange(PageType destScene){
+    /**
+     * Updates the page contents when this page is about to be shown
+     *
+     * @param destScene The page that has been switched to
+     */
+    private void onPageChange(PageType destScene){
 
         // Dont rerender if not being shown
         if(pageType == destScene)

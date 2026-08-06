@@ -10,15 +10,27 @@ import seng202.team1.gui.core.WindowManager;
 
 import java.util.List;
 
-
+/**
+ * Page that displays the data used in the app
+ */
 public class DataPage extends Page {
 
+    /**
+     * Constructs a new DataPage
+     *
+     * @param windowManager the window this page is on
+     */
     public DataPage(WindowManager windowManager){
 
         super(windowManager, PageType.DASHBOARD);
 
     }
 
+    /**
+     * Constructs the UI for the data page
+     *
+     * @return the UI layout for the page
+     */
     @Override
     protected Parent renderSelf() {
 
