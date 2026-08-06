@@ -54,7 +54,7 @@ public class StringTableTest extends TrashAppTest {
         assertEquals(sizeBefore, sizeAfter);
     }
 
-     @Test
+    @Test
     public void shouldSafelyFailIfFieldDoesntExist() throws NoSuchFieldException {
          assertEquals(false, addPartial());
     }
@@ -67,6 +67,17 @@ public class StringTableTest extends TrashAppTest {
 
         assertEquals(sizeBefore, sizeAfter);
     }
+
+    @Test
+    public void shouldSaftleyReturnEmptyIfOutOfBoundsLower(){
+        assertTrue(table.getDataRow(-1).isEmpty());
+    }
+
+     @Test
+    public void shouldSaftleyReturnEmptyIfOutOfBoundsUpper(){
+        assertTrue(table.getDataRow(0xFFFFF).isEmpty());
+    }
+
 
     public boolean addPrivate() throws NoSuchFieldException {
 

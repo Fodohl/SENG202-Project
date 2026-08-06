@@ -8,13 +8,13 @@ import seng202.team1.gui.components.UIMap;
 import seng202.team1.gui.core.LayoutElement;
 import seng202.team1.gui.core.WindowManager;
 
-public class MapPage extends LayoutElement {
+public class MapPage extends Page {
 
     private UIMap map = null;
 
     public MapPage(WindowManager windowManager) {
 
-        super(windowManager, PageType.DASHBOARD);
+        super(windowManager, PageType.DASHBOARD, true);
 
     }
 

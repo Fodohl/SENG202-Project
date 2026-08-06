@@ -28,13 +28,18 @@ public class CoreUI extends LayoutElement {
     /**
      * Construct a new CoreUI for a given window
      *
-     * @param windowManager The reference to the
+     * @param windowManager The reference to the window this UI & its pages will be shown on
      */
     public CoreUI(WindowManager windowManager) {
-        super(windowManager, null);
+        super(windowManager);
 
     }
 
+    /**
+     * Build a sidebar containing the app logo and navigation buttons
+     *
+     * @return The sidebar for the app
+     */
     private Parent sidebar() {
 
         // Logo
@@ -67,6 +72,11 @@ public class CoreUI extends LayoutElement {
 
     }
 
+    /**
+     * Build a header containing the app search bar and account info
+     *
+     * @return The header for the app
+     */
     private Parent header() {
 
         // Search images
@@ -96,6 +106,11 @@ public class CoreUI extends LayoutElement {
         return header;
     }
 
+    /**
+     * Combine UI elements to build the CoreUI
+     *
+     * @return A new root node containing the rendered CoreUI
+     */
     @Override
     protected Parent render_self() {
 
@@ -118,12 +133,22 @@ public class CoreUI extends LayoutElement {
         return root;
     }
 
+    /**
+     * Update the contents section to show a new pages
+     *
+     * @param rendered The rendered page to show
+     */
     public void swap(Parent rendered) {
 
         // Change the content to the new page
         content.setContent(rendered);
     }
 
+    /**
+     * Get the dynamic page content of the app
+     *
+     * @return The page component inside the ui
+     */
     public BorderPane getPage(){
         return page;
     }

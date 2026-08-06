@@ -49,8 +49,6 @@ public class StringTable extends HashMap<String, List<String>> {
      *
      * @param index The index of the row
      * @return The data contained in that row, empty if the row doesn't exist within the bounds of the table
-     *
-     * @todo Test cases for bounds
      */
     public HashMap<String, String> getDataRow(int index){
 

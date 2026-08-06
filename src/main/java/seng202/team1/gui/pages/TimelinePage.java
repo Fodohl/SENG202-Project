@@ -5,7 +5,7 @@ import javafx.scene.control.Label;
 import seng202.team1.gui.core.LayoutElement;
 import seng202.team1.gui.core.WindowManager;
 
-public class TimelinePage extends LayoutElement {
+public class TimelinePage extends Page {
 
    public TimelinePage(WindowManager windowManager){
 

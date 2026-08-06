@@ -11,7 +11,7 @@ import seng202.team1.gui.core.WindowManager;
 import java.util.List;
 
 
-public class DataPage extends LayoutElement {
+public class DataPage extends Page {
 
     public DataPage(WindowManager windowManager){
 
