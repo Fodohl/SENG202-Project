@@ -78,6 +78,14 @@ public class BinObject {
      */
     public BinStatus getBinStatus() { return status; }
 
+    /**
+     * Set the bin's status
+     */
+
+    public void setBinStatus(BinStatus status){
+        this.status = status;
+    }
+
     @Override
     public String toString() {
         return "BinObject{" +
