@@ -1,0 +1,145 @@
+<!-- Impl note: svg colours hardcoded here, will change incode if javafx supports as html doesnt -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- leaflet -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet/leaflet-maplibre-gl.js"></script>
+</head>
+<body>
+
+<div class="app">
+
+    <div class="sidebar">
+        <div class="logo">
+
+            <img src="../../../src/main/resources/images/logo.svg">
+            <h1>TrashApp</h1>
+
+        </div>
+
+        <div class="navbar">
+
+            <div class="navitem active">
+                <img src="../../../src/main/resources/images/dashboard.svg">
+                <a>Dashboard</a>
+            </div>
+
+            <div class="navitem hover">
+                <img src="../../../src/main/resources/images/map.svg">
+                <a>Map</a>
+            </div>
+
+            <div class="navitem">
+                <img src="../../../src/main/resources/images/leaderboard.svg">
+                <a>Leaderboard</a>
+            </div>
+
+            <div class="navitem">
+                <img src="../../../src/main/resources/images/timeline.svg">
+                <a>Trash Timeline</a>
+            </div>
+
+            <div class="navitem bottom">
+                <img src="../../../src/main/resources/images/settings.svg">
+                <a>Settings</a>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="page">
+
+        <div class="header">
+
+            <div class="search-bar">
+                <img src="../../../src/main/resources/images/search.svg">
+                <p>Enter address...</p>
+            </div>
+
+            <div class="account end">
+                Account (DB)
+            </div>
+
+        </div>
+
+        <div class="content">
+
+              <div class="leaderboard">
+
+                <div class="milestone active-grad">
+
+                    <img src="../../../src/main/resources/images/medal-gold.svg">
+
+                    <div class="milestone-text">
+                        <p>Next Milestone: 1.5 Trees Saved!</p>
+                        <div class="progress">
+                            <div class="bar"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <table class="leaderboard-table">
+                    <tr class="active-grad">
+                        <th>Rank</th>
+                        <th>User</th>
+                        <th>Items Logged</th>
+                        <th>Trees Saved</th>
+                    </tr>
+                      <tr class="first">
+                        <td>1</td>
+                        <td>John S</td>
+                        <td>450</td>
+                        <td>1.5</td>
+                    </tr>
+                     <tr>
+                        <td>2</td>
+                        <td>Bob R</td>
+                        <td>422</td>
+                        <td>1.4</td>
+                    </tr>
+                     <tr>
+                        <td>3</td>
+                        <td>Tony D</td>
+                        <td>420</td>
+                        <td>1.4</td>
+                    </tr>
+                     <tr class="active">
+                        <td>4</td>
+                        <td>Mike M (YOU)</td>
+                        <td>400</td>
+                        <td>1.3</td>
+                    </tr>
+                     <tr>
+                        <td>5</td>
+                        <td>Ryan W</td>
+                        <td>399</td>
+                        <td>1.3</td>
+                    </tr>
+                     <tr>
+                        <td>6</td>
+                        <td>Carter C</td>
+                        <td>350</td>
+                        <td>1.2</td>
+                    </tr>
+                     <tr>
+                        <td>7</td>
+                        <td>Steve L</td>
+                        <td>100</td>
+                        <td>1</td>
+                    </tr>
+                </table>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+</body>
+</html>

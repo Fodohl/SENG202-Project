@@ -1,0 +1,42 @@
+package seng202.team1;
+
+import javafx.application.Application;
+import javafx.stage.Stage;
+import seng202.team1.state.GlobalState;
+
+import static javafx.application.Application.launch;
+
+/**
+ * Setups the JavaFX application and launches the app
+ */
+public class Main extends Application {
+
+     /**
+     * The JavaFX entry point to the game. Will setup the window and show the main menu
+     *
+     * @param stage the primary stage for this application, onto which
+     * the application scene can be set.
+     */
+    @Override
+    public void start(Stage stage) {
+
+        // Set up the window
+        stage.setTitle("TrashApp v1");
+
+        // Setup app state
+        GlobalState globalState = new GlobalState(stage);
+        stage.show();
+    }
+
+
+    /**
+     * Entry point to the application. Launches the JavaFX runtime
+     *
+     * @param args Command line arguments, unused
+     */
+    public static void main(String[] args) {
+        System.setProperty("javafx.verbose", "true");
+        launch();
+    }
+
+}
