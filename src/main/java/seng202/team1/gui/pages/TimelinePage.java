@@ -14,7 +14,7 @@ public class TimelinePage extends Page {
     }
 
     @Override
-    protected Parent render_self() {
+    protected Parent renderSelf() {
         return new Label("Timeline");
     }
 

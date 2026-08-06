@@ -19,7 +19,7 @@ public class MapPage extends Page {
     }
 
     @Override
-    protected Parent render_self() {
+    protected Parent renderSelf() {
 
         VBox sidebar = new VBox();
 

@@ -1,15 +1,12 @@
 package seng202.team1.gui.core;
 
 import javafx.scene.Parent;
-import seng202.team1.gui.pages.PageType;
 import seng202.team1.state.GlobalState;
 
 /**
  * A composite UI component
  *
  * Handles management of when to render and update
- *
- * @todo generic-ify the pages and move pageType there
  */
 public abstract class LayoutElement {
 
@@ -49,7 +46,7 @@ public abstract class LayoutElement {
      *
      * @return A new node containing the component's UI elements
      */
-    protected abstract Parent render_self();
+    protected abstract Parent renderSelf();
 
     /**
      * Get the rendered content of this component.
@@ -71,7 +68,7 @@ public abstract class LayoutElement {
      * Renders the component and stores result for next render call
      */
     public final void rerender(){
-        rendered = render_self();
+        rendered = renderSelf();
     }
 
 }

@@ -20,7 +20,7 @@ public class DataPage extends Page {
     }
 
     @Override
-    protected Parent render_self() {
+    protected Parent renderSelf() {
 
         // Title
         UITitle pageTitle = new UITitle("Raw Data");

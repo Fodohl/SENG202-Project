@@ -112,7 +112,7 @@ public class CoreUI extends LayoutElement {
      * @return A new root node containing the rendered CoreUI
      */
     @Override
-    protected Parent render_self() {
+    protected Parent renderSelf() {
 
         // Page
         page = new BorderPane();

@@ -9,6 +9,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class TrashApp {
 
+     /// TrashApp specific logger
      private static final Logger log = LogManager.getLogger(TrashApp.class);
 
     /**
