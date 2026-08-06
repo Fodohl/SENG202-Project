@@ -1,6 +1,5 @@
 package seng202.team1.services;
 
-import seng202.team1.data_managers.DataLoader;
 import seng202.team1.data_managers.BinObject;
 import seng202.team1.models.BinReport;
 
@@ -22,7 +21,7 @@ public class ReportService {
         if (!nonNullReport(bin, status)) {
             return false;
         }
-        changeBinStatus(bin, status);
+        parseBinStatus(bin, status);
         return true;
     }
 
@@ -35,6 +34,25 @@ public class ReportService {
     private boolean nonNullReport(BinObject bin, BinObject.BinStatus status) {
         return bin != null && status != null;
     }
+
+    /**
+     * Decides whether report is about bin fullness or a report that location is incorrect
+     * @param bin BinObject associated with report
+     * @param status BinStatus associated with report
+     */
+    private void parseBinStatus(BinObject bin, BinObject.BinStatus status) {
+        if (status == BinObject.BinStatus.INCORRECT_LOCATION) {
+            reportIncorrectLocation(bin);
+        } else {
+            changeBinStatus(bin, status);
+        }
+    }
+
+    /**
+     * Increments the number of incorrect location reports on a BinObject
+     * @param bin BinObject associated with report
+     */
+    private void reportIncorrectLocation(BinObject bin) { bin.incrementNumIncorrectLocations(); }
 
     /**
      * Alters BinStatus variable of bin to status

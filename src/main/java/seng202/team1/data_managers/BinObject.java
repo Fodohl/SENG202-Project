@@ -14,6 +14,7 @@ public class BinObject {
     }
 
     public enum BinStatus {
+        INCORRECT_LOCATION,
         FULL,
         PARTIAL,
         EMPTY
@@ -24,6 +25,7 @@ public class BinObject {
     private double longitude;
     private BinType type;
     private BinStatus status;
+    private int numIncorrectLocations;
 
     /**
      * Constructor for BinObject class
@@ -38,6 +40,7 @@ public class BinObject {
         this.longitude = longitude;
         this.type = type;
         this.status = BinStatus.EMPTY;
+        this.numIncorrectLocations = 0;
     }
 
 
@@ -80,6 +83,12 @@ public class BinObject {
 
     public void setBinStatus(BinStatus status) { this.status = status; }
 
+    public int getNumIncorrectLocations() { return numIncorrectLocations; }
+
+    public void incrementNumIncorrectLocations() { this.numIncorrectLocations++; }
+
+    public void resetNumIncorrectLocations() { this.numIncorrectLocations = 0; }
+
     @Override
     public String toString() {
         return "BinObject{" +
@@ -87,7 +96,7 @@ public class BinObject {
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
                 ", type=" + type +
-                ", status=}" + status;
+                ", status=" + status + "}";
     }
 
 }

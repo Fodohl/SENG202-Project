@@ -55,4 +55,14 @@ public class ReportServiceTest {
         assertTrue(testReportService.submitReport(binReport));
         assertEquals(BinObject.BinStatus.FULL, testBin.getBinStatus());
     }
+
+    /**
+     * Tests that reporting an incorrect location increments the incorrect location value on a BinObject
+     */
+    @Test
+    public void submitLocationIncorrectReport() {
+        BinReport binReport = new BinReport(testBin, new User(), BinObject.BinStatus.INCORRECT_LOCATION);
+        assertTrue(testReportService.submitReport(binReport));
+        assertEquals(1, testBin.getNumIncorrectLocations());
+    }
 }
