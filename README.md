@@ -55,4 +55,6 @@ IntelliJ has built-in support for Gradle. To import your project:
 # Credits
 - Icons: https://www.svgrepo.com (CC0)
 - Font: https://fontlibrary.org (OFL)
+- Map: https://leafletjs.com (BSD)
+- Map Tiles: https://snazzymaps.com (CC0)
 
