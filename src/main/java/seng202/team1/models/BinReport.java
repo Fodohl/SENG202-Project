@@ -10,7 +10,7 @@ import seng202.team1.data_managers.BinObject;
 public class BinReport {
     private final BinObject bin;
     private final User submittedBy;
-    private final String description;
+    private final BinObject.BinStatus description;
 
     /**
      * Constructor for BinReport class
@@ -19,7 +19,7 @@ public class BinReport {
      * @param description
      */
 
-    public BinReport(BinObject bin, User submittedBy, String description) {
+    public BinReport(BinObject bin, User submittedBy, BinObject.BinStatus description) {
         this.bin = bin;
         this.submittedBy = submittedBy;
         this.description = description;
@@ -51,7 +51,7 @@ public class BinReport {
      * @return description
      */
 
-    public String getDescription() {
+    public BinObject.BinStatus getDescription() {
         return description;
     }
 }

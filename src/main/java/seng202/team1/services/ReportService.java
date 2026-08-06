@@ -2,11 +2,14 @@ package seng202.team1.services;
 
 import seng202.team1.data_managers.DataLoader;
 import seng202.team1.data_managers.BinObject;
+import seng202.team1.models.BinReport;
 
+/**
+ * ReportService
+ * Service class used for handling users reports on bin status
+ * @author archi
+ */
 public class ReportService {
-
-    private DataLoader dataLoader;
-
 
     /**
      * Takes a BinReport and processes it
@@ -14,8 +17,8 @@ public class ReportService {
      * @return true if successfully processed, false otherwise
      */
     public boolean submitReport(BinReport report) {
-        BinObject bin = dataLoader.getBinById(report.getBinID);
-        BinObject.BinStatus status = report.getStatus;
+        BinObject bin = report.getBin();
+        BinObject.BinStatus status = report.getDescription();
         if (!nonNullReport(bin, status)) {
             return false;
         }
@@ -33,6 +36,11 @@ public class ReportService {
         return bin != null && status != null;
     }
 
+    /**
+     * Alters BinStatus variable of bin to status
+     * @param bin BinObject being changed
+     * @param status BinStatus changed to
+     */
     private void changeBinStatus(BinObject bin, BinObject.BinStatus status) {
         bin.setBinStatus(status);
     }
