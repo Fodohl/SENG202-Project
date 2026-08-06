@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <!-- leaflet -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        .leaflet-tile-container img {
+            outline: 1px solid transparent;
+            mix-blend-mode: multiply;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="map" style="width: 100vw; height: 100vh" class="map-container dark-tiles">
+    </div>
+
+    <script>
+        var coords = [-43.5233, 172.5822];
+        var zoomLevel = 16;
+        var map = L.map('map').setView(coords, zoomLevel);
+var snazzyStyle = 's.t%3A2%7Cs.e%3Al%7Cp.v%3Aoff%2Cs.e%3Al.i%7Cp.v%3Aoff%2Cs.e%3Al.t.f%7Cp.c%3A%23ffffffff%2Cs.e%3Al.t.s%7Cp.c%3A%23ff10141a%2Cs.t%3A0%7Cs.e%3Ag%7Cp.c%3A%23ff364253%2Cs.t%3A6%7Cs.e%3Ag%7Cp.c%3A%23ff2d6ca3%2Cs.t%3A3%7Cs.e%3Ag%7Cp.c%3A%23ff5c6978%2Cs.t%3A82%7Cs.e%3Ag%7Cp.c%3A%23ff1f6b45%2Cs.t%3A40%7Cs.e%3Ag%7Cp.c%3A%23ff1f6b45%2Cs.t%3A39%7Cs.e%3Ag%7Cp.c%3A%23ff1f6b45%2Cs.t%3A37%7Cs.e%3Ag%7Cp.c%3A%23ff1f6b45%2Cs.t%3A81%7Cs.e%3Ag%7Cp.c%3A%23ff364253';
+
+        L.Browser.any3d = false;
+        L.tileLayer(`https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&apistyle=${snazzyStyle}`, {
+        maxZoom: 20,
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+        attribution: '&copy; Google Maps'
+        }).addTo(map);
+    </script>
+</body>
+</html>
