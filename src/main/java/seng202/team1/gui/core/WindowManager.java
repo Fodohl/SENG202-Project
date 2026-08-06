@@ -27,6 +27,9 @@ public class WindowManager extends StateReferrer {
     /// The window reference this manager is responsible for
     private Stage currentStage;
 
+    /// What page to show on start up
+    public static PageType START_PAGE = PageType.MAP;
+
     /// The page that is currently shown
     private PageType currentPage;
 
@@ -65,7 +68,7 @@ public class WindowManager extends StateReferrer {
 
         // Show dashboard
         loadPages();
-        switchPage(PageType.DASHBOARD);
+        switchPage(START_PAGE);
     }
 
     /**

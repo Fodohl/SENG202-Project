@@ -8,13 +8,14 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static seng202.team1.gui.core.WindowManager.START_PAGE;
 
 class WindowManagerTest extends TrashAppTest {
 
 
     @Test
     public void entryPageShouldBeDashboard() {
-        assertEquals(PageType.DASHBOARD, windowManager.getCurrentPage());
+        assertEquals(START_PAGE, windowManager.getCurrentPage());
     }
 
     @Test
