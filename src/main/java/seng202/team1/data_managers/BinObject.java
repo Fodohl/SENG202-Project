@@ -40,6 +40,8 @@ public class BinObject {
         this.status = BinStatus.EMPTY;
     }
 
+
+
     /**
      * Get the bin's ID
      * @return Bin ID
@@ -69,6 +71,12 @@ public class BinObject {
     public BinType getBinType() {
         return type;
     }
+
+    /**
+     * Get the bin's status
+     * @return BinStatus
+     */
+    public BinStatus getBinStatus() { return status; }
 
     @Override
     public String toString() {
