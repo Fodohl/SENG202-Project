@@ -13,10 +13,17 @@ public class BinObject {
         ORGANIC
     }
 
+    public enum BinStatus {
+        FULL,
+        PARTIAL,
+        EMPTY
+    }
+
     private int binID;
     private double latitude;
     private double longitude;
     private BinType type;
+    private BinStatus status;
 
     /**
      * Constructor for BinObject class
@@ -30,6 +37,7 @@ public class BinObject {
         this.latitude = latitude;
         this.longitude = longitude;
         this.type = type;
+        this.status = BinStatus.EMPTY;
     }
 
     /**
@@ -69,7 +77,7 @@ public class BinObject {
                 ", latitude=" + latitude +
                 ", longitude=" + longitude +
                 ", type=" + type +
-                '}';
+                ", status=}" + status;
     }
 
 }
