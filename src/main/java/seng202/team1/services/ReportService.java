@@ -14,20 +14,26 @@ public class ReportService {
      * @return true if successfully processed, false otherwise
      */
     public boolean submitReport(BinReport report) {
-        if (!nonNullReport(report)) {
+        BinObject bin = dataLoader.getBinById(report.getBinID);
+        BinObject.BinStatus status = report.getStatus;
+        if (!nonNullReport(bin, status)) {
             return false;
         }
+        changeBinStatus(bin, status);
         return true;
     }
 
     /**
      * Verifies status is not null and that the binID supplied exists in the bin dataset
-     * @param report BinReport containing binID and BinStatus
+     * @param bin BinObject associated with report
+     * @param status BinStatus associated with report
      * @return true if bin exists in dataset and status is not null, false otherwise
      */
-    private boolean nonNullReport(BinReport report) {
-        BinObject bin = dataLoader.getBinById(report.getBinID);
-        BinObject.BinStatus status = report.getStatus;
+    private boolean nonNullReport(BinObject bin, BinObject.BinStatus status) {
         return bin != null && status != null;
+    }
+
+    private void changeBinStatus(BinObject bin, BinObject.BinStatus status) {
+        bin.setBinStatus(status);
     }
 }
