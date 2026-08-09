@@ -1,5 +1,6 @@
 package seng202.team1.data_managers;
 
+
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -33,7 +34,7 @@ public class DataLoader {
     }
 
     /**
-     * Find bin by  ID
+     * Find bin by ID
      * @param binID ID of the bin
      * @return The BinObject or Null if not found
      */
@@ -66,7 +67,7 @@ public class DataLoader {
      * Parses the GeoJSON file into a JSONObject
      * @param parser - JSONParser instance
      * @return JSONObject with the GeoJSON data
-     * @throws Exception
+     * @throws Exception if an error occurs while reading or parsing JSON file
      */
     private JSONObject parseGeoJson(JSONParser parser) throws Exception {
         InputStream is = DataLoader.class.getClassLoader().getResourceAsStream(filePath);

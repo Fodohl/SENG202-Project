@@ -4,49 +4,22 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Represents a user's trash log
+ * A record representing a user's trash log keeping record of the disposal time,
+ * the bin id where it was disposed, the log timestamp, the trash itself.
+ *
  * @author Marcus Demafeliz
  */
-public class TrashLog {
-
-    private final int trashLogId;
-    private final int binLogId;
-    private final Trash trashLogged;
-    private final LocalDateTime disposedAt;
-    private final LocalDateTime createdAt;
+public record TrashLog(int trashLogId, Trash trashLogged, LocalDateTime disposedAt, int binLogId,
+                       LocalDateTime createdAt) {
 
     /**
      * Constructor for TrashLog class
-     * @param trashLogId - unique identifier for log
-     * @param trashLogged - Trash object the user has logged
-     * @param binLogId - the unique identifier of bin where waste is disposed
+     *
+     * @param trashLogId  unique identifier for log
+     * @param trashLogged Trash object the user has logged
+     * @param binLogId the unique identifier of bin where waste is disposed
      */
-    public TrashLog(int trashLogId, Trash trashLogged, LocalDateTime disposedAt, int binLogId) {
-        this.trashLogId = trashLogId;
-        this.trashLogged = trashLogged;
-        this.disposedAt = disposedAt;
-        this.binLogId = binLogId;
-        this.createdAt = LocalDateTime.now();
-    }
-
-    public int getTrashLogId() {
-        return trashLogId;
-    }
-
-    public Trash getTrashLogged() {
-        return trashLogged;
-    }
-
-    public int getBinLogId() {
-        return binLogId;
-    }
-
-    public LocalDateTime getDisposedAt() {
-        return disposedAt;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
+    public TrashLog {
     }
 
     @Override

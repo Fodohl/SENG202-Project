@@ -1,0 +1,13 @@
+{
+  "trashLogs": [{
+    "trashLogId": 1,
+    "trashLogged": {
+      "trashCategory": "RECYCLABLE",
+      "trashType": "PAPER",
+      "trashWeight": 50
+    },
+    "disposedAt": "2026-04-20T00:00:00",
+    "binLogId": 197,
+    "createdAt": "2026-08-09T00:00:00"
+  }]
+}

@@ -21,21 +21,21 @@ public class TrashLogTest {
     @BeforeEach
     public void testSetup() {
         Trash testTrash = new Trash(Trash.TrashCategory.GENERAL_WASTE, Trash.TrashType.PLASTIC_BOTTLE, 15);
-        testLog = new TrashLog(1, testTrash,  LocalDateTime.parse("2026-04-20T00:00:00"), 1);
+        testLog = new TrashLog(1, testTrash,  LocalDateTime.parse("2026-04-20T00:00:00"), 1, LocalDateTime.now());
     }
 
     @Test
     public void testGetCreatedAtLog() {
-        assertEquals(LocalDate.now(), testLog.getCreatedAt().toLocalDate());
+        assertEquals(LocalDate.now(), testLog.createdAt().toLocalDate());
     }
 
     @Test
     public void testGetDisposedAtLog() {
-        assertEquals(LocalDateTime.parse("2026-04-20T00:00:00"), testLog.getDisposedAt());
+        assertEquals(LocalDateTime.parse("2026-04-20T00:00:00"), testLog.disposedAt());
     }
 
     @Test
     public void testGetTrashLogTrashWeight() {
-        assertEquals(15, testLog.getTrashLogged().trashWeight());
+        assertEquals(15, testLog.trashLogged().trashWeight());
     }
 }

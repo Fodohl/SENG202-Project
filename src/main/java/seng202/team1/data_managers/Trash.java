@@ -1,7 +1,8 @@
 package seng202.team1.data_managers;
 
 /**
- * Represents Trash that a user can log
+ * A record representing trash or waste that a user can log. It records the waste's
+ * category, its type, and weight (optional).
  *
  * @author Marcus Demafeliz
  */
@@ -32,9 +33,9 @@ public record Trash(TrashCategory trashCategory, TrashType trashType, int trashW
     /**
      * Constructor for Trash a user can log with a specified weight
      *
-     * @param trashCategory - the trash category
-     * @param trashType     - the trash type
-     * @param trashWeight   - the trash weight in grams
+     * @param trashCategory the trash category
+     * @param trashType the trash type
+     * @param trashWeight the trash weight in grams
      */
     public Trash {
     }
@@ -42,8 +43,8 @@ public record Trash(TrashCategory trashCategory, TrashType trashType, int trashW
     /**
      * Constructor for Trash a user can log without a specified weight
      *
-     * @param trashCategory - the trash category
-     * @param trashType     - the trash type
+     * @param trashCategory the trash category
+     * @param trashType the trash type
      */
     public Trash(TrashCategory trashCategory, TrashType trashType) {
         this(trashCategory, trashType, 0);
