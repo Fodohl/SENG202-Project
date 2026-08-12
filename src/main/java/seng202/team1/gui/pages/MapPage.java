@@ -13,6 +13,7 @@ import seng202.team1.gui.components.*;
 import seng202.team1.gui.core.LayoutElement;
 import seng202.team1.gui.core.WindowManager;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 /**
@@ -33,7 +34,8 @@ public class MapPage extends Page {
     private UIKeyValuePair sidebarBinStatus;
     private UIKeyValuePair sidebarBinUpdated;
     private UIKeyValuePair sidebarBinAddress;
-    private UIKeyValuePair sidebarBinCollection;
+    private UIKeyValuePair sidebarBinTimesUsed;
+    private UIKeyValuePair sidebarBinLastUsed;
 
     /**
      * Constructs a new MapPage
@@ -76,15 +78,17 @@ public class MapPage extends Page {
         sidebarBinAddress = new UIKeyValuePair("Address", "");
         UISection addressSection = new UISection(sidebarBinAddress);
 
-        // Collection
-        sidebarBinCollection = new UIKeyValuePair("Next Collection", "");
-        UISection collectionSection = new UISection(sidebarBinCollection);
+        // Usage
+        sidebarBinTimesUsed = new UIKeyValuePair("Times Used", "");
+        sidebarBinLastUsed = new UIKeyValuePair("Last Used", "");
+        UISection collectionSection = new UISection(sidebarBinTimesUsed, sidebarBinLastUsed);
 
         // Actions
-        // b1
-        // b2
-        // b3
-        UISection actionsSection = new UISection();
+        UIButton directionsButton = new UIButton("Get Directions");
+        UIButton logButton = new UIButton("Log Entry");
+        UIButton issueButton = new UIButton("Report Issue");
+        UISection actionsSection = new UISection(15, directionsButton, logButton, issueButton);
+        actionsSection.getStyleClass().add("buttons");
 
         // Combine
         VBox box = new VBox(titleSection, infoSection, addressSection, collectionSection, actionsSection);
@@ -107,7 +111,7 @@ public class MapPage extends Page {
         // Populate the map
         map = new UIMap();
         for (Bin bin : windowManager.getGlobalState().getDataLoader().getBinObjects())
-            map.addPoint(bin.getBinLatitude(), bin.getBinLongitude(), bin.getBinID());
+            map.addPoint(bin.getLatitude(), bin.getLongitude(), bin.getID());
 
         // Handle map events
         map.registerPointClickCallback(this::onMarkerClick);
@@ -130,6 +134,11 @@ public class MapPage extends Page {
         updateContents();
     }
 
+    /**
+     * Update the contents of the status bar to show the selected bin (if any). If no bin is selected sidebar is not shown
+     *
+     * @todo
+     */
     private void refreshSidebar() {
 
         // Sidebar hidden
@@ -139,11 +148,17 @@ public class MapPage extends Page {
 
         // Get the bin
         Bin bin = windowManager.getGlobalState().getDataLoader().getBinObjects()
-                               .stream().filter(b -> Objects.equals(b.getBinID(), selectedBin))
+                               .stream().filter(b -> Objects.equals(b.getID(), selectedBin))
                                .findFirst().orElseThrow();
 
-        sidebarBinID.setText(bin.getBinID().toString());
-        sidebarBinType.setText(StringHelpers.enumNameToTitle(bin.getBinType().name()));
+
+        sidebarBinID.setText(bin.getID().toString());
+        sidebarBinType.setText(StringHelpers.enumNameToTitle(bin.getType().name()));
+        sidebarBinStatus.setText(String.format("%s%% Full (estimate)", bin.getStatus().toString()));
+        sidebarBinUpdated.setText(StringHelpers.toLocaleString(bin.getUpdated()));
+        sidebarBinAddress.setText(bin.getAreaName());
+        sidebarBinTimesUsed.setText("1");
+        sidebarBinLastUsed.setText("N/A");
 
     }
 }

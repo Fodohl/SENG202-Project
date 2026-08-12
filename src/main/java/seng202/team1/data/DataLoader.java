@@ -3,6 +3,7 @@ package seng202.team1.data;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.time.Instant;
 import java.util.*;
 
 import org.apache.logging.log4j.LogManager;
@@ -67,7 +68,7 @@ public class DataLoader {
      */
     public Bin getBinById(int binID) {
         return binObjects.stream()
-                .filter(bin -> bin.getBinID() == binID)
+                .filter(bin -> bin.getID() == binID)
                 .findFirst()
                 .orElse(null);
     }
@@ -117,17 +118,21 @@ public class DataLoader {
      */
     private Bin parseFeature(JSONObject feature) {
 
-
+        // Get the location data of the in
         JSONObject geometry = (JSONObject) feature.get("geometry");
         JSONArray coordinates = (JSONArray) geometry.get("coordinates");
 
         double longitude = ((Number) coordinates.get(0)).doubleValue();
         double latitude = ((Number) coordinates.get(1)).doubleValue();
 
+        // Get the bin info
         JSONObject properties = (JSONObject) feature.get("properties");
         int binID = ((Number) properties.get("BinID")).intValue();
         Object wasteTypeObj = properties.get("WasteType");
+        Object lastEditDateObj = properties.get("LastEditDate");
+        String area = properties.get("SiteName").toString().split(" - ")[1];
 
+        // Parse the wast info
         String wasteType = wasteTypeObj == null ? "" : wasteTypeObj.toString();
         WasteType binType = switch (wasteType.toUpperCase(Locale.ROOT)) {
             case "RECYCLE", "RECYCLING" -> WasteType.RECYCLING;
@@ -135,7 +140,10 @@ public class DataLoader {
             default -> WasteType.GENERAL_WASTE;
         };
 
-        return new Bin(binID, latitude, longitude, binType);
+        // Parse the date
+        Instant updated = lastEditDateObj != null ? Instant.parse(lastEditDateObj.toString()) : null;
+
+        return new Bin(binID, latitude, longitude, binType, updated, area);
     }
     
 }

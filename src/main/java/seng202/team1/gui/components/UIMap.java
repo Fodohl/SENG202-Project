@@ -137,6 +137,7 @@ public class UIMap extends StackPane {
 
         } catch (Exception e){
             log.warn(String.format("Trash App API Call Dropped: %s - %s", callURL, e.getMessage()));
+            return;
         }
 
         log.info(String.format("Trash App API Call: %s - %s", function, params.toString()));

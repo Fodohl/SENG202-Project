@@ -1,5 +1,9 @@
 package seng202.team1.common;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+
 /**
  * Utility class that provides helpers for common string tasks
  */
@@ -33,5 +37,15 @@ public class StringHelpers {
 
     public static String enumNameToTitle(String string){
         return toTitleCase(string.replace("_", " "));
+    }
+
+    public static String toLocaleString(Instant date){
+
+        if(date == null)
+            return "Unknown Date";
+
+        return DateTimeFormatter.ofPattern("dd MMM yyyy, h:mm a")
+                                .withZone(ZoneId.systemDefault())
+                                .format(date);
     }
 }

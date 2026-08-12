@@ -12,7 +12,7 @@ public class UIKeyValuePair extends HBox {
         super();
 
         // Create the pair
-        Label key = new Label(keyText + ": ");
+        Label key = new Label(keyText + ":   ");
         value = new Label(valueText);
 
         // Style
