@@ -83,12 +83,20 @@ s@font-face {
     width: 15%;
 }
 
-.nav-icon * {
+.nav-icon .svg-icon * {
     -fx-stroke: -text-secondary;
 }
 
-.active .nav-icon * {
+.active .nav-icon .svg-icon * {
     -fx-stroke: -active-bright;
+}
+
+.nav-icon .svg-icon-fill * {
+    -fx-fill: -text-secondary;
+}
+
+.active .nav-icon .svg-icon-fill * {
+    -fx-fill: -active-bright;
 }
 
 
