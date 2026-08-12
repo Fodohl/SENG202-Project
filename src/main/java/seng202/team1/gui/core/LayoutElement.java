@@ -11,10 +11,10 @@ import seng202.team1.state.GlobalState;
 public abstract class LayoutElement {
 
     /// The rendered component, null until the first render call unless pre-rendered
-    private Parent rendered = null;
+    private Parent rendered;
 
     /// The reference to the window this component is rendered on
-    protected WindowManager windowManager = null;
+    protected WindowManager windowManager;
 
     /**
      * Construct a new lazy-rendered LayoutElement

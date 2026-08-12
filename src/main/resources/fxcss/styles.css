@@ -252,58 +252,50 @@ s@font-face {
 /*    height: 100%;*/
 /*}*/
 
-/*.pop-over-side-bar .title{*/
-/*    font-weight: bold;*/
-/*    font-size: 1.75rem;*/
-/*}*/
+.pop-over-side-bar, .pop-over-side-bar *{
+    -fx-max-width: 400px;
+}
 
-/*.leaflet-tile-container img {*/
-/*    outline: 1px solid transparent;*/
-/*    mix-blend-mode: multiply;*/
-/*}*/
+.pop-over-side-bar .title{
+    -fx-font-size: 32px;
+    -fx-font-weight: bold;
+    -fx-text-alignment: left;
+    -fx-padding: 0px 0px;
+}
 
-/*.pop-over-side-bar{*/
-/*    background: var(--bg-primary);*/
-/*    position: absolute;*/
-/*    z-index: 1000;*/
-/*    top: 0;*/
-/*    right: 0;*/
-/*    height: 100%;*/
-/*    width: 25%;*/
-/*    font-size: 1.1rem;*/
-/*    border-left: var(--text-secondary-half) solid 1px;*/
-/*}*/
+.section{
+    -fx-border-color: transparent transparent -text-secondary-half transparent;
+    -fx-border-width: 1px;
+    -fx-padding: 8px 15px;
+}
 
-/*.section{*/
-/*    border-bottom: var(--text-secondary-half) solid 1px;*/
-/*    padding: 8px 15px;*/
-/*}*/
+.pop-over-side-bar{
+    -fx-border-color: transparent transparent transparent -text-secondary-half;
+    -fx-border-width: 1px;
+}
 
-/*.kv-pair{*/
-/*    display: flex;*/
-/*    flex-direction: row;*/
-/*    width: 100%;*/
-/*    gap: 0.4rem;*/
-/*    margin: 10px 0;*/
-/*}*/
+.kv-pair{
+    -fx-padding: 10px 0;
+    -fx-font-size: 18px;
+}
 
-/*.kv-pair .key{*/
-/*    color: var(--text-third);*/
-/*}*/
+.kv-pair .key{
+    -fx-text-fill: -text-third;
+}
 
-/*.bin-icon{*/
-/*    background: var(--bg-third);*/
-/*    padding: 5%;*/
-/*    display: flex;*/
-/*    justify-content: center;*/
-/*    margin: 0 -4px;*/
-/*    border-radius: 10px;*/
-/*    border: var(--text-secondary-half) solid 1px;*/
-/*}*/
+.bin-icon{
+    -fx-background-color: -bg-third;
+    -fx-padding: 5px;
+    -fx-border-color: -text-secondary-half;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-border-width: 1px;
+}
 
-/*.bin-icon img{*/
-/*    height: 130px;*/
-/*}*/
+.bin-icon .img{
+    -fx-background-color: -bg-third;
+    -fx-padding: 10px 10px;
+}
 
 /*.buttons{*/
 /*    display: flex;*/

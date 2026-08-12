@@ -1,15 +1,5 @@
 [
   {
-    "featureType": "transit",
-    "elementType": "labels",
-    "stylers": [
-      {
-        "visibility": "off"
-      }
-    ]
-  },
-  {
-    "featureType": "transit",
     "elementType": "labels.icon",
     "stylers": [
       {
@@ -40,7 +30,25 @@
     "elementType": "geometry",
     "stylers": [
       {
-        "color": "#364253"
+        "color": "#1e242b"
+      }
+    ]
+  },
+  {
+    "featureType": "building",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#28323e"
+      }
+    ]
+  },
+  {
+    "featureType": "building.medical",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "color": "#124360"
       }
     ]
   },
@@ -104,6 +112,15 @@
     "stylers": [
       {
         "color": "#364253"
+      }
+    ]
+  },
+  {
+    "featureType": "transit",
+    "elementType": "labels",
+    "stylers": [
+      {
+        "visibility": "off"
       }
     ]
   }

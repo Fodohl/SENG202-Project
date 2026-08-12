@@ -70,73 +70,75 @@
         </div>
 
         <div class="content">
+<div class="map">
 
-              <div class="leaderboard">
-
-                <div class="milestone active-grad">
-
-                    <img src="../../../src/main/resources/images/medal-gold.svg">
-
-                    <div class="milestone-text">
-                        <p>Next Milestone: 1.5 Trees Saved!</p>
-                        <div class="progress">
-                            <div class="bar"></div>
-                        </div>
-                    </div>
+                <div id="map" class="map-container dark-tiles">
                 </div>
 
-                <table class="leaderboard-table">
-                    <tr class="active-grad">
-                        <th>Rank</th>
-                        <th>User</th>
-                        <th>Items Logged</th>
-                        <th>Trees Saved</th>
-                    </tr>
-                      <tr class="first">
-                        <td>1</td>
-                        <td>John S</td>
-                        <td>450</td>
-                        <td>1.5</td>
-                    </tr>
-                     <tr>
-                        <td>2</td>
-                        <td>Bob R</td>
-                        <td>422</td>
-                        <td>1.4</td>
-                    </tr>
-                     <tr>
-                        <td>3</td>
-                        <td>Tony D</td>
-                        <td>420</td>
-                        <td>1.4</td>
-                    </tr>
-                     <tr class="active">
-                        <td>4</td>
-                        <td>Mike M (YOU)</td>
-                        <td>400</td>
-                        <td>1.3</td>
-                    </tr>
-                     <tr>
-                        <td>5</td>
-                        <td>Ryan W</td>
-                        <td>399</td>
-                        <td>1.3</td>
-                    </tr>
-                     <tr>
-                        <td>6</td>
-                        <td>Carter C</td>
-                        <td>350</td>
-                        <td>1.2</td>
-                    </tr>
-                     <tr>
-                        <td>7</td>
-                        <td>Steve L</td>
-                        <td>100</td>
-                        <td>1</td>
-                    </tr>
-                </table>
+                <div class="pop-over-side-bar">
+                    <div class="section title">
+                        <p>Bin Details</p>
+                    </div>
+
+                    <div class="section">
+                        <div class="kv-pair">
+                            <p class="key">ID:</p>
+                            <p class="value">1234</p>
+                        </div>
+                        <div class="bin-icon">
+                            <img src="../../../src/main/resources/images/bin.png">
+                        </div>
+                         <div class="kv-pair">
+                            <p class="key">Type:</p>
+                            <p class="value">Recycling</p>
+                        </div>
+                         <div class="kv-pair">
+                            <p class="key">Status:</p>
+                            <p class="value">15% Full (estimate)</p>
+                        </div>
+                         <div class="kv-pair">
+                            <p class="key">Updated:</p>
+                            <p class="value">26 August 2026 (11:00PM)</p>
+                        </div>
+
+                    </div>
+
+                    <div class="section">
+                          <div class="kv-pair">
+                            <p class="key">Address:</p>
+                            <p class="value">7 Hagely Park Street</p>
+                        </div>
+                    </div>
+
+                      <div class="section">
+                          <div class="kv-pair">
+                            <p class="key">Next Collection:</p>
+                            <p class="value">5th May (Thursday)</p>
+                        </div>
+                    </div>
+
+                     <div class="section buttons">
+                         <button> Get Directions </button>
+                         <button> Log Entry </button>
+                         <button> Report Issue </button>
+                     </div>
+
+                </div>
 
             </div>
+<!-- credit: https://gist.github.com/jscarto/9276103 -->
+<script>
+var coords = [-43.5233, 172.5822];
+var zoomLevel = 17;
+var map = L.map('map').setView(coords, zoomLevel);
+var snazzyStyle = 's.e%3Al.i%7Cp.v%3Aoff%2Cs.t%3A2%7Cp.v%3Aoff%2Cp.il%3Atrue%2Cp.s%3A10%2Cp.l%3A38%2Cp.g%3A0.5%2Cp.h%3A%23435158';
+L.tileLayer(`https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&apistyle=${snazzyStyle}`, {
+    maxZoom: 20,
+    subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+    attribution: '&copy; Google Maps'
+}).addTo(map);
+</script>
+
 
         </div>
     </div>

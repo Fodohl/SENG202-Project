@@ -146,7 +146,15 @@ public class UIMap extends StackPane {
      * @param lng The longitudinal position of the marker
      */
     public void addPoint(double lat, double lng, int markerID) {
-        String js = String.format("L.marker([%f, %f]).addTo(map).on('click', e => { window.app.onPointClicked(%d)});", lat, lng, markerID);
+        String js = String.format("L.marker([%f, %f])" +
+                    ".addTo(map)" +
+                    ".on('click', e => { " +
+                        "window.app.onPointClicked(%d)" +
+                    "})" +
+                    ".on('dblclick', function(e) {" +
+                        "L.DomEvent.stopPropagation(e);" +
+                    "});"
+                , lat, lng, markerID);
         call(js);
     }
 

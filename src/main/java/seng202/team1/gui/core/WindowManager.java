@@ -154,7 +154,7 @@ public class WindowManager extends StateReferrer {
 
         // Store
         pageSwitchCallbacks.add(callback);
-        return false;
+        return true;
     }
 
     /**
