@@ -40,8 +40,15 @@ public class MapPage extends Page {
         // Populate the map
         map = new UIMap();
         for(Bin bin : windowManager.getGlobalState().getDataLoader().getBinObjects())
-            map.addPoint(bin.getBinLatitude(), bin.getBinLongitude());
+            map.addPoint(bin.getBinLatitude(), bin.getBinLongitude(), bin.getBinID());
+
+        // Handle map events
+        map.registerPointClickCallback(this::onMarkerClick);
 
         return new StackPane(sidebar, map);
+    }
+
+    private void onMarkerClick(Integer binID){
+        System.out.println(binID);
     }
 }

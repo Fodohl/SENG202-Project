@@ -168,6 +168,5 @@ public class WindowManager extends StateReferrer {
         // Show the previous page
         PageType dest = history.pop();
         switchPage(dest);
-
     }
 }

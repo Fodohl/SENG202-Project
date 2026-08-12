@@ -4,14 +4,19 @@ import javafx.concurrent.Worker;
 import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import netscape.javascript.JSObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import seng202.team1.gui.pages.PageType;
 import seng202.team1.state.GlobalState;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Queue;
+import java.util.function.Consumer;
 
 /**
  * A UI Component to handle rendering maps
@@ -20,6 +25,9 @@ import java.util.Queue;
  * Map JS errors will be logged to stdio
  *
  * Warning: API calls are NOT synchronous, calls may be queued to run later when web engine is ready to run them
+ *
+ * @credit https://stackoverflow.com/questions/35985601/calling-a-java-method-from-a-javafx-webview - re web callbacks
+ * @todo depcreated, find work around
  */
 public class UIMap extends StackPane {
 
@@ -31,6 +39,20 @@ public class UIMap extends StackPane {
 
     /// List of calls that are waiting to be executed once the JS runtime is ready
     private Queue<String> engineCalls = new ArrayDeque<>();
+
+    /// List of callbacks to execute when a marker is clicked
+    private List<Consumer<Integer>> pointClickCallbacks = new ArrayList<>();
+
+    /// Internal object to expose as a JS interface (internal use only, but must be public for lib to access)
+    public class MapBridge {
+        public void onPointClicked(int pointID) {
+            for(Consumer<Integer> callback : pointClickCallbacks)
+                callback.accept(pointID);
+        }
+    }
+
+    /// Handler for map JS function calls
+    private final MapBridge mapBridge = new MapBridge();
 
     /**
      * Constructs a new UIMap
@@ -76,6 +98,10 @@ public class UIMap extends StackPane {
             if (newValue != Worker.State.SUCCEEDED)
                 return;
 
+            // Inject handler
+            JSObject win = (JSObject) engine.executeScript("window");
+            win.setMember("app", mapBridge);
+
             proccessCalls();
         });
 
@@ -119,8 +145,28 @@ public class UIMap extends StackPane {
      * @param lat The latitudinal position of the marker
      * @param lng The longitudinal position of the marker
      */
-    public void addPoint(double lat, double lng) {
-        String js = String.format("L.marker([%f, %f]).addTo(map);", lat, lng);
+    public void addPoint(double lat, double lng, int markerID) {
+        String js = String.format("L.marker([%f, %f]).addTo(map).on('click', e => { window.app.onPointClicked(%d)});", lat, lng, markerID);
         call(js);
+    }
+
+
+    /**
+     * Register an event handler for a point click event
+     *
+     * Warning: an event handler cannot be registered twice
+     *
+     * @param callback The function to run when a point on the map is clicked
+     * @return True if the callback was registered successfully
+     */
+    public boolean registerPointClickCallback(Consumer<Integer> callback){
+
+        // Prevent a callback being triggered twice
+        if(pointClickCallbacks.contains(callback))
+            return false;
+
+        // Store
+        pointClickCallbacks.add(callback);
+        return false;
     }
 }
