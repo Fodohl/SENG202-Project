@@ -1,21 +1,21 @@
 package seng202.team1.gui.components;
 
+import com.sun.javafx.webkit.WebConsoleListener;
 import javafx.concurrent.Worker;
 import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
-import netscape.javascript.JSObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import seng202.team1.common.URLHelpers;
 import seng202.team1.gui.pages.PageType;
 import seng202.team1.state.GlobalState;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.*;
 import java.util.function.Consumer;
 
 /**
@@ -26,8 +26,12 @@ import java.util.function.Consumer;
  *
  * Warning: API calls are NOT synchronous, calls may be queued to run later when web engine is ready to run them
  *
- * @credit https://stackoverflow.com/questions/35985601/calling-a-java-method-from-a-javafx-webview - re web callbacks
- * @todo depcreated, find work around
+ * JSObject work around as depricated builds on the idea of (2) to inject an /api/ route that is passed to here as the
+ * backend (3)
+ *
+ * @credit (1) https://stackoverflow.com/questions/35985601/calling-a-java-method-from-a-javafx-webview - re web callbacks
+ * @credit (2) https://stackoverflow.com/questions/14541933/webview-callback-from-javascript
+ * @credit (3) https://stackoverflow.com/questions/14541933/webview-callback-from-javascript
  */
 public class UIMap extends StackPane {
 
@@ -42,17 +46,6 @@ public class UIMap extends StackPane {
 
     /// List of callbacks to execute when a marker is clicked
     private List<Consumer<Integer>> pointClickCallbacks = new ArrayList<>();
-
-    /// Internal object to expose as a JS interface (internal use only, but must be public for lib to access)
-    public class MapBridge {
-        public void onPointClicked(int pointID) {
-            for(Consumer<Integer> callback : pointClickCallbacks)
-                callback.accept(pointID);
-        }
-    }
-
-    /// Handler for map JS function calls
-    private final MapBridge mapBridge = new MapBridge();
 
     /**
      * Constructs a new UIMap
@@ -98,15 +91,56 @@ public class UIMap extends StackPane {
             if (newValue != Worker.State.SUCCEEDED)
                 return;
 
-            // Inject handler
-            JSObject win = (JSObject) engine.executeScript("window");
-            win.setMember("app", mapBridge);
-
             proccessCalls();
+        });
+
+        // Inject handler
+        engine.locationProperty().addListener((obs, oldValue, newValue) -> {
+
+            // Prevent trying to go to the address
+            engine.getLoadWorker().cancel();
+
+            // Handle call
+            processAPICall(newValue);
+
         });
 
         // Pipe js logs to sout
         map.getEngine().setOnError(e -> log.error("{}", e));
+    }
+
+    private void processAPICall(String callURL){
+
+        // Parse the call
+        URI callData;
+        try{
+            callData = new URI(callURL);
+        } catch (URISyntaxException e) {
+            log.warn(String.format("Trash App API Call Dropped: %s - %s", callURL, e.getMessage()));
+            return;
+        }
+
+        // Extract the call info
+        String function = URLHelpers.getPage(callData);
+        Map<String, String> params = URLHelpers.getParams(callData);
+
+        // Drop any packets that dont have requried keys or required type
+        try {
+            switch (function){
+
+                case "onPointClicked" : {
+                    onPointClicked(params);
+                    break;
+                }
+
+            }
+
+        } catch (Exception e){
+            log.warn(String.format("Trash App API Call Dropped: %s - %s", callURL, e.getMessage()));
+        }
+
+        log.info(String.format("Trash App API Call: %s - %s", function, params.toString()));
+
     }
 
     /**
@@ -149,7 +183,7 @@ public class UIMap extends StackPane {
         String js = String.format("L.marker([%f, %f])" +
                     ".addTo(map)" +
                     ".on('click', e => { " +
-                        "window.app.onPointClicked(%d)" +
+                        "onPointClicked(%d)" +
                     "})" +
                     ".on('dblclick', function(e) {" +
                         "L.DomEvent.stopPropagation(e);" +
@@ -176,5 +210,13 @@ public class UIMap extends StackPane {
         // Store
         pointClickCallbacks.add(callback);
         return false;
+    }
+
+    private void onPointClicked(Map<String, String> params){
+
+        Integer id = Integer.parseInt(params.get("id"));
+
+        for(Consumer<Integer> callback : pointClickCallbacks)
+                callback.accept(id);
     }
 }

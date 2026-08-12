@@ -26,6 +26,27 @@
 
     <script>
 
+        // Define bridge helpers
+        callJavaAPI = (functionName, params = {}) => {
+
+            // Add salt to prevent call cache
+            params = {
+                ...params,
+                _: Math.random()
+            }
+
+            // Convert the params into URL format
+            const searchParams = new URLSearchParams(params);
+            const queryString = searchParams.toString();
+
+            const url = `http://trashapp.local/api/v1/${functionName}${queryString ? '?' + queryString : ''}`;
+            window.location.href = url;
+        }
+
+        onPointClicked = (id) => {
+            callJavaAPI("onPointClicked", {"id": id});
+        }
+
         // Centre around chch
         var coords = [-43.5233, 172.5822];
         var zoomLevel = 16;
