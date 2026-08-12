@@ -3,9 +3,14 @@ package seng202.team1.gui.components;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Shape;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -123,5 +128,19 @@ public class UIImage extends StackPane {
         imageView.setPreserveRatio(true);
 
         return imageView;
+    }
+
+    public Image toRawImage() {
+        return toRawImage(Color.TRANSPARENT);
+    }
+
+     public Image toRawImage(Color colour) {
+
+        // Ensure transparency is kept
+        SnapshotParameters params = new SnapshotParameters();
+        params.setFill(colour);
+
+        // Write the component to an image
+        return this.snapshot(params, null);
     }
 }

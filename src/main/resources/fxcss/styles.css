@@ -155,6 +155,7 @@ s@font-face {
     -fx-font-weight: bold;
     -fx-padding: 14px;
     -fx-text-alignment: center;
+    -fx-text-alignment: center;
 }
 
 /*.dashboard{*/

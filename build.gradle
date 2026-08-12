@@ -102,7 +102,7 @@ application {
 
 javafx {
     version = "${javafxVersion}"
-    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.web' ]
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.web', 'javafx.swing' ]
 }
 
 test {
