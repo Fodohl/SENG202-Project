@@ -1,10 +1,13 @@
 package seng202.team1.gui.core;
 
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import seng202.team1.gui.components.UIImage;
+import seng202.team1.gui.components.UIModal;
 import seng202.team1.gui.pages.*;
 import seng202.team1.state.GlobalState;
 import seng202.team1.state.StateReferrer;
@@ -45,6 +48,8 @@ public class WindowManager extends StateReferrer {
     /// The layout that contains the pages for this window
     private final CoreUI layout = new CoreUI(this);
 
+    private final StackPane root = new StackPane(layout.getRendered());
+
     /**
      * Constructs a new WindowManager, loading the pages for this window
      *
@@ -56,7 +61,7 @@ public class WindowManager extends StateReferrer {
 
         // Load core ui
         this.currentStage = currentStage;
-        Scene scene = new Scene(layout.getRendered(), WINDOW_WIDTH, WINDOW_HEIGHT);
+        Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 
         // Dont load stage if not running with a window
         if(!GlobalState.IS_HEADLESS_MODE)
@@ -168,5 +173,20 @@ public class WindowManager extends StateReferrer {
         // Show the previous page
         PageType dest = history.pop();
         switchPage(dest);
+    }
+
+    public void showOverlay(UIModal overlay){
+
+        // Remove the currently shown overlay
+        hideOverlay();
+
+        // Show the overlay above the core ui
+        overlay.setVisible(true);
+        root.getChildren().add(overlay);
+    }
+
+    public void hideOverlay(){
+        if(root.getChildren().size() == 2)
+            root.getChildren().removeLast();
     }
 }

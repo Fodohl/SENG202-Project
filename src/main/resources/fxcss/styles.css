@@ -17,6 +17,7 @@ s@font-face {
     -bg-primary: #232c33;
     -bg-secondary: #374051;
     -bg-third: #1c2128;
+    -bg-overlay: rgb(0, 0, 0, 0.60);
 
     -text-primary: #ffffff;
     -text-secondary: rgb(104, 112, 119);
@@ -98,7 +99,6 @@ s@font-face {
 .active .nav-icon .svg-icon-fill * {
     -fx-fill: -active-bright;
 }
-
 
 .nav-text{
     -fx-font-size: 24px;
@@ -398,4 +398,56 @@ s@font-face {
     -fx-background-radius: 0px 10px 10px 0px;
 }
 
+.overlay{
+    -fx-font-family: "noto-sans";
+    -fx-font-size: 14px;
+    -fx-background-color: -bg-overlay;
+    -fx-text-fill: -text-primary;
+}
 
+.modal *{
+    -fx-text-fill: -text-primary;
+}
+
+.modal{
+    -fx-min-width: 520px;
+    -fx-max-width: 580px;
+    -fx-min-height: 720px;
+    -fx-max-height: 720px;
+    -fx-padding: 5px;
+    -fx-background-color: -bg-primary;
+    -fx-background-radius: 15px;
+    -fx-border-color: -text-secondary-half;
+    -fx-border-radius: 15px;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 25, 0, 0, 10);
+}
+
+.modal .header {
+    -fx-padding: 16px 20px;
+    -fx-border-color: transparent transparent -active-secondary transparent;
+    -fx-border-width: 2px;
+
+}
+
+.modal .title {
+    -fx-font-weight: bold;
+    -fx-text-fill: -active;
+}
+
+.modal .close {
+    -fx-background-color: -active;
+    -fx-font-size: 20px;
+    -fx-cursor: hand;
+    -fx-padding: 4px 12px;
+    -fx-background-radius: 16px;
+    -fx-border-width: 0px;
+}
+
+.modal .close:hover {
+    -fx-background-color: -active-dark;
+}
+
+.modal .body {
+    -fx-padding: 20px;
+}

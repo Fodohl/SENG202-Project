@@ -60,7 +60,19 @@ public class MapPage extends Page {
         return container;
     }
 
-    public VBox sidebar() {
+    private UIModal entryModal(){
+
+
+        UIKeyValuePair test1 = new UIKeyValuePair("Test", "1");
+        UIKeyValuePair test2 = new UIKeyValuePair("Test", "2");
+        UIKeyValuePair test3 = new UIKeyValuePair("Test", "3");
+        UIKeyValuePair test4 = new UIKeyValuePair("Test", "1");
+
+        VBox contents = new VBox(test1, test2, test3, test4);
+        return new UIModal("/images/bin.svg", "Log Trash", contents);
+    }
+
+    private VBox sidebar() {
 
         // Title
         UITitle title = new UITitle("Bin Details");
@@ -89,6 +101,12 @@ public class MapPage extends Page {
         UIButton issueButton = new UIButton("Report Issue");
         UISection actionsSection = new UISection(15, directionsButton, logButton, issueButton);
         actionsSection.getStyleClass().add("buttons");
+
+        // Modals
+        UIModal logEntryModal = entryModal();
+        logButton.setOnMouseClicked(e -> windowManager.showOverlay(logEntryModal));
+
+        windowManager.showOverlay(logEntryModal);
 
         // Combine
         VBox box = new VBox(titleSection, infoSection, addressSection, collectionSection, actionsSection);
@@ -137,7 +155,7 @@ public class MapPage extends Page {
     /**
      * Update the contents of the status bar to show the selected bin (if any). If no bin is selected sidebar is not shown
      *
-     * @todo
+     * @todo status, useage, image
      */
     private void refreshSidebar() {
 

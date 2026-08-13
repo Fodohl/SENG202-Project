@@ -1,5 +1,7 @@
 package seng202.team1.gui.pages;
 
+import javafx.scene.Parent;
+import seng202.team1.gui.components.UIModal;
 import seng202.team1.gui.core.LayoutElement;
 import seng202.team1.gui.core.WindowManager;
 
@@ -59,5 +61,4 @@ public abstract class Page extends LayoutElement {
         // Update self
         updateContents();
     }
-
 }
