@@ -111,7 +111,7 @@ public class MapPage extends Page {
         // Populate the map
         map = new UIMap();
         for (Bin bin : windowManager.getGlobalState().getDataLoader().getBinObjects())
-            map.addPoint(bin.getLatitude(), bin.getLongitude(), bin.getID());
+            map.addPoint(bin.getLatitude(), bin.getLongitude(), bin.getID(), bin.getType().toString().toLowerCase());
 
         // Handle map events
         map.registerPointClickCallback(this::onMarkerClick);

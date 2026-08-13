@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.*;
 import java.util.function.Consumer;
 
@@ -30,8 +31,10 @@ import java.util.function.Consumer;
  * backend (3)
  *
  * @credit (1) https://stackoverflow.com/questions/35985601/calling-a-java-method-from-a-javafx-webview - re web callbacks
- * @credit (2) https://stackoverflow.com/questions/14541933/webview-callback-from-javascript
- * @credit (3) https://stackoverflow.com/questions/14541933/webview-callback-from-javascript
+ * @credit (2) https://stackoverflow.com/questions/48855972/webview-javafx-redirect-a-certain-url-when-accessed
+ * @credit (3) https://stackoverflow.com/questions/31160253/how-to-handle-html-form-in-javafx-application
+ *
+ * @todo performance improvements: cluster bins when zoomed out, local tile cache backend
  */
 public class UIMap extends StackPane {
 
@@ -57,20 +60,9 @@ public class UIMap extends StackPane {
         getStyleClass().add("dark-tiles");
 
         // Check that the map code exits
-        InputStream is = UIMap.class.getResourceAsStream("/html/map.html");
-        if(is == null)
+        URL mapUrl = UIMap.class.getResource("/html/map.html");
+        if (mapUrl == null)
             throw new NullPointerException("Map code cant be loaded");
-
-        // Read the map code
-        String content;
-        try{
-            content = new String(is.readAllBytes());
-
-        } catch (IOException e) {
-
-            // Map file must exist to work, panic otherwise
-            throw new RuntimeException(e);
-        }
 
         // Webview unavailable in headless mode
         if(GlobalState.IS_HEADLESS_MODE)
@@ -81,7 +73,7 @@ public class UIMap extends StackPane {
         engine = map.getEngine();
 
         // Add the map
-        map.getEngine().loadContent(content);
+        map.getEngine().load(mapUrl.toExternalForm());
         getChildren().add(map);
 
         // When map is ready process any waiting calls
@@ -116,7 +108,7 @@ public class UIMap extends StackPane {
         try{
             callData = new URI(callURL);
         } catch (URISyntaxException e) {
-            log.warn(String.format("Trash App API Call Dropped: %s - %s", callURL, e.getMessage()));
+            log.warn(String.format("Trash App API Call Dropped: %s - 1 - %s", callURL, e.getMessage()));
             return;
         }
 
@@ -136,7 +128,7 @@ public class UIMap extends StackPane {
             }
 
         } catch (Exception e){
-            log.warn(String.format("Trash App API Call Dropped: %s - %s", callURL, e.getMessage()));
+            log.warn(String.format("Trash App API Call Dropped: %s - 2 - %s", callURL, e.getMessage()));
             return;
         }
 
@@ -174,14 +166,24 @@ public class UIMap extends StackPane {
         engine.executeScript(js);
     }
 
-    /**
+     /**
      * Add a marker to the map
      *
      * @param lat The latitudinal position of the marker
      * @param lng The longitudinal position of the marker
      */
     public void addPoint(double lat, double lng, int markerID) {
-        String js = String.format("L.marker([%f, %f])" +
+       addPoint(lat, lng, markerID, "");
+    }
+
+    /**
+     * Add a marker to the map
+     *
+     * @param lat The latitudinal position of the marker
+     * @param lng The longitudinal position of the marker
+     */
+    public void addPoint(double lat, double lng, int markerID, String path) {
+        String js = String.format("L.marker([%f, %f], { icon: makeIcon(L, '%s') })" +
                     ".addTo(map)" +
                     ".on('click', e => { " +
                         "onPointClicked(%d)" +
@@ -189,10 +191,9 @@ public class UIMap extends StackPane {
                     ".on('dblclick', function(e) {" +
                         "L.DomEvent.stopPropagation(e);" +
                     "});"
-                , lat, lng, markerID);
+                , lat, lng, path, markerID);
         call(js);
     }
-
 
     /**
      * Register an event handler for a point click event
@@ -215,9 +216,10 @@ public class UIMap extends StackPane {
 
     private void onPointClicked(Map<String, String> params){
 
-        Integer id = Integer.parseInt(params.get("id"));
+        String id = params.get("id");
+        Integer pointId = Objects.equals(id, "null") ? null : Integer.parseInt(id);
 
         for(Consumer<Integer> callback : pointClickCallbacks)
-                callback.accept(id);
+                callback.accept(pointId);
     }
 }

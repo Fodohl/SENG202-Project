@@ -130,7 +130,10 @@ public class DataLoader {
         int binID = ((Number) properties.get("BinID")).intValue();
         Object wasteTypeObj = properties.get("WasteType");
         Object lastEditDateObj = properties.get("LastEditDate");
-        String area = properties.get("SiteName").toString().split(" - ")[1];
+
+        // Parse site name
+        Object siteName = properties.get("SiteName");
+        String area = siteName == null ? "Unknown" : siteName.toString().split(" - ")[1];
 
         // Parse the wast info
         String wasteType = wasteTypeObj == null ? "" : wasteTypeObj.toString();
