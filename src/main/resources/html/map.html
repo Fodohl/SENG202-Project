@@ -4,9 +4,19 @@
     <meta charset="UTF-8">
     <title>Title</title>
 
-    <!-- leaflet -->
+    <!-- Leaflet core -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+
+    <!-- Leaflet.markercluster plugin -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+    <!-- Leflet.pouchdb plugin -->
+	<script src="https://unpkg.com/pouchdb@^5.2.0/dist/pouchdb.js"></script>
+	<script src="https://unpkg.com/leaflet.tilelayer.pouchdbcached@latest/L.TileLayer.PouchDBCached.js"></script>
+
     <style>
         *, *::before, *::after {
             box-sizing: border-box;
@@ -70,13 +80,18 @@
         L.tileLayer(`https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&apistyle=${snazzyStyle}`, {
             maxZoom: 20,
             subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-            attribution: '&copy; Google Maps'
+            attribution: '&copy; Google Maps',
         }).addTo(map);
 
         // When no point is clicked clear the previous
         map.on('click', () => {
             onPointClicked(null)
         })
+
+        // Cluster markers to prevent lag
+        let marker;
+        let markers = L.markerClusterGroup({disableClusteringAtZoom: 16});
+        map.addLayer(markers);
 
     </script>
 </body>

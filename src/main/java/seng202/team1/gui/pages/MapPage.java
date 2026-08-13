@@ -67,8 +67,15 @@ public class MapPage extends Page {
         UIKeyValuePair test2 = new UIKeyValuePair("Test", "2");
         UIKeyValuePair test3 = new UIKeyValuePair("Test", "3");
         UIKeyValuePair test4 = new UIKeyValuePair("Test", "1");
+        UISection testSection = new UISection(15, test1, test2, test3, test4);
 
-        VBox contents = new VBox(test1, test2, test3, test4);
+        // Actions
+        UIButton submit = new UIButton("Submit Log");
+        UIButton cancel = new UIButton("Cancel");
+        UISection actionsSection = new UISection(15, submit, cancel);
+        actionsSection.getStyleClass().add("buttons");
+
+        VBox contents = new VBox(testSection, actionsSection);
         return new UIModal("/images/bin.svg", "Log Trash", contents);
     }
 
@@ -105,8 +112,6 @@ public class MapPage extends Page {
         // Modals
         UIModal logEntryModal = entryModal();
         logButton.setOnMouseClicked(e -> windowManager.showOverlay(logEntryModal));
-
-        windowManager.showOverlay(logEntryModal);
 
         // Combine
         VBox box = new VBox(titleSection, infoSection, addressSection, collectionSection, actionsSection);

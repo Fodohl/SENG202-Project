@@ -34,7 +34,7 @@ import java.util.function.Consumer;
  * @credit (2) https://stackoverflow.com/questions/48855972/webview-javafx-redirect-a-certain-url-when-accessed
  * @credit (3) https://stackoverflow.com/questions/31160253/how-to-handle-html-form-in-javafx-application
  *
- * @todo performance improvements: cluster bins when zoomed out, local tile cache backend
+ * @todo performance improvements: local tile cache backend
  */
 public class UIMap extends StackPane {
 
@@ -183,16 +183,16 @@ public class UIMap extends StackPane {
      * @param lng The longitudinal position of the marker
      */
     public void addPoint(double lat, double lng, int markerID, String path) {
-        String js = String.format("L.marker([%f, %f], { icon: makeIcon(L, '%s') })" +
-                    ".addTo(map)" +
+        String js = String.format("marker = L.marker([%f, %f], { icon: makeIcon(L, '%s') })" +
                     ".on('click', e => { " +
                         "onPointClicked(%d)" +
                     "})" +
                     ".on('dblclick', function(e) {" +
                         "L.DomEvent.stopPropagation(e);" +
-                    "});"
+                    "});" +
+                    "markers.addLayer(marker);"
                 , lat, lng, path, markerID);
-        call(js);
+//        call(js);
     }
 
     /**

@@ -19,6 +19,7 @@ public class TrashApp {
      */
     public static void main(String[] args) {
         log.info("Starting JavaFX...");
+        System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
         Main.main(args);
     }
 
