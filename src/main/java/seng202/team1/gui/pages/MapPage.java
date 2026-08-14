@@ -9,15 +9,20 @@ import javafx.scene.layout.VBox;
 import javafx.scene.control.Label;
 import seng202.team1.common.StringHelpers;
 import seng202.team1.data.Bin;
+import seng202.team1.data.WasteType;
 import seng202.team1.gui.components.*;
 import seng202.team1.gui.core.LayoutElement;
 import seng202.team1.gui.core.WindowManager;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 /**
  * Page that displays a map with bin locations
+ *
+ * @todo: when waste is merged in change dropdown values
  */
 public class MapPage extends Page {
 
@@ -62,21 +67,37 @@ public class MapPage extends Page {
 
     private UIModal entryModal(){
 
+        // Prepare conents
+        List<String> trashTypes = Arrays.stream(WasteType.values()).map(t -> StringHelpers.enumNameToTitle(t.name())).toList();
 
-        UIKeyValuePair test1 = new UIKeyValuePair("Test", "1");
-        UIKeyValuePair test2 = new UIKeyValuePair("Test", "2");
-        UIKeyValuePair test3 = new UIKeyValuePair("Test", "3");
-        UIKeyValuePair test4 = new UIKeyValuePair("Test", "1");
-        UISection testSection = new UISection(15, test1, test2, test3, test4);
+        // Log data
+        UIIconText typeLabel = new UIIconText("bin", "Trash Type");
+        UIDropDown typeInput = new UIDropDown("Select waste type...", trashTypes);
+        UIIconText weightLabel = new UIIconText("scales", "Estimated Weight");
+        UITextInput weightInput = new UITextInput("Enter waste weight...");
+        UISection logInputSection = new UISection(15, typeLabel, typeInput, weightLabel, weightInput);
+
+        // Bin data
+        UIIconText statusLabel = new UIIconText("bin-full", "Estimated Fullness");
+        UISlider statusInput = new UISlider();
+        UISection binInputSection = new UISection(15, statusLabel, statusInput);
 
         // Actions
+        UIKeyValuePair error = new UIKeyValuePair("Error", "Cannot talk to logging service");
         UIButton submit = new UIButton("Submit Log");
-        UIButton cancel = new UIButton("Cancel");
-        UISection actionsSection = new UISection(15, submit, cancel);
-        actionsSection.getStyleClass().add("buttons");
+        UIButton cancel = new UIButton("Cancel", true);
+        UISection actionsSection = new UISection(15, error, submit, cancel);
 
-        VBox contents = new VBox(testSection, actionsSection);
-        return new UIModal("/images/bin.svg", "Log Trash", contents);
+        // Action handlers
+        submit.setOnMouseClicked(e -> submitTrashLog());
+        cancel.setOnMouseClicked(e -> windowManager.hideOverlay());
+
+        // Center buttons
+        actionsSection.getStyleClass().add("buttons");
+        actionsSection.setAlignment(Pos.CENTER);
+
+        VBox contents = new VBox(logInputSection, binInputSection, actionsSection);
+        return new UIModal("/images/log.svg", "Log Trash", contents);
     }
 
     private VBox sidebar() {
@@ -112,6 +133,8 @@ public class MapPage extends Page {
         // Modals
         UIModal logEntryModal = entryModal();
         logButton.setOnMouseClicked(e -> windowManager.showOverlay(logEntryModal));
+
+        windowManager.showOverlay(logEntryModal);
 
         // Combine
         VBox box = new VBox(titleSection, infoSection, addressSection, collectionSection, actionsSection);
@@ -182,6 +205,10 @@ public class MapPage extends Page {
         sidebarBinAddress.setText(bin.getAreaName());
         sidebarBinTimesUsed.setText("1");
         sidebarBinLastUsed.setText("N/A");
+
+    }
+
+    private void submitTrashLog(){
 
     }
 }

@@ -192,7 +192,7 @@ public class UIMap extends StackPane {
                     "});" +
                     "markers.addLayer(marker);"
                 , lat, lng, path, markerID);
-//        call(js);
+        call(js);
     }
 
     /**
