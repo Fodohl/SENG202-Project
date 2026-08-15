@@ -190,8 +190,9 @@ public class UIMap extends StackPane {
                     ".on('dblclick', function(e) {" +
                         "L.DomEvent.stopPropagation(e);" +
                     "});" +
-                    "markers.addLayer(marker);"
-                , lat, lng, path, markerID);
+                    "markers.addLayer(marker);" +
+                    "markerMap[%d] = marker;"
+                , lat, lng, path, markerID, markerID);
         call(js);
     }
 

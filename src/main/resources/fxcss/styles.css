@@ -561,3 +561,11 @@ s@font-face {
 .error .combo-box, .error .text-field, .error .text-area {
     -fx-border-color: -text-error;
 }
+
+.map-dialog{
+    -fx-max-height: 40px;
+    -fx-max-width: 325px;
+    -fx-border-color: transparent -active -active -active;
+    -fx-border-width: 4px;
+    -fx-padding: 5px;
+}

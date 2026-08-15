@@ -10,6 +10,8 @@ import seng202.team1.gui.GraphicsCommon;
 
 // @credit https://stackoverflow.com/questions/51343759/how-to-change-fill-color-of-slider-in-javafx
 
+// @todo explain static setup reasoning for no default contstructors
+
 public class UISlider extends VBox implements UIInputComponent{
 
     private boolean isErroring = false;
@@ -47,10 +49,15 @@ public class UISlider extends VBox implements UIInputComponent{
 
        String colour = isErroring ? "-text-error" : "-active";
 
-        // Custom gradient that is active 0-x and default x-100
-        lookup(".track").setStyle(
+       // Ensure track has rendered
+       Node track = lookup(".track");
+       if(track == null)
+           return;
+
+       // Custom gradient that is active 0-x and default x-100
+       track.setStyle(
             String.format("-fx-background-color: linear-gradient(to right, %s 0%%, %s %.1f%%, -text-secondary-half %.1f%%, -text-secondary-half 100%%);", colour, colour, percentage, percentage)
-        );
+       );
     }
 
     @Override

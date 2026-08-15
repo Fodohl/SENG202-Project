@@ -1,11 +1,10 @@
 package seng202.team1.gui.pages;
 
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.control.Label;
 import seng202.team1.common.StringHelpers;
 import seng202.team1.data.Bin;
@@ -29,10 +28,14 @@ public class MapPage extends Page {
     /// The shown bin, null if no bin is being shown right now
     private Integer selectedBin = null;
 
+    private boolean isWaitingForLocation = false;
+
     /// The map the page uses
     private UIMap map;
 
     private VBox sidebar;
+
+    private HBox mapDialog;
 
     private UIKeyValuePair sidebarBinID;
     private UIKeyValuePair sidebarBinType;
@@ -164,10 +167,9 @@ public class MapPage extends Page {
         // Modals
         UIModal logEntryModal = entryModal();
         UIModal reportIssue = reportModal();
+        directionsButton.setOnMouseClicked(e -> waitForLocation());
         logButton.setOnMouseClicked(e -> windowManager.showOverlay(logEntryModal));
         issueButton.setOnMouseClicked(e -> windowManager.showOverlay(reportIssue));
-
-        windowManager.showOverlay(reportIssue);
 
         // Combine
         VBox box = new VBox(titleSection, infoSection, addressSection, collectionSection, actionsSection);
@@ -195,12 +197,24 @@ public class MapPage extends Page {
         // Handle map events
         map.registerPointClickCallback(this::onMarkerClick);
 
-        return new StackPane(map, sidebar);
+        // Map messages
+        Label mapDialogText = new Label("Click your location on the map to get directions");
+        mapDialog = new HBox(mapDialogText);
+
+        // Style such that it is top center
+        mapDialog.getStyleClass().add("map-dialog");
+        StackPane.setAlignment(mapDialog, Pos.TOP_CENTER);
+        StackPane.setMargin(mapDialog, new Insets(0, 250, 0, 0));
+        mapDialogText.setAlignment(Pos.CENTER);
+        HBox.setHgrow(mapDialogText, Priority.ALWAYS);
+
+        return new StackPane(map, mapDialog, sidebar);
     }
 
     @Override
     protected void updateContents() {
 
+        stopWaitingForLocation();
         refreshSidebar();
     }
 
@@ -284,5 +298,17 @@ public class MapPage extends Page {
         typeInput.clear();
         weightInput.clear();
         statusInput.clear();
+    }
+
+    private void waitForLocation(){
+
+        isWaitingForLocation = true;
+        mapDialog.setVisible(true);
+
+    }
+
+    private void stopWaitingForLocation(){
+        isWaitingForLocation = false;
+        mapDialog.setVisible(false);
     }
 }
