@@ -72,6 +72,10 @@ s@font-face {
     -fx-border-width: 3px;
 }
 
+.text-area .viewport {
+    -fx-background-color: transparent;
+}
+
 .slider .track {
     -fx-background-color: -text-secondary-half;
 }
@@ -474,8 +478,8 @@ s@font-face {
 .modal{
     -fx-min-width: 520px;
     -fx-max-width: 580px;
-    -fx-min-height: 720px;
-    -fx-max-height: 720px;
+    -fx-min-height: 760px;
+    -fx-max-height: 760px;
     -fx-padding: 5px;
     -fx-background-color: -bg-primary;
     -fx-background-radius: 15px;

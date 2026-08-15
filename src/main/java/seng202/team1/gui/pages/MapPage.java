@@ -45,6 +45,7 @@ public class MapPage extends Page {
     private UIDropDown typeInput;
     private UITextInput weightInput;
     private UISlider statusInput;
+    private UIParagraphInput reportInput;
 
     /**
      * Constructs a new MapPage
@@ -93,7 +94,7 @@ public class MapPage extends Page {
 
         // Action handlers
         submit.setOnMouseClicked(e -> submitTrashLog());
-        cancel.setOnMouseClicked(e -> closeTrashLog());
+        cancel.setOnMouseClicked(e -> closeModal());
 
         // Center buttons
         actionsSection.getStyleClass().add("buttons");
@@ -101,6 +102,33 @@ public class MapPage extends Page {
 
         VBox contents = new VBox(logInputSection, binInputSection, actionsSection);
         return new UIModal("/images/log.svg", "Log Trash", contents);
+    }
+
+    private UIModal reportModal(){
+
+        // Bin data
+        UIIconText reportLabel = new UIIconText("log", "Report Info");
+        reportInput = new UIParagraphInput("Enter the issue with this bin...");
+        UIIconText statusLabel = new UIIconText("bin-full", "Estimated Fullness");
+        statusInput = new UISlider();
+        UISection binInputSection = new UISection(15, reportLabel, reportInput, statusLabel, statusInput);
+
+        // Actions
+        UIButton submit = new UIButton("Submit Report");
+        UIButton cancel = new UIButton("Cancel", true);
+        UISection actionsSection = new UISection(15, submit, cancel);
+
+        // Action handlers
+        submit.setOnMouseClicked(e -> submitReport());
+        cancel.setOnMouseClicked(e -> closeModal());
+
+        // Center buttons
+        actionsSection.getStyleClass().add("buttons");
+        actionsSection.setAlignment(Pos.CENTER);
+
+        VBox contents = new VBox(binInputSection, actionsSection);
+        return new UIModal("/images/warning.svg", "Report Issue", contents);
+
     }
 
     private VBox sidebar() {
@@ -135,9 +163,11 @@ public class MapPage extends Page {
 
         // Modals
         UIModal logEntryModal = entryModal();
+        UIModal reportIssue = reportModal();
         logButton.setOnMouseClicked(e -> windowManager.showOverlay(logEntryModal));
+        issueButton.setOnMouseClicked(e -> windowManager.showOverlay(reportIssue));
 
-        windowManager.showOverlay(logEntryModal);
+        windowManager.showOverlay(reportIssue);
 
         // Combine
         VBox box = new VBox(titleSection, infoSection, addressSection, collectionSection, actionsSection);
@@ -180,6 +210,7 @@ public class MapPage extends Page {
         if (Objects.equals(selectedBin, binID)) selectedBin = null;
         else selectedBin = binID;
 
+        clearInput();
         updateContents();
     }
 
@@ -228,7 +259,19 @@ public class MapPage extends Page {
 //        closeTrashLog();
     }
 
-    private void closeTrashLog(){
+    private void submitReport(){
+
+        // Save
+
+        // Errors
+        reportInput.setError("Not enough chars");
+        statusInput.setError("To much");
+
+
+//        closeTrashLog();
+    }
+
+    private void closeModal(){
 
         clearInput();
         windowManager.hideOverlay();
