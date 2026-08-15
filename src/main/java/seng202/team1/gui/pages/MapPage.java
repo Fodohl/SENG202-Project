@@ -42,6 +42,10 @@ public class MapPage extends Page {
     private UIKeyValuePair sidebarBinTimesUsed;
     private UIKeyValuePair sidebarBinLastUsed;
 
+    private UIDropDown typeInput;
+    private UITextInput weightInput;
+    private UISlider statusInput;
+
     /**
      * Constructs a new MapPage
      *
@@ -72,25 +76,24 @@ public class MapPage extends Page {
 
         // Log data
         UIIconText typeLabel = new UIIconText("bin", "Trash Type");
-        UIDropDown typeInput = new UIDropDown("Select waste type...", trashTypes);
+        typeInput = new UIDropDown("Select waste type...", trashTypes);
         UIIconText weightLabel = new UIIconText("scales", "Estimated Weight");
-        UITextInput weightInput = new UITextInput("Enter waste weight...");
+        weightInput = new UITextInput("Enter waste weight...");
         UISection logInputSection = new UISection(15, typeLabel, typeInput, weightLabel, weightInput);
 
         // Bin data
         UIIconText statusLabel = new UIIconText("bin-full", "Estimated Fullness");
-        UISlider statusInput = new UISlider();
+        statusInput = new UISlider();
         UISection binInputSection = new UISection(15, statusLabel, statusInput);
 
         // Actions
-        UIKeyValuePair error = new UIKeyValuePair("Error", "Cannot talk to logging service");
         UIButton submit = new UIButton("Submit Log");
         UIButton cancel = new UIButton("Cancel", true);
-        UISection actionsSection = new UISection(15, error, submit, cancel);
+        UISection actionsSection = new UISection(15, submit, cancel);
 
         // Action handlers
         submit.setOnMouseClicked(e -> submitTrashLog());
-        cancel.setOnMouseClicked(e -> windowManager.hideOverlay());
+        cancel.setOnMouseClicked(e -> closeTrashLog());
 
         // Center buttons
         actionsSection.getStyleClass().add("buttons");
@@ -206,9 +209,37 @@ public class MapPage extends Page {
         sidebarBinTimesUsed.setText("1");
         sidebarBinLastUsed.setText("N/A");
 
+        // Reset the input
+        statusInput.setInput(bin.getStatus());
+        clearInput();
+
     }
 
     private void submitTrashLog(){
 
+        // Save
+
+        // Errors
+        typeInput.setError("Invalid type");
+        weightInput.setError("NAN");
+        statusInput.setError("To much");
+
+
+//        closeTrashLog();
+    }
+
+    private void closeTrashLog(){
+
+        clearInput();
+        windowManager.hideOverlay();
+
+    }
+
+    private void clearInput() {
+
+        // Clear previous input
+        typeInput.clear();
+        weightInput.clear();
+        statusInput.clear();
     }
 }

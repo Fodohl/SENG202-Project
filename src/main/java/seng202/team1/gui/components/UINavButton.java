@@ -4,6 +4,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import seng202.team1.common.StringHelpers;
+import seng202.team1.gui.GraphicsCommon;
 import seng202.team1.gui.core.WindowManager;
 import seng202.team1.gui.pages.PageType;
 
@@ -71,13 +72,7 @@ public class UINavButton extends HBox {
         if(currentActive == null || dest == null)
             return;
 
-        if(dest == currentActive){
-
-            // Dont add if already added
-            if(!getStyleClass().contains("active"))
-                getStyleClass().add("active");
-        } else{
-            getStyleClass().remove("active");
-        }
+        // Add styling accordingly
+        GraphicsCommon.toggleClass(dest == currentActive, this, "active");
     }
 }

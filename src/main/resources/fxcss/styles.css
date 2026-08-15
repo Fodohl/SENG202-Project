@@ -23,6 +23,7 @@ s@font-face {
     -text-secondary: rgb(104, 112, 119);
     -text-secondary-half: rgb(104, 112, 119, 0.50);
     -text-third: rgb(133, 138, 143);
+    -text-error: #ed5261;
 
     -active: #41965b;
     -active-secondary: #316a47;
@@ -541,4 +542,18 @@ s@font-face {
 
 .icon-text .svg-icon-fill * {
     -fx-fill: -text-secondary;
+}
+
+.error{
+    -fx-text-fill: -text-error;
+    -fx-font-weight: bold;
+}
+
+
+.error .slider .thumb {
+    -fx-background-color: white;
+}
+
+.error .combo-box, .error .text-field, .error .text-area {
+    -fx-border-color: -text-error;
 }
