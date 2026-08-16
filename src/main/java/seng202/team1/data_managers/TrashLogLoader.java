@@ -1,27 +1,38 @@
 package seng202.team1.data_managers;
 
-import java.io.FileReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  * Loads trash logs data from a JSON file into {@link TrashLog} instances
  * @author Marcus Demafeliz
  */
 public class TrashLogLoader {
-    private static final Logger log = LogManager.getLogger(DataLoader.class);
-    private final String filePath = "json/trashlogs.json";
+    // CHANGED: identifies this class correctly in the log output.
+    private static final Logger log =
+            LogManager.getLogger(TrashLogLoader.class);
+
+    // NEW: retained only for the existing bundled sample JSON file.
+    private static final String SAMPLE_RESOURCE_PATH =
+            "json/trashlogs.json";
+
+    // CHANGED: a Path allows the loader to read a user-created JSON file.
+    private final Path filePath;
+
     private final List<TrashLog> trashLogs = new ArrayList<>();
 
 
@@ -30,13 +41,29 @@ public class TrashLogLoader {
     }
 
     /**
+     * Uses the bundled sample JSON file.
+     * Existing tests can keep using new TrashLogLoader().
+     */
+    public TrashLogLoader() {
+        this.filePath = null;
+    }
+
+    /**
+     * Uses a specific JSON file, such as the user's saved history.
+     *
+     * @param filePath location of the JSON file to load
+     */
+    public TrashLogLoader(Path filePath) {
+        this.filePath = filePath;
+    }
+    /**
      * Find trash log by its ID
      * @param id ID of the trash log
      * @return TrashLog matching ID or null if not found
      */
     public TrashLog getTrashLogById(int id) {
         return trashLogs.stream()
-                .filter(bin -> bin.trashLogId() == id)
+                .filter(log -> log.trashLogId() == id)
                 .findFirst()
                 .orElse(null);
     }
@@ -46,30 +73,72 @@ public class TrashLogLoader {
      * Raises an error if file cannot be read
      */
     public void readJson() {
+        // NEW: prevents duplicate records if readJson() is called twice.
+        trashLogs.clear();
+
+        // NEW: no saved file yet means the user simply has no history.
+        if (filePath != null && Files.notExists(filePath)) {
+            return;
+        }
+
         JSONParser parser = new JSONParser();
-        try {
-            JSONObject jsonObject = parseJson(parser);
+
+        try (Reader reader = openReader()) {
+            JSONObject jsonObject = (JSONObject) parser.parse(reader);
             JSONArray logs = (JSONArray) jsonObject.get("trashLogs");
-            for (Object o : logs) {
-                trashLogs.add(parseLog((JSONObject) o));
+
+            // Allows a valid document with no trashLogs field yet.
+            if (logs == null) {
+                return;
             }
-        } catch (Exception e) {
-            log.error("Failed to parse JSON trash logs from file: " + e.getMessage());
+
+            for (Object logObject : logs) {
+                trashLogs.add(parseLog((JSONObject) logObject));
+            }
+        } catch (IOException | ParseException exception) {
+            String location = filePath == null
+                    ? SAMPLE_RESOURCE_PATH
+                    : filePath.toString();
+
+            log.error(
+                    "Failed to read trash logs from " + location,
+                    exception
+            );
+
+            // CHANGED: do not silently continue with broken saved data.
+            throw new IllegalStateException(
+                    "Could not read trash-log data",
+                    exception
+            );
         }
     }
-
     /**
-     * Parses the JSON file into a JSON Object
-     * @param parser JSONParser instance used to parse file contents
-     * @return {@link JSONObject} with JSON data
-     * @throws Exception if an error occurs while reading or parsing JSON file
+     * Opens either an external saved JSON file or the bundled sample file.
+     *
+     * @return reader for the selected JSON source
+     * @throws IOException if the source cannot be opened
      */
-    private JSONObject parseJson(JSONParser parser) throws Exception {
-        InputStream is = DataLoader.class.getClassLoader().getResourceAsStream(filePath);
-        if (is != null) {
-            return (JSONObject) parser.parse(new InputStreamReader(is));
+    private Reader openReader() throws IOException {
+        // NEW: use the supplied external file path for real user data.
+        if (filePath != null) {
+            return Files.newBufferedReader(
+                    filePath,
+                    StandardCharsets.UTF_8
+            );
         }
-        return (JSONObject) parser.parse(new FileReader(filePath));
+
+        // Existing behaviour: use the bundled sample JSON resource.
+        InputStream stream = TrashLogLoader.class
+                .getClassLoader()
+                .getResourceAsStream(SAMPLE_RESOURCE_PATH);
+
+        if (stream == null) {
+            throw new FileNotFoundException(
+                    "Could not find " + SAMPLE_RESOURCE_PATH
+            );
+        }
+
+        return new InputStreamReader(stream, StandardCharsets.UTF_8);
     }
 
     /**
@@ -92,7 +161,7 @@ public class TrashLogLoader {
         Trash.TrashCategory trashCategory = switch (trashLoggedCategory.toUpperCase(Locale.ROOT)) {
             case "RECYCLABLE" -> Trash.TrashCategory.RECYCLABLE;
             case "ORGANIC" -> Trash.TrashCategory.ORGANIC;
-            case "E-WASTE" -> Trash.TrashCategory.E_WASTE;
+            case "E-WASTE", "E_WASTE" -> Trash.TrashCategory.E_WASTE;
             default -> Trash.TrashCategory.GENERAL_WASTE;
         };
 
