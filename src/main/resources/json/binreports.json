@@ -1,16 +1,16 @@
 {
   "binReports": [
     {
-      "binID": "123",
-      "user": "username",
-      "userID": "123",
-    "report": "FULL"
-    },
-    {
-      "binID": "123",
-      "user": "username",
+      "binID": "197",
+      "user": "Test1",
       "userID": "123",
       "report": "FULL"
+    },
+    {
+      "binID": "197",
+      "user": "Test2",
+      "userID": "321",
+      "report": "EMPTY"
     }
   ]
 }

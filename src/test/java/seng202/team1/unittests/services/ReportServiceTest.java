@@ -16,6 +16,7 @@ public class ReportServiceTest {
 
     private ReportService testReportService;
     private BinObject testBin;
+    private User testUser;
 
 
     /**
@@ -25,6 +26,7 @@ public class ReportServiceTest {
     public void setUpTest() {
         testReportService = new ReportService();
         testBin = new BinObject(0, 0, 0, BinObject.BinType.GENERAL_WASTE);
+        testUser = new User(1, "Test");
     }
 
     /**
@@ -32,7 +34,7 @@ public class ReportServiceTest {
      */
     @Test
     public void submitReportWithNullBin() {
-        BinReport binReport = new BinReport(null, new User(), BinObject.BinStatus.FULL);
+        BinReport binReport = new BinReport(null, testUser, BinObject.BinStatus.FULL);
         assertFalse(testReportService.submitReport(binReport));
     }
 
@@ -41,7 +43,7 @@ public class ReportServiceTest {
      */
     @Test
     public void submitReportWithNullDescription() {
-        BinReport binReport = new BinReport(testBin, new User(), null);
+        BinReport binReport = new BinReport(testBin, testUser, null);
         assertFalse(testReportService.submitReport(binReport));
     }
 
@@ -51,7 +53,7 @@ public class ReportServiceTest {
      */
     @Test
     public void submitReportSuccess() {
-        BinReport binReport = new BinReport(testBin, new User(), BinObject.BinStatus.FULL);
+        BinReport binReport = new BinReport(testBin, testUser, BinObject.BinStatus.FULL);
         assertTrue(testReportService.submitReport(binReport));
         assertEquals(BinObject.BinStatus.FULL, testBin.getBinStatus());
     }
@@ -61,7 +63,7 @@ public class ReportServiceTest {
      */
     @Test
     public void submitLocationIncorrectReport() {
-        BinReport binReport = new BinReport(testBin, new User(), BinObject.BinStatus.INCORRECT_LOCATION);
+        BinReport binReport = new BinReport(testBin, testUser, BinObject.BinStatus.INCORRECT_LOCATION);
         assertTrue(testReportService.submitReport(binReport));
         assertEquals(1, testBin.getNumIncorrectLocations());
     }

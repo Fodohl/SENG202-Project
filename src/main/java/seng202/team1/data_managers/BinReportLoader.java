@@ -28,6 +28,10 @@ public class BinReportLoader {
     private final DataLoader dataLoader = new DataLoader();
 
 
+    public BinReportLoader() {
+        dataLoader.readGeoJSON();
+    }
+
     public List<BinReport> getBinReports() {
         return Collections.unmodifiableList(binReports);
     }

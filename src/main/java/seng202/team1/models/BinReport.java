@@ -60,4 +60,12 @@ public class BinReport {
     public BinObject.BinStatus getDescription() {
         return description;
     }
+
+    @Override
+    public String toString() {
+        return "BinReport{" +
+                "binID=" + getBinID() +
+                ", submittedBy=" + getSubmittedBy() +
+                ", description="+ description + "}";
+    }
 }
