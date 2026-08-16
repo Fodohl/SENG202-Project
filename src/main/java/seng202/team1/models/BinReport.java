@@ -36,6 +36,12 @@ public class BinReport {
     }
 
     /**
+     * Get the bin ID
+     * @return binID associated with report
+     */
+    public int getBinID() { return bin.getBinID(); }
+
+    /**
      * Get the reporter
      * Return the reporter
      * @return submittedBy

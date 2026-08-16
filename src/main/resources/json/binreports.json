@@ -2,21 +2,15 @@
   "binReports": [
     {
       "binID": "123",
-      "status": "full",
-      "reports": [
-        { "user": "username", "report": "full" },
-        { "user": "username", "report": "full" },
-        { "user": "username", "report": "full" }
-      ]
+      "user": "username",
+      "userID": "123",
+    "report": "FULL"
     },
     {
       "binID": "123",
-      "status": "full",
-      "reports": [
-        { "user": "username", "report": "full" },
-        { "user": "username", "report": "full" },
-        { "user": "username", "report": "full" }
-      ]
+      "user": "username",
+      "userID": "123",
+      "report": "FULL"
     }
   ]
 }
