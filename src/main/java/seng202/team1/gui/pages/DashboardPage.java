@@ -16,7 +16,7 @@ public class DashboardPage extends Page {
      */
     public DashboardPage(WindowManager windowManager){
 
-        super(windowManager, PageType.DASHBOARD);
+        super(windowManager, Pages.DASHBOARD);
 
     }
 

@@ -6,7 +6,7 @@ import javafx.scene.layout.StackPane;
 import seng202.team1.common.StringHelpers;
 import seng202.team1.gui.GraphicsCommon;
 import seng202.team1.gui.WindowManager;
-import seng202.team1.gui.pages.PageType;
+import seng202.team1.gui.pages.Pages;
 
 /**
  * A UI Component to handle rendering navigation buttons
@@ -22,7 +22,7 @@ public class UINavButton extends HBox {
     private WindowManager windowManager;
 
     /// The page type this nav button represents as a clickable destination
-    private PageType dest;
+    private Pages dest;
 
     /**
      * Constructs a new UINavButton
@@ -30,7 +30,7 @@ public class UINavButton extends HBox {
      * @param windowManager The current window manger for the page this button is on
      * @param dest The navigation destination
      */
-    public UINavButton(WindowManager windowManager, PageType dest) {
+    public UINavButton(WindowManager windowManager, Pages dest) {
 
         // Setup state
         super();
@@ -66,7 +66,7 @@ public class UINavButton extends HBox {
      *
      * @param currentActive The currently active page
      */
-    private void updateIsActive(PageType currentActive){
+    private void updateIsActive(Pages currentActive){
 
         // No active page
         if(currentActive == null || dest == null)

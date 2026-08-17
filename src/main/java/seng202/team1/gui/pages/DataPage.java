@@ -21,7 +21,7 @@ public class DataPage extends Page {
      */
     public DataPage(WindowManager windowManager){
 
-        super(windowManager, PageType.DASHBOARD);
+        super(windowManager, Pages.DASHBOARD);
 
     }
 

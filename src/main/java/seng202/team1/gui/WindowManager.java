@@ -1,14 +1,19 @@
 package seng202.team1.gui;
 
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import seng202.team1.gui.components.UIImage;
-import seng202.team1.gui.components.UIModal;
+import seng202.team1.gui.layout.OverlayLayout;
+import seng202.team1.gui.modals.LogIssueModal;
+import seng202.team1.gui.modals.LogTrashModal;
+import seng202.team1.gui.modals.Modal;
 import seng202.team1.gui.layout.MainLayout;
 import seng202.team1.gui.layout.LayoutElement;
+import seng202.team1.gui.modals.Modals;
 import seng202.team1.gui.pages.*;
 import seng202.team1.state.GlobalState;
 import seng202.team1.state.StateReferrer;
@@ -32,24 +37,31 @@ public class WindowManager extends StateReferrer {
     private Stage currentStage;
 
     /// What page to show on start up
-    public static PageType START_PAGE = PageType.MAP;
+    public static Pages START_PAGE = Pages.MAP;
 
     /// The page that is currently shown
-    private PageType currentPage;
+    private Pages currentPage;
+    private Modals currentModal;
 
     /// The list of the pages that have been show in order
-    private Stack<PageType> history = new Stack<>();
+    private Stack<Pages> history = new Stack<>();
 
     /// The event handlers triggered when switching pages
-    private final List<Consumer<PageType>> pageSwitchCallbacks = new ArrayList<>();
+    private final List<Consumer<Pages>> pageSwitchCallbacks = new ArrayList<>();
+
+    private final List<Consumer<Modals>> modalSwitchCallbacks = new ArrayList<>();
 
     /// The pages this window can switch between
-    private final Map<PageType, Page> pages = new HashMap<>();
+    private final Map<Pages, Page> pages = new HashMap<>();
+
+    private final Map<Modals, Modal> modals = new HashMap<>();
 
     /// The layout that contains the pages for this window
     private final MainLayout layout = new MainLayout(this);
 
-    private final StackPane root = new StackPane(layout.getRendered());
+    private final OverlayLayout overlay = new OverlayLayout(this);
+
+    private final StackPane root = new StackPane(layout.getRendered(), overlay.getRendered());
 
     /**
      * Constructs a new WindowManager, loading the pages for this window
@@ -74,22 +86,49 @@ public class WindowManager extends StateReferrer {
 
         // Show dashboard
         loadPages();
+        loadModals();
         switchPage(START_PAGE);
+        hideOverlay();
     }
 
     /**
      * Creates & stores a new page for each type
      */
     private void loadPages() {
-        loadPage(PageType.DASHBOARD, new DashboardPage(this));
-        loadPage(PageType.MAP, new MapPage(this));
-        loadPage(PageType.LEADERBOARD, new LeaderboardPage(this));
-        loadPage(PageType.TIMELINE, new TimelinePage(this));
-        loadPage(PageType.SETTINGS, new SettingsPage(this));
-        loadPage(PageType.DATA, new DataPage(this));
+        loadPage(Pages.DASHBOARD, new DashboardPage(this));
+        loadPage(Pages.MAP, new MapPage(this));
+        loadPage(Pages.LEADERBOARD, new LeaderboardPage(this));
+        loadPage(Pages.TIMELINE, new TimelinePage(this));
+        loadPage(Pages.SETTINGS, new SettingsPage(this));
+        loadPage(Pages.DATA, new DataPage(this));
     }
 
     /**
+     * Creates & stores a new modal for each type
+     */
+    private void loadModals() {
+        loadModal(Modals.LOG_TRASH, new LogTrashModal(this));
+        loadModal(Modals.LOG_ISSUE, new LogIssueModal(this));
+    }
+
+    /**
+     * Store a modal given its type
+     *
+     * Warning: will unsafely fail if modal is already loaded
+     *
+     * @param type The type of modal
+     * @param modal The modal contents
+     */
+    private void loadModal(Modals type, Modal modal){
+
+        // Should never have two of the same page types
+        if(modals.get(type) != null)
+            throw new InvalidParameterException("Modal type already exists");
+
+        modals.put(type, modal);
+    }
+
+     /**
      * Store a page given its type
      *
      * Warning: will unsafely fail if page is already loaded
@@ -97,7 +136,7 @@ public class WindowManager extends StateReferrer {
      * @param type The type of page
      * @param page The page contents
      */
-    private void loadPage(PageType type, Page page){
+    private void loadPage(Pages type, Page page){
 
         // Should never have two of the same page types
         if(pages.get(type) != null)
@@ -114,10 +153,10 @@ public class WindowManager extends StateReferrer {
      *
      * @param pageType The page to switch to
      */
-    public void switchPage(PageType pageType) {
+    public void switchPage(Pages pageType) {
 
         // Update pages to show latest data pre render
-        for (Consumer<PageType> callback : pageSwitchCallbacks)
+        for (Consumer<Pages> callback : pageSwitchCallbacks)
             callback.accept(pageType);
 
         // Select the page
@@ -140,7 +179,7 @@ public class WindowManager extends StateReferrer {
      *
      * @return The page type that is showns
      */
-    public PageType getCurrentPage() {
+    public Pages getCurrentPage() {
         return currentPage;
     }
 
@@ -152,7 +191,7 @@ public class WindowManager extends StateReferrer {
      * @param callback The function to run when a page change is triggered
      * @return True if the callback was registered successfully
      */
-    public boolean registerPageChangeCallback(Consumer<PageType> callback){
+    public boolean registerPageChangeCallback(Consumer<Pages> callback){
 
         // Prevent a callback being triggered twice
         if(pageSwitchCallbacks.contains(callback))
@@ -160,6 +199,25 @@ public class WindowManager extends StateReferrer {
 
         // Store
         pageSwitchCallbacks.add(callback);
+        return true;
+    }
+
+    /**
+     * Register an event handler for a modal change event
+     *
+     * Warning: an event handler cannot be registered twice
+     *
+     * @param callback The function to run when a modal change is triggered
+     * @return True if the callback was registered successfully
+     */
+    public boolean registerModalChangeCallback(Consumer<Modals> callback){
+
+        // Prevent a callback being triggered twice
+        if(modalSwitchCallbacks.contains(callback))
+            return false;
+
+        // Store
+        modalSwitchCallbacks.add(callback);
         return true;
     }
 
@@ -172,22 +230,56 @@ public class WindowManager extends StateReferrer {
         history.pop();
 
         // Show the previous page
-        PageType dest = history.pop();
+        Pages dest = history.pop();
         switchPage(dest);
     }
 
-    public void showOverlay(UIModal overlay){
+    public void showOverlay(Parent contents){
 
         // Remove the currently shown overlay
         hideOverlay();
 
         // Show the overlay above the core ui
         overlay.setVisible(true);
-        root.getChildren().add(overlay);
+        overlay.setContents(contents);
     }
 
     public void hideOverlay(){
-        if(root.getChildren().size() == 2)
-            root.getChildren().removeLast();
+        overlay.setVisible(false);
+    }
+
+    public void openModal(Modals modalType){
+
+        // Update pages to show latest data pre render
+        for (Consumer<Modals> callback : modalSwitchCallbacks)
+            callback.accept(modalType);
+
+        // Select the page
+        currentModal = modalType;
+        LayoutElement modal = modals.get(modalType);
+
+        // Hiding modal
+        if(modalType == Modals._CLOSED){
+            overlay.setVisible(false);
+            return;
+        }
+
+        // Page not stored
+        if(modal == null){
+            log.warn("Modal not loaded for type: {}", modalType.name());
+            return;
+        }
+
+        // Show the page
+        showOverlay(modal.getRendered());
+    }
+
+    public void closeModal(){
+
+        // Run close handlers
+        //@TODO
+
+        // Special modal that represents closed state, allows for modals to update self when closed
+        openModal(Modals._CLOSED);
     }
 }

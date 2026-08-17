@@ -1,7 +1,7 @@
 package seng202.team1.unittests.gui.core;
 
 import org.junit.jupiter.api.Test;
-import seng202.team1.gui.pages.PageType;
+import seng202.team1.gui.pages.Pages;
 import seng202.team1.unittests.TrashAppTest;
 
 import java.util.concurrent.atomic.AtomicReference;
@@ -22,31 +22,31 @@ class WindowManagerTest extends TrashAppTest {
     public void switchPageShouldUpdateCurrentPage() {
 
         // Switch to a page
-        windowManager.switchPage(PageType.DASHBOARD);
-        assertEquals(PageType.DASHBOARD, windowManager.getCurrentPage());
+        windowManager.switchPage(Pages.DASHBOARD);
+        assertEquals(Pages.DASHBOARD, windowManager.getCurrentPage());
 
         // Switch to a different page
-        windowManager.switchPage(PageType.MAP);
-        assertEquals(PageType.MAP, windowManager.getCurrentPage());
+        windowManager.switchPage(Pages.MAP);
+        assertEquals(Pages.MAP, windowManager.getCurrentPage());
     }
 
     @Test
     public void switchPageShouldTriggerCallbacks() {
 
         // Set up a handler
-        AtomicReference<PageType> pageType = new AtomicReference<>();
+        AtomicReference<Pages> pageType = new AtomicReference<>();
         windowManager.registerPageChangeCallback(pageType::set);
 
         // Switch the page
-        windowManager.switchPage(PageType.SETTINGS);
-        assertEquals(PageType.SETTINGS, pageType.get());
+        windowManager.switchPage(Pages.SETTINGS);
+        assertEquals(Pages.SETTINGS, pageType.get());
     }
 
     @Test
     public void shouldSafleyFailToRegisterDuplicateCallback() {
 
         // Set up a handler
-        Consumer<PageType> callback = pageType -> {};
+        Consumer<Pages> callback = pageType -> {};
         windowManager.registerPageChangeCallback(callback);
 
         // Should fail
@@ -57,12 +57,12 @@ class WindowManagerTest extends TrashAppTest {
     public void backShouldGoToPreviousPage() {
 
         // Switch to a page
-        windowManager.switchPage(PageType.DASHBOARD);
-        windowManager.switchPage(PageType.MAP);
+        windowManager.switchPage(Pages.DASHBOARD);
+        windowManager.switchPage(Pages.MAP);
 
         // Go back
         windowManager.backPage();
-        assertEquals(PageType.DASHBOARD, windowManager.getCurrentPage());
+        assertEquals(Pages.DASHBOARD, windowManager.getCurrentPage());
     }
 
 }

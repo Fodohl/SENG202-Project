@@ -10,6 +10,8 @@ import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.WasteType;
 import seng202.team1.gui.components.*;
 import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.modals.Modal;
+import seng202.team1.gui.modals.Modals;
 
 import java.util.Arrays;
 import java.util.List;
@@ -42,10 +44,6 @@ public class MapPage extends Page {
     private UIKeyValuePair sidebarBinTimesUsed;
     private UIKeyValuePair sidebarBinLastUsed;
 
-    private UIDropDown typeInput;
-    private UITextInput weightInput;
-    private UISlider statusInput;
-    private UIParagraphInput reportInput;
 
     private Double userPosLat = 0.0;
     private Double userPosLong = 0.0;
@@ -58,7 +56,7 @@ public class MapPage extends Page {
      */
     public MapPage(WindowManager windowManager) {
 
-        super(windowManager, PageType.DASHBOARD, true);
+        super(windowManager, Pages.DASHBOARD, true);
 
     }
 
@@ -72,67 +70,6 @@ public class MapPage extends Page {
         VBox container = new VBox(bin);
         container.getStyleClass().add("bin-icon");
         return container;
-    }
-
-    private UIModal entryModal(){
-
-        // Prepare conents
-        List<String> trashTypes = Arrays.stream(WasteType.values()).map(t -> StringHelpers.enumNameToTitle(t.name())).toList();
-
-        // Log data
-        UIIconText typeLabel = new UIIconText("bin", "Trash Type");
-        typeInput = new UIDropDown("Select waste type...", trashTypes);
-        UIIconText weightLabel = new UIIconText("scales", "Estimated Weight");
-        weightInput = new UITextInput("Enter waste weight...");
-        UISection logInputSection = new UISection(15, typeLabel, typeInput, weightLabel, weightInput);
-
-        // Bin data
-        UIIconText statusLabel = new UIIconText("bin-full", "Estimated Fullness");
-        statusInput = new UISlider();
-        UISection binInputSection = new UISection(15, statusLabel, statusInput);
-
-        // Actions
-        UIButton submit = new UIButton("Submit Log");
-        UIButton cancel = new UIButton("Cancel", true);
-        UISection actionsSection = new UISection(15, submit, cancel);
-
-        // Action handlers
-        submit.setOnMouseClicked(e -> submitTrashLog());
-        cancel.setOnMouseClicked(e -> closeModal());
-
-        // Center buttons
-        actionsSection.getStyleClass().add("buttons");
-        actionsSection.setAlignment(Pos.CENTER);
-
-        VBox contents = new VBox(logInputSection, binInputSection, actionsSection);
-        return new UIModal("/images/log.svg", "Log Trash", contents);
-    }
-
-    private UIModal reportModal(){
-
-        // Bin data
-        UIIconText reportLabel = new UIIconText("log", "Report Info");
-        reportInput = new UIParagraphInput("Enter the issue with this bin...");
-        UIIconText statusLabel = new UIIconText("bin-full", "Estimated Fullness");
-        statusInput = new UISlider();
-        UISection binInputSection = new UISection(15, reportLabel, reportInput, statusLabel, statusInput);
-
-        // Actions
-        UIButton submit = new UIButton("Submit Report");
-        UIButton cancel = new UIButton("Cancel", true);
-        UISection actionsSection = new UISection(15, submit, cancel);
-
-        // Action handlers
-        submit.setOnMouseClicked(e -> submitReport());
-        cancel.setOnMouseClicked(e -> closeModal());
-
-        // Center buttons
-        actionsSection.getStyleClass().add("buttons");
-        actionsSection.setAlignment(Pos.CENTER);
-
-        VBox contents = new VBox(binInputSection, actionsSection);
-        return new UIModal("/images/warning.svg", "Report Issue", contents);
-
     }
 
     private VBox sidebar() {
@@ -166,11 +103,9 @@ public class MapPage extends Page {
         actionsSection.getStyleClass().add("buttons");
 
         // Modals
-        UIModal logEntryModal = entryModal();
-        UIModal reportIssue = reportModal();
         directionsButton.setOnMouseClicked(e -> waitForLocation());
-        logButton.setOnMouseClicked(e -> windowManager.showOverlay(logEntryModal));
-        issueButton.setOnMouseClicked(e -> windowManager.showOverlay(reportIssue));
+        logButton.setOnMouseClicked(e -> windowManager.openModal(Modals.LOG_TRASH));
+        issueButton.setOnMouseClicked(e -> windowManager.openModal(Modals.LOG_ISSUE));
 
         // Combine
         VBox box = new VBox(titleSection, infoSection, addressSection, collectionSection, actionsSection);
@@ -265,7 +200,8 @@ public class MapPage extends Page {
         // Sidebar hidden
         boolean hidden = selectedBin == null;
         sidebar.setVisible(!hidden);
-        if (hidden) return;
+        if (hidden)
+            return;
 
         // Get the bin
         Bin bin = windowManager.getGlobalState().getDataLoader().getBinById(selectedBin);
@@ -279,55 +215,13 @@ public class MapPage extends Page {
         sidebarBinLastUsed.setText("N/A");
 
         // Reset the input
-        statusInput.setInput(bin.getStatus());
-        clearInput();
+        windowManager.closeModal();
 
-    }
-
-    private void submitTrashLog(){
-
-        // Save
-
-        // Errors
-        typeInput.setError("Invalid type");
-        weightInput.setError("NAN");
-        statusInput.setError("To much");
-
-
-//        closeTrashLog();
-    }
-
-    private void submitReport(){
-
-        // Save
-
-        // Errors
-        reportInput.setError("Not enough chars");
-        statusInput.setError("To much");
-
-
-//        closeTrashLog();
-    }
-
-    private void closeModal(){
-
-        clearInput();
-        windowManager.hideOverlay();
-
-    }
-
-    private void clearInput() {
-
-        // Clear previous input
-        typeInput.clear();
-        weightInput.clear();
-        statusInput.clear();
     }
 
     private void clearPreviousBin(){
 
-        clearInput();
-        closeModal();
+        windowManager.hideOverlay();
         removeDirections();
 
     }

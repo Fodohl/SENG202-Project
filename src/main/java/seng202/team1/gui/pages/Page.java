@@ -10,14 +10,14 @@ public abstract class Page extends LayoutElement {
 
 
     /// The type of page this UI component represents
-    protected PageType pageType = null;
+    protected Pages pageType = null;
 
     /**
      * Constructs a new Page
      *
-     * @see #Page(WindowManager, PageType, boolean)
+     * @see #Page(WindowManager, Pages, boolean)
      */
-    public Page(WindowManager windowManager, PageType pageType) {
+    public Page(WindowManager windowManager, Pages pageType) {
         this(windowManager, pageType, false);
     }
 
@@ -28,7 +28,7 @@ public abstract class Page extends LayoutElement {
      * @param pageType The type of page this is
      * @param preRender Whether to render during construction or not
      */
-    public Page(WindowManager windowManager, PageType pageType, boolean preRender){
+    public Page(WindowManager windowManager, Pages pageType, boolean preRender){
 
         super(windowManager, preRender);
 
@@ -50,7 +50,7 @@ public abstract class Page extends LayoutElement {
      *
      * @param destScene The page that has been switched to
      */
-    private void onPageChange(PageType destScene){
+    private void onPageChange(Pages destScene){
 
         // Dont rerender if not being shown
         if(pageType == destScene)

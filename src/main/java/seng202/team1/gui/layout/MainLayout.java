@@ -9,7 +9,7 @@ import javafx.scene.layout.*;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.components.UIImage;
 import seng202.team1.gui.components.UINavButton;
-import seng202.team1.gui.pages.PageType;
+import seng202.team1.gui.pages.Pages;
 
 import static seng202.team1.gui.GraphicsCommon.precentWindowX;
 
@@ -55,14 +55,14 @@ public class MainLayout extends LayoutElement {
 
         // Navigation Menu
         VBox navbar = new VBox(8);
-        for (PageType option : PageType.values())
-            if(option != PageType.SETTINGS)
+        for (Pages option : Pages.values())
+            if(option != Pages.SETTINGS)
                 navbar.getChildren().add(new UINavButton(windowManager, option));
 
         // Settings at the bottom
         Region spacer = new Region();
         VBox.setVgrow(spacer, Priority.ALWAYS);
-        HBox navSettings = new UINavButton(windowManager, PageType.SETTINGS);
+        HBox navSettings = new UINavButton(windowManager, Pages.SETTINGS);
 
         // Combine
         VBox sidebar = new VBox();

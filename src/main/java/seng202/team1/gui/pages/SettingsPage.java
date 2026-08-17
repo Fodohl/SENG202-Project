@@ -16,7 +16,7 @@ public class SettingsPage extends Page {
      */
    public SettingsPage(WindowManager windowManager){
 
-        super(windowManager, PageType.DASHBOARD);
+        super(windowManager, Pages.DASHBOARD);
 
     }
 
