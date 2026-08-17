@@ -17,6 +17,10 @@
     <script src="https://unpkg.com/pouchdb@^5.2.0/dist/pouchdb.js"></script>
     <script src="https://unpkg.com/leaflet.tilelayer.pouchdbcached@latest/L.TileLayer.PouchDBCached.js"></script>
 
+    <!-- Leflet.routing plugin -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+
     <style>
         *, *::before, *::after {
             box-sizing: border-box;
@@ -129,6 +133,34 @@
 
         return icon
     }
+
+    let route = null;
+    const setRoute = (startLat, startLng, endLat, endLng) => {
+
+        // Create a new route
+        route = L.Routing.control({
+            waypoints: [
+                L.latLng(startLat, startLng),
+                L.latLng(endLat, endLng)
+            ],
+            router: L.Routing.osrmv1({serviceUrl: 'https://tile.csse.canterbury.ac.nz/route/v1'}),
+            profile: 'walking',
+            routeWhileDragging: true,
+            createMarker: () => {},
+            lineOptions: {
+                styles: [ { color: '#41965b', weight: 8 } ]
+            }
+        }).addTo(map);
+    }
+
+    const clearRoute = () => {
+        if (!route)
+            return
+
+        map.removeControl(route);
+        route = null;
+    }
+
 
     let markerMap = {};
     let selectedMarker = null;

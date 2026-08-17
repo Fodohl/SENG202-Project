@@ -247,10 +247,13 @@ public class MapPage extends Page {
 
         userPosLat = lat;
         userPosLong = lng;
+        Bin bin = windowManager.getGlobalState().getDataLoader().getBinById(selectedBin);
+
 
         // Display user location on map
         removeDirections();
         map.addPoint(userPosLat, userPosLong, userPosMarkerID, "default");
+        map.setRoute(userPosLat, userPosLong, bin.getLatitude(), bin.getLongitude());
 
         stopWaitingForLocation();
     }
@@ -268,10 +271,7 @@ public class MapPage extends Page {
         if (hidden) return;
 
         // Get the bin
-        Bin bin = windowManager.getGlobalState().getDataLoader().getBinObjects()
-                               .stream().filter(b -> Objects.equals(b.getID(), selectedBin))
-                               .findFirst().orElseThrow();
-
+        Bin bin = windowManager.getGlobalState().getDataLoader().getBinById(selectedBin);
 
         sidebarBinID.setText(bin.getID().toString());
         sidebarBinType.setText(StringHelpers.enumNameToTitle(bin.getType().name()));
@@ -331,7 +331,7 @@ public class MapPage extends Page {
 
         clearInput();
         closeModal();
-//        removeDirections();
+        removeDirections();
 
     }
 
@@ -349,5 +349,6 @@ public class MapPage extends Page {
 
     private void removeDirections(){
         map.removePoint(userPosMarkerID);
+        map.clearRoute();
     }
 }

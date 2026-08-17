@@ -97,8 +97,6 @@ public class UIMap extends StackPane {
         // Inject handler
         engine.locationProperty().addListener((obs, oldValue, newValue) -> {
 
-            System.out.printf("HERE: %s%n", newValue);
-
             // Prevent trying to go to the address
             engine.getLoadWorker().cancel();
 
@@ -224,6 +222,16 @@ public class UIMap extends StackPane {
             "   map.removeLayer(markerMap[%d]); " +
             "   delete markerMap[%d]; " +
             "}", markerID, markerID, markerID, markerID);
+        call(js);
+    }
+
+    public void setRoute(double startLat, double startLng, double endLat, double endLng){
+        String js = String.format("setRoute(%f,%f,%f,%f);", startLat, startLng, endLat, endLng);
+        call(js);
+    }
+
+    public void clearRoute(){
+        String js = String.format("clearRoute();");
         call(js);
     }
 
