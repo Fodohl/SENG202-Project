@@ -5,17 +5,17 @@
     <title>Title</title>
 
     <!-- Leaflet core -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css"/>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
 
     <!-- Leaflet.markercluster plugin -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
     <!-- Leflet.pouchdb plugin -->
-	<script src="https://unpkg.com/pouchdb@^5.2.0/dist/pouchdb.js"></script>
-	<script src="https://unpkg.com/leaflet.tilelayer.pouchdbcached@latest/L.TileLayer.PouchDBCached.js"></script>
+    <script src="https://unpkg.com/pouchdb@^5.2.0/dist/pouchdb.js"></script>
+    <script src="https://unpkg.com/leaflet.tilelayer.pouchdbcached@latest/L.TileLayer.PouchDBCached.js"></script>
 
     <style>
         *, *::before, *::after {
@@ -23,6 +23,7 @@
             margin: 0;
             padding: 0;
         }
+
         .leaflet-tile-container img {
             outline: 1px solid transparent;
             mix-blend-mode: multiply;
@@ -36,109 +37,135 @@
 </head>
 <body>
 
-    <div id="map" style="width: 100vw; height: 100vh" class="map-container dark-tiles">
-    </div>
+<div id="map" style="width: 100vw; height: 100vh" class="map-container dark-tiles">
+</div>
 
-    <script>
+<script>
 
-        // Define bridge helpers
-        callJavaAPI = (functionName, params = {}) => {
+    const ICON_FOLDER = new URL('../images/', document.location.href).href;
 
-            // Add salt to prevent call cache
-            params = {
-                ...params,
-                _: Math.random()
-            }
+    // Define bridge helpers
+    callJavaAPI = (functionName, params = {}) => {
 
-            // Convert the params into URL format
-            const searchParams = new URLSearchParams(params);
-            const queryString = searchParams.toString();
-
-            const url = `http://trashapp.local/api/v1/${functionName}${queryString ? '?' + queryString : ''}`;
-            window.location.href = url;
+        // Add salt to prevent call cache
+        params = {
+            ...params,
+            _: Math.random()
         }
 
-        onPointClicked = (id) => {
-            setSelectedPoint(id);
-            callJavaAPI("onPointClicked", {"id": id});
+        // Convert the params into URL format
+        const searchParams = new URLSearchParams(params);
+        const queryString = searchParams.toString();
+
+        // Trigger a non-destructive location change
+        const url = `http://trashapp.local/api/v1/${functionName}${queryString ? '?' + queryString : ''}`;
+        window.location.hash = url;
+    }
+
+    onPointClicked = (id) => {
+        setSelectedPoint(id);
+        callJavaAPI("onPointClicked", {id});
+    }
+
+    onPosClicked = (lat, lng) => {
+        callJavaAPI("onPosClicked", {lat, lng});
+    }
+
+    console.log = (...args) => {
+        callJavaAPI("onConsoleLog", {message: args.map(String).join(' ')})
+    }
+
+    // Marker helpers
+    styleActiveMarker = (target, isActive) => {
+
+        // Nothing to style
+        if (!target)
+            return;
+
+        const node = target.getElement();
+
+        if (isActive) {
+            // Dont add if already added
+            if (!node.classList.contains("active"))
+                node.classList.add("active");
+        } else {
+            node.classList.remove("active");
         }
+    }
 
-        // Marker helpers
-        styleActiveMarker = (target, isActive) => {
+    setSelectedPoint = (id) => {
 
-            // Nothing to style
-            if (!target)
-                return;
+        // Clear old marker
+        if (selectedMarker)
+            styleActiveMarker(selectedMarker, false);
 
-            const node = target.getElement();
+        let toggle = selectedMarker !== markerMap[id];
 
-            if(isActive){
-                // Dont add if already added
-                if(!node.classList.contains("active"))
-                        node.classList.add("active");
-            } else{
-                node.classList.remove("active");
-            }
+        selectedMarker = toggle ? markerMap[id] : null;
+        styleActiveMarker(selectedMarker, true);
+
+        // Center on marker (with space to left to account for the open side bar)
+        if (selectedMarker) {
+            map.setView(selectedMarker.getLatLng(), map.getZoom(), {animate: false});
+            map.panBy([window.innerWidth * 0.15, 0], {animate: false});
         }
+    }
 
-        setSelectedPoint = (id) => {
+    const iconCache = {};
+    makeIcon = (L, name) => {
+        if (iconCache[name])
+            return iconCache[name];
 
-            // Clear old marker
-            if (selectedMarker)
-                styleActiveMarker(selectedMarker, false);
+        const icon = L.icon({
+            iconUrl: `${ICON_FOLDER}/pin-${name}.svg`,
+            iconSize: [40, 50],
+        });
 
-            let toggle = selectedMarker !== markerMap[id];
+        iconCache[name] = icon;
 
-            selectedMarker = toggle ? markerMap[id] : null;
-            styleActiveMarker(selectedMarker, true);
+        // Preload the image
+        const img = new Image();
+        img.src = icon.options.iconUrl;
 
-            // Center on marker (with space to left to account for the open side bar)
-            if (selectedMarker) {
-               map.setView(selectedMarker.getLatLng(), map.getZoom(), {animate: false});
-               map.panBy([window.innerWidth * 0.15, 0], {animate: false});
-            }
-        }
+        return icon
+    }
 
-        makeIcon = (L, name) => {
-            return L.icon({
-                iconUrl: `../images/pin-${name}.svg`,
-                iconSize: [40, 50],
-            });
-        }
+    let markerMap = {};
+    let selectedMarker = null;
 
-        let markerMap = {};
-        let selectedMarker = null;
+    // Centre around chch
+    var coords = [-43.5233, 172.5822];
+    var zoomLevel = 16;
 
-        // Centre around chch
-        var coords = [-43.5233, 172.5822];
-        var zoomLevel = 16;
+    // Create the map (without gpux)
+    var map = L.map('map').setView(coords, zoomLevel);
+    L.Browser.any3d = false;
 
-        // Create the map (without gpux)
-        var map = L.map('map').setView(coords, zoomLevel);
-        L.Browser.any3d = false;
+    // Custom style to fit the app
+    // see toolchain/snazzy.js for conversion
+    var snazzyStyle = 's.e%3Al.i%7Cp.v%3Aoff%2Cs.e%3Al.t.f%7Cp.c%3A%23ffffffff%2Cs.e%3Al.t.s%7Cp.c%3A%23ff10141a%2Cs.t%3A0%7Cs.e%3Ag%7Cp.c%3A%23ff364253%2Cs.t%3A81%7Cs.e%3Ag%7Cp.c%3A%23ff2c3645%2Cs.t%3A6%7Cs.e%3Ag%7Cp.c%3A%23ff2d6ca3%2Cs.t%3A3%7Cs.e%3Ag%7Cp.c%3A%23ff5c6978%2Cs.t%3A39%7Cs.e%3Ag%7Cp.c%3A%23ff1f6b45%2Cs.t%3A40%7Cs.e%3Ag%7Cp.c%3A%23ff1f6b45%2Cs.t%3A33%7Cs.e%3Ag%7Cp.c%3A%23ff1f6b45%2Cs.t%3A37%7Cs.e%3Ag%7Cp.c%3A%23ff1f6b45%2Cs.t%3A36%7Cs.e%3Ag%7Cp.c%3A%23ff364253%2Cs.t%3A4%7Cs.e%3Al%7Cp.v%3Aoff';
 
-        // Custom style to fit the app
-        // see toolchain/snazzy.js for conversion
-        var snazzyStyle = 's.e%3Al.i%7Cp.v%3Aoff%2Cs.e%3Al.t.f%7Cp.c%3A%23ffffffff%2Cs.e%3Al.t.s%7Cp.c%3A%23ff10141a%2Cs.t%3A0%7Cs.e%3Ag%7Cp.c%3A%23ff364253%2Cs.t%3A81%7Cs.e%3Ag%7Cp.c%3A%23ff2c3645%2Cs.t%3A6%7Cs.e%3Ag%7Cp.c%3A%23ff2d6ca3%2Cs.t%3A3%7Cs.e%3Ag%7Cp.c%3A%23ff5c6978%2Cs.t%3A39%7Cs.e%3Ag%7Cp.c%3A%23ff1f6b45%2Cs.t%3A40%7Cs.e%3Ag%7Cp.c%3A%23ff1f6b45%2Cs.t%3A33%7Cs.e%3Ag%7Cp.c%3A%23ff1f6b45%2Cs.t%3A37%7Cs.e%3Ag%7Cp.c%3A%23ff1f6b45%2Cs.t%3A36%7Cs.e%3Ag%7Cp.c%3A%23ff364253%2Cs.t%3A4%7Cs.e%3Al%7Cp.v%3Aoff';
+    // Draw the map tiles
+    L.tileLayer(`https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&apistyle=${snazzyStyle}`, {
+        maxZoom: 20,
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+        attribution: '&copy; Google Maps',
+    }).addTo(map);
 
-        // Draw the map tiles
-        L.tileLayer(`https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&apistyle=${snazzyStyle}`, {
-            maxZoom: 20,
-            subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-            attribution: '&copy; Google Maps',
-        }).addTo(map);
+    // When no point is clicked clear the previous
+    map.on('click', e => {
+        const lat = e.latlng.lat;
+        const lng = e.latlng.lng;
 
-        // When no point is clicked clear the previous
-        map.on('click', () => {
-            setSelectedPoint(null);
-            onPointClicked(null)
-        })
+        setSelectedPoint(null)
+        onPosClicked(lat, lng);
+    })
 
-        // Cluster markers to prevent lag
-        let marker;
-        let markers = L.markerClusterGroup({disableClusteringAtZoom: 16});
-        map.addLayer(markers);
+    // Cluster markers to prevent lag
+    let marker;
+    let markers = L.markerClusterGroup({disableClusteringAtZoom: 16});
+    map.addLayer(markers);
 
-    </script>
+</script>
 </body>
 </html>

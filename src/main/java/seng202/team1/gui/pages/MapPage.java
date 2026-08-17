@@ -50,6 +50,10 @@ public class MapPage extends Page {
     private UISlider statusInput;
     private UIParagraphInput reportInput;
 
+    private Double userPosLat = 0.0;
+    private Double userPosLong = 0.0;
+    private int userPosMarkerID = 0xFFFFFFFF;
+
     /**
      * Constructs a new MapPage
      *
@@ -196,6 +200,7 @@ public class MapPage extends Page {
 
         // Handle map events
         map.registerPointClickCallback(this::onMarkerClick);
+        map.registerPossClickCallback(this::onPosClick);
 
         // Map messages
         Label mapDialogText = new Label("Click your location on the map to get directions");
@@ -221,17 +226,39 @@ public class MapPage extends Page {
     private void onMarkerClick(Integer binID) {
 
         // Toggle the bin
-        if (Objects.equals(selectedBin, binID)) selectedBin = null;
-        else selectedBin = binID;
+        if (Objects.equals(selectedBin, binID))
+            selectedBin = null;
+        else
+            selectedBin = binID;
 
-        clearInput();
+        clearPreviousBin();
         updateContents();
+    }
+
+    private void onPosClick(Double lat, Double lng) {
+
+        // Bin un-selected
+        if(!isWaitingForLocation){
+            selectedBin = null;
+            updateContents();
+            removeDirections();
+            return;
+        }
+
+        userPosLat = lat;
+        userPosLong = lng;
+
+        // Display user location on map
+        removeDirections();
+        map.addPoint(userPosLat, userPosLong, userPosMarkerID, "default");
+
+        stopWaitingForLocation();
     }
 
     /**
      * Update the contents of the status bar to show the selected bin (if any). If no bin is selected sidebar is not shown
      *
-     * @todo status, useage, image
+     * @todo image
      */
     private void refreshSidebar() {
 
@@ -300,6 +327,14 @@ public class MapPage extends Page {
         statusInput.clear();
     }
 
+    private void clearPreviousBin(){
+
+        clearInput();
+        closeModal();
+//        removeDirections();
+
+    }
+
     private void waitForLocation(){
 
         isWaitingForLocation = true;
@@ -310,5 +345,9 @@ public class MapPage extends Page {
     private void stopWaitingForLocation(){
         isWaitingForLocation = false;
         mapDialog.setVisible(false);
+    }
+
+    private void removeDirections(){
+        map.removePoint(userPosMarkerID);
     }
 }

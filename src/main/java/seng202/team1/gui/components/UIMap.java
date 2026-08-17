@@ -1,6 +1,7 @@
 package seng202.team1.gui.components;
 
 import com.sun.javafx.webkit.WebConsoleListener;
+import javafx.application.Platform;
 import javafx.concurrent.Worker;
 import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebEngine;
@@ -17,6 +18,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /**
@@ -49,6 +51,11 @@ public class UIMap extends StackPane {
 
     /// List of callbacks to execute when a marker is clicked
     private List<Consumer<Integer>> pointClickCallbacks = new ArrayList<>();
+
+    /// List of callbacks to execute when a marker is clicked
+    private List<BiConsumer<Double, Double>> posClickCallbacks = new ArrayList<>();
+
+    private boolean mapReady = false;
 
     /**
      * Constructs a new UIMap
@@ -83,22 +90,25 @@ public class UIMap extends StackPane {
             if (newValue != Worker.State.SUCCEEDED)
                 return;
 
+            mapReady = true;
             proccessCalls();
         });
 
         // Inject handler
         engine.locationProperty().addListener((obs, oldValue, newValue) -> {
 
+            System.out.printf("HERE: %s%n", newValue);
+
             // Prevent trying to go to the address
             engine.getLoadWorker().cancel();
 
             // Handle call
-            processAPICall(newValue);
-
+            Platform.runLater(() -> processAPICall(newValue));
         });
 
         // Pipe js logs to sout
         map.getEngine().setOnError(e -> log.error("{}", e));
+        addPoint(0,0,-50,"default");
     }
 
     private void processAPICall(String callURL){
@@ -107,6 +117,7 @@ public class UIMap extends StackPane {
         URI callData;
         try{
             callData = new URI(callURL);
+            callData = new URI(callData.getFragment());
         } catch (URISyntaxException e) {
             log.warn(String.format("Trash App API Call Dropped: %s - 1 - %s", callURL, e.getMessage()));
             return;
@@ -122,6 +133,16 @@ public class UIMap extends StackPane {
 
                 case "onPointClicked" : {
                     onPointClicked(params);
+                    break;
+                }
+
+                case "onPosClicked" : {
+                    onPosClicked(params);
+                    break;
+                }
+
+                case "onConsoleLog" : {
+                    System.out.println(params.get("message"));
                     break;
                 }
 
@@ -158,7 +179,7 @@ public class UIMap extends StackPane {
     private void call(String js){
 
         // Map not ready
-        if(GlobalState.IS_HEADLESS_MODE || engine.getLoadWorker().getState() != Worker.State.SUCCEEDED){
+        if(GlobalState.IS_HEADLESS_MODE || !mapReady){
             engineCalls.add(js);
             return;
         }
@@ -173,7 +194,7 @@ public class UIMap extends StackPane {
      * @param lng The longitudinal position of the marker
      */
     public void addPoint(double lat, double lng, int markerID) {
-       addPoint(lat, lng, markerID, "");
+       addPoint(lat, lng, markerID, "default");
     }
 
     /**
@@ -196,6 +217,16 @@ public class UIMap extends StackPane {
         call(js);
     }
 
+    public void removePoint(int markerID) {
+        String js = String.format(
+            "if (markerMap[%d]) { " +
+            "   markers.removeLayer(markerMap[%d]); " +
+            "   map.removeLayer(markerMap[%d]); " +
+            "   delete markerMap[%d]; " +
+            "}", markerID, markerID, markerID, markerID);
+        call(js);
+    }
+
     /**
      * Register an event handler for a point click event
      *
@@ -215,6 +246,25 @@ public class UIMap extends StackPane {
         return false;
     }
 
+    /**
+     * Register an event handler for a position click event
+     *
+     * Warning: an event handler cannot be registered twice
+     *
+     * @param callback The function to run when a position on the map is clicked
+     * @return True if the callback was registered successfully
+     */
+    public boolean registerPossClickCallback(BiConsumer<Double, Double> callback){
+
+        // Prevent a callback being triggered twice
+        if(posClickCallbacks.contains(callback))
+            return false;
+
+        // Store
+        posClickCallbacks.add(callback);
+        return false;
+    }
+
     private void onPointClicked(Map<String, String> params){
 
         String id = params.get("id");
@@ -222,5 +272,17 @@ public class UIMap extends StackPane {
 
         for(Consumer<Integer> callback : pointClickCallbacks)
                 callback.accept(pointId);
+    }
+
+    private void onPosClicked(Map<String, String> params){
+
+        String lat = params.get("lat");
+        String lng = params.get("lng");
+
+        Double latPos = Objects.equals(lat, "null") ? null : Double.parseDouble(lat);
+        Double lngPos = Objects.equals(lng, "null") ? null : Double.parseDouble(lng);
+
+        for(BiConsumer<Double, Double> callback : posClickCallbacks)
+                callback.accept(latPos, lngPos);
     }
 }
