@@ -9,5 +9,7 @@
     "disposedAt": "2026-04-20T00:00:00",
     "binLogId": 197,
     "createdAt": "2026-08-09T00:00:00"
-  }]
+  }],
+  "schemaVersion": 1,
+  "lastSavedAt": "2026-08-09T00:00:00Z"
 }
