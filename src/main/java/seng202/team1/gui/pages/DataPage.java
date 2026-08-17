@@ -5,8 +5,7 @@ import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
 import seng202.team1.gui.components.UITable;
 import seng202.team1.gui.components.UITitle;
-import seng202.team1.gui.core.LayoutElement;
-import seng202.team1.gui.core.WindowManager;
+import seng202.team1.gui.WindowManager;
 
 import java.util.List;
 

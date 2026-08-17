@@ -1,4 +1,4 @@
-package seng202.team1.data;
+package seng202.team1.data.bin;
 
 import java.time.Instant;
 

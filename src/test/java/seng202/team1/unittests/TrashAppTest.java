@@ -3,10 +3,10 @@ package seng202.team1.unittests;
 import javafx.application.Platform;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import seng202.team1.data.Bin;
+import seng202.team1.data.bin.Bin;
 import seng202.team1.data.DataLoader;
 import seng202.team1.data.StringTable;
-import seng202.team1.gui.core.WindowManager;
+import seng202.team1.gui.WindowManager;
 import seng202.team1.state.GlobalState;
 
 import java.util.Map;

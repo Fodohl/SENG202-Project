@@ -1,4 +1,4 @@
-package seng202.team1.gui.core;
+package seng202.team1.gui.layout;
 
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
@@ -6,6 +6,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
+import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.components.UIImage;
 import seng202.team1.gui.components.UINavButton;
 import seng202.team1.gui.pages.PageType;
@@ -17,7 +18,7 @@ import static seng202.team1.gui.GraphicsCommon.precentWindowX;
  *
  * Note: there should be only one per window
  */
-public class CoreUI extends LayoutElement {
+public class MainLayout extends LayoutElement {
 
     /// The element that contains the content of the current page
     private ScrollPane content = new ScrollPane();
@@ -30,7 +31,7 @@ public class CoreUI extends LayoutElement {
      *
      * @param windowManager The reference to the window this UI & its pages will be shown on
      */
-    public CoreUI(WindowManager windowManager) {
+    public MainLayout(WindowManager windowManager) {
         super(windowManager);
 
     }

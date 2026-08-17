@@ -2,7 +2,7 @@ package seng202.team1.state;
 
 import javafx.stage.Stage;
 import seng202.team1.data.DataLoader;
-import seng202.team1.gui.core.WindowManager;
+import seng202.team1.gui.WindowManager;
 
 /**
  * Stores the current state of the app and provides managers to control it

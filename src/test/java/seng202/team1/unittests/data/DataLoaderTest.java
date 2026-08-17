@@ -8,9 +8,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import seng202.team1.data.Bin;
+import seng202.team1.data.bin.Bin;
 import seng202.team1.data.DataLoader;
-import seng202.team1.data.WasteType;
+import seng202.team1.data.bin.WasteType;
 
 /**
  * Test DataLoader

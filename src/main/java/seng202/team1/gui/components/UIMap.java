@@ -1,6 +1,6 @@
 package seng202.team1.gui.components;
 
-import com.sun.javafx.webkit.WebConsoleListener;
+import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
 import javafx.concurrent.Worker;
 import javafx.scene.layout.StackPane;
@@ -9,17 +9,18 @@ import javafx.scene.web.WebView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import seng202.team1.common.URLHelpers;
-import seng202.team1.gui.pages.PageType;
+import seng202.team1.data.route.RouteInstruction;
 import seng202.team1.state.GlobalState;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+
+import static seng202.team1.TrashApp.GSON;
 
 /**
  * A UI Component to handle rendering maps
@@ -35,6 +36,7 @@ import java.util.function.Consumer;
  * @credit (1) https://stackoverflow.com/questions/35985601/calling-a-java-method-from-a-javafx-webview - re web callbacks
  * @credit (2) https://stackoverflow.com/questions/48855972/webview-javafx-redirect-a-certain-url-when-accessed
  * @credit (3) https://stackoverflow.com/questions/31160253/how-to-handle-html-form-in-javafx-application
+ * @credit (4) https://stackoverflow.com/questions/5554217/deserialize-a-listt-object-with-gson
  *
  * @todo performance improvements: local tile cache backend
  */
@@ -56,6 +58,8 @@ public class UIMap extends StackPane {
     private List<BiConsumer<Double, Double>> posClickCallbacks = new ArrayList<>();
 
     private boolean mapReady = false;
+
+    Type listType = new TypeToken<ArrayList<RouteInstruction>>(){}.getType();
 
     /**
      * Constructs a new UIMap
@@ -115,7 +119,7 @@ public class UIMap extends StackPane {
         URI callData;
         try{
             callData = new URI(callURL);
-            callData = new URI(callData.getFragment());
+            callData = new URI(callData.getRawFragment());
         } catch (URISyntaxException e) {
             log.warn(String.format("Trash App API Call Dropped: %s - 1 - %s", callURL, e.getMessage()));
             return;
@@ -141,6 +145,11 @@ public class UIMap extends StackPane {
 
                 case "onConsoleLog" : {
                     System.out.println(params.get("message"));
+                    break;
+                }
+
+                case "onMapRouted" : {
+                    onMapRouted(params);
                     break;
                 }
 
@@ -292,5 +301,14 @@ public class UIMap extends StackPane {
 
         for(BiConsumer<Double, Double> callback : posClickCallbacks)
                 callback.accept(latPos, lngPos);
+    }
+
+    private void onMapRouted(Map<String, String> params){
+
+        List<RouteInstruction> result = GSON.fromJson(params.get("route"), listType);
+
+        for(RouteInstruction r : result)
+            System.out.println(r);
+
     }
 }

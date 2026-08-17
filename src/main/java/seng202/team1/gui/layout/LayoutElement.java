@@ -1,6 +1,7 @@
-package seng202.team1.gui.core;
+package seng202.team1.gui.layout;
 
 import javafx.scene.Parent;
+import seng202.team1.gui.WindowManager;
 import seng202.team1.state.GlobalState;
 
 /**

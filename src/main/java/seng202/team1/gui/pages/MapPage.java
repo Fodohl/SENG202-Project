@@ -2,18 +2,15 @@ package seng202.team1.gui.pages;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.layout.*;
 import javafx.scene.control.Label;
 import seng202.team1.common.StringHelpers;
-import seng202.team1.data.Bin;
-import seng202.team1.data.WasteType;
+import seng202.team1.data.bin.Bin;
+import seng202.team1.data.bin.WasteType;
 import seng202.team1.gui.components.*;
-import seng202.team1.gui.core.LayoutElement;
-import seng202.team1.gui.core.WindowManager;
+import seng202.team1.gui.WindowManager;
 
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;

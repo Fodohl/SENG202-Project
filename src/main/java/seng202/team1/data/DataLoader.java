@@ -11,6 +11,8 @@ import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import seng202.team1.data.bin.Bin;
+import seng202.team1.data.bin.WasteType;
 
 /**
  * DataLoader

@@ -3,8 +3,8 @@ package seng202.team1.unittests.data;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
 
-import seng202.team1.data.Bin;
-import seng202.team1.data.WasteType;
+import seng202.team1.data.bin.Bin;
+import seng202.team1.data.bin.WasteType;
 import seng202.team1.unittests.TrashAppTest;
 
 /**

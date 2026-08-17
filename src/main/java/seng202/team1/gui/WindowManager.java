@@ -1,6 +1,5 @@
-package seng202.team1.gui.core;
+package seng202.team1.gui;
 
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
@@ -8,6 +7,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import seng202.team1.gui.components.UIImage;
 import seng202.team1.gui.components.UIModal;
+import seng202.team1.gui.layout.MainLayout;
+import seng202.team1.gui.layout.LayoutElement;
 import seng202.team1.gui.pages.*;
 import seng202.team1.state.GlobalState;
 import seng202.team1.state.StateReferrer;
@@ -20,7 +21,7 @@ import static seng202.team1.gui.GraphicsCommon.WINDOW_HEIGHT;
 import static seng202.team1.gui.GraphicsCommon.WINDOW_WIDTH;
 
 /**
- * Manages loading all pages and switching between them
+ * Manages loading all pages and switching between them. Also manages the main app window and the lifetime of other windows
  */
 public class WindowManager extends StateReferrer {
 
@@ -46,7 +47,7 @@ public class WindowManager extends StateReferrer {
     private final Map<PageType, Page> pages = new HashMap<>();
 
     /// The layout that contains the pages for this window
-    private final CoreUI layout = new CoreUI(this);
+    private final MainLayout layout = new MainLayout(this);
 
     private final StackPane root = new StackPane(layout.getRendered());
 
@@ -54,7 +55,7 @@ public class WindowManager extends StateReferrer {
      * Constructs a new WindowManager, loading the pages for this window
      *
      * @param state The reference to global state
-     * @param currentStage The window this manager is responsible for
+     * @param currentStage The main app window
      */
     public WindowManager(GlobalState state, Stage currentStage){
         super(state);

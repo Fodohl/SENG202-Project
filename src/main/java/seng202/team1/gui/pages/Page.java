@@ -1,9 +1,7 @@
 package seng202.team1.gui.pages;
 
-import javafx.scene.Parent;
-import seng202.team1.gui.components.UIModal;
-import seng202.team1.gui.core.LayoutElement;
-import seng202.team1.gui.core.WindowManager;
+import seng202.team1.gui.layout.LayoutElement;
+import seng202.team1.gui.WindowManager;
 
 /**
  * A {@link LayoutElement} that represents a page

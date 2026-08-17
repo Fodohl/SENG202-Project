@@ -8,7 +8,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static seng202.team1.gui.core.WindowManager.START_PAGE;
+import static seng202.team1.gui.WindowManager.START_PAGE;
 
 class WindowManagerTest extends TrashAppTest {
 

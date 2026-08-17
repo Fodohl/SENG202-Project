@@ -151,6 +151,20 @@
                 styles: [ { color: '#41965b', weight: 8 } ]
             }
         }).addTo(map);
+
+        // Pass route to frontend
+        route.on('routesfound', e => {
+
+            // Clean route first
+            const route = e.routes[0].instructions.map(i => ({
+                text: i.text,
+                type: i.type,
+                distance: i.distance,
+                time: i.time
+            }));
+
+            callJavaAPI("onMapRouted", {route: JSON.stringify(route)});
+        });
     }
 
     const clearRoute = () => {

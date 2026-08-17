@@ -1,5 +1,6 @@
 package seng202.team1;
 
+import com.google.gson.Gson;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -11,6 +12,8 @@ public class TrashApp {
 
      /// TrashApp specific logger
      private static final Logger log = LogManager.getLogger(TrashApp.class);
+
+     public static final Gson GSON = new Gson();
 
     /**
      * Entry point to the application. Starts the main JavaFX class
