@@ -22,7 +22,7 @@ public class User {
 
     /**
      * Get the userID
-     * Return the userID
+     * @return the userID
      */
 
     public int getUserID() {
@@ -31,7 +31,7 @@ public class User {
 
     /**
      * Get the name
-     * Return the name
+     * @return the name
      */
 
     public String getName() {

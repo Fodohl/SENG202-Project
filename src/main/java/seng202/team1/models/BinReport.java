@@ -76,6 +76,12 @@ public class BinReport {
         return description;
     }
 
+    /**
+     * Returns a string representation of this bin report, including the bin ID,
+     * submitter, description, and submission time.
+     * @return a string representation of this bin report
+     */
+
     @Override
     public String toString() {
         return "BinReport{" +

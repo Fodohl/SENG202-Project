@@ -81,13 +81,35 @@ public class BinObject {
      */
     public BinStatus getBinStatus() { return status; }
 
+
+    /**
+     * Set the bin's status
+     */
     public void setBinStatus(BinStatus status) { this.status = status; }
+
+    /**
+     * Get the incorrect locations
+     * @return numIncorrectLocations
+     */
 
     public int getNumIncorrectLocations() { return numIncorrectLocations; }
 
+    /**
+     * Increment incorrect locations
+     */
+
     public void incrementNumIncorrectLocations() { this.numIncorrectLocations++; }
 
+    /**
+     * Reset incorrect locations
+     */
+
     public void resetNumIncorrectLocations() { this.numIncorrectLocations = 0; }
+
+    /**
+     * Returns string representation of a bin object with binID, latitude and longitude, type and status
+     * @return a string representation of a bin
+     */
 
     @Override
     public String toString() {
