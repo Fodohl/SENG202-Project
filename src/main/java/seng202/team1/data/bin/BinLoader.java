@@ -1,4 +1,4 @@
-package seng202.team1.data;
+package seng202.team1.data.bin;
 
 import java.io.FileReader;
 import java.io.InputStream;
@@ -11,8 +11,7 @@ import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import seng202.team1.data.bin.Bin;
-import seng202.team1.data.bin.WasteType;
+import seng202.team1.data.StringTable;
 
 /**
  * DataLoader
@@ -20,10 +19,10 @@ import seng202.team1.data.bin.WasteType;
  *
  * @author Stanley Easthope
  */
-public class DataLoader {
+public class BinLoader {
 
     /// DataLoader specific logger
-    private static final Logger log = LogManager.getLogger(DataLoader.class);
+    private static final Logger log = LogManager.getLogger(BinLoader.class);
 
     /// Where to load the bins from
     private static final String BIN_DATA = "geojson/bin.geojson";
@@ -75,7 +74,6 @@ public class DataLoader {
                 .orElse(null);
     }
 
-
     /**
      * Reads the GeoJSON file and puts it in a binObjects list
      * Logs an error if the file can't be read
@@ -105,7 +103,7 @@ public class DataLoader {
      * @throws Exception
      */
     private JSONObject parseGeoJson(JSONParser parser) throws Exception {
-        InputStream is = DataLoader.class.getClassLoader().getResourceAsStream(BIN_DATA);
+        InputStream is = BinLoader.class.getClassLoader().getResourceAsStream(BIN_DATA);
         if (is != null) {
             return (JSONObject) parser.parse(new InputStreamReader(is));
         }

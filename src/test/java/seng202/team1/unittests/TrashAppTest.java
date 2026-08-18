@@ -4,7 +4,7 @@ import javafx.application.Platform;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import seng202.team1.data.bin.Bin;
-import seng202.team1.data.DataLoader;
+import seng202.team1.data.bin.BinLoader;
 import seng202.team1.data.StringTable;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.state.GlobalState;
@@ -19,7 +19,7 @@ public class TrashAppTest {
     protected GlobalState state;
 
     protected WindowManager windowManager;
-    protected DataLoader dataLoader;
+    protected BinLoader binLoader;
 
     @BeforeAll
     static void initFx() {
@@ -45,7 +45,7 @@ public class TrashAppTest {
 
         // Extract state for easier access
         windowManager = state.getWindowManager();
-        dataLoader = state.getDataLoader();
+        binLoader = state.getDataLoader();
     }
 
     protected StringTable testDataTable() {

@@ -3,6 +3,7 @@ package seng202.team1.gui.modals;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import seng202.team1.common.StringHelpers;
 import seng202.team1.gui.WindowManager;
@@ -36,9 +37,12 @@ public abstract class Modal extends LayoutElement implements Cloneable {
 
 
         // Wrapper for children
-        VBox body = new VBox(16);
+        ScrollPane body = new ScrollPane(buildBody());
         body.getStyleClass().add("body");
-        body.getChildren().addAll(buildBody());
+
+        // Only scrol verticaly
+        body.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        body.setFitToWidth(true);
 
         // Container holding the contents
         VBox contents = new VBox(header(modalType), body);

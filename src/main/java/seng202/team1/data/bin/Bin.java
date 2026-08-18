@@ -33,6 +33,7 @@ public class Bin {
 
     /**
      * Constructor for Bin class
+     *
      * @param binID - unique identifier for the bin
      * @param latitude - latitude of the bin
      * @param longitude - longitude of the bin

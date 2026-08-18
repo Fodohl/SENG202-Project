@@ -4,6 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
 import seng202.team1.common.StringHelpers;
+import seng202.team1.data.bin.BinFullness;
 import seng202.team1.data.bin.WasteType;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.components.*;
@@ -16,7 +17,7 @@ public class LogTrashModal extends Modal{
 
     private UIDropDown typeInput;
     private UITextInput weightInput;
-    private UISlider statusInput;
+    private UIChipsInput statusInput;
 
     public LogTrashModal(WindowManager windowManager){
         super(windowManager, Modals.LOG_TRASH);
@@ -37,7 +38,7 @@ public class LogTrashModal extends Modal{
 
         // Bin data
         UIIconText statusLabel = new UIIconText("bin-full", "Estimated Fullness");
-        statusInput = new UISlider();
+        statusInput = new UIChipsInput(BinFullness.class);
         UISection binInputSection = new UISection(15, statusLabel, statusInput);
 
         // Actions

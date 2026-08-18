@@ -1,7 +1,7 @@
 package seng202.team1.state;
 
 import javafx.stage.Stage;
-import seng202.team1.data.DataLoader;
+import seng202.team1.data.bin.BinLoader;
 import seng202.team1.gui.WindowManager;
 
 /**
@@ -16,7 +16,7 @@ public class GlobalState {
     private WindowManager windowManager;
 
     /// The handler for the static bin data
-    private DataLoader dataLoader;
+    private BinLoader binLoader;
 
     /**
      * Constructs a new GlobalState and sets up managers
@@ -26,8 +26,8 @@ public class GlobalState {
     public GlobalState(Stage stage){
 
         // Data must be loaded first as UI depends on it
-        this.dataLoader = new DataLoader();
-        dataLoader.readGeoJSON();
+        this.binLoader = new BinLoader();
+        binLoader.readGeoJSON();
 
         this.windowManager = new WindowManager(this, stage);
     }
@@ -46,8 +46,8 @@ public class GlobalState {
      *
      * @return The data loader for the app
      */
-    public DataLoader getDataLoader() {
-        return dataLoader;
+    public BinLoader getDataLoader() {
+        return binLoader;
     }
 
 }

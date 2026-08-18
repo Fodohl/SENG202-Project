@@ -117,7 +117,7 @@ s@font-face {
     -fx-padding: 14px 0px 0px 0px;
 }
 
-.navitem{
+.iconbutton{
     -fx-alignment: center-left;
     -fx-spacing: 12px;
     -fx-padding: 15px 15px;
@@ -125,40 +125,40 @@ s@font-face {
     -fx-cursor: hand;
 }
 
-.navitem:hover {
+.iconbutton:hover {
     -fx-background-color: -bg-secondary;
 
 }
 
-.navitem.active {
+.iconbutton.active {
     -fx-background-color: -active-secondary;
 }
 
-.navitem.active:hover {
+.iconbutton.active:hover {
     -fx-background-color: -active-dark;
 }
 
-.nav-icon{
+.iconbutton-icon{
     width: 15%;
 }
 
-.nav-icon .svg-icon * {
+.iconbutton-icon .svg-icon * {
     -fx-stroke: -text-secondary;
 }
 
-.nav-icon .svg-icon-fill * {
+.iconbutton-icon .svg-icon-fill * {
     -fx-fill: -text-secondary;
 }
 
-.active .nav-icon .svg-icon * {
+.active .iconbutton-icon .svg-icon * {
     -fx-stroke: -active-bright;
 }
 
-.active .nav-icon .svg-icon-fill * {
+.active .iconbutton-icon .svg-icon-fill * {
     -fx-fill: -active-bright;
 }
 
-.nav-text{
+.iconbutton-text{
     -fx-font-size: 24px;
 }
 
@@ -521,6 +521,11 @@ s@font-face {
 
 .modal .body {
     -fx-padding: 10px 20px;
+    -fx-background-color: transparent;
+}
+
+.modal .body .viewport{
+    -fx-background-color: transparent;
 }
 
 .modal .svg-icon * {
@@ -572,4 +577,47 @@ s@font-face {
 
 .modal-window .modal{
     -fx-border-radius: 0px;
+}
+
+.chip-button{
+    -fx-padding: 7px 15px;
+    -fx-background-color: -bg-third;
+}
+
+.chip-button .iconbutton-text{
+    -fx-font-size: 15px;
+    -fx-padding: 0px 10px 0px 0px;
+}
+
+.scroll-bar:vertical, .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
+.thumb{
+    -fx-background-color: -text-secondary-half;
+    -fx-background-radius: 8px;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0px;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-shape: " ";
+    -fx-padding: 0px;
+}
+
+.error .iconbutton.active {
+    -fx-background-color: -text-error;
+}
+
+.error .active .svg-icon * {
+    -fx-stroke: -text-primary;
+}
+
+.error  .active .svg-icon-fill * {
+    -fx-fill: -text-primary;
 }

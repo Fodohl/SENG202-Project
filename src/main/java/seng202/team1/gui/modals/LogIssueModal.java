@@ -3,13 +3,16 @@ package seng202.team1.gui.modals;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
+import seng202.team1.data.ReportType;
+import seng202.team1.data.bin.BinFullness;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.components.*;
 
 public class LogIssueModal extends Modal{
 
 
-    private UISlider statusInput;
+    private UIChipsInput statusInput;
+    private UIChipsInput typeInput;
     private UIParagraphInput reportInput;
 
     public LogIssueModal(WindowManager windowManager){
@@ -22,9 +25,11 @@ public class LogIssueModal extends Modal{
         // Bin data
         UIIconText reportLabel = new UIIconText("log", "Report Info");
         reportInput = new UIParagraphInput("Enter the issue with this bin...");
+        UIIconText typeLabel = new UIIconText("tag", "Report Type");
+        typeInput = new UIChipsInput(ReportType.class);
         UIIconText statusLabel = new UIIconText("bin-full", "Estimated Fullness");
-        statusInput = new UISlider();
-        UISection binInputSection = new UISection(15, reportLabel, reportInput, statusLabel, statusInput);
+        statusInput = new UIChipsInput(BinFullness.class);
+        UISection binInputSection = new UISection(15, reportLabel, reportInput, typeLabel, typeInput, statusLabel, statusInput);
 
         // Actions
         UIButton submit = new UIButton("Submit Report");
@@ -62,8 +67,8 @@ public class LogIssueModal extends Modal{
 
         // Errors
         reportInput.setError("Not enough chars");
+        typeInput.setError("tag err");
         statusInput.setError("To much");
-
 
 //        closeTrashLog();
     }

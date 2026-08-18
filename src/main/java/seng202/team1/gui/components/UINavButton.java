@@ -16,7 +16,7 @@ import seng202.team1.gui.pages.Pages;
  *
  * Note: No onClick needed, will automatically handle navigation calls
  */
-public class UINavButton extends HBox {
+public class UINavButton extends UIIconButton {
 
     /// The window manager responsible for the active page and switching to others
     private WindowManager windowManager;
@@ -33,33 +33,18 @@ public class UINavButton extends HBox {
     public UINavButton(WindowManager windowManager, Pages dest) {
 
         // Setup state
-        super();
+        super(String.format("/images/%s.svg", dest.name().toLowerCase()), StringHelpers.toTitleCase(dest.name()));
         this.windowManager = windowManager;
         this.dest = dest;
 
-        // Extract info from page type
-        String iconPath = String.format("/images/%s.svg", dest.name().toLowerCase());
-        String title = StringHelpers.toTitleCase(dest.name());
-
         // Apply styles
-        getStyleClass().add("navitem");
         updateIsActive(windowManager.getCurrentPage());
-
-        // Add icon
-        StackPane icon = new UIImage(iconPath, 25, 25);
-        icon.getStyleClass().add("nav-icon");
-
-        // Add text
-        Label label = new Label(title);
-        label.getStyleClass().add("nav-text");
-
-        // Combine
-        getChildren().addAll(icon, label);
 
         // Handle events
         setOnMouseClicked(e -> windowManager.switchPage(dest));
         windowManager.registerPageChangeCallback(this::updateIsActive);
     }
+
 
     /**
      * Updates the style of this nav button to indicate whether this button's page is currently being shown or not

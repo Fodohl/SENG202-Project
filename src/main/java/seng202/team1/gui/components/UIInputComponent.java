@@ -4,7 +4,6 @@ import javafx.scene.Node;
 import javafx.scene.control.Label;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import seng202.team1.data.DataLoader;
 import seng202.team1.gui.GraphicsCommon;
 
 
