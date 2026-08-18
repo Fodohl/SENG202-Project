@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import seng202.team1.data.Bin;
 import seng202.team1.data.DataLoader;
-import seng202.team1.data.WasteType;
+import seng202.team1.data.TrashCategory;
 
 /**
  * Test DataLoader
@@ -44,7 +44,7 @@ public class DataLoaderTest {
     public void testGetBinObjectsIsNotChangable() {
         List<Bin> bins = dataLoader.getBinObjects();
         assertThrows(UnsupportedOperationException.class, () ->
-                bins.add(new Bin(0, 0, 0, WasteType.GENERAL_WASTE)));
+                bins.add(new Bin(0, 0, 0, TrashCategory.GENERAL_WASTE)));
     }
 
     /**
@@ -53,7 +53,7 @@ public class DataLoaderTest {
     @Test
     public void testRecyclingBin() {
         Bin bin = dataLoader.getBinById(2463);
-        assertEquals(WasteType.RECYCLING, bin.getBinType());
+        assertEquals(TrashCategory.RECYCLABLE, bin.getBinType());
     }
 
     /**
@@ -62,7 +62,7 @@ public class DataLoaderTest {
     @Test
     public void testCompostBinMappedCorrectly() {
         Bin bin = dataLoader.getBinById(2537);
-        assertEquals(WasteType.ORGANIC, bin.getBinType());
+        assertEquals(TrashCategory.ORGANIC, bin.getBinType());
     }
 
     /**
@@ -71,7 +71,7 @@ public class DataLoaderTest {
     @Test
     public void testGeneralWasteBinMappedCorrectly() {
         Bin bin = dataLoader.getBinById(197);
-        assertEquals(WasteType.GENERAL_WASTE, bin.getBinType());
+        assertEquals(TrashCategory.GENERAL_WASTE, bin.getBinType());
     }
 
     /**
@@ -80,7 +80,7 @@ public class DataLoaderTest {
     @Test
     public void testCanineLittlerBinMappedToGeneralWaste() {
         Bin bin = dataLoader.getBinById(63534);
-        assertEquals(WasteType.GENERAL_WASTE, bin.getBinType());
+        assertEquals(TrashCategory.GENERAL_WASTE, bin.getBinType());
     }
 
     /**
@@ -89,6 +89,6 @@ public class DataLoaderTest {
     @Test
     public void testLitterAndRecyclingBinMappedToGeneralWaste() {
         Bin bin = dataLoader.getBinById(311361);
-        assertEquals(WasteType.GENERAL_WASTE, bin.getBinType());
+        assertEquals(TrashCategory.GENERAL_WASTE, bin.getBinType());
     }
 }

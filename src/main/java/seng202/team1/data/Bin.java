@@ -18,7 +18,7 @@ public class Bin {
     protected double longitude;
 
     /// The type of rubish the bin takes
-    protected WasteType type;
+    protected TrashCategory type;
 
     /**
      * Constructor for Bin class
@@ -27,7 +27,7 @@ public class Bin {
      * @param longitude - longitude of the bin
      * @param type - type of bin (general waste, recycling, organic)
      */
-    public Bin(Integer binID, double latitude, double longitude, WasteType type) {
+    public Bin(Integer binID, double latitude, double longitude, TrashCategory type) {
         this.binID = binID;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -60,7 +60,7 @@ public class Bin {
      * Get the bin's type
      * @return Bin Type
      */
-    public WasteType getBinType() {
+    public TrashCategory getBinType() {
         return type;
     }
 
