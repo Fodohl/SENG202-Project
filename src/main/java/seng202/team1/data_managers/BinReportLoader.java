@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.time.LocalDateTime;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -91,6 +92,8 @@ public class BinReportLoader {
         String reportUser = (String) jsonObject.get("user");
         String reportUserID = (String) jsonObject.get("userID");
         User user = new User(Integer.parseInt(reportUserID), reportUser);
+        LocalDateTime time = LocalDateTime.now();
+
         BinObject.BinStatus report = switch (reportString.toUpperCase(Locale.ROOT)) {
             case "FULL" -> BinObject.BinStatus.FULL;
             case "PARTIAL" -> BinObject.BinStatus.PARTIAL;
@@ -98,6 +101,7 @@ public class BinReportLoader {
             case "INCORRECT_LOCATION" -> BinObject.BinStatus.INCORRECT_LOCATION;
             default -> throw new IllegalStateException("Unexpected value: " + reportString.toUpperCase(Locale.ROOT));
         };
-        return new BinReport(bin, user, report);
+
+        return new BinReport(bin, user, report, time);
     }
 }

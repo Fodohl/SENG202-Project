@@ -2,6 +2,8 @@ package seng202.team1.models;
 
 import seng202.team1.data_managers.BinObject;
 
+import java.time.LocalDateTime;
+
 /**
  * BinReport
  * Class represents a single bin report
@@ -11,6 +13,7 @@ public class BinReport {
     private final BinObject bin;
     private final User submittedBy;
     private final BinObject.BinStatus description;
+    private final LocalDateTime submittedAt;
 
     /**
      * Constructor for BinReport class
@@ -19,10 +22,14 @@ public class BinReport {
      * @param description
      */
 
-    public BinReport(BinObject bin, User submittedBy, BinObject.BinStatus description) {
+    public BinReport(BinObject bin,
+                     User submittedBy,
+                     BinObject.BinStatus description,
+                     LocalDateTime submittedAt) {
         this.bin = bin;
         this.submittedBy = submittedBy;
         this.description = description;
+        this.submittedAt = submittedAt;
     }
 
     /**
@@ -52,6 +59,14 @@ public class BinReport {
     }
 
     /**
+     * Get the time
+     * Return the time
+     * @return submittedAt
+     */
+
+    public LocalDateTime getSubmittedAt() {return submittedAt;}
+
+    /**
      * Get report description
      * Return report description
      * @return description
@@ -66,6 +81,7 @@ public class BinReport {
         return "BinReport{" +
                 "binID=" + getBinID() +
                 ", submittedBy=" + getSubmittedBy() +
-                ", description="+ description + "}";
+                ", description="+ description +
+                ", submittedAt=" + getSubmittedAt() + "}";
     }
 }
