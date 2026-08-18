@@ -114,4 +114,8 @@ public abstract class Modal extends LayoutElement implements Cloneable {
         clone.modalWindow = -1;
         return clone;
     }
+
+    public void recvData(Object data) {
+        // overridden only if needed
+    }
 }

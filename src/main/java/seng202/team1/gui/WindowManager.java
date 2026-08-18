@@ -290,6 +290,10 @@ public class WindowManager extends StateReferrer {
     }
 
     public long spawnModal(Modals modalType){
+        return spawnModal(modalType, null);
+    }
+
+    public long spawnModal(Modals modalType, Object data){
 
         // Select the page
         currentModal = modalType;
@@ -301,8 +305,11 @@ public class WindowManager extends StateReferrer {
             return -1;
         }
 
-        // Contain the modal in a separate root so it can be in multiple windows
+        // Setup a new modal instance for this window
         modal = modal.clone();
+        modal.recvData(data);
+
+        // Contain the modal in a separate root so it can be in multiple windows
         StackPane modalRoot = new StackPane(modal.getRendered());
         modalRoot.getStyleClass().add("modal-window");
 
@@ -317,6 +324,9 @@ public class WindowManager extends StateReferrer {
         // Style the window @todo func
         String cssPath = Objects.requireNonNull(getClass().getResource("/fxcss/styles.css")).toExternalForm();
         scene.getStylesheets().add(cssPath);
+
+        // Spawn the window to the right of the map
+        stage.setX(currentStage.getX() + GraphicsCommon.precentWindowX(0.75));
         stage.show();
 
         // Assign the window an ID for tracking

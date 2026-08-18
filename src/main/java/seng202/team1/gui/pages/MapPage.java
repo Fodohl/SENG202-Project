@@ -8,6 +8,7 @@ import javafx.scene.control.Label;
 import seng202.team1.common.StringHelpers;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.WasteType;
+import seng202.team1.data.route.RouteInstruction;
 import seng202.team1.gui.components.*;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.modals.Modal;
@@ -135,6 +136,7 @@ public class MapPage extends Page {
         // Handle map events
         map.registerPointClickCallback(this::onMarkerClick);
         map.registerPossClickCallback(this::onPosClick);
+        map.registerMapRouted(this::onMapRouted);
 
         // Map messages
         Label mapDialogText = new Label("Click your location on the map to get directions");
@@ -179,17 +181,22 @@ public class MapPage extends Page {
             return;
         }
 
+        // Clear old state
+        removeDirections();
+        stopWaitingForLocation();
+
+
         userPosLat = lat;
         userPosLong = lng;
         Bin bin = windowManager.getGlobalState().getDataLoader().getBinById(selectedBin);
 
         // Display user location on map
-        removeDirections();
         map.addPoint(userPosLat, userPosLong, userPosMarkerID, "default");
         map.setRoute(userPosLat, userPosLong, bin.getLatitude(), bin.getLongitude());
+    }
 
-        directionsModalID = windowManager.spawnModal(Modals.DIRECTIONS);
-        stopWaitingForLocation();
+    private void onMapRouted(List<RouteInstruction> instructions){
+        directionsModalID = windowManager.spawnModal(Modals.DIRECTIONS, instructions);
     }
 
     /**

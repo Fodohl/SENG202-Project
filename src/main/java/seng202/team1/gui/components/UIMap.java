@@ -57,6 +57,8 @@ public class UIMap extends StackPane {
     /// List of callbacks to execute when a marker is clicked
     private List<BiConsumer<Double, Double>> posClickCallbacks = new ArrayList<>();
 
+    private List<Consumer<List<RouteInstruction>>> mapRoutedCallbacks = new ArrayList<>();
+
     private boolean mapReady = false;
 
     Type listType = new TypeToken<ArrayList<RouteInstruction>>(){}.getType();
@@ -282,6 +284,17 @@ public class UIMap extends StackPane {
         return false;
     }
 
+    public boolean registerMapRouted(Consumer<List<RouteInstruction>> callback){
+
+        // Prevent a callback being triggered twice
+        if(mapRoutedCallbacks.contains(callback))
+            return false;
+
+        // Store
+        mapRoutedCallbacks.add(callback);
+        return false;
+    }
+
     private void onPointClicked(Map<String, String> params){
 
         String id = params.get("id");
@@ -307,10 +320,7 @@ public class UIMap extends StackPane {
 
         List<RouteInstruction> result = GSON.fromJson(params.get("route"), listType);
 
-        for(RouteInstruction r : result)
-            System.out.println(r);
-
-
-
+        for(Consumer<List<RouteInstruction>> callback : mapRoutedCallbacks)
+            callback.accept(result);
     }
 }

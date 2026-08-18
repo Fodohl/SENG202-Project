@@ -48,4 +48,14 @@ public class StringHelpers {
                                 .withZone(ZoneId.systemDefault())
                                 .format(date);
     }
+
+    public static String roundToNearest(Double value, Integer nearest){
+
+        // Round to nearest multiple of x
+        long rounded = Math.round(value / nearest);
+
+        // Covert back to
+        return String.format("%d", rounded * nearest);
+
+    }
 }
