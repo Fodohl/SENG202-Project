@@ -569,3 +569,7 @@ s@font-face {
     -fx-border-width: 4px;
     -fx-padding: 5px;
 }
+
+.modal-window .modal{
+    -fx-border-radius: 0px;
+}

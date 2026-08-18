@@ -203,6 +203,8 @@
         const lat = e.latlng.lat;
         const lng = e.latlng.lng;
 
+        L.DomEvent.stopPropagation(e);
+
         setSelectedPoint(null)
         onPosClicked(lat, lng);
     })

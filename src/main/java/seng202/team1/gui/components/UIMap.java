@@ -310,5 +310,7 @@ public class UIMap extends StackPane {
         for(RouteInstruction r : result)
             System.out.println(r);
 
+
+
     }
 }

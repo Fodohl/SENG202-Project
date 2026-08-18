@@ -3,17 +3,16 @@ package seng202.team1.gui;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import seng202.team1.common.StringHelpers;
 import seng202.team1.gui.components.UIImage;
 import seng202.team1.gui.layout.OverlayLayout;
-import seng202.team1.gui.modals.LogIssueModal;
-import seng202.team1.gui.modals.LogTrashModal;
-import seng202.team1.gui.modals.Modal;
+import seng202.team1.gui.modals.*;
 import seng202.team1.gui.layout.MainLayout;
 import seng202.team1.gui.layout.LayoutElement;
-import seng202.team1.gui.modals.Modals;
 import seng202.team1.gui.pages.*;
 import seng202.team1.state.GlobalState;
 import seng202.team1.state.StateReferrer;
@@ -56,12 +55,18 @@ public class WindowManager extends StateReferrer {
 
     private final Map<Modals, Modal> modals = new HashMap<>();
 
+    private Map<Long, Stage> windowedModals = new HashMap<>();
+
+    private long nextWindowId = 0;
+
+
     /// The layout that contains the pages for this window
     private final MainLayout layout = new MainLayout(this);
 
     private final OverlayLayout overlay = new OverlayLayout(this);
 
     private final StackPane root = new StackPane(layout.getRendered(), overlay.getRendered());
+
 
     /**
      * Constructs a new WindowManager, loading the pages for this window
@@ -109,6 +114,7 @@ public class WindowManager extends StateReferrer {
     private void loadModals() {
         loadModal(Modals.LOG_TRASH, new LogTrashModal(this));
         loadModal(Modals.LOG_ISSUE, new LogIssueModal(this));
+        loadModal(Modals.DIRECTIONS, new DirectionsModal(this));
     }
 
     /**
@@ -281,5 +287,56 @@ public class WindowManager extends StateReferrer {
 
         // Special modal that represents closed state, allows for modals to update self when closed
         openModal(Modals._CLOSED);
+    }
+
+    public long spawnModal(Modals modalType){
+
+        // Select the page
+        currentModal = modalType;
+        Modal modal = modals.get(modalType);
+
+        // Page not stored
+        if(modal == null){
+            log.warn("Modal not loaded for type: {}", modalType.name());
+            return -1;
+        }
+
+        // Contain the modal in a separate root so it can be in multiple windows
+        modal = modal.clone();
+        StackPane modalRoot = new StackPane(modal.getRendered());
+        modalRoot.getStyleClass().add("modal-window");
+
+        // Create the window
+        Stage stage = new Stage();
+        stage.setTitle(StringHelpers.enumNameToTitle(modalType.name()));
+
+        // Put the modal in the window
+        Scene scene = new Scene(modalRoot);
+        stage.setScene(scene);
+
+        // Style the window @todo func
+        String cssPath = Objects.requireNonNull(getClass().getResource("/fxcss/styles.css")).toExternalForm();
+        scene.getStylesheets().add(cssPath);
+        stage.show();
+
+        // Assign the window an ID for tracking
+        long windowID = nextWindowId++;
+        modal.setWindowed(windowID);
+
+        // Store
+        windowedModals.put(windowID, stage);
+        return windowID;
+    }
+
+    public void killModal(long windowID){
+
+        // Get the modal
+        Stage window = windowedModals.get(windowID);
+        if(window == null)
+            return;
+
+        // Kill
+        window.close();
+        windowedModals.remove(windowID);
     }
 }

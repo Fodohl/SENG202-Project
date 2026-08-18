@@ -47,7 +47,9 @@ public class MapPage extends Page {
 
     private Double userPosLat = 0.0;
     private Double userPosLong = 0.0;
+
     private int userPosMarkerID = 0xFFFFFFFF;
+    private long directionsModalID = -1;
 
     /**
      * Constructs a new MapPage
@@ -181,12 +183,12 @@ public class MapPage extends Page {
         userPosLong = lng;
         Bin bin = windowManager.getGlobalState().getDataLoader().getBinById(selectedBin);
 
-
         // Display user location on map
         removeDirections();
         map.addPoint(userPosLat, userPosLong, userPosMarkerID, "default");
         map.setRoute(userPosLat, userPosLong, bin.getLatitude(), bin.getLongitude());
 
+        directionsModalID = windowManager.spawnModal(Modals.DIRECTIONS);
         stopWaitingForLocation();
     }
 
@@ -239,6 +241,7 @@ public class MapPage extends Page {
     }
 
     private void removeDirections(){
+        windowManager.killModal(directionsModalID);
         map.removePoint(userPosMarkerID);
         map.clearRoute();
     }

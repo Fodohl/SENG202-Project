@@ -9,7 +9,7 @@ import seng202.team1.state.GlobalState;
  *
  * Handles management of when to render and update
  */
-public abstract class LayoutElement {
+public abstract class LayoutElement implements Cloneable{
 
     /// The rendered component, null until the first render call unless pre-rendered
     private Parent rendered;
@@ -72,4 +72,17 @@ public abstract class LayoutElement {
         rendered = renderSelf();
     }
 
+    @Override
+    public LayoutElement clone() {
+        try {
+            LayoutElement clone = (LayoutElement) super.clone();
+
+            // Force rerender
+            clone.rendered = null;
+            return clone;
+
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
+    }
 }

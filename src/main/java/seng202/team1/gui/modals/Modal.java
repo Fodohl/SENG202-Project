@@ -14,9 +14,11 @@ import seng202.team1.gui.pages.Pages;
 
 //@todo abstract away the simaliries between this and page?
 
-public abstract class Modal extends LayoutElement {
+public abstract class Modal extends LayoutElement implements Cloneable {
 
     private Modals modalType;
+
+    private long modalWindow = -1;
 
     public Modal(WindowManager windowManager, Modals modalType){
 
@@ -57,7 +59,7 @@ public abstract class Modal extends LayoutElement {
 
         // Hide the modal on click
         close.getStyleClass().add("close");
-        close.setOnAction(e -> windowManager.closeModal());
+        close.setOnAction(e -> closeModal());
 
         // Push the close button to the rights
         Region spacer = new Region();
@@ -72,7 +74,11 @@ public abstract class Modal extends LayoutElement {
     }
 
     public void closeModal(){
-        windowManager.closeModal();
+
+        if(modalWindow == -1)
+            windowManager.closeModal();
+        else
+            windowManager.killModal(modalWindow);
     }
 
 
@@ -96,5 +102,16 @@ public abstract class Modal extends LayoutElement {
 
         // Update self
         updateContents();
+    }
+
+    public void setWindowed(long windowID) {
+        modalWindow = windowID;
+    }
+
+    @Override
+    public Modal clone() {
+        Modal clone = (Modal) super.clone();
+        clone.modalWindow = -1;
+        return clone;
     }
 }
