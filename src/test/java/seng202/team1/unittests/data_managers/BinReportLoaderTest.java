@@ -8,6 +8,7 @@ import seng202.team1.data_managers.DataLoader;
 import seng202.team1.models.BinReport;
 import seng202.team1.models.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -29,7 +30,12 @@ public class BinReportLoaderTest {
         binReportLoader.readJson();
         testBin = new BinObject(1, 1.0, 1.0, BinObject.BinType.GENERAL_WASTE);
         testUser = new User(1, "Test");
-        testBinReport = new BinReport(testBin, testUser, BinObject.BinStatus.FULL);
+        testBinReport = new BinReport(
+                testBin,
+                testUser,
+                BinObject.BinStatus.FULL,
+                LocalDateTime.now()
+        );
     }
 
     @Test
@@ -42,6 +48,4 @@ public class BinReportLoaderTest {
         List<BinReport> binReports = binReportLoader.getBinReports();
         assertThrows(UnsupportedOperationException.class, () -> binReports.add(testBinReport));
     }
-
-
 }

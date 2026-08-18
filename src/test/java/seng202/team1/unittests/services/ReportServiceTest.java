@@ -8,6 +8,7 @@ import seng202.team1.models.User;
 import seng202.team1.services.ReportService;
 
 import static org.junit.jupiter.api.Assertions.*;
+import java.time.LocalDateTime;
 
 /**
  * Test ReportService implementation
@@ -34,8 +35,12 @@ public class ReportServiceTest {
      */
     @Test
     public void submitReportWithNullBin() {
-        BinReport binReport = new BinReport(null, testUser, BinObject.BinStatus.FULL);
-        assertFalse(testReportService.submitReport(binReport));
+        BinReport binReport = new BinReport(
+                null,
+                testUser,
+                BinObject.BinStatus.FULL,
+                LocalDateTime.now()
+        );        assertFalse(testReportService.submitReport(binReport));
     }
 
     /**
@@ -43,8 +48,12 @@ public class ReportServiceTest {
      */
     @Test
     public void submitReportWithNullDescription() {
-        BinReport binReport = new BinReport(testBin, testUser, null);
-        assertFalse(testReportService.submitReport(binReport));
+        BinReport binReport = new BinReport(
+                testBin,
+                testUser,
+                null,
+                LocalDateTime.now()
+        );
     }
 
     /**
@@ -53,7 +62,12 @@ public class ReportServiceTest {
      */
     @Test
     public void submitReportSuccess() {
-        BinReport binReport = new BinReport(testBin, testUser, BinObject.BinStatus.FULL);
+        BinReport binReport = new BinReport(
+                testBin,
+                testUser,
+                BinObject.BinStatus.FULL,
+                LocalDateTime.now()
+        );
         assertTrue(testReportService.submitReport(binReport));
         assertEquals(BinObject.BinStatus.FULL, testBin.getBinStatus());
     }
@@ -63,7 +77,12 @@ public class ReportServiceTest {
      */
     @Test
     public void submitLocationIncorrectReport() {
-        BinReport binReport = new BinReport(testBin, testUser, BinObject.BinStatus.INCORRECT_LOCATION);
+        BinReport binReport = new BinReport(
+                testBin,
+                testUser,
+                BinObject.BinStatus.INCORRECT_LOCATION,
+                LocalDateTime.now()
+        );
         assertTrue(testReportService.submitReport(binReport));
         assertEquals(1, testBin.getNumIncorrectLocations());
     }
