@@ -92,7 +92,7 @@ public class BinReportLoader {
         String reportUser = (String) jsonObject.get("user");
         String reportUserID = (String) jsonObject.get("userID");
         User user = new User(Integer.parseInt(reportUserID), reportUser);
-        LocalDateTime time = LocalDateTime.now();
+        LocalDateTime time = LocalDateTime.parse(jsonObject.get("createdAt").toString());
 
         BinObject.BinStatus report = switch (reportString.toUpperCase(Locale.ROOT)) {
             case "FULL" -> BinObject.BinStatus.FULL;
