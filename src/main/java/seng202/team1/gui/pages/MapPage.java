@@ -231,7 +231,7 @@ public class MapPage extends Page {
         sidebarBinUpdated.setText(StringHelpers.toLocaleString(selectedBin.getUpdated()));
         sidebarBinAddress.setText(selectedBin.getAreaName());
         sidebarBinTimesUsed.setText(String.format("%d", uses.size()));
-        sidebarBinLastUsed.setText(newest == null ? "N/A" : StringHelpers.toLocaleString(newest.disposedAt()));
+        sidebarBinLastUsed.setText(newest == null ? "N/A " : StringHelpers.toLocaleString(newest.disposedAt()));
     }
 
     private void clearPreviousBin(){
