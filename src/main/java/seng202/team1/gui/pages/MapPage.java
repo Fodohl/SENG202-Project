@@ -7,7 +7,6 @@ import javafx.scene.layout.*;
 import javafx.scene.control.Label;
 import seng202.team1.common.StringHelpers;
 import seng202.team1.data.bin.Bin;
-import seng202.team1.data.bin.WasteType;
 import seng202.team1.data.route.RouteInstruction;
 import seng202.team1.gui.components.*;
 import seng202.team1.gui.WindowManager;

@@ -5,7 +5,7 @@ import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
 import seng202.team1.common.StringHelpers;
 import seng202.team1.data.bin.BinFullness;
-import seng202.team1.data.bin.WasteType;
+import seng202.team1.data.bin.TrashCategory;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.components.*;
 
@@ -27,7 +27,7 @@ public class LogTrashModal extends Modal{
     Parent buildBody() {
 
         // Prepare conents
-        List<String> trashTypes = Arrays.stream(WasteType.values()).map(t -> StringHelpers.enumNameToTitle(t.name())).toList();
+        List<String> trashTypes = Arrays.stream(TrashCategory.values()).map(t -> StringHelpers.enumNameToTitle(t.name())).toList();
 
         // Log data
         UIIconText typeLabel = new UIIconText("bin", "Trash Type");

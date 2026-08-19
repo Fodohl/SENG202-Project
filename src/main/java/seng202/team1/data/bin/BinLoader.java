@@ -1,5 +1,6 @@
 package seng202.team1.data.bin;
 
+
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -65,7 +66,7 @@ public class BinLoader {
      * Find bin by  ID
      *
      * @param binID ID of the bin
-     * @return The Bin or Null if not found
+     * @return The BinObject or Null if not found
      */
     public Bin getBinById(int binID) {
         return binObjects.stream()
@@ -100,7 +101,7 @@ public class BinLoader {
      *
      * @param parser - JSONParser instance
      * @return JSONObject with the GeoJSON data
-     * @throws Exception
+     * @throws Exception if an error occurs while reading or parsing JSON file
      */
     private JSONObject parseGeoJson(JSONParser parser) throws Exception {
         InputStream is = BinLoader.class.getClassLoader().getResourceAsStream(BIN_DATA);
@@ -137,10 +138,10 @@ public class BinLoader {
 
         // Parse the wast info
         String wasteType = wasteTypeObj == null ? "" : wasteTypeObj.toString();
-        WasteType binType = switch (wasteType.toUpperCase(Locale.ROOT)) {
-            case "RECYCLE", "RECYCLING" -> WasteType.RECYCLING;
-            case "COMPOST" -> WasteType.ORGANIC;
-            default -> WasteType.GENERAL_WASTE;
+        TrashCategory binType = switch (wasteType.toUpperCase(Locale.ROOT)) {
+            case "RECYCLE", "RECYCLING" -> TrashCategory.RECYCLABLE;
+            case "COMPOST" -> TrashCategory.ORGANIC;
+            default -> TrashCategory.GENERAL_WASTE;
         };
 
         // Parse the date

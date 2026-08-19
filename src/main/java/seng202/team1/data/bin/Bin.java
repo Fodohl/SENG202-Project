@@ -2,6 +2,7 @@ package seng202.team1.data.bin;
 
 import java.time.Instant;
 
+
 /**
  * BinObject
  * Class represents a single bin and its properties
@@ -20,7 +21,7 @@ public class Bin {
     protected double longitude;
 
     /// The type of rubish the bin takes
-    protected WasteType type;
+    protected TrashCategory type;
 
     /// How fill the bin is
     protected double status = 0.0;
@@ -39,7 +40,7 @@ public class Bin {
      * @param longitude - longitude of the bin
      * @param type - type of bin (general waste, recycling, organic)
      */
-    public Bin(Integer binID, double latitude, double longitude, WasteType type, Instant updated, String areaName) {
+    public Bin(Integer binID, double latitude, double longitude, TrashCategory type, Instant updated, String areaName) {
         this.binID = binID;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -76,7 +77,7 @@ public class Bin {
      * Get the bin's type
      * @return Bin Type
      */
-    public WasteType getType() {
+    public TrashCategory getType() {
         return type;
     }
 
