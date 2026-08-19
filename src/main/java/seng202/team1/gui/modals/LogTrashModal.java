@@ -73,6 +73,19 @@ public class LogTrashModal extends Modal{
         bin = (Bin)data;
     }
 
+    @Override
+    protected void updateContents() {
+
+        // Cant reset yet
+        if(typeInput == null || weightInput == null || statusInput == null)
+            return;
+
+        // Reset input
+        typeInput.clear();
+        weightInput.clear();
+        statusInput.clear();
+    }
+
     private void submitTrashLog(){
 
         // No bin setup (@todo log error)

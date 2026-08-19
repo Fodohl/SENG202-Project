@@ -1,6 +1,7 @@
 package seng202.team1.common;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 
@@ -37,6 +38,11 @@ public class StringHelpers {
 
     public static String enumNameToTitle(String string){
         return toTitleCase(string.replace("_", " "));
+    }
+
+    public static String toLocaleString(LocalDateTime date){
+        return toLocaleString(Instant.from(date.atZone(ZoneId.systemDefault())));
+
     }
 
     public static String toLocaleString(Instant date){

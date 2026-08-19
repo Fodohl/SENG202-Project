@@ -8,10 +8,13 @@ import javafx.scene.control.Label;
 import seng202.team1.common.StringHelpers;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.route.RouteInstruction;
+import seng202.team1.data.trashlog.TrashLog;
 import seng202.team1.gui.components.*;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.modals.Modals;
 
+import java.time.Instant;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -135,6 +138,12 @@ public class MapPage extends Page {
         map.registerPossClickCallback(this::onPosClick);
         map.registerMapRouted(this::onMapRouted);
 
+        // Refresh sidebar on log
+        windowManager.registerModalChangeCallback(e -> {
+            if(e == Modals._CLOSED)
+                refreshSidebar();
+        });
+
         // Map messages
         Label mapDialogText = new Label("Click your location on the map to get directions");
         mapDialog = new HBox(mapDialogText);
@@ -208,17 +217,21 @@ public class MapPage extends Page {
         if (hidden)
             return;
 
+        // Get usage
+        List<TrashLog> uses = windowManager.getGlobalState().getTrashLogStore()
+                                           .getAll().stream()
+                                           .filter(l -> l.binLogId() == selectedBin.getID())
+                                           .sorted(Comparator.comparing(TrashLog::createdAt))
+                                           .toList();
+        TrashLog newest = uses.isEmpty() ? null : uses.getLast();
+
         sidebarBinID.setText(selectedBin.getID().toString());
         sidebarBinType.setText(StringHelpers.enumNameToTitle(selectedBin.getCategory().name()));
         sidebarBinStatus.setText(String.format("%s%% Full (estimate)", selectedBin.getStatus().toString()));
         sidebarBinUpdated.setText(StringHelpers.toLocaleString(selectedBin.getUpdated()));
         sidebarBinAddress.setText(selectedBin.getAreaName());
-        sidebarBinTimesUsed.setText("1");
-        sidebarBinLastUsed.setText("N/A");
-
-        // Reset the input
-        windowManager.closeModal();
-
+        sidebarBinTimesUsed.setText(String.format("%d", uses.size()));
+        sidebarBinLastUsed.setText(newest == null ? "N/A" : StringHelpers.toLocaleString(newest.disposedAt()));
     }
 
     private void clearPreviousBin(){

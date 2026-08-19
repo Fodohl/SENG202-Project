@@ -101,7 +101,7 @@ public abstract class Modal extends LayoutElement implements Cloneable {
     private void onModalChange(Modals destModal){
 
         // Dont rerender if not being shown
-        if(modalType == destModal)
+        if(modalType != destModal)
             return;
 
         // Update self

@@ -33,6 +33,7 @@ public class GlobalState {
         binLoader.readGeoJSON();
 
         trashLogStore = new TrashLogStore(TrashLogStore.defaultDataPath());
+        trashLogStore.load();
 
         windowManager = new WindowManager(this, stage);
     }
