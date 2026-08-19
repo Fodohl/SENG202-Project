@@ -3,7 +3,7 @@ package seng202.team1.data.bin;
 /**
  * Represents the type of waste a bin takes
  */
-public enum TrashCategory {
+public enum BinCategory {
     GENERAL_WASTE,
     RECYCLABLE,
     ORGANIC,

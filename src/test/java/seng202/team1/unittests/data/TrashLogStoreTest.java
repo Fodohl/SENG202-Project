@@ -3,7 +3,10 @@ package seng202.team1.unittests.data;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import seng202.team1.data.*;
+import seng202.team1.data.trashlog.Trash;
+import seng202.team1.data.trashlog.TrashLog;
+import seng202.team1.data.trashlog.TrashLogStore;
+import seng202.team1.data.trashlog.TrashType;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -267,7 +270,7 @@ public class TrashLogStoreTest {
             String disposedAt
     ) {
         Trash trash = new Trash(
-                TrashCategory.RECYCLABLE,
+                binCategory.RECYCLABLE,
                 TrashType.PAPER,
                 50
         );

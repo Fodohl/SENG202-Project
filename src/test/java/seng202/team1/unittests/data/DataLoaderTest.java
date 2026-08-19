@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import seng202.team1.data.Bin;
 import seng202.team1.data.DataLoader;
-import seng202.team1.data.TrashCategory;
+import seng202.team1.data.binCategory;
 
 /**
  * Test DataLoader

@@ -2,6 +2,7 @@ package seng202.team1.state;
 
 import javafx.stage.Stage;
 import seng202.team1.data.bin.BinLoader;
+import seng202.team1.data.trashlog.TrashLogStore;
 import seng202.team1.gui.WindowManager;
 
 /**
@@ -18,6 +19,8 @@ public class GlobalState {
     /// The handler for the static bin data
     private BinLoader binLoader;
 
+    private TrashLogStore trashLogStore;
+
     /**
      * Constructs a new GlobalState and sets up managers
      *
@@ -26,10 +29,12 @@ public class GlobalState {
     public GlobalState(Stage stage){
 
         // Data must be loaded first as UI depends on it
-        this.binLoader = new BinLoader();
+        binLoader = new BinLoader();
         binLoader.readGeoJSON();
 
-        this.windowManager = new WindowManager(this, stage);
+        trashLogStore = new TrashLogStore(TrashLogStore.defaultDataPath());
+
+        windowManager = new WindowManager(this, stage);
     }
 
     /**
@@ -50,4 +55,7 @@ public class GlobalState {
         return binLoader;
     }
 
+    public TrashLogStore getTrashLogStore() {
+        return trashLogStore;
+    }
 }

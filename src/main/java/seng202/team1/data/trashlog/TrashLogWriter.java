@@ -1,4 +1,4 @@
-package seng202.team1.data;
+package seng202.team1.data.trashlog;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -85,7 +85,7 @@ public class TrashLogWriter {
     private JSONObject trashToJson(Trash trash) {
         JSONObject json = new JSONObject();
 
-        json.put("trashCategory", trash.trashCategory().name());
+        json.put("binCategory", trash.binCategory().name());
         json.put("trashType", trash.trashType().name());
         json.put("trashWeight", trash.trashWeight());
 

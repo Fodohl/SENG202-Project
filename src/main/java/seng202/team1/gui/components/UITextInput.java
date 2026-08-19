@@ -49,6 +49,11 @@ public class UITextInput extends VBox implements UIInputComponent{
     }
 
     @Override
+    public boolean isErroring(){
+        return isErroringInternal(errorText);
+    }
+
+    @Override
     public void setError(String error) {
         setIsErrorInternal(error, this, errorText);
     }

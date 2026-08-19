@@ -254,7 +254,12 @@ public class WindowManager extends StateReferrer {
         overlay.setVisible(false);
     }
 
+
     public void openModal(Modals modalType){
+        openModal(modalType, null);
+    }
+
+    public void openModal(Modals modalType, Object data){
 
         // Update pages to show latest data pre render
         for (Consumer<Modals> callback : modalSwitchCallbacks)
@@ -262,7 +267,7 @@ public class WindowManager extends StateReferrer {
 
         // Select the page
         currentModal = modalType;
-        LayoutElement modal = modals.get(modalType);
+        Modal modal = modals.get(modalType);
 
         // Hiding modal
         if(modalType == Modals._CLOSED){
@@ -277,6 +282,7 @@ public class WindowManager extends StateReferrer {
         }
 
         // Show the page
+        modal.recvData(data);
         showOverlay(modal.getRendered());
     }
 

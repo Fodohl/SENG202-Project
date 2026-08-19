@@ -1,4 +1,6 @@
-package seng202.team1.data;
+package seng202.team1.data.trashlog;
+
+import seng202.team1.data.bin.BinCategory;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -65,6 +67,23 @@ public class TrashLogStore {
      */
     public List<TrashLog> getAll() {
         return List.copyOf(trashLogs);
+    }
+
+
+    public void logTrash(BinCategory category, TrashType type, int weight, int binID){
+
+        LocalDateTime timestamp = LocalDateTime.now();
+
+        Trash trash = new Trash(category, type, weight);
+        TrashLog entry = new TrashLog(nextId(), trash, timestamp, binID, timestamp);
+
+        try{
+            add(entry);
+        } catch (IOException e) {
+            // Should never fail as uses nextID()
+            //@Todo lgo
+        }
+
     }
 
     /**

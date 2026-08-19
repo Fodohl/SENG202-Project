@@ -10,10 +10,8 @@ import seng202.team1.data.bin.Bin;
 import seng202.team1.data.route.RouteInstruction;
 import seng202.team1.gui.components.*;
 import seng202.team1.gui.WindowManager;
-import seng202.team1.gui.modals.Modal;
 import seng202.team1.gui.modals.Modals;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,7 +23,7 @@ import java.util.Objects;
 public class MapPage extends Page {
 
     /// The shown bin, null if no bin is being shown right now
-    private Integer selectedBin = null;
+    private Bin selectedBin = null;
 
     private boolean isWaitingForLocation = false;
 
@@ -106,7 +104,7 @@ public class MapPage extends Page {
 
         // Modals
         directionsButton.setOnMouseClicked(e -> waitForLocation());
-        logButton.setOnMouseClicked(e -> windowManager.openModal(Modals.LOG_TRASH));
+        logButton.setOnMouseClicked(e -> windowManager.openModal(Modals.LOG_TRASH, selectedBin));
         issueButton.setOnMouseClicked(e -> windowManager.openModal(Modals.LOG_ISSUE));
 
         // Combine
@@ -130,7 +128,7 @@ public class MapPage extends Page {
         // Populate the map
         map = new UIMap();
         for (Bin bin : windowManager.getGlobalState().getDataLoader().getBinObjects())
-            map.addPoint(bin.getLatitude(), bin.getLongitude(), bin.getID(), bin.getType().toString().toLowerCase());
+            map.addPoint(bin.getLatitude(), bin.getLongitude(), bin.getID(), bin.getCategory().toString().toLowerCase());
 
         // Handle map events
         map.registerPointClickCallback(this::onMarkerClick);
@@ -164,7 +162,7 @@ public class MapPage extends Page {
         if (Objects.equals(selectedBin, binID))
             selectedBin = null;
         else
-            selectedBin = binID;
+            selectedBin = windowManager.getGlobalState().getDataLoader().getBinById(binID);
 
         clearPreviousBin();
         updateContents();
@@ -187,11 +185,10 @@ public class MapPage extends Page {
 
         userPosLat = lat;
         userPosLong = lng;
-        Bin bin = windowManager.getGlobalState().getDataLoader().getBinById(selectedBin);
 
         // Display user location on map
         map.addPoint(userPosLat, userPosLong, userPosMarkerID, "default");
-        map.setRoute(userPosLat, userPosLong, bin.getLatitude(), bin.getLongitude());
+        map.setRoute(userPosLat, userPosLong, selectedBin.getLatitude(), selectedBin.getLongitude());
     }
 
     private void onMapRouted(List<RouteInstruction> instructions){
@@ -211,14 +208,11 @@ public class MapPage extends Page {
         if (hidden)
             return;
 
-        // Get the bin
-        Bin bin = windowManager.getGlobalState().getDataLoader().getBinById(selectedBin);
-
-        sidebarBinID.setText(bin.getID().toString());
-        sidebarBinType.setText(StringHelpers.enumNameToTitle(bin.getType().name()));
-        sidebarBinStatus.setText(String.format("%s%% Full (estimate)", bin.getStatus().toString()));
-        sidebarBinUpdated.setText(StringHelpers.toLocaleString(bin.getUpdated()));
-        sidebarBinAddress.setText(bin.getAreaName());
+        sidebarBinID.setText(selectedBin.getID().toString());
+        sidebarBinType.setText(StringHelpers.enumNameToTitle(selectedBin.getCategory().name()));
+        sidebarBinStatus.setText(String.format("%s%% Full (estimate)", selectedBin.getStatus().toString()));
+        sidebarBinUpdated.setText(StringHelpers.toLocaleString(selectedBin.getUpdated()));
+        sidebarBinAddress.setText(selectedBin.getAreaName());
         sidebarBinTimesUsed.setText("1");
         sidebarBinLastUsed.setText("N/A");
 

@@ -21,7 +21,7 @@ public class Bin {
     protected double longitude;
 
     /// The type of rubish the bin takes
-    protected TrashCategory type;
+    protected BinCategory type;
 
     /// How fill the bin is
     protected double status = 0.0;
@@ -40,7 +40,7 @@ public class Bin {
      * @param longitude - longitude of the bin
      * @param type - type of bin (general waste, recycling, organic)
      */
-    public Bin(Integer binID, double latitude, double longitude, TrashCategory type, Instant updated, String areaName) {
+    public Bin(Integer binID, double latitude, double longitude, BinCategory type, Instant updated, String areaName) {
         this.binID = binID;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -77,7 +77,7 @@ public class Bin {
      * Get the bin's type
      * @return Bin Type
      */
-    public TrashCategory getType() {
+    public BinCategory getCategory() {
         return type;
     }
 

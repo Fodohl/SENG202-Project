@@ -138,10 +138,10 @@ public class BinLoader {
 
         // Parse the wast info
         String wasteType = wasteTypeObj == null ? "" : wasteTypeObj.toString();
-        TrashCategory binType = switch (wasteType.toUpperCase(Locale.ROOT)) {
-            case "RECYCLE", "RECYCLING" -> TrashCategory.RECYCLABLE;
-            case "COMPOST" -> TrashCategory.ORGANIC;
-            default -> TrashCategory.GENERAL_WASTE;
+        BinCategory binType = switch (wasteType.toUpperCase(Locale.ROOT)) {
+            case "RECYCLE", "RECYCLING" -> BinCategory.RECYCLABLE;
+            case "COMPOST" -> BinCategory.ORGANIC;
+            default -> BinCategory.GENERAL_WASTE;
         };
 
         // Parse the date

@@ -1,4 +1,4 @@
-package seng202.team1.data;
+package seng202.team1.data.trashlog;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -16,7 +16,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import seng202.team1.data.bin.TrashCategory;
+import seng202.team1.data.bin.BinCategory;
 
 /**
  * Loads trash logs data from a JSON file into {@link TrashLog} instances
@@ -140,7 +140,7 @@ public class TrashLogLoader {
      * The method extracts the trash log ID, bin log ID, creation and disposal
      * timestamps, and the logged trash details from the JSON object. The trash
      * category and type are converted from their JSON string representations
-     * into the corresponding {@link TrashCategory} and
+     * into the corresponding {@link BinCategory} and
      * {@link TrashType} enum values.
      *
      * @param jsonObject represents trash log
@@ -150,13 +150,13 @@ public class TrashLogLoader {
         int trashLogId = ((Number) jsonObject.get("trashLogId")).intValue();
         JSONObject trashLogged = (JSONObject) jsonObject.get("trashLogged");
 
-        Object trashLoggedCategoryObj = trashLogged.get("trashCategory");
+        Object trashLoggedCategoryObj = trashLogged.get("binCategory");
         String trashLoggedCategory = trashLoggedCategoryObj == null ? "" : trashLoggedCategoryObj.toString();
-        TrashCategory trashCategory = switch (trashLoggedCategory.toUpperCase(Locale.ROOT)) {
-            case "RECYCLABLE" -> TrashCategory.RECYCLABLE;
-            case "ORGANIC" -> TrashCategory.ORGANIC;
-            case "E-WASTE", "E_WASTE" -> TrashCategory.E_WASTE;
-            default -> TrashCategory.GENERAL_WASTE;
+        BinCategory binCategory = switch (trashLoggedCategory.toUpperCase(Locale.ROOT)) {
+            case "RECYCLABLE" -> BinCategory.RECYCLABLE;
+            case "ORGANIC" -> BinCategory.ORGANIC;
+            case "E-WASTE", "E_WASTE" -> BinCategory.E_WASTE;
+            default -> BinCategory.GENERAL_WASTE;
         };
 
         Object trashLoggedTypeObj = trashLogged.get("trashType");
@@ -174,7 +174,7 @@ public class TrashLogLoader {
         int binLogId = ((Number) jsonObject.get("binLogId")).intValue();
         LocalDateTime createdAt = LocalDateTime.parse(jsonObject.get("createdAt").toString());
 
-        Trash trash = new Trash(trashCategory, trashType, trashWeight);
+        Trash trash = new Trash(binCategory, trashType, trashWeight);
         return new TrashLog(trashLogId, trash,  disposedAt, binLogId, createdAt);
     }
 }

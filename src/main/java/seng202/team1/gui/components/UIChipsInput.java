@@ -79,6 +79,11 @@ public class UIChipsInput extends VBox implements UIInputComponent {
     }
 
     @Override
+    public boolean isErroring(){
+        return isErroringInternal(errorText);
+    }
+
+    @Override
     public void setError(String isError) {
         setIsErrorInternal(isError, this, errorText);
     }

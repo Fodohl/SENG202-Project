@@ -12,6 +12,8 @@ public abstract interface UIInputComponent {
     /// UIInputComponent specific logger
     static final Logger log = LogManager.getLogger(UIInputComponent.class);
 
+    String errorText = "";
+
     Object getInput();
 
     void setInput(Object value);
@@ -22,10 +24,26 @@ public abstract interface UIInputComponent {
 
     void setError(String isError);
 
-    default void setIsErrorInternal(String errorText, Node thisNode, Label errorDisplay){
+    boolean isErroring();
+
+    default boolean isErroringInternal(Label errorDisplay){
+
+        if(errorDisplay == null)
+            return false;
+
+        return !errorDisplay.getText().isEmpty();
+    }
+
+     default void setIsErrorInternal(String errorText, Node thisNode, Label errorDisplay){
+
+        // Clearing error
+        if(errorText.isEmpty()){
+            errorDisplay.setText(errorText);
+            return;
+        }
 
         // Hide if not erroring
-        boolean isErroring = !errorText.isEmpty();
+        boolean isErroring = isErroring();
         errorDisplay.setVisible(isErroring);
 
         // Log
