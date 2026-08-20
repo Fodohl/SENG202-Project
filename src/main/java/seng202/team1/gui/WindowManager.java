@@ -36,7 +36,7 @@ public class WindowManager extends StateReferrer {
     private Stage currentStage;
 
     /// What page to show on start up
-    public static Pages START_PAGE = Pages.MAP;
+    public static Pages START_PAGE = Pages.DASHBOARD;
 
     /// The page that is currently shown
     private Pages currentPage;
@@ -161,10 +161,6 @@ public class WindowManager extends StateReferrer {
      */
     public void switchPage(Pages pageType) {
 
-        // Update pages to show latest data pre render
-        for (Consumer<Pages> callback : pageSwitchCallbacks)
-            callback.accept(pageType);
-
         // Select the page
         currentPage = pageType;
         LayoutElement page = pages.get(pageType);
@@ -178,6 +174,10 @@ public class WindowManager extends StateReferrer {
         // Show the page
         history.add(currentPage);
         layout.swap(page.getRendered());
+
+       // Update pages to show latest data post render
+        for (Consumer<Pages> callback : pageSwitchCallbacks)
+            callback.accept(pageType);
     }
 
     /**

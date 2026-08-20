@@ -53,7 +53,7 @@ public abstract class Page extends LayoutElement {
     private void onPageChange(Pages destScene){
 
         // Dont rerender if not being shown
-        if(pageType == destScene)
+        if(pageType != destScene)
             return;
 
         // Update self

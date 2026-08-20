@@ -1,4 +1,4 @@
-s@font-face {
+@font-face {
     font-family: 'noto-sans';
     src: url('../fonts/NotoSans-Medium.ttf') format('ttf');
     font-weight: normal;
@@ -15,6 +15,8 @@ s@font-face {
 
 .root {
     -bg-primary: #232c33;
+    -bg-primary-dark: #1a2025;
+    -bg-primary-light: #2c3840;
     -bg-secondary: #374051;
     -bg-third: #1c2128;
     -bg-overlay: rgb(0, 0, 0, 0.60);
@@ -28,6 +30,7 @@ s@font-face {
     -active: #41965b;
     -active-secondary: #316a47;
     -active-bright: #26c857;
+    -active-grad: linear-gradient(from 0% 0% to 0% 100%, -active 0%, -active-secondary 100%);
     -active-dark: #284e32;
 
     -fx-font-family: "noto-sans";
@@ -130,7 +133,7 @@ s@font-face {
 
 }
 
-.iconbutton.active {
+.active {
     -fx-background-color: -active-secondary;
 }
 
@@ -160,12 +163,6 @@ s@font-face {
 
 .iconbutton-text{
     -fx-font-size: 24px;
-}
-
-.page{
-    display: grid;
-    grid-template-rows: 0.1fr 0.9fr;
-    min-height: 0;
 }
 
 .header{
@@ -208,8 +205,9 @@ s@font-face {
 .content, .content *{
     -fx-max-width: infinity;
     -fx-max-height: infinity;
-    -fx-background-color: -bg-primary;
     -fx-text-fill: -text-primary;
+    -fx-background-color: -bg-primary-dark;
+
 }
 
 .title{
@@ -220,100 +218,58 @@ s@font-face {
     -fx-text-alignment: center;
 }
 
-/*.dashboard{*/
-/*    display: grid;*/
-/*    grid-template-columns: repeat(3, 1fr);*/
-/*    width: 100%;*/
-/*    height: 120vh;*/
-/*    overflow-x: clip;*/
-/*    gap: 20px;*/
-/*    padding: 20px*/
-/*}*/
+.dashboard{
+    -fx-padding: 10px;
+}
 
-/*.card{*/
-/*    background-color: var(--bg-secondary);*/
-/*    padding: 20px;*/
-/*    border-radius: 15px;*/
-/*}*/
+.card {
+    -fx-min-width: 450px;
+}
 
-/*.full{*/
-/*    grid-column: span 3;*/
-/*}*/
+.card, .card .body{
+    -fx-background-color: -bg-primary-light;
+    -fx-padding: 20px;
+    -fx-border-radius: 15px;
+    -fx-background-radius: 15px;
+}
 
-/*.active{*/
-/*    background: var(--active-secondary);*/
-/*}*/
-
-/*.active-grad{*/
-/*    background: var(--active);*/
-/*    background: linear-gradient(180deg, var(--active) 0%, var(--active-secondary) 100%);*/
-/*}*/
+.card .body, .card *{
+    -fx-background-color: -transparent;
+}
 
 
-/*.card-title{*/
-/*    font-size: 1.5rem;*/
-/*}*/
+.active-grad{
+    -fx-background-color: -active-grad;
+}
 
-/*.text-by-img{*/
-/*    display: grid;*/
-/*    grid-template-columns: repeat(2, 1fr);*/
-/*    align-items: center;*/
-/*    justify-items: center;*/
-/*    height: 85%;*/
-/*}*/
+.card .body .svg-icon * {
+    -fx-stroke: -active;
+}
 
-/*.text-by-img img{*/
-/*    width: 75%;*/
-/*}*/
+.card .body .svg-icon-fill * {
+    -fx-fill: -active;
+}
 
-/*.stat-text .maintext{*/
-/*    font-size: 10rem;*/
-/*    font-weight: bolder;*/
-/*    margin-top: -50px;*/
-/*}*/
+.card-title{
+    -fx-font-size: 24px;
+}
 
-/*.stat-text .subtext{*/
-/*    font-size: 1.25rem;*/
-/*    text-align: center;*/
-/*    margin-top: -50px;*/
-/*}*/
+.maintext{
+    -fx-font-size: 56px;
+    -fx-wrap-text: true;
+    -fx-text-fill: -text-primary;
+}
 
-/*.text-by-img-long{*/
-/*    display: flex;*/
-/*    flex-direction: row;*/
-/*    align-items: center;*/
-/*}*/
+.card-main .maintext{
+    -fx-font-size: 90px;
+    -fx-font-weight: bolder;
+    -fx-text-fill: -active;
+}
 
-/*.text-by-img-long img{*/
-/*    width: 7.5%;*/
-/*    margin-right: 50px;*/
-/*}*/
-
-/*.text-by-img-long img.icon {*/
-/*    width: 15%;*/
-/*}*/
-
-
-/*.key-text .maintext{*/
-/*    font-size: 3rem;*/
-/*    font-weight: bolder;*/
-/*}*/
-
-/*.key-text  .subtext{*/
-/*    font-size: 1.75rem;*/
-/*}*/
-
-/*.map{*/
-/*    width: 100%;*/
-/*    height: 100%;*/
-/*    position: relative;*/
-/*}*/
-
-/*.map-container{*/
-/*    background: pink;*/
-/*    width: 100%;*/
-/*    height: 100%;*/
-/*}*/
+.subtext{
+    -fx-font-size: 18px;
+    -fx-text-alignment: center;
+}
 
 .pop-over-side-bar, .pop-over-side-bar *{
     -fx-max-width: 400px;
@@ -432,7 +388,7 @@ s@font-face {
 
 .table-cell-header{
     -fx-font-size: 28px;
-    -fx-background-color: linear-gradient(from 0% 0% to 0% 100%, -active 0%, -active-secondary 100%);
+    -fx-background-color: -active-grad;
     -fx-font-weight: bolder;
 }
 
@@ -610,7 +566,7 @@ s@font-face {
     -fx-padding: 0px;
 }
 
-.error .iconbutton.active {
+.error .iconbutton {
     -fx-background-color: -text-error;
 }
 
