@@ -26,7 +26,7 @@ public class UIChipsInput extends VBox implements UIInputComponent {
 
         List<UIIconButton> buttons = Arrays.stream(options.getEnumConstants()).map(e -> {
 
-            String path = String.format("/images/%s.svg", e.name().toLowerCase());
+            String path = String.format("/media/images/%s.svg", e.name().toLowerCase());
             String title = StringHelpers.enumNameToTitle(e.name());
 
             return new UIIconButton(path, title);

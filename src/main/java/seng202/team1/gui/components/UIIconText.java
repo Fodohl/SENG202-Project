@@ -11,7 +11,7 @@ public class UIIconText extends HBox {
         super(5);
 
         // Build
-        UIImage icon = new UIImage(String.format("/images/%s.svg", iconName), 20, 20);
+        UIImage icon = new UIImage(String.format("/media/images/%s.svg", iconName), 20, 20);
         Label text = new Label(textValue);
         getChildren().addAll(icon, text);
 

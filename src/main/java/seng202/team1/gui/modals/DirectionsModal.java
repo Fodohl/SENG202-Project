@@ -35,7 +35,7 @@ public class DirectionsModal extends Modal{
 
     HBox buildInstructionDisplay(RouteInstruction instruction ){
 
-        UIImage icon = new UIImage(String.format("/images/dir-%s.svg", instruction.getType().toLowerCase()), 25, 25);
+        UIImage icon = new UIImage(String.format("/media/images/dir-%s.svg", instruction.getType().toLowerCase()), 25, 25);
         Label text = new Label(instruction.getText());
         Label meters = new Label(String.format("%sm", StringHelpers.roundToNearest(instruction.getDistance(), 50)));
 

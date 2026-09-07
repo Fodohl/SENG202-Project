@@ -142,7 +142,7 @@ public class TrashLogLoaderTest {
 
     @Test
     public void testMalformedExternalFileThrowsError() throws Exception {
-        Path jsonPath = temporaryDirectory.resolve("broken-trashlogs.json");
+        Path jsonPath = temporaryDirectory.resolve("broken-exampe_trash_logs.json");
 
         Files.writeString(
                 jsonPath,

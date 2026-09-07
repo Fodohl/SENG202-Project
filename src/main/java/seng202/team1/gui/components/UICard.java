@@ -2,10 +2,7 @@ package seng202.team1.gui.components;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 
 
 public class UICard extends VBox {
@@ -25,21 +22,22 @@ public class UICard extends VBox {
         this.iconPath = icon;
 
         int iconSize = 64;
-        int spacing = 200;
 
         if(primary){
             getStyleClass().add("card-main");
             iconSize = 125;
-            spacing = 100;
         }
 
         // Icon value pair
         valueNode = new Label(value);
         valueNode.getStyleClass().add("maintext");
         UIImage iconNode = new UIImage(icon, iconSize, iconSize);
-valueNode.widthProperty().addListener((obs, oldW, newW) ->
-    valueNode.setMinHeight(valueNode.prefHeight(newW.doubleValue()))
-);
+
+        // Ensure gap grows
+        valueNode.widthProperty().addListener((obs, oldW, newW) ->
+            valueNode.setMinHeight(valueNode.prefHeight(newW.doubleValue()))
+        );
+
         subtitleNode = new Label(subtitle);
         subtitleNode.getStyleClass().add("subtext");
         subtitleNode.setAlignment(Pos.CENTER);
@@ -47,7 +45,10 @@ valueNode.widthProperty().addListener((obs, oldW, newW) ->
         VBox statText = new VBox(valueNode, subtitleNode);
         statText.setAlignment(Pos.CENTER);
 
-        body = new HBox(spacing, statText, iconNode);
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        body = new HBox(statText, spacer, iconNode);
         body.getStyleClass().add("body");
 
         Label titleNode = new Label(title);

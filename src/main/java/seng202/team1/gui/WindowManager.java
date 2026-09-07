@@ -86,7 +86,7 @@ public class WindowManager extends StateReferrer {
             currentStage.setScene(scene);
 
         // Load CSS
-        String cssPath = Objects.requireNonNull(getClass().getResource("/fxcss/styles.css")).toExternalForm();
+        String cssPath = Objects.requireNonNull(getClass().getResource("/styles/styles.css")).toExternalForm();
         scene.getStylesheets().add(cssPath);
 
         // Show dashboard
@@ -328,7 +328,7 @@ public class WindowManager extends StateReferrer {
         stage.setScene(scene);
 
         // Style the window @todo func
-        String cssPath = Objects.requireNonNull(getClass().getResource("/fxcss/styles.css")).toExternalForm();
+        String cssPath = Objects.requireNonNull(getClass().getResource("/styles/styles.css")).toExternalForm();
         scene.getStylesheets().add(cssPath);
 
         // Spawn the window to the right of the map

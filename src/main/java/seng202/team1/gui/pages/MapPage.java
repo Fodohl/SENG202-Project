@@ -66,7 +66,7 @@ public class MapPage extends Page {
     public VBox binImage(){
 
         // Load the image
-        UIImage bin = new UIImage("/images/bin.png", 70, 130);
+        UIImage bin = new UIImage("/media/images/bin.png", 70, 130);
         bin.getStyleClass().add("img");
 
         // Style the container

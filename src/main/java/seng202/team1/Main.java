@@ -26,7 +26,7 @@ public class Main extends Application {
     public void setAppIcon(Stage stage) {
 
         // Set icon (bg
-        UIImage appLogo = new UIImage("/images/icon.png", 512, 512);
+        UIImage appLogo = new UIImage("/media/images/icon.png", 512, 512);
         Image logoIcon = appLogo.toRawImage();
         stage.getIcons().add(logoIcon);
 

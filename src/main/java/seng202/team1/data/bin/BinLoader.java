@@ -26,7 +26,7 @@ public class BinLoader {
     private static final Logger log = LogManager.getLogger(BinLoader.class);
 
     /// Where to load the bins from
-    private static final String BIN_DATA = "geojson/bin.geojson";
+    private static final String BIN_DATA = "data/cc_bins_dataset.geojson";
 
     /// The list of bins loaded
     private final List<Bin> binObjects = new ArrayList<>();

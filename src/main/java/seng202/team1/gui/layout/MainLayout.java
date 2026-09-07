@@ -46,7 +46,7 @@ public class MainLayout extends LayoutElement {
         // Logo
         HBox logo = new HBox(10);
         logo.getStyleClass().add("logo");
-        StackPane logoIcon = new UIImage("/images/logo.svg", 44, 44);
+        StackPane logoIcon = new UIImage("/media/images/logo.svg", 44, 44);
 
         // Title
         Label logoTitle = new Label("TrashApp");
@@ -81,7 +81,7 @@ public class MainLayout extends LayoutElement {
     private Parent header() {
 
         // Search images
-        UIImage searchIcon = new UIImage("/images/search.svg", 16, 16);
+        UIImage searchIcon = new UIImage("/media/images/search.svg", 16, 16);
 
         // Search text
         TextField searchInput = new TextField();

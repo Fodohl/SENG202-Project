@@ -5,21 +5,21 @@
     <title>Title</title>
 
     <!-- Leaflet core -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css"/>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js"></script>
+    <link rel="stylesheet" href="../thirdparty/unpkg/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="../thirdparty/unpkg/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <!-- Leaflet.markercluster plugin -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
+    <link rel="stylesheet" href="../thirdparty/unpkg/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
+    <link rel="stylesheet" href="../thirdparty/unpkg/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
     <!-- Leflet.pouchdb plugin -->
-    <script src="https://unpkg.com/pouchdb@^5.2.0/dist/pouchdb.js"></script>
-    <script src="https://unpkg.com/leaflet.tilelayer.pouchdbcached@latest/L.TileLayer.PouchDBCached.js"></script>
+    <script src="../thirdparty/unpkg/pouchdb@^5.2.0/dist/pouchdb.js"></script>
+    <script src="../thirdparty/unpkg/leaflet.tilelayer.pouchdbcached@latest/L.TileLayer.PouchDBCached.js"></script>
 
     <!-- Leflet.routing plugin -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
-    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+    <link rel="stylesheet" href="../thirdparty/unpkg/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+    <script src=../thirdparty/unpkg/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
 
     <style>
         *, *::before, *::after {
@@ -46,25 +46,11 @@
 
 <script>
 
-    const ICON_FOLDER = new URL('../images/', document.location.href).href;
+    const ICON_FOLDER = new URL('../media/images/', document.location.href).href;
 
-    // Define bridge helpers
-    callJavaAPI = (functionName, params = {}) => {
-
-        // Add salt to prevent call cache
-        params = {
-            ...params,
-            _: Math.random()
-        }
-
-        // Convert the params into URL format
-        const searchParams = new URLSearchParams(params);
-        const queryString = searchParams.toString();
-
-        // Trigger a non-destructive location change
-        const url = `http://trashapp.local/api/v1/${functionName}${queryString ? '?' + queryString : ''}`;
-        window.location.hash = url;
-    }
+    // Required by submethods during initialisation, but will not be injected when Java backend ready. Until then just
+    // safely discard calls
+    callJavaAPI = () => {};
 
     onPointClicked = (id) => {
         setSelectedPoint(id);
@@ -75,9 +61,6 @@
         callJavaAPI("onPosClicked", {lat, lng});
     }
 
-    console.log = (...args) => {
-        callJavaAPI("onConsoleLog", {message: args.map(String).join(' ')})
-    }
 
     // Marker helpers
     styleActiveMarker = (target, isActive) => {

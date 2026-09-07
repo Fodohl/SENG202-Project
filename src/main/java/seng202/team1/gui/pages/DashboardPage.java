@@ -4,13 +4,16 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import seng202.team1.common.StringHelpers;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.BinCategory;
 import seng202.team1.data.trashlog.TrashLog;
+import seng202.team1.gui.GraphicsCommon;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.components.UICard;
+import seng202.team1.gui.components.UIGraphLine;
 
 import java.util.Comparator;
 import java.util.List;
@@ -24,7 +27,7 @@ public class DashboardPage extends Page {
     private UICard trees;
     private UICard dataset;
     private UICard lastLog;
-    private UICard totalLogged;
+    private UICard organicLogged;
     private UICard trashLogged;
     private UICard recycLogged;
 
@@ -47,30 +50,35 @@ public class DashboardPage extends Page {
     @Override
     protected Parent renderSelf() {
 
-        //@todo add graph and make look nicer
-
         // Top cards
-        leaderBoard = new UICard("Leaderboard Position:", "#4",  "(Top 10%)", "/images/dir-continue.svg", true);
-        trees = new UICard("Trees Saved:", "1.1",  "Trees", "/images/tree.svg", true);
-        dataset = new UICard("Dataset:", "184",  "Bins Loaded", "/images/data.svg", true);
+        leaderBoard = new UICard("Leaderboard Position:", "#4",  "(Top 10%)", "/media/images/dir-continue.svg", true);
+        trees = new UICard("Trees Saved:", "1.1",  "Trees", "/media/images/tree.svg", true);
+        dataset = new UICard("Trash Logged:", "184",  "Items", "/media/images/throw.svg", true);
 
         HBox topCards = new HBox(20, leaderBoard, trees, dataset);
-        topCards.setAlignment(Pos.CENTER);
+        topCards.setAlignment(Pos.TOP_LEFT);
+
+        // Graph
+        UIGraphLine communiy = new UIGraphLine();
 
         // Centre main card
-        lastLog = new UICard("Recent Activity:", "Logged entry at {type} bin in {place}",  "{date}", "/images/bin.png");
+        lastLog = new UICard("Recent Activity:", "Logged entry at {type} bin in {place}",  "{date}", "/media/images/bin.png");
         lastLog.resizeIcon(150, 150);
         lastLog.getStyleClass().add("active-grad");
 
         // Bottom cards
-        totalLogged = new UICard("Total Items Logged:", "450",  "", "/images/throw.svg");
-        recycLogged = new UICard("Total Items Recycled:", "300",  "", "/images/recycle.svg");
-        trashLogged = new UICard("Total Items Rubbish:", "150",  "", "/images/bin.svg");
+        trashLogged = new UICard("Total Rubbish Logged:", "150",  "", "/media/images/bin.svg");
+        recycLogged = new UICard("Total Recycling Logged:", "300",  "", "/media/images/recycle.svg");
+        organicLogged = new UICard("Total Organics Logged:", "450",  "", "/media/images/organic_waste.svg");
 
-        HBox botCards = new HBox(20, totalLogged, recycLogged, trashLogged);
-        botCards.setAlignment(Pos.CENTER);
+        HBox botCards = new HBox(20, trashLogged, recycLogged, organicLogged);
+        botCards.setAlignment(Pos.TOP_LEFT);
 
-        VBox root = new VBox(20, topCards, lastLog, botCards);
+        // Cards should grow
+        for(UICard card : List.of(leaderBoard, trees, dataset, organicLogged, recycLogged, trashLogged))
+            HBox.setHgrow(card, Priority.ALWAYS);
+
+        VBox root = new VBox(20, topCards, communiy, lastLog, botCards);
         root.getStyleClass().add("dashboard");
         return root;
     }
@@ -95,9 +103,9 @@ public class DashboardPage extends Page {
         Bin newestBin = bins.isEmpty() ? null : bins.getLast();
 
 
-        totalLogged.setText(String.format("%d", newestBin == null ? 0 : bins.size()));
         trashLogged.setText(String.format("%d", newestBin == null ? 0 : bins.stream().filter(b -> b.getCategory() == BinCategory.GENERAL_WASTE).toList().size()));
         recycLogged.setText(String.format("%d", newestBin == null ? 0 : bins.stream().filter(b -> b.getCategory() == BinCategory.RECYCLABLE).toList().size()));
+        organicLogged.setText(String.format("%d", newestBin == null ? 0 : bins.stream().filter(b -> b.getCategory() == BinCategory.ORGANIC).toList().size()));
 
         // Hasn't logged
         if(newestLog == null){

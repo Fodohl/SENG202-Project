@@ -53,7 +53,7 @@ public abstract class Modal extends LayoutElement implements Cloneable {
 
     private HBox header(Modals modalType){
 
-        String iconPath = String.format("/images/%s.svg", modalType.name().toLowerCase());
+        String iconPath = String.format("/media/images/%s.svg", modalType.name().toLowerCase());
         String modalTitle = StringHelpers.enumNameToTitle(modalType.name());
 
         // Create the header elements

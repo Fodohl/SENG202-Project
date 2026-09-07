@@ -33,7 +33,7 @@ public class UINavButton extends UIIconButton {
     public UINavButton(WindowManager windowManager, Pages dest) {
 
         // Setup state
-        super(String.format("/images/%s.svg", dest.name().toLowerCase()), StringHelpers.toTitleCase(dest.name()));
+        super(String.format("/media/images/%s.svg", dest.name().toLowerCase()), StringHelpers.toTitleCase(dest.name()));
         this.windowManager = windowManager;
         this.dest = dest;
 
