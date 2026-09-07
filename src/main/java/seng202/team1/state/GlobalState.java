@@ -1,6 +1,7 @@
 package seng202.team1.state;
 
 import javafx.stage.Stage;
+import seng202.team1.api.photon.PhotonClient;
 import seng202.team1.data.bin.BinLoader;
 import seng202.team1.data.trashlog.TrashLogStore;
 import seng202.team1.gui.WindowManager;
@@ -21,6 +22,8 @@ public class GlobalState {
 
     private TrashLogStore trashLogStore;
 
+    private PhotonClient photonClient;
+
     /**
      * Constructs a new GlobalState and sets up managers
      *
@@ -34,6 +37,9 @@ public class GlobalState {
 
         trashLogStore = new TrashLogStore(TrashLogStore.defaultDataPath());
         trashLogStore.load();
+
+        photonClient = new PhotonClient();
+        photonClient.searchLocation("berlin", x -> System.out.println(x));
 
         windowManager = new WindowManager(this, stage);
     }

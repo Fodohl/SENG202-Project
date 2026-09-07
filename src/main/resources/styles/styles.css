@@ -1,6 +1,6 @@
 @font-face {
     -fx-font-family: 'noto-sans';
-    src: url('../fonts/NotoSans-Medium.ttf') format('ttf');
+    src: url('../media/fonts/NotoSans-Medium.ttf') format('ttf');
 }
 
 
@@ -177,7 +177,8 @@
     -fx-text-fill: -text-secondary;
     -fx-alignment: center-left;
     -fx-spacing: 10px;
-    -fx-max-width: 350px;
+    -fx-min-width: 450px;
+    -fx-max-width: 50px;
     -fx-border-color: -text-secondary-half;
     -fx-border-radius: 50px;
 }

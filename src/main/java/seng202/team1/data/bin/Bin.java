@@ -4,7 +4,6 @@ import java.time.Instant;
 
 
 /**
- * BinObject
  * Class represents a single bin and its properties
  * @author Stanley Easthope
  */
