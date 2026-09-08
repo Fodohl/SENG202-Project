@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.BinLoader;
-import seng202.team1.data.StringTable;
+import seng202.team1.data.table.StringTable;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.state.GlobalState;
 

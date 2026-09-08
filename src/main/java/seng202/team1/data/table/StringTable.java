@@ -1,11 +1,8 @@
-package seng202.team1.data;
+package seng202.team1.data.table;
 
-import java.beans.FeatureDescriptor;
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
+import java.util.function.Function;
 
 /**
  * Stores a list of object values mapped to a column name
@@ -13,7 +10,7 @@ import java.util.concurrent.ExecutionException;
  * Waring: Column order is NOT preserved
  * Note: Row order IS preserved
  */
-public class StringTable extends HashMap<String, List<String>> {
+public class StringTable extends LinkedHashMap<String, List<String>> {
 
     /// A map of an object's variable name to a table column header
     private Map<String, String> colMap;
@@ -75,7 +72,7 @@ public class StringTable extends HashMap<String, List<String>> {
      * @param object The data for the row
      * @return True if the row was added successfully, false otherwise.
      */
-    public boolean add(Object object){
+    public boolean add(Object object, Map<String, Function<Object, String>> formatters){
 
         // Get fields the object has
         List<Field> declearedFields = Arrays.asList(object.getClass().getDeclaredFields());
@@ -91,24 +88,28 @@ public class StringTable extends HashMap<String, List<String>> {
             Field field = fields.get(key);
 
             // Doesnt have value
-            if(field == null)
+            if(field == null){
+                System.out.println("Field '" + key + "' not found");
                 return false;
+            }
 
-            // Value is private
-            if(Modifier.isPrivate(field.getModifiers()))
-                return false;
-
+            // Enable fields to be read
+            field.setAccessible(true);
         }
 
         // Add each value to the table
         colMap.forEach((data, display) -> {
             try {
 
-                // Store the value from the object
-                Object objectValue = object.getClass().getDeclaredField(data).get(object);
-                get(display).add(objectValue.toString());
+                // Get the object
+                Object objectValue = fields.get(data).get(object);
+                Function<Object, String> formatter = formatters.get(data);
 
-            } catch (IllegalAccessException | NoSuchFieldException e) {
+                // Format the data
+                String formattedValue = formatter != null ? formatter.apply(objectValue) : (objectValue.toString());
+                get(display).add(formattedValue);
+
+            } catch (IllegalAccessException e) {
 
                 // Should never happen as prechecked above, unrecoverable as data may have been added here
                 throw new RuntimeException(String.format("Failed mid object add to StringTable: %s", e.getMessage()));

@@ -4,9 +4,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-import seng202.team1.data.StringTable;
+import seng202.team1.data.table.StringTable;
+import seng202.team1.data.table.StringTableBuilder;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
@@ -15,7 +15,7 @@ import java.util.Set;
 /**
  * A UI Component to handle rendering tables
  *
- * Takes a given {@link StringTable} and converts it into a viewable table
+ * Takes a given {@link table} and converts it into a viewable table
  */
 public class UITable extends GridPane {
 
@@ -34,46 +34,39 @@ public class UITable extends GridPane {
     /// Whether to highlight the first data row or not
     private boolean highlightFirst = true;
 
+    private StringTableBuilder sourceData;
+
     /**
      * Constructs a new UI table
      *
-     * @see #UITable(StringTable, List, boolean)
+     * @see #UITable(StringTable, boolean)
      */
-    public UITable(StringTable data){
-        this(data, data.getHeaderRow().stream().toList(), true);
-    }
-
-    /**
-     * Constructs a new UI table with a desired header ordering
-     *
-     * @see #UITable(StringTable, List, boolean)
-     */
-    public UITable(StringTable data, List<String> headerOrder){
-        this(data, headerOrder, true);
+    public UITable(StringTableBuilder data){
+        this(data, true);
     }
 
     /**
      * Constructs a new UI table with a desired header ordering and highlight rules
      *
      * @param data The data to show in the table
-     * @param headerOrder The order of the header columns (from left to right)
      * @param highlightFirst Whether to highlight the first row or not
      */
-    public UITable(StringTable data, List<String> headerOrder, boolean highlightFirst){
+    public UITable(StringTableBuilder data, boolean highlightFirst){
 
         this.highlightFirst = highlightFirst;
+        this.sourceData = data;
 
         // Style the table
         getStyleClass().add("table");
         setAlignment(Pos.CENTER);
 
         // Add header row
-        setupHeader(headerOrder);
+        StringTable outData = sourceData.build();
+        setupHeader(outData.getHeaderRow());
 
         // Add child rows
-        for (int i = 0; i < data.dataSize(); i++)
-            addTableRow(data.getDataRow(i));
-
+        for (int i = 0; i < outData.dataSize(); i++)
+            addTableRow(outData.getDataRow(i));
     }
 
     /**
@@ -81,20 +74,19 @@ public class UITable extends GridPane {
      *
      * @param headers The header names for each column
      */
-    private void setupHeader(List<String> headers) {
+    private void setupHeader(Set<String> headers) {
 
-        // Setup state
+       // Setup state
         headerColumns.clear();
         rowWidth = headers.size();
 
-        for (int i = 0; i < headers.size(); i++){
-
-            // Get the header
-            String header = headers.get(i);
+        int i = 0;
+        for (String header : headers) {
 
             // Add
             addCell(header, true);
             headerColumns.put(header, i);
+            i++;
         }
     }
 

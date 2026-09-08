@@ -3,10 +3,16 @@ package seng202.team1.gui.pages;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
+import seng202.team1.common.StringHelpers;
+import seng202.team1.data.bin.Bin;
+import seng202.team1.data.bin.BinCategory;
+import seng202.team1.data.table.StringTable;
+import seng202.team1.data.table.StringTableBuilder;
 import seng202.team1.gui.components.UITable;
 import seng202.team1.gui.components.UITitle;
 import seng202.team1.gui.WindowManager;
 
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -37,8 +43,15 @@ public class DataPage extends Page {
         UITitle pageTitle = new UITitle("Raw Data");
 
         // Data
-        List<String> order = List.of("ID", "Latitude", "Longitude", "Type");
-        UITable table = new UITable(windowManager.getGlobalState().getDataLoader().toStringTable(), order, false);
+       StringTableBuilder tableData = new StringTableBuilder<Bin>(windowManager.getGlobalState().getDataLoader().getBinObjects())
+            .addColumn("binID", "ID")
+            .addColumn("latitude", "Latitude", val -> String.format("%.4f", (Double) val))
+            .addColumn("longitude", "Longitude", val -> String.format("%.4f", (Double) val))
+            .addColumn("areaName", "Location")
+            .addColumn("type", "Type", val -> StringHelpers.enumNameToTitle(((BinCategory)val).name()))
+            .sortBy(Comparator.comparing(item -> item.getID()));
+
+        UITable table = new UITable(tableData, false);
 
         // Combine
         VBox root = new VBox(20, pageTitle, table);

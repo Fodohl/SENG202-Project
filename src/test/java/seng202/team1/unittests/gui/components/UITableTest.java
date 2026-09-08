@@ -5,7 +5,7 @@ import javafx.scene.control.Label;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import seng202.team1.data.bin.Bin;
-import seng202.team1.data.StringTable;
+import seng202.team1.data.table.StringTable;
 import seng202.team1.gui.components.UITable;
 import seng202.team1.unittests.TrashAppTest;
 

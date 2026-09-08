@@ -12,7 +12,7 @@ import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import seng202.team1.data.StringTable;
+import seng202.team1.data.table.StringTable;
 
 /**
  * DataLoader
@@ -38,28 +38,6 @@ public class BinLoader {
      */
     public List<Bin> getBinObjects() {
         return Collections.unmodifiableList(binObjects);
-    }
-
-    /**
-     * Converts the bin data to a string table for displaying
-     */
-    public StringTable toStringTable(){
-
-        // Set up the table
-        Map<String, String> keys = Map.of(
-                                        "binID", "ID",
-                                        "latitude", "Latitude",
-                                        "longitude","Longitude",
-                                        "type", "Type"
-                                        );
-        StringTable out = new StringTable(keys);
-
-
-        // Add all binds
-        for (Bin bin : binObjects)
-            out.add(bin);
-
-        return out;
     }
 
     /**
