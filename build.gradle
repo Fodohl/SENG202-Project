@@ -6,13 +6,13 @@ plugins {
 }
 
 base {
-    archivesName = 'seng202_team1'
+    archivesName = 'seng202_team1_trashapp'
 }
 
 group = 'seng202.team1'
 version = '1.0-SNAPSHOT'
 
-def mainClassName = 'seng202.team1.App'
+def mainClassName = 'seng202.team1.TrashApp'
 
 def javaVersion = '25'
 def javafxVersion = '25.0.3'
@@ -29,6 +29,7 @@ java {
 
 repositories {
     mavenCentral()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -82,6 +83,16 @@ dependencies {
 
     // https://mvnrepository.com/artifact/org.mockito/mockito-core
     testImplementation 'org.mockito:mockito-core:5.4.0'
+
+    // https://github.com/hervegirod/fxsvgimage
+    implementation 'com.github.hervegirod:fxsvgimage:1.7.3'
+    implementation 'com.github.hervegirod:fxsvgimage:1.7.3:cssparser'
+
+    // https://github.com/makbn/java_leaflet
+    implementation 'io.github.makbn:jlmap-fx:2.0.0'
+
+    /// https://mvnrepository.com/artifact/org.testfx/openjfx-monocle
+    testImplementation "org.testfx:openjfx-monocle:jdk-12.0.1+2"
 }
 
 application {
@@ -96,6 +107,11 @@ javafx {
 
 test {
     useJUnitPlatform()
+    systemProperty 'glass.platform', 'Monocle'
+    systemProperty 'monocle.platform', 'Headless'
+    systemProperty 'prism.order', 'sw'
+    systemProperty 'java.awt.headless', 'true'
+    systemProperty 'testfx.headless', 'true'
 
     filter {
         includeTestsMatching "seng202.team1.unittests.*"
@@ -160,5 +176,12 @@ jacocoTestReport {
     reports {
         html.outputLocation = layout.buildDirectory.dir("reports/tests/coverage")
     }
+}
 
+// Suppress warnings
+tasks.withType(JavaExec).configureEach {
+    jvmArgs += [
+        '--enable-native-access=ALL-UNNAMED',
+        '--enable-native-access=javafx.web'
+    ]
 }
