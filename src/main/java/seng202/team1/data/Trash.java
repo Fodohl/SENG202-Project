@@ -6,7 +6,7 @@ package seng202.team1.data;
  *
  * @author Marcus Demafeliz
  */
-public record Trash(TrashCategory trashCategory, TrashType trashType, int trashWeight) {
+public record Trash(int id, TrashCategory trashCategory, TrashType trashType, int trashWeight) {
 
     public Trash {
     }
@@ -18,11 +18,15 @@ public record Trash(TrashCategory trashCategory, TrashType trashType, int trashW
      * @param trashType the trash type
      */
     public Trash(TrashCategory trashCategory, TrashType trashType) {
-        this(trashCategory, trashType, 0);
+        this(-1, trashCategory, trashType, -1);
+    }
+
+    public Trash(TrashCategory trashCategory, TrashType trashType, int trashWeight) {
+        this(-1, trashCategory, trashType, trashWeight);
     }
 
     @Override
     public String toString() {
-        return String.format("Trash{%s, %s, %d}", trashCategory.toString(), trashType.toString(), trashWeight);
+        return String.format("Trash{%d, %s, %s, %d}", id, trashCategory.toString(), trashType.toString(), trashWeight);
     }
 }

@@ -22,6 +22,6 @@ public class TrashTest {
     @Test
     public void testGetTrashWithNoSpecifiedWeight() {
         Trash testTrash = new Trash(TrashCategory.GENERAL_WASTE, TrashType.OTHER);
-        assertEquals(0, testTrash.trashWeight());
+        assertEquals(-1, testTrash.trashWeight());
     }
 }

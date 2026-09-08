@@ -32,7 +32,6 @@ public class TrashLogLoader {
 
     private final List<TrashLog> trashLogs = new ArrayList<>();
 
-
     public List<TrashLog> getTrashLogs() {
         return Collections.unmodifiableList(trashLogs);
     }
