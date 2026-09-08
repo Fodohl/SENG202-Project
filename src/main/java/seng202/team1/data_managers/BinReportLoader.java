@@ -2,9 +2,10 @@ package seng202.team1.data_managers;
 
 import seng202.team1.models.BinReport;
 
-import java.io.FileReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -19,18 +20,31 @@ import org.json.simple.parser.JSONParser;
 import seng202.team1.models.User;
 
 /**
- * Loads trash logs data from a JSON file into {@link BinReport} instances
+ * Loads bin report data from a JSON file into {@link BinReport} instances
  * @author Archie Georgeson
  */
 public class BinReportLoader {
-    private static final Logger log = LogManager.getLogger(DataLoader.class);
-    private final String filePath = "json/binreports.json";
+    private static final Logger log = LogManager.getLogger(BinReportLoader.class);
+    private static final String TEST_FILE_PATH = "json/binreports.json";
+    private final Path filePath;
     private final List<BinReport> binReports = new ArrayList<>();
     private final DataLoader dataLoader = new DataLoader();
 
+    /**
+     * Instantiates BinReportLoader for use in app
+     * @param filePath Path of JSON file for bin reports
+     */
+    public BinReportLoader(Path filePath) {
+        dataLoader.readGeoJSON();
+        this.filePath = filePath;
+    }
 
+    /**
+     * Instantiates BinReportLoader for use in testing
+     */
     public BinReportLoader() {
         dataLoader.readGeoJSON();
+        this.filePath = null;
     }
 
     public List<BinReport> getBinReports() {
@@ -53,30 +67,37 @@ public class BinReportLoader {
      * Raises an error if file cannot be read
      */
     public void readJson() {
+        binReports.clear();
+
+        if (filePath != null && Files.notExists(filePath)) {
+            return;
+        }
         JSONParser parser = new JSONParser();
-        try {
-            JSONObject jsonObject = parseJson(parser);
-            JSONArray logs = (JSONArray) jsonObject.get("binReports");
-            for (Object o : logs) {
-                binReports.add(parseLog((JSONObject) o));
+        try (Reader reader = openReader()){
+            JSONObject jsonObject = (JSONObject) parser.parse(reader);
+            JSONArray reports = (JSONArray) jsonObject.get("binReports");
+            if (reports == null) {
+                return;
+            }
+            for (Object o : reports) {
+                binReports.add(parseReport((JSONObject) o));
             }
         } catch (Exception e) {
-            log.error("Failed to parse JSON trash logs from file: " + e.getMessage());
+            String location = filePath == null ? TEST_FILE_PATH : filePath.toString();
+            log.error("Failed to parse JSON bin reports from " + location, e.getMessage());
+            throw new IllegalStateException("Failed to parse JSON bin reports: " + e.getMessage());
         }
     }
 
-    /**
-     * Parses the JSON file into a JSON Object
-     * @param parser JSONParser instance used to parse file contents
-     * @return {@link JSONObject} with JSON data
-     * @throws Exception if an error occurs while reading or parsing JSON file
-     */
-    private JSONObject parseJson(JSONParser parser) throws Exception {
-        InputStream is = DataLoader.class.getClassLoader().getResourceAsStream(filePath);
-        if (is != null) {
-            return (JSONObject) parser.parse(new InputStreamReader(is));
+    private Reader openReader() throws IOException {
+        if (filePath != null) {
+            return Files.newBufferedReader(filePath, StandardCharsets.UTF_8);
         }
-        return (JSONObject) parser.parse(new FileReader(filePath));
+        InputStream is = DataLoader.class.getClassLoader().getResourceAsStream(TEST_FILE_PATH);
+        if (is == null) {
+            throw new FileNotFoundException("could not find " + TEST_FILE_PATH);
+        }
+        return new InputStreamReader(is, StandardCharsets.UTF_8);
     }
 
     /**
@@ -85,7 +106,7 @@ public class BinReportLoader {
      * @param jsonObject represents binReport
      * @return A binReport object
      */
-    private BinReport parseLog(JSONObject jsonObject) {
+    private BinReport parseReport(JSONObject jsonObject) {
         String binID = (String) jsonObject.get("binID");
         BinObject bin = dataLoader.getBinById(Integer.parseInt(binID));
         String reportString = (String) jsonObject.get("report");
