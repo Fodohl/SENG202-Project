@@ -100,7 +100,6 @@ public class ApiClient {
 
         // @todo check cache
 
-
         // Build the full url
         String queryString = queryParams.entrySet().stream()
                 .map(entry -> URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8) + "=" +
@@ -108,7 +107,6 @@ public class ApiClient {
                 .collect(Collectors.joining("&"));
 
         String fullURL = String.format("%s/%s?%s", hostUrl, path, queryString);
-        System.out.println(fullURL);
 
         // Build the query
         HttpRequest request = HttpRequest.newBuilder()

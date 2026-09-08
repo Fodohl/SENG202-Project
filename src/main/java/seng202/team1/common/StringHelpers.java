@@ -1,5 +1,8 @@
 package seng202.team1.common;
 
+import seng202.team1.api.photon.Feature;
+import seng202.team1.api.photon.Properties;
+
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -63,5 +66,15 @@ public class StringHelpers {
         // Covert back to
         return String.format("%d", rounded * nearest);
 
+    }
+
+    public static String featureToAddress(Feature feature){
+
+        Properties properties = feature.properties();
+
+        boolean isAddress = properties.name() == null;
+
+        return isAddress ? String.format("%s %s, %s, %s", properties.housenumber(), properties.street(), properties.city(), properties.postcode())
+                         : String.format("%s, %s, %s", properties.name(), properties.city(), properties.county());
     }
 }

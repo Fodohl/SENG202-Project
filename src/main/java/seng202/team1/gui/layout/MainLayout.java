@@ -1,22 +1,31 @@
 package seng202.team1.gui.layout;
 
+import javafx.animation.PauseTransition;
+import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
+import javafx.stage.Popup;
+import javafx.util.Duration;
+import seng202.team1.api.photon.Feature;
+import seng202.team1.common.StringHelpers;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.components.UIImage;
 import seng202.team1.gui.components.UINavButton;
 import seng202.team1.gui.pages.Pages;
 
+import static seng202.team1.common.StringHelpers.featureToAddress;
 import static seng202.team1.gui.GraphicsCommon.precentWindowX;
 
 /**
  * Composite UI component that contains elements consistent across the whole app
  *
  * Note: there should be only one per window
+ *
+ * @credit https://stackoverflow.com/questions/34784037/javafx-8-how-to-add-a-timedelay-to-a-listener deboucer
  */
 public class MainLayout extends LayoutElement {
 
@@ -25,6 +34,11 @@ public class MainLayout extends LayoutElement {
 
     /// The element that contains the {@link #content} container
     private BorderPane page = null;
+
+    private Popup searchPopup = new Popup();
+    private VBox suggestionContainer = new VBox();
+
+    private HBox searchBar;
 
     /**
      * Construct a new CoreUI for a given window
@@ -73,6 +87,51 @@ public class MainLayout extends LayoutElement {
 
     }
 
+    private void setupPopup() {
+
+        // Style
+        suggestionContainer.getStyleClass().add("search-suggestions-popup");
+        suggestionContainer.setMaxHeight(200);
+
+        // Scroll if there are lots of results
+        ScrollPane suggestionScroll = new ScrollPane(suggestionContainer);
+        suggestionScroll.setFitToWidth(true);
+        suggestionScroll.setMaxHeight(200);
+        suggestionScroll.getStyleClass().add("search-suggestions-scroll");
+
+        // Close if user clicks outside popup
+        searchPopup.getContent().add(suggestionScroll);
+        searchPopup.setAutoHide(true);
+    }
+
+    private void search(String address){
+
+        // Prevent API error when user clears their input
+        if(address.isEmpty())
+            return;
+
+        windowManager.getGlobalState().getPhotonClient().searchLocation(address, locationResponse -> {
+
+            // Clear previous search addresses
+            suggestionContainer.getChildren().clear();
+
+            // Dont show an empty pop up
+            if (locationResponse.features().isEmpty()) {
+                searchPopup.hide();
+                return;
+            }
+
+            // Add all the found locations
+            for(Feature location : locationResponse.features())
+                suggestionContainer.getChildren().add(new Label(StringHelpers.featureToAddress(location)));
+
+            // Force the popup to be below the search bar
+            Bounds bounds = searchBar.localToScreen(searchBar.getBoundsInLocal());
+            searchPopup.show(searchBar.getScene().getWindow(), bounds.getMinX() + 20, bounds.getMaxY());
+
+        });
+    }
+
     /**
      * Build a header containing the app search bar and account info
      *
@@ -88,8 +147,16 @@ public class MainLayout extends LayoutElement {
         searchInput.setPromptText("Enter address...");
         searchInput.getStyleClass().add("search-input");
 
+        // Ensure API is not overwhelmed
+        PauseTransition debouncer = new PauseTransition(Duration.millis(300));
+        searchInput.textProperty().addListener((observable, oldValue, newValue) -> {
+                debouncer.setOnFinished(event -> search(newValue));
+                debouncer.playFromStart();
+            }
+        );
+
         // Build Search Bar
-        HBox searchBar = new HBox(searchIcon, searchInput);
+        searchBar = new HBox(searchIcon, searchInput);
         searchBar.getStyleClass().add("search-bar");
 
         // Account
@@ -114,6 +181,8 @@ public class MainLayout extends LayoutElement {
      */
     @Override
     protected Parent renderSelf() {
+
+        setupPopup();
 
         // Page
         page = new BorderPane();

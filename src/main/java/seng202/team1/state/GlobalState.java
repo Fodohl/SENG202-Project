@@ -39,7 +39,6 @@ public class GlobalState {
         trashLogStore.load();
 
         photonClient = new PhotonClient();
-        photonClient.searchLocation("berlin", x -> System.out.println(x));
 
         windowManager = new WindowManager(this, stage);
     }
@@ -64,5 +63,9 @@ public class GlobalState {
 
     public TrashLogStore getTrashLogStore() {
         return trashLogStore;
+    }
+
+    public PhotonClient getPhotonClient() {
+        return photonClient;
     }
 }

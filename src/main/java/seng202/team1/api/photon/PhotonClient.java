@@ -33,7 +33,6 @@ public class PhotonClient extends ApiClient {
 
         GET("", params, json -> {
             try {
-                System.out.println(json);
                 callback.accept(GSON.fromJson(json, PhotonLocationResponse.class));
 
             } catch (Exception e) {

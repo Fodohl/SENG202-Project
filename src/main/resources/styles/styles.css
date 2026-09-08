@@ -178,7 +178,6 @@
     -fx-alignment: center-left;
     -fx-spacing: 10px;
     -fx-min-width: 450px;
-    -fx-max-width: 50px;
     -fx-border-color: -text-secondary-half;
     -fx-border-radius: 50px;
 }
@@ -189,6 +188,30 @@
     -fx-prompt-text-fill: -text-secondary;
     -fx-border-width: 0;
     -fx-padding: 0;
+}
+
+.search-suggestions-scroll {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
+    -fx-border-color: transparent;
+    -fx-min-width: 400px;
+}
+
+.search-suggestions-popup {
+    -fx-background-color: -bg-third;
+    -fx-border-color: -text-secondary-half;
+    -fx-border-width: 1px;
+    -fx-padding: 5px;
+}
+
+.search-suggestions-popup .label{
+    -fx-font-size: 18px;
+    -fx-padding: 5px;
+    -fx-cursor: hand;
+}
+
+.search-suggestions-popup .label:hover{
+    -fx-text-fill: -text-secondary;
 }
 
 .search-bar .text-field:focused{
