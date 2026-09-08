@@ -6,14 +6,12 @@ import javafx.scene.layout.VBox;
 import seng202.team1.common.StringHelpers;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.BinCategory;
-import seng202.team1.data.table.StringTable;
 import seng202.team1.data.table.StringTableBuilder;
 import seng202.team1.gui.components.UITable;
 import seng202.team1.gui.components.UITitle;
 import seng202.team1.gui.WindowManager;
 
 import java.util.Comparator;
-import java.util.List;
 
 /**
  * Page that displays the data used in the app
@@ -43,7 +41,7 @@ public class DataPage extends Page {
         UITitle pageTitle = new UITitle("Raw Data");
 
         // Data
-       StringTableBuilder tableData = new StringTableBuilder<Bin>(windowManager.getGlobalState().getDataLoader().getBinObjects())
+       StringTableBuilder<Bin> tableData = new StringTableBuilder<Bin>(windowManager.getGlobalState().getDataLoader().getBinObjects())
             .addColumn("binID", "ID")
             .addColumn("latitude", "Latitude", val -> String.format("%.4f", (Double) val))
             .addColumn("longitude", "Longitude", val -> String.format("%.4f", (Double) val))
