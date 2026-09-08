@@ -47,8 +47,9 @@ public class MapPage extends Page {
     private UIKeyValuePair sidebarBinLastUsed;
 
 
-    private Double userPosLat = 0.0;
-    private Double userPosLong = 0.0;
+    private Double userPosLat = null;
+    private Double userPosLong = null;
+    private boolean userPosIsTemporary = false;
 
     private int userPosMarkerID = 0xFFFFFFFF;
     private long directionsModalID = -1;
@@ -107,7 +108,7 @@ public class MapPage extends Page {
         actionsSection.getStyleClass().add("buttons");
 
         // Modals
-        directionsButton.setOnMouseClicked(e -> waitForLocation());
+        directionsButton.setOnMouseClicked(e -> tryDrawDirections());
         logButton.setOnMouseClicked(e -> windowManager.openModal(Modals.LOG_TRASH, selectedBin));
         issueButton.setOnMouseClicked(e -> windowManager.openModal(Modals.LOG_ISSUE));
 
@@ -188,12 +189,12 @@ public class MapPage extends Page {
         userPosLat = lat;
         userPosLong = lng;
 
+        // Remove old point
+        map.removePoint(userPosMarkerID);
+
         // Display user location on map
         map.addPoint(userPosLat, userPosLong, userPosMarkerID, "default");
         map.centreOnPoint(userPosMarkerID);
-
-        if(selectedBin != null)
-            map.setRoute(userPosLat, userPosLong, selectedBin.getLatitude(), selectedBin.getLongitude());
 
     }
 
@@ -213,6 +214,12 @@ public class MapPage extends Page {
         updateContents();
     }
 
+    /**
+     * when map clickec but no point
+     *
+     * @param lat
+     * @param lng
+     */
     private void onPosClick(Double lat, Double lng) {
 
         // Bin un-selected
@@ -224,10 +231,11 @@ public class MapPage extends Page {
         }
 
         // Clear old state
-        removeDirections();
+        setUserLocation(lat, lng);
         stopWaitingForLocation();
 
-        setUserLocation(lat, lng);
+        // Can now draw the directions once the start point is known
+        tryDrawDirections();
     }
 
     private void onMapRouted(List<RouteInstruction> instructions){
@@ -271,11 +279,16 @@ public class MapPage extends Page {
 
     }
 
-    private void waitForLocation(){
+    private boolean waitForLocation(){
+
+        // Already have location
+        if(userPosLat != null && userPosLong != null)
+            return false;
 
         isWaitingForLocation = true;
         mapDialog.setVisible(true);
 
+        return true;
     }
 
     private void stopWaitingForLocation(){
@@ -283,9 +296,21 @@ public class MapPage extends Page {
         mapDialog.setVisible(false);
     }
 
+     private void tryDrawDirections(){
+
+        // Dont have a dest point
+        if(selectedBin == null)
+            return;
+
+        // Dont have a source point (get it)
+        if(waitForLocation())
+            return;
+
+        map.setRoute(userPosLat, userPosLong, selectedBin.getLatitude(), selectedBin.getLongitude());
+    }
+
     private void removeDirections(){
         windowManager.killModal(directionsModalID);
-        map.removePoint(userPosMarkerID);
         map.clearRoute();
     }
 }
