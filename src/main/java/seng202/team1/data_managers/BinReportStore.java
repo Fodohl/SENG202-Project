@@ -89,7 +89,7 @@ public class BinReportStore {
      * @throws IOException if the JSON file cannot be written
      */
     public void removeReport(BinReport report) throws IOException {
-        List<BinReport> updatedReports = reports.stream().filter(setReport -> setReport.getBinID() == report.getBinID()
+        List<BinReport> updatedReports = reports.stream().filter(setReport -> !((setReport.getBinID()) == report.getBinID())
                 && setReport.getSubmittedBy().equals(report.getSubmittedBy())).toList();
         writeToJSON(updatedReports);
     }

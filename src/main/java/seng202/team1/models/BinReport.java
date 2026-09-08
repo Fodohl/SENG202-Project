@@ -20,6 +20,7 @@ public class BinReport {
      * @param bin
      * @param submittedBy
      * @param description
+     * @param submittedAt
      */
 
     public BinReport(BinObject bin,
