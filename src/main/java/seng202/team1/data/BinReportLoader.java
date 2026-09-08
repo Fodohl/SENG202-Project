@@ -1,4 +1,4 @@
-package seng202.team1.data_managers;
+package seng202.team1.data;
 
 import seng202.team1.models.BinReport;
 
@@ -108,18 +108,18 @@ public class BinReportLoader {
      */
     private BinReport parseReport(JSONObject jsonObject) {
         String binID = (String) jsonObject.get("binID");
-        BinObject bin = dataLoader.getBinById(Integer.parseInt(binID));
+        Bin bin = dataLoader.getBinById(Integer.parseInt(binID));
         String reportString = (String) jsonObject.get("report");
         String reportUser = (String) jsonObject.get("user");
         String reportUserID = (String) jsonObject.get("userID");
         User user = new User(Integer.parseInt(reportUserID), reportUser);
         LocalDateTime time = LocalDateTime.parse(jsonObject.get("createdAt").toString());
 
-        BinObject.BinStatus report = switch (reportString.toUpperCase(Locale.ROOT)) {
-            case "FULL" -> BinObject.BinStatus.FULL;
-            case "PARTIAL" -> BinObject.BinStatus.PARTIAL;
-            case "EMPTY" -> BinObject.BinStatus.EMPTY;
-            case "INCORRECT_LOCATION" -> BinObject.BinStatus.INCORRECT_LOCATION;
+        BinStatus report = switch (reportString.toUpperCase(Locale.ROOT)) {
+            case "FULL" -> BinStatus.FULL;
+            case "PARTIAL" -> BinStatus.PARTIAL;
+            case "EMPTY" -> BinStatus.EMPTY;
+            case "INCORRECT_LOCATION" -> BinStatus.INCORRECT_LOCATION;
             default -> throw new IllegalStateException("Unexpected value: " + reportString.toUpperCase(Locale.ROOT));
         };
 

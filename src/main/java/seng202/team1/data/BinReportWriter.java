@@ -1,4 +1,4 @@
-package seng202.team1.data_managers;
+package seng202.team1.data;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

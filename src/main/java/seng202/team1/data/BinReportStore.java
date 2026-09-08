@@ -1,6 +1,7 @@
-package seng202.team1.data_managers;
+package seng202.team1.data;
 
 import seng202.team1.models.BinReport;
+
 
 import java.io.IOException;
 import java.nio.file.Path;

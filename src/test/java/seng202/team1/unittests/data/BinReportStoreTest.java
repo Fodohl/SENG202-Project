@@ -1,9 +1,9 @@
-package seng202.team1.unittests.data_managers;
+package seng202.team1.unittests.data;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import seng202.team1.data_managers.BinObject;
-import seng202.team1.data_managers.BinReportStore;
+import seng202.team1.data.*;
 import seng202.team1.models.BinReport;
 import seng202.team1.models.User;
 
@@ -23,15 +23,21 @@ public class BinReportStoreTest {
     private BinReportStore store;
     private Path testFile;
 
+    @BeforeEach
+    public void setUp() {
+        this.store = new BinReportStore();
+    }
+
     @Test
     void addReport() throws IOException {
         BinReport report = new BinReport(
-                new BinObject(197, -43.605467593,
-                        172.693149814, BinObject.BinType.RECYCLING),
+                new Bin(197, -43.605467593,
+                        172.693149814, TrashCategory.RECYCLABLE),
                 new User(123, "Test1"),
-                BinObject.BinStatus.EMPTY,
+                BinStatus.EMPTY,
                 LocalDateTime.now()
         );
+
 
         store.add(report);
 
@@ -40,22 +46,22 @@ public class BinReportStoreTest {
         assertEquals(1, reports.size());
         assertEquals(1, reports.get(0).getBinID());
         assertEquals("Connor", reports.get(0).getSubmittedBy().getName());
-        assert (BinObject.BinStatus.FULL,reports.get(0).getDescription());
+        assertEquals(BinStatus.FULL, reports.get(0).getDescription());
     }
 
     @Test
     void addTwoReports() throws IOException {
-        BinReport report1 = new BinReport(new BinObject(197, -43.605467593,
-                172.693149814, BinObject.BinType.RECYCLING),
+        BinReport report1 = new BinReport(new Bin(197, -43.605467593,
+                172.693149814, TrashCategory.RECYCLABLE),
                 new User(123, "Test1"),
-                BinObject.BinStatus.EMPTY,
+                BinStatus.EMPTY,
                 LocalDateTime.now()
         );
 
-        BinReport report2 = new BinReport(new BinObject(197, -43.605467593,
-                172.693149814, BinObject.BinType.RECYCLING),
+        BinReport report2 = new BinReport(new Bin(197, -43.605467593,
+                172.693149814, TrashCategory.RECYCLABLE),
                 new User(321, "Test2"),
-                BinObject.BinStatus.EMPTY,
+                BinStatus.EMPTY,
                 LocalDateTime.now()
         );
 
@@ -70,17 +76,17 @@ public class BinReportStoreTest {
 
     @Test
     void differentUsersCanReportSameBin() throws IOException {
-        BinReport report1 = new BinReport(new BinObject(197, 43.605467593,
-                172.693149814, BinObject.BinType.RECYCLING),
+        BinReport report1 = new BinReport(new Bin(197, 43.605467593,
+                172.693149814, TrashCategory.RECYCLABLE),
                 new User(123, "Test1"),
-                BinObject.BinStatus.EMPTY,
+                BinStatus.EMPTY,
                 LocalDateTime.now()
         );
 
-        BinReport report2 = new BinReport(new BinObject(197, -43.605467593,
-                172.693149814, BinObject.BinType.RECYCLING),
+        BinReport report2 = new BinReport(new Bin(197, -43.605467593,
+                172.693149814, TrashCategory.RECYCLABLE),
                 new User(321, "Test2"),
-                BinObject.BinStatus.EMPTY,
+                BinStatus.EMPTY,
                 LocalDateTime.now()
         );
 
@@ -94,17 +100,17 @@ public class BinReportStoreTest {
 
     @Test
     void sameUserReportingSameBinReplacesOldReport() throws IOException {
-        BinReport report1 = new BinReport(new BinObject(197, 43.605467593,
-                172.693149814, BinObject.BinType.RECYCLING),
+        BinReport report1 = new BinReport(new Bin(197, 43.605467593,
+                172.693149814, TrashCategory.RECYCLABLE),
                 new User(123, "Test1"),
-                BinObject.BinStatus.EMPTY,
+                BinStatus.EMPTY,
                 LocalDateTime.now()
         );
 
-        BinReport report2 = new BinReport(new BinObject(197, -43.605467593,
-                172.693149814, BinObject.BinType.RECYCLING),
+        BinReport report2 = new BinReport(new Bin(197, -43.605467593,
+                172.693149814, TrashCategory.RECYCLABLE),
                 new User(321, "Test2"),
-                BinObject.BinStatus.EMPTY,
+                BinStatus.EMPTY,
                 LocalDateTime.now()
         );
 
@@ -114,7 +120,7 @@ public class BinReportStoreTest {
         List<BinReport> reports = store.getReports();
 
         assertEquals(1, reports.size());
-        assertEquals(BinObject.BinStatus.FULL,
+        assertEquals(BinStatus.FULL,
                 reports.get(0).getDescription());
     }
 }

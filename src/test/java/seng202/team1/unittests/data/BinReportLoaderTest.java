@@ -1,10 +1,8 @@
-package seng202.team1.unittests.data_managers;
+package seng202.team1.unittests.data;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import seng202.team1.data_managers.BinObject;
-import seng202.team1.data_managers.BinReportLoader;
-import seng202.team1.data_managers.DataLoader;
+import seng202.team1.data.*;
 import seng202.team1.models.BinReport;
 import seng202.team1.models.User;
 
@@ -21,19 +19,19 @@ import static org.junit.jupiter.api.Assertions.*;
 public class BinReportLoaderTest {
     private BinReportLoader binReportLoader;
     private BinReport testBinReport;
-    private BinObject testBin;
+    private Bin testBin;
     private User testUser;
 
     @BeforeEach
     public void setUp() {
         binReportLoader = new BinReportLoader();
         binReportLoader.readJson();
-        testBin = new BinObject(1, 1.0, 1.0, BinObject.BinType.GENERAL_WASTE);
+        testBin = new Bin(1, 1.0, 1.0, TrashCategory.GENERAL_WASTE);
         testUser = new User(1, "Test");
         testBinReport = new BinReport(
                 testBin,
                 testUser,
-                BinObject.BinStatus.FULL,
+                BinStatus.FULL,
                 LocalDateTime.now()
         );
     }
