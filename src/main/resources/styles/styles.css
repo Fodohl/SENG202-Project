@@ -420,6 +420,19 @@
     -fx-font-size: 28px;
     -fx-background-color: -active-grad;
     -fx-font-weight: bolder;
+    -fx-cursor: hand;
+}
+
+.table-cell-header *{
+    -fx-background-color: transparent;
+}
+
+.table-cell-header .svg-icon * {
+    -fx-stroke: -text-primary;
+}
+
+.table-cell-header .svg-icon-fill * {
+    -fx-fill: -text-primary;
 }
 
 .cell-round{

@@ -22,8 +22,8 @@ public class Bin {
     /// The type of rubish the bin takes
     protected BinCategory type;
 
-    /// How fill the bin is
-    protected double status = 0.0;
+    /// How much trash in the bin
+    protected BinFullness fullness = BinFullness.UNKNOWN;
 
     /// When the bin's info was last updated
     protected Instant updated;
@@ -81,11 +81,11 @@ public class Bin {
     }
 
     /**
-     * Get the bin's status
-     * @return Bin status
+     * Get the bin's fullness
+     * @return Bin fullness
      */
-    public Double getStatus() {
-        return status;
+    public BinFullness getFullness() {
+        return fullness;
     }
 
     /**

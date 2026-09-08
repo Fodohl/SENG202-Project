@@ -4,11 +4,13 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import seng202.team1.data.table.StringTable;
 import seng202.team1.data.table.StringTableBuilder;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 
@@ -36,10 +38,15 @@ public class UITable extends GridPane {
 
     private StringTableBuilder sourceData;
 
+    private Map<String, UIImage> sortIcons = new HashMap<>();
+
+    private String currentSortDataKey = null;
+    private boolean sortAscending = false;
+
     /**
      * Constructs a new UI table
      *
-     * @see #UITable(StringTable, boolean)
+     * @see #UITable(StringTableBuilder, boolean)
      */
     public UITable(StringTableBuilder data){
         this(data, true);
@@ -60,13 +67,7 @@ public class UITable extends GridPane {
         getStyleClass().add("table");
         setAlignment(Pos.CENTER);
 
-        // Add header row
-        StringTable outData = sourceData.build();
-        setupHeader(outData.getHeaderRow());
-
-        // Add child rows
-        for (int i = 0; i < outData.dataSize(); i++)
-            addTableRow(outData.getDataRow(i));
+        buildTableContent();
     }
 
     /**
@@ -74,20 +75,84 @@ public class UITable extends GridPane {
      *
      * @param headers The header names for each column
      */
-    private void setupHeader(Set<String> headers) {
+    private void setupHeader(Map<String, String> colMap, Set<String> headers) {
 
        // Setup state
         headerColumns.clear();
         rowWidth = headers.size();
 
         int i = 0;
-        for (String header : headers) {
+        for (String headerDataKey : colMap.keySet()){
+
+            String headerDisplayName = colMap.get(headerDataKey);
 
             // Add
-            addCell(header, true);
-            headerColumns.put(header, i);
+            addCell(headerCell(headerDataKey, headerDisplayName), true);
+            headerColumns.put(headerDisplayName, i);
             i++;
         }
+    }
+
+    private HBox headerCell(String dataKey, String displayName) {
+
+        // Style the displayed title
+        Label label = new Label(displayName);
+
+        // Indicate that this is the row being sorted
+        UIImage sortIcon = new UIImage("/media/images/dir-continue.svg", 20, 20);
+        sortIcon.setVisible(currentSortDataKey != null && currentSortDataKey.equals(dataKey));
+        sortIcon.setRotate(sortAscending ? 0 : 180);
+
+        // Combine
+        HBox headerBox = new HBox(5, label, sortIcon);
+        headerBox.setAlignment(Pos.CENTER);
+
+        // Cycle sorting on click
+        headerBox.setOnMouseClicked(event -> {
+            updateSelectedSort(dataKey);
+            buildTableContent();
+        });
+
+
+        return headerBox;
+
+    }
+
+    private void buildTableContent() {
+
+        // Reset state
+        getChildren().clear();
+        headerColumns.clear();
+        sortIcons.clear();
+        currentRow = 0;
+        currentCol = 0;
+
+        // Preserve default sorting if yet to manually sort
+        if(currentSortDataKey != null)
+            sourceData = sourceData.sortBy(currentSortDataKey, sortAscending);
+
+        // Add header row
+        StringTable outData = sourceData.build();
+        setupHeader(outData.getColMap(), outData.getHeaderRow());
+
+        // Add child rows
+        for (int i = 0; i < outData.dataSize(); i++)
+            addTableRow(outData.getDataRow(i));
+
+    }
+
+    private void updateSelectedSort(String dataKey) {
+
+        // Cycle sorted on subsequent presses
+        if(currentSortDataKey != null && currentSortDataKey.equals(dataKey)) {
+            sortAscending = !sortAscending;
+            return;
+        }
+
+
+        // Sort ascending by default for newly sorted col
+        currentSortDataKey = dataKey;
+        sortAscending = true;
     }
 
     /**
@@ -153,20 +218,34 @@ public class UITable extends GridPane {
 
         // Create a new cell
         Label label = new Label(value);
-        label.getStyleClass().add("table-cell");
-
-        // Highlight the header row
-        if(isHeader)
-            label.getStyleClass().add("table-cell-header");
-
-        // Style
-        roundEdges(label);
-        //highlight(label);
-
-        // Add the cell
-        add(label, currentCol, currentRow);
-        nextCell();
+        addCell(label, isHeader);
     }
+
+        /**
+         * Add a cell to the table
+         *
+         * Call when finished with operations on the current working cell
+         *
+         * @param cell The cell to add
+         * @param isHeader Whether the cell is in the header row or not
+         */
+        private void addCell(Node cell, boolean isHeader){
+
+            cell.getStyleClass().add("table-cell");
+
+            // Highlight the header row
+            if(isHeader)
+                cell.getStyleClass().add("table-cell-header");
+
+            // Style
+            roundEdges(cell);
+            //highlight(label);
+
+            // Add the cell
+            add(cell, currentCol, currentRow);
+            nextCell();
+    }
+
 
     /**
      * Calculate and add the required rounding styles for the cell given how it is placed in the table

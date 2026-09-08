@@ -264,7 +264,7 @@ public class MapPage extends Page {
 
         sidebarBinID.setText(selectedBin.getID().toString());
         sidebarBinType.setText(StringHelpers.enumNameToTitle(selectedBin.getCategory().name()));
-        sidebarBinStatus.setText(String.format("%s%% Full (estimate)", selectedBin.getStatus().toString()));
+        sidebarBinStatus.setText(String.format("%s (estimate)", StringHelpers.enumNameToTitle(selectedBin.getFullness().name())));
         sidebarBinUpdated.setText(StringHelpers.toLocaleString(selectedBin.getUpdated()));
         sidebarBinAddress.setText(selectedBin.getAreaName());
         sidebarBinTimesUsed.setText(String.format("%d", uses.size()));

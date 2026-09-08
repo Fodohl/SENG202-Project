@@ -138,4 +138,8 @@ public class StringTable extends LinkedHashMap<String, List<String>> {
     public int dataSize() {
         return get(keySet().stream().toList().getFirst()).size();
     }
+
+    public Map<String, String> getColMap() {
+        return colMap;
+    }
 }
