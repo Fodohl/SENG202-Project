@@ -19,7 +19,7 @@
 
     <!-- Leflet.routing plugin -->
     <link rel="stylesheet" href="../thirdparty/unpkg/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
-    <script src=../thirdparty/unpkg/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+    <script src="../thirdparty/unpkg/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
 
     <style>
         *, *::before, *::after {
@@ -90,13 +90,19 @@
 
         selectedMarker = toggle ? markerMap[id] : null;
         styleActiveMarker(selectedMarker, true);
+        centerOnMarker(id);
+
+    }
+
+    centerOnMarker = (id) => {
+        const marker = markerMap[id];
 
         // Center on marker (with space to left to account for the open side bar)
-        if (selectedMarker) {
-            map.setView(selectedMarker.getLatLng(), map.getZoom(), {animate: false});
+        if (marker) {
+            map.setView(marker.getLatLng(), map.getZoom(), {animate: false});
             map.panBy([window.innerWidth * 0.15, 0], {animate: false});
         }
-    }
+    };
 
     const iconCache = {};
     makeIcon = (L, name) => {

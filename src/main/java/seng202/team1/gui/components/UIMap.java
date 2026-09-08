@@ -221,4 +221,8 @@ public class UIMap extends UIWebRenderer {
         for (Consumer<List<RouteInstruction>> callback : mapRoutedCallbacks)
             callback.accept(result);
     }
+
+    public void centreOnPoint(int userPosMarkerID) {
+        call(String.format("centerOnMarker(%d);", userPosMarkerID));
+    }
 }

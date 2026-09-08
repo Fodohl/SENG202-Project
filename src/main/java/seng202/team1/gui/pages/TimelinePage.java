@@ -16,7 +16,7 @@ public class TimelinePage extends Page {
     */
    public TimelinePage(WindowManager windowManager){
 
-        super(windowManager, Pages.DASHBOARD);
+        super(windowManager, Pages.TIMELINE);
 
     }
 

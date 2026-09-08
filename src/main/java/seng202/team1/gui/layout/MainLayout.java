@@ -1,8 +1,11 @@
 package seng202.team1.gui.layout;
 
 import javafx.animation.PauseTransition;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -25,6 +28,7 @@ import static seng202.team1.gui.GraphicsCommon.precentWindowX;
  *
  * Note: there should be only one per window
  *
+ * @todo move search bar to own compontent
  * @credit https://stackoverflow.com/questions/34784037/javafx-8-how-to-add-a-timedelay-to-a-listener deboucer
  */
 public class MainLayout extends LayoutElement {
@@ -37,6 +41,8 @@ public class MainLayout extends LayoutElement {
 
     private Popup searchPopup = new Popup();
     private VBox suggestionContainer = new VBox();
+    private TextField searchInput;
+    private PauseTransition debouncer;
 
     private HBox searchBar;
 
@@ -123,13 +129,50 @@ public class MainLayout extends LayoutElement {
 
             // Add all the found locations
             for(Feature location : locationResponse.features())
-                suggestionContainer.getChildren().add(new Label(StringHelpers.featureToAddress(location)));
+                suggestionContainer.getChildren().add(makeLocationLable(location));
 
             // Force the popup to be below the search bar
             Bounds bounds = searchBar.localToScreen(searchBar.getBoundsInLocal());
             searchPopup.show(searchBar.getScene().getWindow(), bounds.getMinX() + 20, bounds.getMaxY());
-
         });
+    }
+
+    private Label makeLocationLable(Feature location) {
+
+        String addressText = StringHelpers.featureToAddress(location);
+        Label suggestion = new Label(addressText);
+
+        suggestion.setOnMouseClicked(e -> {
+            searchInput.setText(addressText);
+            submitSearch(location);
+        });
+
+        return suggestion;
+    }
+
+    private void submitSearch(Feature location) {
+
+        windowManager.getGlobalState().setMapSearchRequest(location);
+
+        // Hide the popup and cancel any address resolutions
+        debouncer.pause();
+        searchPopup.hide();
+    }
+
+
+    private void handleSearchSubmitAction(ActionEvent actionEvent) {
+
+
+        // Submit the first location found (known to have the highest likelyhood)
+         windowManager.getGlobalState().getPhotonClient().searchLocation(searchInput.getText(), locationResponse -> {
+
+             //@todo err: not a known place
+             if(locationResponse.features().isEmpty())
+                 return;
+
+             submitSearch(locationResponse.features().getFirst());
+        });
+
     }
 
     /**
@@ -143,12 +186,15 @@ public class MainLayout extends LayoutElement {
         UIImage searchIcon = new UIImage("/media/images/search.svg", 16, 16);
 
         // Search text
-        TextField searchInput = new TextField();
+        searchInput = new TextField();
         searchInput.setPromptText("Enter address...");
         searchInput.getStyleClass().add("search-input");
 
+        // Submit action
+        searchInput.setOnAction(this::handleSearchSubmitAction);
+
         // Ensure API is not overwhelmed
-        PauseTransition debouncer = new PauseTransition(Duration.millis(300));
+        debouncer = new PauseTransition(Duration.millis(300));
         searchInput.textProperty().addListener((observable, oldValue, newValue) -> {
                 debouncer.setOnFinished(event -> search(newValue));
                 debouncer.playFromStart();

@@ -16,7 +16,7 @@ public class LeaderboardPage extends Page {
     */
    public LeaderboardPage(WindowManager windowManager){
 
-        super(windowManager, Pages.DASHBOARD);
+        super(windowManager, Pages.LEADERBOARD);
 
    }
 

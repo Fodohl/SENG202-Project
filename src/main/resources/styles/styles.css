@@ -188,6 +188,7 @@
     -fx-prompt-text-fill: -text-secondary;
     -fx-border-width: 0;
     -fx-padding: 0;
+    -fx-min-width: 400px;
 }
 
 .search-suggestions-scroll {

@@ -5,6 +5,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.layout.*;
 import javafx.scene.control.Label;
+import seng202.team1.api.photon.Feature;
 import seng202.team1.common.StringHelpers;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.route.RouteInstruction;
@@ -59,7 +60,7 @@ public class MapPage extends Page {
      */
     public MapPage(WindowManager windowManager) {
 
-        super(windowManager, Pages.DASHBOARD, true);
+        super(windowManager, Pages.MAP, true);
 
     }
 
@@ -163,9 +164,44 @@ public class MapPage extends Page {
 
         stopWaitingForLocation();
         refreshSidebar();
+        handleLocationRequest();
+    }
+
+    private void handleLocationRequest() {
+
+        // No requested location
+        Feature location = windowManager.getGlobalState().consumeMapSearchRequest();
+        if(location == null)
+            return;
+
+        // Invalid location
+        List<Double> coords = location.geometry().coordinates();
+        if(coords.size() != 2)
+            return;
+
+        removeDirections();
+        setUserLocation(coords.getLast(), coords.getFirst());
+    }
+
+    private void setUserLocation(Double lat, Double lng) {
+
+        userPosLat = lat;
+        userPosLong = lng;
+
+        // Display user location on map
+        map.addPoint(userPosLat, userPosLong, userPosMarkerID, "default");
+        map.centreOnPoint(userPosMarkerID);
+
+        if(selectedBin != null)
+            map.setRoute(userPosLat, userPosLong, selectedBin.getLatitude(), selectedBin.getLongitude());
+
     }
 
     private void onMarkerClick(Integer binID) {
+
+        // Clicking on the user marker does nothing
+        if(binID == -1)
+            return;
 
         // Toggle the bin
         if (Objects.equals(selectedBin, binID))
@@ -191,13 +227,7 @@ public class MapPage extends Page {
         removeDirections();
         stopWaitingForLocation();
 
-
-        userPosLat = lat;
-        userPosLong = lng;
-
-        // Display user location on map
-        map.addPoint(userPosLat, userPosLong, userPosMarkerID, "default");
-        map.setRoute(userPosLat, userPosLong, selectedBin.getLatitude(), selectedBin.getLongitude());
+        setUserLocation(lat, lng);
     }
 
     private void onMapRouted(List<RouteInstruction> instructions){

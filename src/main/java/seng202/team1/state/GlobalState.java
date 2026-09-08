@@ -1,10 +1,15 @@
 package seng202.team1.state;
 
 import javafx.stage.Stage;
+import seng202.team1.api.photon.Feature;
 import seng202.team1.api.photon.PhotonClient;
 import seng202.team1.data.bin.BinLoader;
 import seng202.team1.data.trashlog.TrashLogStore;
 import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.pages.Pages;
+
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Stores the current state of the app and provides managers to control it
@@ -23,6 +28,8 @@ public class GlobalState {
     private TrashLogStore trashLogStore;
 
     private PhotonClient photonClient;
+
+    private Feature requestedLocation;
 
     /**
      * Constructs a new GlobalState and sets up managers
@@ -67,5 +74,19 @@ public class GlobalState {
 
     public PhotonClient getPhotonClient() {
         return photonClient;
+    }
+
+    public void setMapSearchRequest(Feature location) {
+        requestedLocation = location;
+        windowManager.switchPage(Pages.MAP);
+    }
+
+    public Feature consumeMapSearchRequest(){
+
+        // Clear the request
+        Feature location = requestedLocation;
+        requestedLocation = null;
+
+        return location;
     }
 }
