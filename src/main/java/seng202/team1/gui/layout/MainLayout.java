@@ -17,6 +17,7 @@ import seng202.team1.api.photon.Feature;
 import seng202.team1.common.StringHelpers;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.components.UIImage;
+import seng202.team1.gui.components.UILocationInput;
 import seng202.team1.gui.components.UINavButton;
 import seng202.team1.gui.pages.Pages;
 
@@ -38,13 +39,6 @@ public class MainLayout extends LayoutElement {
 
     /// The element that contains the {@link #content} container
     private BorderPane page = null;
-
-    private Popup searchPopup = new Popup();
-    private VBox suggestionContainer = new VBox();
-    private TextField searchInput;
-    private PauseTransition debouncer;
-
-    private HBox searchBar;
 
     /**
      * Construct a new CoreUI for a given window
@@ -93,87 +87,6 @@ public class MainLayout extends LayoutElement {
 
     }
 
-    private void setupPopup() {
-
-        // Style
-        suggestionContainer.getStyleClass().add("search-suggestions-popup");
-        suggestionContainer.setMaxHeight(200);
-
-        // Scroll if there are lots of results
-        ScrollPane suggestionScroll = new ScrollPane(suggestionContainer);
-        suggestionScroll.setFitToWidth(true);
-        suggestionScroll.setMaxHeight(200);
-        suggestionScroll.getStyleClass().add("search-suggestions-scroll");
-
-        // Close if user clicks outside popup
-        searchPopup.getContent().add(suggestionScroll);
-        searchPopup.setAutoHide(true);
-    }
-
-    private void search(String address){
-
-        // Prevent API error when user clears their input
-        if(address.isEmpty())
-            return;
-
-        windowManager.getGlobalState().getPhotonClient().searchLocation(address, locationResponse -> {
-
-            // Clear previous search addresses
-            suggestionContainer.getChildren().clear();
-
-            // Dont show an empty pop up
-            if (locationResponse.features().isEmpty()) {
-                searchPopup.hide();
-                return;
-            }
-
-            // Add all the found locations
-            for(Feature location : locationResponse.features())
-                suggestionContainer.getChildren().add(makeLocationLable(location));
-
-            // Force the popup to be below the search bar
-            Bounds bounds = searchBar.localToScreen(searchBar.getBoundsInLocal());
-            searchPopup.show(searchBar.getScene().getWindow(), bounds.getMinX() + 20, bounds.getMaxY());
-        });
-    }
-
-    private Label makeLocationLable(Feature location) {
-
-        String addressText = StringHelpers.featureToAddress(location);
-        Label suggestion = new Label(addressText);
-
-        suggestion.setOnMouseClicked(e -> {
-            searchInput.setText(addressText);
-            submitSearch(location);
-        });
-
-        return suggestion;
-    }
-
-    private void submitSearch(Feature location) {
-
-        windowManager.getGlobalState().setMapSearchRequest(location);
-
-        // Hide the popup and cancel any address resolutions
-        debouncer.pause();
-        searchPopup.hide();
-    }
-
-
-    private void handleSearchSubmitAction(ActionEvent actionEvent) {
-
-
-        // Submit the first location found (known to have the highest likelyhood)
-         windowManager.getGlobalState().getPhotonClient().searchLocation(searchInput.getText(), locationResponse -> {
-
-             //@todo err: not a known place
-             if(locationResponse.features().isEmpty())
-                 return;
-
-             submitSearch(locationResponse.features().getFirst());
-        });
-
-    }
 
     /**
      * Build a header containing the app search bar and account info
@@ -182,28 +95,8 @@ public class MainLayout extends LayoutElement {
      */
     private Parent header() {
 
-        // Search images
-        UIImage searchIcon = new UIImage("/media/images/search.svg", 16, 16);
-
-        // Search text
-        searchInput = new TextField();
-        searchInput.setPromptText("Enter address...");
-        searchInput.getStyleClass().add("search-input");
-
-        // Submit action
-        searchInput.setOnAction(this::handleSearchSubmitAction);
-
-        // Ensure API is not overwhelmed
-        debouncer = new PauseTransition(Duration.millis(300));
-        searchInput.textProperty().addListener((observable, oldValue, newValue) -> {
-                debouncer.setOnFinished(event -> search(newValue));
-                debouncer.playFromStart();
-            }
-        );
-
-        // Build Search Bar
-        searchBar = new HBox(searchIcon, searchInput);
-        searchBar.getStyleClass().add("search-bar");
+        // Search Bard
+        UILocationInput searchBar = new UILocationInput(this);
 
         // Account
         Label accountLabel = new Label("Account (DB)");
@@ -227,8 +120,6 @@ public class MainLayout extends LayoutElement {
      */
     @Override
     protected Parent renderSelf() {
-
-        setupPopup();
 
         // Page
         page = new BorderPane();

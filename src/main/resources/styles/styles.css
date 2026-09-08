@@ -191,6 +191,14 @@
     -fx-min-width: 400px;
 }
 
+.search-bar  .svg-icon * {
+    -fx-stroke: -text-secondary;
+}
+
+.search-bar  .svg-icon-fill * {
+    -fx-fill: -text-secondary;
+}
+
 .search-suggestions-scroll {
     -fx-background-color: transparent;
     -fx-background: transparent;

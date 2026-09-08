@@ -85,4 +85,8 @@ public abstract class LayoutElement implements Cloneable{
             throw new AssertionError();
         }
     }
+
+    public WindowManager getWindow(){
+        return windowManager;
+    }
 }

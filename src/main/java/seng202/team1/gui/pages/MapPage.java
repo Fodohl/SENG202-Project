@@ -49,7 +49,6 @@ public class MapPage extends Page {
 
     private Double userPosLat = null;
     private Double userPosLong = null;
-    private boolean userPosIsTemporary = false;
 
     private int userPosMarkerID = 0xFFFFFFFF;
     private long directionsModalID = -1;

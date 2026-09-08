@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 import seng202.team1.gui.components.UIIconText;
 import seng202.team1.gui.components.UIInputComponent;
 import seng202.team1.gui.components.UIKeyValuePair;
+import seng202.team1.gui.components.UISpinner;
 
 import java.net.URI;
 import java.net.URLEncoder;
@@ -50,7 +51,7 @@ public class ApiClient {
             loader.setVisible(isVisible);
     }
 
-    private void requestFailed(HttpRequest request, UIKeyValuePair error, Node loader, String message){
+    private void requestFailed(HttpRequest request, UIKeyValuePair error, UISpinner loader, String message){
 
         // No longer loading
         trySetLoader(loader, false);
@@ -62,7 +63,7 @@ public class ApiClient {
         error.setText(message);
     }
 
-    private void send(HttpRequest request, Consumer<String> handler, UIKeyValuePair error, Node loader){
+    private void send(HttpRequest request, Consumer<String> handler, UIKeyValuePair error, UISpinner loader){
 
         //@todo show error human readable
 
@@ -96,7 +97,7 @@ public class ApiClient {
         GET(path, queryParams, handler, null, null);
     }
 
-    protected void GET(String path, Map<String, String> queryParams, Consumer<String> handler, UIKeyValuePair error, Node loader) {
+    protected void GET(String path, Map<String, String> queryParams, Consumer<String> handler, UIKeyValuePair error, UISpinner loader) {
 
         // @todo check cache
 
