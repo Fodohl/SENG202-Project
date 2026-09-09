@@ -88,7 +88,6 @@ public class DashboardPage extends Page {
     @Override
     public void updateContents() {
 
-        dataset.setText(String.format("%s", windowManager.getGlobalState().getDataLoader().getBinObjects().size()));
 
         // Get usage
         List<TrashLog> uses = windowManager.getGlobalState().getTrashLogStore()
@@ -102,6 +101,7 @@ public class DashboardPage extends Page {
         TrashLog newestLog = uses.isEmpty() ? null : uses.getLast();
         Bin newestBin = bins.isEmpty() ? null : bins.getLast();
 
+        dataset.setText(String.format("%s", bins.size()));
 
         trashLogged.setText(String.format("%d", newestBin == null ? 0 : bins.stream().filter(b -> b.getCategory() == BinCategory.GENERAL_WASTE).toList().size()));
         recycLogged.setText(String.format("%d", newestBin == null ? 0 : bins.stream().filter(b -> b.getCategory() == BinCategory.RECYCLABLE).toList().size()));

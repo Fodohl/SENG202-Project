@@ -35,6 +35,14 @@
     -fx-background-color: -bg-primary;
 }
 
+.content, .content *{
+    -fx-max-width: infinity;
+    -fx-max-height: infinity;
+    -fx-text-fill: -text-primary;
+    -fx-background-color: -bg-primary-dark;
+
+}
+
 .combo-box, .text-field, .text-area {
     -fx-background-color: -bg-primary;
     -fx-border-color: -text-secondary-half;
@@ -44,6 +52,10 @@
     -fx-text-fill: -text-primary;
     -fx-padding: 10px 16px;
     -fx-font-size: 18px;
+}
+
+.text-area *{
+    -fx-background-color: -bg-primary;
 }
 
 .combo-box .list-cell{
@@ -130,9 +142,6 @@
 
 }
 
-.active {
-    -fx-background-color: -active-secondary;
-}
 
 .iconbutton.active:hover {
     -fx-background-color: -active-dark;
@@ -230,14 +239,6 @@
 .account-text {
     -fx-text-fill: -text-primary;
     -fx-font-weight: bold;
-}
-
-.content, .content *{
-    -fx-max-width: infinity;
-    -fx-max-height: infinity;
-    -fx-text-fill: -text-primary;
-    -fx-background-color: -bg-primary-dark;
-
 }
 
 .title{
@@ -403,7 +404,6 @@
 
 .table{
     -fx-font-size: 24px;
-    -fx-background-color: pink;
 }
 
 .table-cell{
@@ -624,4 +624,9 @@
 
 .error  .active .svg-icon-fill * {
     -fx-fill: -text-primary;
+}
+
+
+.active{
+    -fx-background-color: -active-secondary;
 }
