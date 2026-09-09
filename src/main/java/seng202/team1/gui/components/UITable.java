@@ -3,8 +3,10 @@ package seng202.team1.gui.components;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import seng202.team1.data.table.StringTable;
 import seng202.team1.data.table.StringTableBuilder;
 
@@ -81,6 +83,11 @@ public class UITable extends GridPane {
         // Style the table
         getStyleClass().add("table");
         setAlignment(Pos.CENTER);
+
+        // Force columns to stretch to container's bounds
+        ColumnConstraints columnConstraints = new ColumnConstraints();
+        columnConstraints.setHgrow(Priority.ALWAYS);
+        columnConstraints.setMaxWidth(Double.MAX_VALUE);
 
         buildTableContent();
     }
@@ -330,5 +337,16 @@ public class UITable extends GridPane {
                 return node;
 
         return null;
+    }
+
+    public double getActualWidth(){
+
+        double width = 0.0;
+
+        for (int i = 0; i < rowWidth; i++)
+            width += this.get(i,0).getBoundsInParent().getWidth();
+
+        return width;
+
     }
 }

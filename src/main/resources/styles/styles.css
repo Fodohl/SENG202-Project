@@ -369,13 +369,16 @@
     -fx-background-color: -bg-third;
 }
 
-/*.milestone{*/
-/*    display: flex;*/
-/*    flex-direction: row;*/
-/*    font-size: 2rem;*/
-/*    border-radius: 20px;*/
-/*    gap: 50px;*/
-/*}*/
+.milestone{
+    -fx-padding: 20px;
+    -fx-background-color: -active-grad;
+    -fx-background-radius: 20px;
+    -fx-font-size: 32px;
+}
+
+.milestone *{
+    -fx-background-color: trasparent;
+}
 
 /*.milestone img{*/
 /*    width: 10%;*/
@@ -400,6 +403,7 @@
 
 .table{
     -fx-font-size: 24px;
+    -fx-background-color: pink;
 }
 
 .table-cell{
@@ -413,6 +417,7 @@
     -fx-background-color: -active-grad;
     -fx-font-weight: bolder;
     -fx-cursor: hand;
+    -fx-border-color: transparent transparent transparent transparent;
 }
 
 .table-cell-highlight{
