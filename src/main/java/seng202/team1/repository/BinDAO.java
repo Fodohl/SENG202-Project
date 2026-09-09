@@ -2,9 +2,9 @@ package seng202.team1.repository;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import seng202.team1.data.Bin;
-import seng202.team1.data.TrashCategory;
-import seng202.team1.data.TrashType;
+import seng202.team1.data.bin.Bin;
+import seng202.team1.data.bin.BinCategory;
+import seng202.team1.data.trashlog.TrashType;
 import seng202.team1.exceptions.DuplicateEntryException;
 
 import java.sql.*;
@@ -25,12 +25,12 @@ public class BinDAO implements DAOInterface<Bin>{
      * @param category string name
      * @return trash category that matches the string
      */
-    private TrashCategory convertStringToCategory(String category) {
+    private BinCategory convertStringToCategory(String category) {
         return switch(category.toUpperCase(Locale.ROOT)) {
-            case "RECYCLABLE" -> TrashCategory.RECYCLABLE;
-            case "ORGANIC" -> TrashCategory.ORGANIC;
-            case "E-WASTE", "E_WASTE" -> TrashCategory.E_WASTE;
-            default ->  TrashCategory.GENERAL_WASTE;
+            case "RECYCLABLE" -> BinCategory.RECYCLABLE;
+            case "ORGANIC" -> BinCategory.ORGANIC;
+            case "E-WASTE", "E_WASTE" -> BinCategory.E_WASTE;
+            default ->  BinCategory.GENERAL_WASTE;
         };
     }
 
