@@ -4,8 +4,11 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import seng202.team1.common.StringHelpers;
+import seng202.team1.data.bin.Bin;
+import seng202.team1.data.table.StringTable;
+import seng202.team1.data.table.StringTableBuilder;
+import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.core.ExportManager;
-import seng202.team1.gui.core.WindowManager;
 
 /**
  * A UI Component to handle rendering export button
@@ -39,7 +42,9 @@ public class UIExportButton extends HBox {
         // Combine
         getChildren().addAll(icon, label);
 
+        StringTable stringTable = new StringTableBuilder<Bin>(windowManager.getGlobalState().getDataLoader().getBinObjects()).build();
+
         // Handle events
-        setOnMouseClicked(event -> ExportManager.exportToCSV(windowManager.getStage(), "TrashAppDataExport.csv", windowManager.getGlobalState().getDataLoader().toStringTable()));
+        setOnMouseClicked(event -> ExportManager.exportToCSV(windowManager.getStage(), "TrashAppDataExport.csv", stringTable));
     }
 }

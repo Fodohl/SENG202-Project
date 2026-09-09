@@ -323,4 +323,8 @@ public class WindowManager extends StateReferrer {
 
         page.updateContents();
     }
+
+    public Stage getStage() {
+        return currentStage;
+    }
 }
