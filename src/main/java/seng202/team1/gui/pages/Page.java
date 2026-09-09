@@ -41,7 +41,7 @@ public abstract class Page extends LayoutElement {
     /**
      * Update the contents of the page without performing a full re-render
      */
-    protected void updateContents(){
+    public void updateContents(){
         // overridden only if needed
     }
 

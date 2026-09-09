@@ -3,6 +3,8 @@ package seng202.team1.state;
 import javafx.stage.Stage;
 import seng202.team1.api.photon.Feature;
 import seng202.team1.api.photon.PhotonClient;
+import seng202.team1.api.trashdb.TrashDBClient;
+import seng202.team1.api.trashdb.TrashDBLeaderboardResponse;
 import seng202.team1.data.bin.BinLoader;
 import seng202.team1.data.trashlog.TrashLogStore;
 import seng202.team1.gui.WindowManager;
@@ -29,7 +31,11 @@ public class GlobalState {
 
     private PhotonClient photonClient;
 
+    private TrashDBClient trashDBClient;
+
     private Feature requestedLocation;
+
+    private TrashDBLeaderboardResponse leaderboard;
 
     /**
      * Constructs a new GlobalState and sets up managers
@@ -46,8 +52,21 @@ public class GlobalState {
         trashLogStore.load();
 
         photonClient = new PhotonClient();
+        trashDBClient = new TrashDBClient();
 
         windowManager = new WindowManager(this, stage);
+
+        fetchData();
+    }
+
+    private void fetchData() {
+
+        trashDBClient.getLeaderboard(leaderboard -> {
+
+            this.leaderboard = leaderboard;
+            windowManager.refreshPage(Pages.LEADERBOARD);
+
+        });
     }
 
     /**
@@ -88,5 +107,9 @@ public class GlobalState {
         requestedLocation = null;
 
         return location;
+    }
+
+    public TrashDBLeaderboardResponse getLeaderboard() {
+        return leaderboard;
     }
 }

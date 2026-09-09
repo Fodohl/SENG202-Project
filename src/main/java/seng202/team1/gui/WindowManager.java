@@ -299,49 +299,8 @@ public class WindowManager extends StateReferrer {
         return spawnModal(modalType, null);
     }
 
-    public long spawnModal(Modals modalType, Object data){
-
-        // Select the page
-        currentModal = modalType;
-        Modal modal = modals.get(modalType);
-
-        // Page not stored
-        if(modal == null){
-            log.warn("Modal not loaded for type: {}", modalType.name());
-            return -1;
-        }
-
-        // Setup a new modal instance for this window
-        modal = modal.clone();
-        modal.recvData(data);
-
-        // Contain the modal in a separate root so it can be in multiple windows
-        StackPane modalRoot = new StackPane(modal.getRendered());
-        modalRoot.getStyleClass().add("modal-window");
-
-        // Create the window
-        Stage stage = new Stage();
-        stage.setTitle(StringHelpers.enumNameToTitle(modalType.name()));
-
-        // Put the modal in the window
-        Scene scene = new Scene(modalRoot);
-        stage.setScene(scene);
-
-        // Style the window @todo func
-        String cssPath = Objects.requireNonNull(getClass().getResource("/styles/styles.css")).toExternalForm();
-        scene.getStylesheets().add(cssPath);
-
-        // Spawn the window to the right of the map
-        stage.setX(currentStage.getX() + GraphicsCommon.precentWindowX(0.75));
-        stage.show();
-
-        // Assign the window an ID for tracking
-        long windowID = nextWindowId++;
-        modal.setWindowed(windowID);
-
-        // Store
-        windowedModals.put(windowID, stage);
-        return windowID;
+    public long spawnModal(Modals modalType, Object data) {
+        return 0;
     }
 
     public void killModal(long windowID){
@@ -354,5 +313,14 @@ public class WindowManager extends StateReferrer {
         // Kill
         window.close();
         windowedModals.remove(windowID);
+    }
+
+    public void refreshPage(Pages pageType) {
+
+        Page page = pages.get(pageType);
+        if(page == null)
+            return;
+
+        page.updateContents();
     }
 }

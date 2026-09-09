@@ -86,7 +86,7 @@ public class DashboardPage extends Page {
     //@todo auto attach bin to log class
 
     @Override
-    protected void updateContents() {
+    public void updateContents() {
 
         dataset.setText(String.format("%s", windowManager.getGlobalState().getDataLoader().getBinObjects().size()));
 

@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 public class ApiClient {
 
     /// ApiClient specific logger
-    static final Logger log = LogManager.getLogger(ApiClient.class);
+    protected static final Logger log = LogManager.getLogger(ApiClient.class);
 
     private final String hostUrl;
 

@@ -369,14 +369,6 @@
     -fx-background-color: -bg-third;
 }
 
-/*.leaderboard{*/
-/*    display: flex;*/
-/*    flex-direction: column;*/
-/*    gap: 50px;*/
-/*    margin-top: -50px;*/
-/*    align-items: center;*/
-/*}*/
-
 /*.milestone{*/
 /*    display: flex;*/
 /*    flex-direction: row;*/
@@ -421,6 +413,14 @@
     -fx-background-color: -active-grad;
     -fx-font-weight: bolder;
     -fx-cursor: hand;
+}
+
+.table-cell-highlight{
+    -fx-background-color: -active;
+}
+
+.table-cell-highlight-first{
+    -fx-background-color: -active-dark;
 }
 
 .table-cell-header *{

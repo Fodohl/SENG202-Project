@@ -14,9 +14,6 @@ import static seng202.team1.TrashApp.GSON;
 
 public class PhotonClient extends ApiClient {
 
-    /// PhotonClient specific logger
-    static final Logger log = LogManager.getLogger(PhotonClient.class);
-
     private final Integer LIMIT_LOCATIONS = 3;
 
     private final Double SEARCH_PRIO_LAT = -43.5233;

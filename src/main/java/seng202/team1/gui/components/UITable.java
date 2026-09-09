@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 
 /**
@@ -37,8 +38,10 @@ public class UITable extends GridPane {
     private boolean highlightFirst = true;
 
     private StringTableBuilder sourceData;
+    private StringTable outData;
 
-    private Map<String, UIImage> sortIcons = new HashMap<>();
+
+    Function<HashMap<String, String>, Boolean> highlighter;
 
     private String currentSortDataKey = null;
     private boolean sortAscending = false;
@@ -58,10 +61,22 @@ public class UITable extends GridPane {
      * @param data The data to show in the table
      * @param highlightFirst Whether to highlight the first row or not
      */
-    public UITable(StringTableBuilder data, boolean highlightFirst){
+    public UITable(StringTableBuilder data, boolean highlightFirst) {
+
+        this(data, highlightFirst, null);
+    }
+
+     /**
+     * Constructs a new UI table with a desired header ordering and highlight rules
+     *
+     * @param data The data to show in the table
+     * @param highlightFirst Whether to highlight the first row or not
+     */
+    public UITable(StringTableBuilder data, boolean highlightFirst, Function<HashMap<String, String>, Boolean> highlighter){
 
         this.highlightFirst = highlightFirst;
         this.sourceData = data;
+        this.highlighter = highlighter;
 
         // Style the table
         getStyleClass().add("table");
@@ -118,12 +133,11 @@ public class UITable extends GridPane {
 
     }
 
-    private void buildTableContent() {
+    public void buildTableContent() {
 
         // Reset state
         getChildren().clear();
         headerColumns.clear();
-        sortIcons.clear();
         currentRow = 0;
         currentCol = 0;
 
@@ -132,7 +146,7 @@ public class UITable extends GridPane {
             sourceData = sourceData.sortBy(currentSortDataKey, sortAscending);
 
         // Add header row
-        StringTable outData = sourceData.build();
+        outData = sourceData.build();
         setupHeader(outData.getColMap(), outData.getHeaderRow());
 
         // Add child rows
@@ -239,11 +253,34 @@ public class UITable extends GridPane {
 
             // Style
             roundEdges(cell);
-            //highlight(label);
+            highlight(cell);
 
             // Add the cell
             add(cell, currentCol, currentRow);
             nextCell();
+    }
+
+    private void highlight(Node cell) {
+
+        // First row gets special highlighting
+        if (highlightFirst && currentRow == 1){
+            cell.getStyleClass().add("table-cell-highlight-first");
+            return;
+        }
+
+        // Some rows may be highlighted according to external rules
+        if(highlighter == null || currentRow == 0 || !highlighter.apply(outData.getDataRow(currentRow - 1)))
+            return;
+
+        cell.getStyleClass().add("table-cell-highlight");
+
+        // Left
+        if(currentCol == 0)
+            cell.getStyleClass().addAll("cell-round ",  "cell-round-l");
+
+        // Right
+        if(currentCol == rowWidth - 1)
+            cell.getStyleClass().addAll("cell-round ", "cell-round-r");
     }
 
 
@@ -259,28 +296,24 @@ public class UITable extends GridPane {
         String rightClass = highlightFirst ? "cell-round-tr" : "cell-round-r";
 
         // Top left
-        if(currentCol == 0 && currentRow == 0){
+        if(currentCol == 0 && currentRow == 0)
             cell.getStyleClass().addAll("cell-round ", leftClass);
-        }
 
         // Top right
-        if(currentCol == rowWidth - 1 && currentRow == 0){
+        if(currentCol == rowWidth - 1 && currentRow == 0)
             cell.getStyleClass().addAll("cell-round ", rightClass);
-        }
 
         // Not styling the first row
-        if(highlightFirst)
+        if(!highlightFirst)
             return;
 
         // Bottom left
-        if(currentCol == 0 && currentRow == 1){
+        if(currentCol == 0 && currentRow == 1)
             cell.getStyleClass().addAll("cell-round ", "cell-round-bl");
-        }
 
         // Bottom right
-        if(currentCol == rowWidth - 1 && currentRow == 1){
+        if(currentCol == rowWidth - 1 && currentRow == 1)
             cell.getStyleClass().addAll("cell-round ", "cell-round-br");
-        }
     }
 
     /**

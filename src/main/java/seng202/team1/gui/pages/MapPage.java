@@ -160,7 +160,7 @@ public class MapPage extends Page {
     }
 
     @Override
-    protected void updateContents() {
+    public void updateContents() {
 
         stopWaitingForLocation();
         refreshSidebar();

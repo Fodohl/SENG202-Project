@@ -9,7 +9,7 @@ import java.util.function.Function;
  */
 public class StringTableBuilder<T> {
 
-    private final List<T> rawData;
+    private List<T> rawData;
     private final Map<String, String> colMap = new LinkedHashMap<>();
     private final Map<String, Function<Object, String>> formatters = new HashMap<>();
     private Comparator<T> comparator;
@@ -84,6 +84,10 @@ public class StringTableBuilder<T> {
             }
         };
         return this;
+    }
+
+    public void updateData(List<T> newData){
+        this.rawData = newData;
     }
 
     public StringTable build() {
