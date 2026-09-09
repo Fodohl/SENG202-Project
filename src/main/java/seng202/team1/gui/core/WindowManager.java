@@ -139,6 +139,15 @@ public class WindowManager extends StateReferrer {
     }
 
     /**
+     * Get the window this manager is responsible for
+     *
+     * @return The window this manager is responsible for
+     */
+    public Stage getStage() {
+        return currentStage;
+    }
+
+    /**
      * Register an event handler for a page change event
      *
      * Warning: an event handler cannot be registered twice
