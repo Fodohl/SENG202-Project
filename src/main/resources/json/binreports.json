@@ -4,14 +4,18 @@
       "binID": "197",
       "user": "Test1",
       "userID": "123",
-      "report": "FULL",
+      "status": "FULL",
+      "issue": null,
+      "description": null,
       "createdAt": "2026-08-06T00:00:00"
     },
     {
       "binID": "197",
       "user": "Test2",
       "userID": "321",
-      "report": "EMPTY",
+      "status": "EMPTY",
+      "issue": "missing",
+      "description": "Test description",
       "createdAt": "2026-08-06T00:00:00"
     }
   ]

@@ -4,6 +4,5 @@ public enum BinStatus {
     EMPTY,
     PARTIAL,
     FULL,
-    OVERFLOWING,
-    INCORRECT_LOCATION
+    OVERFLOWING
 }

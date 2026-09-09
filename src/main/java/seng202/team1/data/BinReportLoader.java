@@ -109,20 +109,32 @@ public class BinReportLoader {
     private BinReport parseReport(JSONObject jsonObject) {
         String binID = (String) jsonObject.get("binID");
         Bin bin = dataLoader.getBinById(Integer.parseInt(binID));
-        String reportString = (String) jsonObject.get("report");
+        String reportStatus = (String) jsonObject.get("status");
         String reportUser = (String) jsonObject.get("user");
         String reportUserID = (String) jsonObject.get("userID");
+        String reportIssue = (String) jsonObject.get("issue");
+        String reportDescription = (String) jsonObject.get("description");
         User user = new User(Integer.parseInt(reportUserID), reportUser);
         LocalDateTime time = LocalDateTime.parse(jsonObject.get("createdAt").toString());
 
-        BinStatus report = switch (reportString.toUpperCase(Locale.ROOT)) {
+        BinStatus status = switch (reportStatus.toUpperCase(Locale.ROOT)) {
             case "FULL" -> BinStatus.FULL;
             case "PARTIAL" -> BinStatus.PARTIAL;
             case "EMPTY" -> BinStatus.EMPTY;
-            case "INCORRECT_LOCATION" -> BinStatus.INCORRECT_LOCATION;
-            default -> throw new IllegalStateException("Unexpected value: " + reportString.toUpperCase(Locale.ROOT));
+            case "OVERFLOWING" -> BinStatus.OVERFLOWING;
+            default -> throw new IllegalStateException("Unexpected value: " + reportStatus.toUpperCase(Locale.ROOT));
         };
 
-        return new BinReport(bin, user, report, time);
+        BinIssue issue = switch (reportIssue.toUpperCase(Locale.ROOT)) {
+            case "GRAFFITI" -> BinIssue.GRAFFITI;
+            case "Damaged" -> BinIssue.DAMAGED;
+            case "MISSING" -> BinIssue.MISSING;
+            case "FIRE_HAZARD" -> BinIssue.FIRE_HAZARD;
+            case "ILLEGAL DUMPING" -> BinIssue.ILLEGAL_DUMPING;
+            case "BLOCKED" -> BinIssue.BLOCKED;
+            default -> throw new IllegalStateException("Unexpected value: " + reportIssue.toUpperCase(Locale.ROOT));
+        };
+
+        return new BinReport(bin, user, status, issue, reportDescription, time);
     }
 }
