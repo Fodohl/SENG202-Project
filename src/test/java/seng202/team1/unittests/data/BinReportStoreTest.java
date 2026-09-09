@@ -14,7 +14,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
+/**
+ * Tests BinReportStore
+ *
+ * @author Connor Rocket
+ */
 public class BinReportStoreTest {
 
     @TempDir
