@@ -96,6 +96,30 @@ s@font-face {
     -fx-font-size: 24px;
 }
 
+.export-button{
+    -fx-alignment: center-left;
+    -fx-spacing: 12px;
+    -fx-padding: 5px 5px;
+    -fx-background-radius: 10px;
+    -fx-cursor: hand;
+}
+
+.export-button:hover {
+    -fx-background-color: -bg-secondary;
+}
+
+.export-icon{
+    width: 15%;
+}
+
+.export-icon * {
+    -fx-stroke: -text-secondary;
+}
+
+.export-text{
+    -fx-font-size: 24px;
+}
+
 .page{
     display: grid;
     grid-template-rows: 0.1fr 0.9fr;
