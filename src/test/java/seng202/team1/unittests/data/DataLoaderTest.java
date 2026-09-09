@@ -10,14 +10,14 @@ import org.junit.jupiter.api.Test;
 
 import seng202.team1.data.Bin;
 import seng202.team1.data.DataLoader;
-import seng202.team1.data.TrashCategory;
+import seng202.team1.data.binCategory;
 
 /**
  * Test DataLoader
  * @author Stanley Easthope
  */
 public class DataLoaderTest {
-    private DataLoader dataLoader;
+    private BinLoader binLoader;
 
     /**
      * Setup before each test
@@ -25,8 +25,8 @@ public class DataLoaderTest {
      */
     @BeforeEach
     public void setupTest() {
-        dataLoader = new DataLoader();
-        dataLoader.readGeoJSON();
+        binLoader = new BinLoader();
+        binLoader.readGeoJSON();
     }
 
     /**
@@ -44,7 +44,7 @@ public class DataLoaderTest {
     public void testGetBinObjectsIsNotChangable() {
         List<Bin> bins = dataLoader.getBinObjects();
         assertThrows(UnsupportedOperationException.class, () ->
-                bins.add(new Bin(0, 0, 0, TrashCategory.GENERAL_WASTE)));
+                bins.add(new Bin(0, 0, 0, WasteType.GENERAL_WASTE)));
     }
 
     /**
@@ -53,7 +53,7 @@ public class DataLoaderTest {
     @Test
     public void testRecyclingBin() {
         Bin bin = dataLoader.getBinById(2463);
-        assertEquals(TrashCategory.RECYCLABLE, bin.getBinType());
+        assertEquals(WasteType.RECYCLING, bin.getBinType());
     }
 
     /**
@@ -62,7 +62,7 @@ public class DataLoaderTest {
     @Test
     public void testCompostBinMappedCorrectly() {
         Bin bin = dataLoader.getBinById(2537);
-        assertEquals(TrashCategory.ORGANIC, bin.getBinType());
+        assertEquals(WasteType.ORGANIC, bin.getBinType());
     }
 
     /**
@@ -71,7 +71,7 @@ public class DataLoaderTest {
     @Test
     public void testGeneralWasteBinMappedCorrectly() {
         Bin bin = dataLoader.getBinById(197);
-        assertEquals(TrashCategory.GENERAL_WASTE, bin.getBinType());
+        assertEquals(WasteType.GENERAL_WASTE, bin.getBinType());
     }
 
     /**
@@ -80,7 +80,7 @@ public class DataLoaderTest {
     @Test
     public void testCanineLittlerBinMappedToGeneralWaste() {
         Bin bin = dataLoader.getBinById(63534);
-        assertEquals(TrashCategory.GENERAL_WASTE, bin.getBinType());
+        assertEquals(WasteType.GENERAL_WASTE, bin.getBinType());
     }
 
     /**
@@ -89,6 +89,6 @@ public class DataLoaderTest {
     @Test
     public void testLitterAndRecyclingBinMappedToGeneralWaste() {
         Bin bin = dataLoader.getBinById(311361);
-        assertEquals(TrashCategory.GENERAL_WASTE, bin.getBinType());
+        assertEquals(WasteType.GENERAL_WASTE, bin.getBinType());
     }
 }

@@ -4,7 +4,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-import seng202.team1.data.*;
+import seng202.team1.data.trashlog.Trash;
+import seng202.team1.data.trashlog.TrashLog;
+import seng202.team1.data.trashlog.TrashLogLoader;
+import seng202.team1.data.trashlog.TrashType;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,7 +42,7 @@ public class TrashLogLoaderTest {
     @Test
     public void testGetLogsIsNotChangeable() {
         List<TrashLog> trashLogs = trashLogLoader.getTrashLogs();
-        Trash testTrash = new Trash(TrashCategory.E_WASTE, TrashType.OTHER, 2000);
+        Trash testTrash = new Trash(binCategory.E_WASTE, TrashType.OTHER, 2000);
         assertThrows(UnsupportedOperationException.class, () ->
                 trashLogs.add(new TrashLog(0,  testTrash, LocalDateTime.parse("2026-04-20T00:00:00"), 1, LocalDateTime.now())));
 
@@ -52,8 +55,8 @@ public class TrashLogLoaderTest {
         assertEquals(1, trashLog.trashLogId());
         assertEquals(197, trashLog.binLogId());
 
-        assertEquals(TrashCategory.RECYCLABLE,
-                trashLog.trashLogged().trashCategory());
+        assertEquals(binCategory.RECYCLABLE,
+                trashLog.trashLogged().binCategory());
 
         assertEquals(TrashType.PAPER,
                 trashLog.trashLogged().trashType());
@@ -90,8 +93,8 @@ public class TrashLogLoaderTest {
         assertNotNull(loadedLog);
         assertEquals(2463, loadedLog.binLogId());
         assertEquals(
-                TrashCategory.RECYCLABLE,
-                loadedLog.trashLogged().trashCategory()
+                binCategory.RECYCLABLE,
+                loadedLog.trashLogged().binCategory()
         );
         assertEquals(
                 TrashType.PAPER,
@@ -139,7 +142,7 @@ public class TrashLogLoaderTest {
 
     @Test
     public void testMalformedExternalFileThrowsError() throws Exception {
-        Path jsonPath = temporaryDirectory.resolve("broken-trashlogs.json");
+        Path jsonPath = temporaryDirectory.resolve("broken-exampe_trash_logs.json");
 
         Files.writeString(
                 jsonPath,
@@ -162,7 +165,7 @@ public class TrashLogLoaderTest {
                 {
                   "trashLogId": %d,
                   "trashLogged": {
-                    "trashCategory": "RECYCLABLE",
+                    "binCategory": "RECYCLABLE",
                     "trashType": "PAPER",
                     "trashWeight": 50
                   },

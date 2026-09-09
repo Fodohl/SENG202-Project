@@ -2,8 +2,7 @@ package seng202.team1.gui.pages;
 
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import seng202.team1.gui.core.LayoutElement;
-import seng202.team1.gui.core.WindowManager;
+import seng202.team1.gui.WindowManager;
 
 /**
  * Page that displays the configuration menu of the app
@@ -17,7 +16,7 @@ public class SettingsPage extends Page {
      */
    public SettingsPage(WindowManager windowManager){
 
-        super(windowManager, PageType.DASHBOARD);
+        super(windowManager, Pages.SETTINGS);
 
     }
 

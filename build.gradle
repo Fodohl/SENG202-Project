@@ -96,6 +96,12 @@ dependencies {
 
     // https://org.jooq
     implementation "org.jooq:jooq:3.21.8"
+
+    // https://mvnrepository.com/artifact/fr.brouillard.oss/cssfx
+    implementation 'fr.brouillard.oss:cssfx:11.5.1'
+
+    // https://mvnrepository.com/artifact/com.google.code.gson/gson
+    implementation 'com.google.code.gson:gson:2.14.0'
 }
 
 application {
@@ -105,7 +111,7 @@ application {
 
 javafx {
     version = "${javafxVersion}"
-    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.web' ]
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.web', 'javafx.swing' ]
 }
 
 test {

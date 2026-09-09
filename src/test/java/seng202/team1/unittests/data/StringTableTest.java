@@ -2,11 +2,8 @@ package seng202.team1.unittests.data;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
-import seng202.team1.data.Bin;
-import seng202.team1.data.StringTable;
+import seng202.team1.data.table.StringTable;
 import seng202.team1.unittests.TrashAppTest;
-
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 

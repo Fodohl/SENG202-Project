@@ -2,8 +2,7 @@ package seng202.team1.gui.pages;
 
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import seng202.team1.gui.core.LayoutElement;
-import seng202.team1.gui.core.WindowManager;
+import seng202.team1.gui.WindowManager;
 
 /**
  * Page that displays the history of a users logged trash
@@ -17,7 +16,7 @@ public class TimelinePage extends Page {
     */
    public TimelinePage(WindowManager windowManager){
 
-        super(windowManager, PageType.DASHBOARD);
+        super(windowManager, Pages.TIMELINE);
 
     }
 

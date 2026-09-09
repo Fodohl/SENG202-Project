@@ -1,8 +1,17 @@
 package seng202.team1.state;
 
 import javafx.stage.Stage;
-import seng202.team1.data.DataLoader;
-import seng202.team1.gui.core.WindowManager;
+import seng202.team1.api.photon.Feature;
+import seng202.team1.api.photon.PhotonClient;
+import seng202.team1.api.trashdb.TrashDBClient;
+import seng202.team1.api.trashdb.TrashDBLeaderboardResponse;
+import seng202.team1.data.bin.BinLoader;
+import seng202.team1.data.trashlog.TrashLogStore;
+import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.pages.Pages;
+
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Stores the current state of the app and provides managers to control it
@@ -16,7 +25,17 @@ public class GlobalState {
     private WindowManager windowManager;
 
     /// The handler for the static bin data
-    private DataLoader dataLoader;
+    private BinLoader binLoader;
+
+    private TrashLogStore trashLogStore;
+
+    private PhotonClient photonClient;
+
+    private TrashDBClient trashDBClient;
+
+    private Feature requestedLocation;
+
+    private TrashDBLeaderboardResponse leaderboard;
 
     /**
      * Constructs a new GlobalState and sets up managers
@@ -26,10 +45,28 @@ public class GlobalState {
     public GlobalState(Stage stage){
 
         // Data must be loaded first as UI depends on it
-        this.dataLoader = new DataLoader();
-        dataLoader.readGeoJSON();
+        binLoader = new BinLoader();
+        binLoader.readGeoJSON();
 
-        this.windowManager = new WindowManager(this, stage);
+        trashLogStore = new TrashLogStore(TrashLogStore.defaultDataPath());
+        trashLogStore.load();
+
+        photonClient = new PhotonClient();
+        trashDBClient = new TrashDBClient();
+
+        windowManager = new WindowManager(this, stage);
+
+        fetchData();
+    }
+
+    private void fetchData() {
+
+        trashDBClient.getLeaderboard(leaderboard -> {
+
+            this.leaderboard = leaderboard;
+            windowManager.refreshPage(Pages.LEADERBOARD);
+
+        });
     }
 
     /**
@@ -46,8 +83,33 @@ public class GlobalState {
      *
      * @return The data loader for the app
      */
-    public DataLoader getDataLoader() {
-        return dataLoader;
+    public BinLoader getDataLoader() {
+        return binLoader;
     }
 
+    public TrashLogStore getTrashLogStore() {
+        return trashLogStore;
+    }
+
+    public PhotonClient getPhotonClient() {
+        return photonClient;
+    }
+
+    public void setMapSearchRequest(Feature location) {
+        requestedLocation = location;
+        windowManager.switchPage(Pages.MAP);
+    }
+
+    public Feature consumeMapSearchRequest(){
+
+        // Clear the request
+        Feature location = requestedLocation;
+        requestedLocation = null;
+
+        return location;
+    }
+
+    public TrashDBLeaderboardResponse getLeaderboard() {
+        return leaderboard;
+    }
 }

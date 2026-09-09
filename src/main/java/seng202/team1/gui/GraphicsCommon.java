@@ -1,5 +1,6 @@
 package seng202.team1.gui;
 
+import javafx.scene.Node;
 import seng202.team1.Main;
 
 /**
@@ -40,6 +41,18 @@ public class GraphicsCommon {
             return 0;
 
         return (int) Math.floor(percent * WINDOW_HEIGHT);
+    }
+
+    public static void toggleClass(boolean enable, Node node, String className){
+
+          if(enable){
+
+            // Dont add if already added
+            if(!node.getStyleClass().contains(className))
+                node.getStyleClass().add(className);
+        } else{
+            node.getStyleClass().remove(className);
+        }
     }
 
 }

@@ -2,13 +2,18 @@ package seng202.team1.gui.pages;
 
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import seng202.team1.common.StringHelpers;
+import seng202.team1.data.bin.Bin;
+import seng202.team1.data.bin.BinCategory;
+import seng202.team1.data.bin.BinFullness;
+import seng202.team1.data.table.StringTableBuilder;
 import seng202.team1.gui.components.UITable;
 import seng202.team1.gui.components.UITitle;
-import seng202.team1.gui.core.LayoutElement;
-import seng202.team1.gui.core.WindowManager;
+import seng202.team1.gui.WindowManager;
 
-import java.util.List;
+import java.util.Comparator;
 
 /**
  * Page that displays the data used in the app
@@ -22,7 +27,7 @@ public class DataPage extends Page {
      */
     public DataPage(WindowManager windowManager){
 
-        super(windowManager, PageType.DASHBOARD);
+        super(windowManager, Pages.DATA);
 
     }
 
@@ -36,10 +41,17 @@ public class DataPage extends Page {
 
         // Title
         UITitle pageTitle = new UITitle("Raw Data");
+        pageTitle.setAlignment(Pos.CENTER);
 
         // Data
-        List<String> order = List.of("ID", "Latitude", "Longitude", "Type");
-        UITable table = new UITable(windowManager.getGlobalState().getDataLoader().toStringTable(), order, false);
+       StringTableBuilder<Bin> tableData = new StringTableBuilder<Bin>(windowManager.getGlobalState().getDataLoader().getBinObjects())
+            .addColumn("binID", "ID")
+            .addColumn("fullness", "Fullness", val -> StringHelpers.enumNameToTitle(((BinFullness)val).name()))
+            .addColumn("areaName", "Location")
+            .addColumn("type", "Type", val -> StringHelpers.enumNameToTitle(((BinCategory)val).name()))
+            .sortBy(Comparator.comparing(item -> item.getID()));
+
+        UITable table = new UITable(tableData, false);
 
         // Combine
         VBox root = new VBox(20, pageTitle, table);

@@ -2,10 +2,10 @@ package seng202.team1.unittests.data;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import seng202.team1.data.Trash;
-import seng202.team1.data.TrashCategory;
-import seng202.team1.data.TrashLog;
-import seng202.team1.data.TrashType;
+import seng202.team1.data.trashlog.Trash;
+import seng202.team1.data.binCategory;
+import seng202.team1.data.trashlog.TrashLog;
+import seng202.team1.data.trashlog.TrashType;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,7 +22,7 @@ public class TrashLogTest {
 
     @BeforeEach
     public void testSetup() {
-        Trash testTrash = new Trash(TrashCategory.GENERAL_WASTE, TrashType.PLASTIC_BOTTLE, 15);
+        Trash testTrash = new Trash(binCategory.GENERAL_WASTE, TrashType.PLASTIC_BOTTLE, 15);
         testLog = new TrashLog(1, testTrash,  LocalDateTime.parse("2026-04-20T00:00:00"), 1, LocalDateTime.now());
     }
 

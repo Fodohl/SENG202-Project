@@ -6,7 +6,10 @@ import org.json.simple.parser.JSONParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import seng202.team1.data.*;
+import seng202.team1.data.trashlog.Trash;
+import seng202.team1.data.trashlog.TrashLog;
+import seng202.team1.data.trashlog.TrashLogWriter;
+import seng202.team1.data.trashlog.TrashType;
 
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
@@ -78,7 +81,7 @@ public class TrashLogWriterTest {
                 savedLog.get("createdAt"));
 
         assertEquals("RECYCLABLE",
-                savedTrash.get("trashCategory"));
+                savedTrash.get("binCategory"));
         assertEquals("PAPER",
                 savedTrash.get("trashType"));
         assertEquals(50,
@@ -129,7 +132,7 @@ public class TrashLogWriterTest {
 
     private TrashLog createLog(int id, int binId) {
         Trash trash = new Trash(
-                TrashCategory.RECYCLABLE,
+                binCategory.RECYCLABLE,
                 TrashType.PAPER,
                 50
         );
