@@ -2,11 +2,11 @@ package seng202.team1.repository;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import seng202.team1.data.Trash;
-import seng202.team1.data.TrashCategory;
-import seng202.team1.data.TrashType;
+import seng202.team1.data.trashlog.TrashLog;
+import seng202.team1.data.trashlog.TrashType;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -16,28 +16,15 @@ import java.util.Locale;
  *
  * @author Marcus Demafeliz
  */
-public class TrashDAO implements DAOInterface<Trash> {
+public class TrashLogDAO implements DAOInterface<TrashLog> {
     private final DatabaseManager databaseManager;
-    private static final Logger log = LogManager.getLogger(TrashDAO.class);
+    private static final Logger log = LogManager.getLogger(TrashLogDAO.class);
 
     /**
-     * Creates a new TrashDAo object and gets a reference to the database singleton
+     * Creates a new TrashLogDAO object and gets a reference to the database singleton
      */
-    public TrashDAO(){databaseManager = DatabaseManager.getInstance(); }
+    public TrashLogDAO(){databaseManager = DatabaseManager.getInstance(); }
 
-    /**
-     * Converts string from database to TrashCategory
-     * @param category string name
-     * @return trash category that matches the string
-     */
-    private TrashCategory convertStringToCategory(String category) {
-        return switch(category.toUpperCase(Locale.ROOT)) {
-            case "RECYCLABLE" -> TrashCategory.RECYCLABLE;
-            case "ORGANIC" -> TrashCategory.ORGANIC;
-            case "E-WASTE", "E_WASTE" -> TrashCategory.E_WASTE;
-            default ->  TrashCategory.GENERAL_WASTE;
-        };
-    }
 
     /**
      * Converts string from database to TrashType
@@ -60,16 +47,19 @@ public class TrashDAO implements DAOInterface<Trash> {
      * @return a list of all trash
      */
     @Override
-    public List<Trash> getAll() {
-        List<Trash> trash = new ArrayList<>();
-        String sql = "SELECT * FROM trash";
+    public List<TrashLog> getAll() {
+        List<TrashLog> trash = new ArrayList<>();
+        String sql = "SELECT * FROM trash_log";
         try (Connection conn = databaseManager.connect();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                trash.add(new Trash(
+                trash.add(new TrashLog(
                         rs.getInt("id"),
-                        convertStringToCategory(rs.getString("category")),
+                        rs.getObject("created_at", LocalDateTime.class),
+                        rs.getObject("disposed_at", LocalDateTime.class),
+                        rs.getInt("user_id"),
+                        rs.getInt("bin_id"),
                         convertStringToType(rs.getString("type")),
                         rs.getInt("weight")));
             }
@@ -86,17 +76,20 @@ public class TrashDAO implements DAOInterface<Trash> {
      * @return Trash trash from database that matches id
      */
     @Override
-    public Trash getOne(int id) {
-        Trash trash = null;
-        String sql = "SELECT * FROM trash WHERE id = ?";
+    public TrashLog getOne(int id) {
+        TrashLog trash = null;
+        String sql = "SELECT * FROM trash_log WHERE id = ?";
         try (Connection conn = databaseManager.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    trash = new Trash(
+                    trash = new TrashLog(
                             rs.getInt("id"),
-                            convertStringToCategory(rs.getString("category")),
+                            rs.getObject("created_at", LocalDateTime.class),
+                            rs.getObject("disposed_at", LocalDateTime.class),
+                            rs.getInt("user_id"),
+                            rs.getInt("bin_id"),
                             convertStringToType(rs.getString("type")),
                             rs.getInt("weight"));
                 }
@@ -109,19 +102,21 @@ public class TrashDAO implements DAOInterface<Trash> {
     }
 
     /**
-     * Adds an individual trash to database
-     * @param trashToAdd object of type T to add
+     * Adds an individual trashLog to database
+     * @param trashLogToAdd object of type T to add
      * @return true if no error, false if sql error
      */
     @Override
-    public int add(Trash trashToAdd) {
-        String sql = "INSERT INTO trash (category, type, weight) VALUES (?, ?, ?);";
+    public int add(TrashLog trashLogToAdd) {
+        String sql = "INSERT INTO trash_log (created_at, disposed_at, user_id, bin_id, type, weight) VALUES (?, ?, ?, ?, ?, ?);";
         try (Connection conn = databaseManager.connect();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, trashToAdd.trashCategory().toString());
-            ps.setString(2, trashToAdd.trashType().toString());
-            ps.setInt(3, trashToAdd.trashWeight());
-
+            ps.setObject(1, trashLogToAdd.createdAt());
+            ps.setObject(2, trashLogToAdd.disposedAt());
+            ps.setInt(3, trashLogToAdd.userID());
+            ps.setInt(4, trashLogToAdd.binID());
+            ps.setString(5, trashLogToAdd.trashType().toString());
+            ps.setInt(6, trashLogToAdd.trashWeight());
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
             int insertId = -1;
@@ -136,12 +131,12 @@ public class TrashDAO implements DAOInterface<Trash> {
     }
 
     /**
-     * Delete trash from database by id
+     * Delete trashLog from database by id
      * @param id id of object to delete
      */
     @Override
     public void delete (int id) {
-        String sql = "DELETE FROM trash WHERE id = ?";
+        String sql = "DELETE FROM trash_log WHERE id = ?";
         try (Connection conn = databaseManager.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -152,17 +147,18 @@ public class TrashDAO implements DAOInterface<Trash> {
     }
 
     @Override
-    public void update(Trash trashToUpdate) {
-        String sql = "UPDATE trash SET category = ?, type = ?, weight = ? WHERE id = ?";
+    public void update(TrashLog trashLogToUpdate) {
+        String sql = "UPDATE trash_log SET disposed_at = ?, user_id = ?, bin_id = ?, type = ?, weight = ? WHERE id = ?";
         try (Connection conn = databaseManager.connect();
              PreparedStatement  ps = conn.prepareStatement(sql)) {
-            ps.setString(1, trashToUpdate.trashCategory().toString());
-            ps.setString(2, trashToUpdate.trashType().toString());
-            ps.setInt(3, trashToUpdate.trashWeight());
-            ps.setInt(4, trashToUpdate.id());
+            ps.setObject(1, trashLogToUpdate.disposedAt());
+            ps.setInt(2, trashLogToUpdate.userID());
+            ps.setInt(3, trashLogToUpdate.binID());
+            ps.setString(4, trashLogToUpdate.trashType().toString());
+            ps.setInt(5, trashLogToUpdate.trashWeight());
             int rows = ps.executeUpdate();
             if (rows == 0) {
-                log.warn("Update affected 0 rows for trash id {}", trashToUpdate.id());
+                log.warn("Update affected 0 rows for trash id {}", trashLogToUpdate.trashLogId());
             }
         } catch (SQLException sqlException) {
             log.error(sqlException);

@@ -6,7 +6,6 @@ import org.json.simple.parser.JSONParser;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import seng202.team1.data.trashlog.Trash;
 import seng202.team1.data.trashlog.TrashLog;
 import seng202.team1.data.trashlog.TrashLogWriter;
 import seng202.team1.data.trashlog.TrashType;
