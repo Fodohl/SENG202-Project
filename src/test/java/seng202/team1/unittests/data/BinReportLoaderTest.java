@@ -32,6 +32,8 @@ public class BinReportLoaderTest {
                 testBin,
                 testUser,
                 BinStatus.FULL,
+                BinIssue.OTHER,
+                "Test description",
                 LocalDateTime.now()
         );
     }

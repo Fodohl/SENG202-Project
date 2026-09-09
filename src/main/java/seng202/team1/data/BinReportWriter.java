@@ -53,8 +53,10 @@ public class BinReportWriter {
         json.put("binID", report.getBinID());
         json.put("user",  report.getSubmittedBy().getName());
         json.put("userID", report.getSubmittedBy().getUserID());
-        json.put("report", report.getDescription());
-        json.put("createdAt", report.getSubmittedAt());
+        json.put("status", report.getStatus().toString());
+        json.put("issue", report.getIssue() == null ? null : report.getIssue().toString());
+        json.put("description", report.getDescription());
+        json.put("createdAt", report.getSubmittedAt().toString());
 
         return json;
     }

@@ -7,10 +7,7 @@ import org.json.simple.parser.ParseException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import seng202.team1.data.Bin;
-import seng202.team1.data.BinReportWriter;
-import seng202.team1.data.BinStatus;
-import seng202.team1.data.TrashCategory;
+import seng202.team1.data.*;
 import seng202.team1.models.BinReport;
 import seng202.team1.models.User;
 
@@ -54,6 +51,8 @@ public class BinReportWriterTest {
                 testBin,
                 testUser,
                 BinStatus.FULL,
+                BinIssue.OTHER,
+                "Test description",
                 LocalDateTime.of(2026, 9, 9, 12, 0)
         );
     }
@@ -78,7 +77,9 @@ public class BinReportWriterTest {
         assertTrue(contents.contains("\"binID\":1"));
         assertTrue(contents.contains("\"user\":\"Test\""));
         assertTrue(contents.contains("\"userID\":1"));
-        assertTrue(contents.contains("\"report\":\"FULL\""));
+        assertTrue(contents.contains("\"status\":\"FULL\""));
+        assertTrue(contents.contains("\"issue\":\"OTHER\""));
+        assertTrue(contents.contains("\"description\":\"Test description\""));
     }
 
 

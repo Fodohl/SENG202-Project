@@ -107,14 +107,14 @@ public class BinReportLoader {
      * @return A binReport object
      */
     private BinReport parseReport(JSONObject jsonObject) {
-        String binID = (String) jsonObject.get("binID");
-        Bin bin = dataLoader.getBinById(Integer.parseInt(binID));
+        int binID = ((Number) jsonObject.get("binID")).intValue();
+        Bin bin = dataLoader.getBinById(binID);
         String reportStatus = (String) jsonObject.get("status");
         String reportUser = (String) jsonObject.get("user");
-        String reportUserID = (String) jsonObject.get("userID");
+        int reportUserID = ((Number) jsonObject.get("userID")).intValue();
         String reportIssue = (String) jsonObject.get("issue");
         String reportDescription = (String) jsonObject.get("description");
-        User user = new User(Integer.parseInt(reportUserID), reportUser);
+        User user = new User(reportUserID, reportUser);
         LocalDateTime time = LocalDateTime.parse(jsonObject.get("createdAt").toString());
 
         BinStatus status = switch (reportStatus.toUpperCase(Locale.ROOT)) {
@@ -125,15 +125,21 @@ public class BinReportLoader {
             default -> throw new IllegalStateException("Unexpected value: " + reportStatus.toUpperCase(Locale.ROOT));
         };
 
-        BinIssue issue = switch (reportIssue.toUpperCase(Locale.ROOT)) {
-            case "GRAFFITI" -> BinIssue.GRAFFITI;
-            case "Damaged" -> BinIssue.DAMAGED;
-            case "MISSING" -> BinIssue.MISSING;
-            case "FIRE_HAZARD" -> BinIssue.FIRE_HAZARD;
-            case "ILLEGAL DUMPING" -> BinIssue.ILLEGAL_DUMPING;
-            case "BLOCKED" -> BinIssue.BLOCKED;
-            default -> throw new IllegalStateException("Unexpected value: " + reportIssue.toUpperCase(Locale.ROOT));
-        };
+        BinIssue issue;
+        if (reportIssue != null) {
+            issue = switch (reportIssue.toUpperCase(Locale.ROOT)) {
+                case "GRAFFITI" -> BinIssue.GRAFFITI;
+                case "DAMAGED" -> BinIssue.DAMAGED;
+                case "MISSING" -> BinIssue.MISSING;
+                case "FIRE_HAZARD" -> BinIssue.FIRE_HAZARD;
+                case "ILLEGAL_DUMPING" -> BinIssue.ILLEGAL_DUMPING;
+                case "BLOCKED" -> BinIssue.BLOCKED;
+                case "OTHER" -> BinIssue.OTHER;
+                default -> throw new IllegalStateException("Unexpected value: " + reportIssue.toUpperCase(Locale.ROOT));
+            };
+        } else {
+            issue = null;
+        }
 
         return new BinReport(bin, user, status, issue, reportDescription, time);
     }

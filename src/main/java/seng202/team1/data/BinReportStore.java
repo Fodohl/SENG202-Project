@@ -75,7 +75,8 @@ public class BinReportStore {
         Objects.requireNonNull(newReport);
         boolean userReportExistsForBin = reports.stream().anyMatch(
                 report -> report.getBinID() == newReport.getBinID()
-                && report.getSubmittedBy().equals(newReport.getSubmittedBy()));
+                && Objects.equals(report.getSubmittedBy().getName(), newReport.getSubmittedBy().getName())
+                && report.getSubmittedBy().getUserID() == newReport.getSubmittedBy().getUserID());
         if (userReportExistsForBin) {
             removeReport(newReport);
         }
@@ -90,8 +91,9 @@ public class BinReportStore {
      * @throws IOException if the JSON file cannot be written
      */
     public void removeReport(BinReport report) throws IOException {
-        List<BinReport> updatedReports = reports.stream().filter(setReport -> !((setReport.getBinID()) == report.getBinID())
-                && setReport.getSubmittedBy().equals(report.getSubmittedBy())).toList();
+        List<BinReport> updatedReports = reports.stream().filter(setReport -> !((setReport.getBinID()) == report.getBinID()
+                && setReport.getSubmittedBy().getName().equals(report.getSubmittedBy().getName()))
+                && setReport.getSubmittedBy().getUserID() == report.getSubmittedBy().getUserID()).toList();
         writeToJSON(updatedReports);
     }
 

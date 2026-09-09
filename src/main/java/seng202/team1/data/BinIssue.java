@@ -6,5 +6,6 @@ public enum BinIssue {
     MISSING,
     FIRE_HAZARD,
     ILLEGAL_DUMPING,
-    BLOCKED
+    BLOCKED,
+    OTHER
 }

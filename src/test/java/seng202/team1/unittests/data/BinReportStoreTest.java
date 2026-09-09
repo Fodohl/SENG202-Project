@@ -25,12 +25,13 @@ public class BinReportStoreTest {
     Path tempDir;
 
     private BinReportStore store;
-    private Path testFile;
 
     @BeforeEach
-    public void setUp() {
-        this.store = new BinReportStore();
+    void setUp() {
+        Path testFile = tempDir.resolve("binreports.json");
+        store = new BinReportStore(testFile);
     }
+
 
     @Test
     void addReport() throws IOException {
@@ -39,6 +40,8 @@ public class BinReportStoreTest {
                         172.693149814, TrashCategory.RECYCLABLE),
                 new User(123, "Test1"),
                 BinStatus.EMPTY,
+                BinIssue.OTHER,
+                "Test description",
                 LocalDateTime.now()
         );
 
@@ -48,9 +51,11 @@ public class BinReportStoreTest {
         List<BinReport> reports = store.getReports();
 
         assertEquals(1, reports.size());
-        assertEquals(1, reports.get(0).getBinID());
-        assertEquals("Connor", reports.get(0).getSubmittedBy().getName());
-        assertEquals(BinStatus.FULL, reports.get(0).getDescription());
+        assertEquals(197, reports.get(0).getBinID());
+        assertEquals("Test1", reports.get(0).getSubmittedBy().getName());
+        assertEquals(BinStatus.EMPTY, reports.get(0).getStatus());
+        assertEquals(BinIssue.OTHER, reports.get(0).getIssue());
+        assertEquals("Test description", reports.get(0).getDescription());
     }
 
     @Test
@@ -59,6 +64,8 @@ public class BinReportStoreTest {
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(123, "Test1"),
                 BinStatus.EMPTY,
+                BinIssue.OTHER,
+                "Test description",
                 LocalDateTime.now()
         );
 
@@ -66,6 +73,8 @@ public class BinReportStoreTest {
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(321, "Test2"),
                 BinStatus.EMPTY,
+                BinIssue.OTHER,
+                "Test description",
                 LocalDateTime.now()
         );
 
@@ -84,6 +93,8 @@ public class BinReportStoreTest {
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(123, "Test1"),
                 BinStatus.EMPTY,
+                BinIssue.OTHER,
+                "Test description",
                 LocalDateTime.now()
         );
 
@@ -91,6 +102,8 @@ public class BinReportStoreTest {
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(321, "Test2"),
                 BinStatus.EMPTY,
+                BinIssue.OTHER,
+                "Test description",
                 LocalDateTime.now()
         );
 
@@ -108,13 +121,17 @@ public class BinReportStoreTest {
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(123, "Test1"),
                 BinStatus.EMPTY,
+                BinIssue.OTHER,
+                "Test description",
                 LocalDateTime.now()
         );
 
         BinReport report2 = new BinReport(new Bin(197, -43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
-                new User(321, "Test2"),
+                new User(123, "Test1"),
                 BinStatus.EMPTY,
+                BinIssue.OTHER,
+                "Test description",
                 LocalDateTime.now()
         );
 
@@ -124,7 +141,7 @@ public class BinReportStoreTest {
         List<BinReport> reports = store.getReports();
 
         assertEquals(1, reports.size());
-        assertEquals(BinStatus.FULL,
-                reports.get(0).getDescription());
+        assertEquals(BinStatus.EMPTY,
+                reports.get(0).getStatus());
     }
 }
