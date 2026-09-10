@@ -6,9 +6,11 @@ import org.junit.jupiter.api.BeforeEach;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.BinLoader;
 import seng202.team1.data.table.StringTable;
+import seng202.team1.exceptions.InstanceAlreadyExistsException;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.state.GlobalState;
 
+import java.time.Instant;
 import java.util.Map;
 import java.util.Random;
 
@@ -39,7 +41,7 @@ public class TrashAppTest {
     }
 
     @BeforeEach
-    void initState(){
+    void initState() throws InstanceAlreadyExistsException {
 
         state = new GlobalState(null);
 
@@ -56,9 +58,9 @@ public class TrashAppTest {
         StringTable table = new StringTable(keys);
 
         // Add test data
-        table.add(new Bin(1,1,1,null));
-        table.add(new Bin(2,2,2, null));
-        table.add(new Bin(3,3,3, null));
+//        table.add(new Bin(1, 2, 2, null));
+//        table.add(new Bin(2,2,2, null));
+//        table.add(new Bin(3,3,3, null));
 
         return table;
     }

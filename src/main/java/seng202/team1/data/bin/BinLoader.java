@@ -109,6 +109,7 @@ public class BinLoader {
         int binID = ((Number) properties.get("BinID")).intValue();
         Object wasteTypeObj = properties.get("WasteType");
         Object lastEditDateObj = properties.get("LastEditDate");
+        String photoURL = (String) properties.get("PhotographURL");
 
         // Parse site name
         Object siteName = properties.get("SiteName");
@@ -125,7 +126,7 @@ public class BinLoader {
         // Parse the date
         Instant updated = lastEditDateObj != null ? Instant.parse(lastEditDateObj.toString()) : null;
 
-        return new Bin(binID, latitude, longitude, binType, updated, area);
+        return new Bin(binID, latitude, longitude, binType, updated, BinFullness.UNKNOWN, photoURL, area);
     }
     
 }

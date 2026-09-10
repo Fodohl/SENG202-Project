@@ -49,7 +49,7 @@ public class DataPage extends Page {
             .addColumn("fullness", "Fullness", val -> StringHelpers.enumNameToTitle(((BinFullness)val).name()))
             .addColumn("areaName", "Location")
             .addColumn("type", "Type", val -> StringHelpers.enumNameToTitle(((BinCategory)val).name()))
-            .sortBy(Comparator.comparing(item -> item.getID()));
+            .sortBy(Comparator.comparing(Bin::getID));
 
         UITable table = new UITable(tableData, false);
 

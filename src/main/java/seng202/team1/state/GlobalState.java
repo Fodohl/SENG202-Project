@@ -6,12 +6,11 @@ import seng202.team1.api.photon.PhotonClient;
 import seng202.team1.api.trashdb.TrashDBClient;
 import seng202.team1.api.trashdb.TrashDBLeaderboardResponse;
 import seng202.team1.data.bin.BinLoader;
-import seng202.team1.data.trashlog.TrashLogStore;
+import seng202.team1.exceptions.InstanceAlreadyExistsException;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.pages.Pages;
-
-import java.util.Locale;
-import java.util.Map;
+import seng202.team1.repository.DatabaseManager;
+import seng202.team1.repository.TrashLogDAO;
 
 /**
  * Stores the current state of the app and provides managers to control it
@@ -27,7 +26,10 @@ public class GlobalState {
     /// The handler for the static bin data
     private BinLoader binLoader;
 
-    private TrashLogStore trashLogStore;
+    // private TrashLogStore trashLogStore;
+
+    static TrashLogDAO trashLogDAO;
+    static DatabaseManager databaseManager;
 
     private PhotonClient photonClient;
 
@@ -42,14 +44,17 @@ public class GlobalState {
      *
      * @param stage The window for the app
      */
-    public GlobalState(Stage stage){
+    public GlobalState(Stage stage) throws InstanceAlreadyExistsException {
 
         // Data must be loaded first as UI depends on it
         binLoader = new BinLoader();
         binLoader.readGeoJSON();
 
-        trashLogStore = new TrashLogStore(TrashLogStore.defaultDataPath());
-        trashLogStore.load();
+//        trashLogStore = new TrashLogStore(TrashLogStore.defaultDataPath());
+//        trashLogStore.load();
+
+        databaseManager = DatabaseManager.initialiseInstanceWithUrl("jdbc:sqlite:./src/main/resources/database.db");
+        trashLogDAO = new TrashLogDAO();
 
         photonClient = new PhotonClient();
         trashDBClient = new TrashDBClient();
@@ -87,8 +92,16 @@ public class GlobalState {
         return binLoader;
     }
 
-    public TrashLogStore getTrashLogStore() {
-        return trashLogStore;
+//    public TrashLogStore getTrashLogStore() {
+//        return trashLogStore;
+//    }
+
+    public DatabaseManager getDatabaseManager() {
+        return databaseManager;
+    }
+
+    public TrashLogDAO getTrashLogDAO() {
+        return trashLogDAO;
     }
 
     public PhotonClient getPhotonClient() {

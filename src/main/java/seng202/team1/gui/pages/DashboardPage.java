@@ -91,12 +91,12 @@ public class DashboardPage extends Page {
         dataset.setText(String.format("%s", windowManager.getGlobalState().getDataLoader().getBinObjects().size()));
 
         // Get usage
-        List<TrashLog> uses = windowManager.getGlobalState().getTrashLogStore()
+        List<TrashLog> uses = windowManager.getGlobalState().getTrashLogDAO()
                                            .getAll().stream()
                                            .sorted(Comparator.comparing(TrashLog::createdAt))
                                            .toList();
         List<Bin> bins = uses.stream()
-                              .map(b -> windowManager.getGlobalState().getDataLoader().getBinById(b.binLogId()))
+                              .map(b -> windowManager.getGlobalState().getDataLoader().getBinById(b.binID()))
                               .toList();
 
         TrashLog newestLog = uses.isEmpty() ? null : uses.getLast();

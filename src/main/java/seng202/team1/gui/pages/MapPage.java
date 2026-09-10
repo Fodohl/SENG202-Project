@@ -255,9 +255,9 @@ public class MapPage extends Page {
             return;
 
         // Get usage
-        List<TrashLog> uses = windowManager.getGlobalState().getTrashLogStore()
+        List<TrashLog> uses = windowManager.getGlobalState().getTrashLogDAO()
                                            .getAll().stream()
-                                           .filter(l -> l.binLogId() == selectedBin.getID())
+                                           .filter(l -> l.binID() == selectedBin.getID())
                                            .sorted(Comparator.comparing(TrashLog::createdAt))
                                            .toList();
         TrashLog newest = uses.isEmpty() ? null : uses.getLast();

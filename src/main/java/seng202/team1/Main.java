@@ -6,6 +6,7 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import seng202.team1.exceptions.InstanceAlreadyExistsException;
 import seng202.team1.gui.components.UIImage;
 import seng202.team1.state.GlobalState;
 
@@ -50,7 +51,7 @@ public class Main extends Application {
      *              the application scene can be set.
      */
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws InstanceAlreadyExistsException {
 
         // Dev tools
         CSSFX.start();

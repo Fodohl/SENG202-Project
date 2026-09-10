@@ -131,7 +131,7 @@ public class LogTrashModal extends Modal{
             return;
 
         // Save
-        windowManager.getGlobalState().getTrashLogStore().logTrash(category, type, weight, binID);
+        //windowManager.getGlobalState().getTrashLogStore().logTrash(category, type, weight, binID);
 
         closeModal();
     }
