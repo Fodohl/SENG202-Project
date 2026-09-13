@@ -1,4 +1,4 @@
-package seng202.team1.data.bin;
+package seng202.team1.data.status;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -13,19 +13,19 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 
 /**
- * Class for writing to a binReport Json file
+ * Class for writing to a statusReport Json file
  *
  * @author Archie Georgeson
  */
-public class BinReportWriter {
+public class StatusReportWriter {
 
     /**
-     * Writes reports to a file destination in JSON format that {@link BinReportLoader} can read
+     * Writes reports to a file destination in JSON format that {@link StatusReportLoader} can read
      * @param destination Path of JSON file destination
-     * @param reports List of {@link BinReport} to be written to file
+     * @param reports List of {@link StatusReport} to be written to file
      * @throws IOException if the JSON file cannot be written
      */
-    public void writeJson(Path destination, List<BinReport> reports) throws IOException {
+    public void writeJson(Path destination, List<StatusReport> reports) throws IOException {
         Path absoluteDestination = destination.toAbsolutePath();
         Path parent = absoluteDestination.getParent();
         Files.createDirectories(parent);
@@ -47,18 +47,18 @@ public class BinReportWriter {
         }
     }
 
-    private JSONObject createDocument(List<BinReport> reports) {
+    private JSONObject createDocument(List<StatusReport> reports) {
         JSONArray reportArray = new JSONArray();
-        for (BinReport report : reports) {
-            reportArray.add(binReportToJson(report));
+        for (StatusReport report : reports) {
+            reportArray.add(statusReportToJson(report));
         }
 
         JSONObject root = new JSONObject();
-        root.put("binReports", reportArray);
+        root.put("statusReports", reportArray);
         return root;
     }
 
-    private JSONObject binReportToJson(BinReport report) {
+    private JSONObject statusReportToJson(StatusReport report) {
         JSONObject json = new JSONObject();
 
         json.put("binID", report.getBinID());

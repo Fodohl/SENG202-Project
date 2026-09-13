@@ -4,9 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import seng202.team1.data.bin.BinIssue;
-import seng202.team1.data.bin.BinReport;
+import seng202.team1.data.status.StatusReport;
 import seng202.team1.data.User;
-import seng202.team1.data.bin.BinReportStore;
+import seng202.team1.data.status.StatusReportStore;
 import seng202.team1.data.bin.BinStatus;
 
 import java.io.IOException;
@@ -17,31 +17,31 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests BinReportStore
+ * Tests StatusReportStore
  *
  * @author Connor Rocket
  * @author Archie Georgeson
  */
-public class BinReportStoreTest {
+public class StatusReportStoreTest {
 
     @TempDir
     Path tempDir;
 
-    private BinReportStore store;
+    private StatusReportStore store;
     private String testString = "binreports.json";
 
 
     @BeforeEach
     void setUp() {
         Path testFile = tempDir.resolve(testString);
-        store = new BinReportStore(testFile);
+        store = new StatusReportStore(testFile);
     }
 
 
     @Test
     void addReport() throws IOException {
         LocalDateTime time = LocalDateTime.now();
-        BinReport report = new BinReport(
+        StatusReport report = new StatusReport(
                 new Bin(197, -43.605467593,
                         172.693149814, TrashCategory.RECYCLABLE),
                 new User(123, "Test1"),
@@ -54,7 +54,7 @@ public class BinReportStoreTest {
 
         store.add(report);
 
-        List<BinReport> reports = store.getReports();
+        List<StatusReport> reports = store.getReports();
 
         assertEquals(1, reports.size());
         assertEquals(197, reports.get(0).getBinID());
@@ -67,7 +67,7 @@ public class BinReportStoreTest {
 
     @Test
     void addTwoReportsToDifferentBins() throws IOException {
-        BinReport report1 = new BinReport(new Bin(197, -43.605467593,
+        StatusReport report1 = new StatusReport(new Bin(197, -43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(123, "Test1"),
                 BinStatus.EMPTY,
@@ -76,7 +76,7 @@ public class BinReportStoreTest {
                 LocalDateTime.now()
         );
 
-        BinReport report2 = new BinReport(new Bin(198, -43.605467593,
+        StatusReport report2 = new StatusReport(new Bin(198, -43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(123, "Test1"),
                 BinStatus.EMPTY,
@@ -88,7 +88,7 @@ public class BinReportStoreTest {
         store.add(report1);
         store.add(report2);
 
-        List<BinReport> reports = store.getReports();
+        List<StatusReport> reports = store.getReports();
 
         assertEquals(2, reports.size());
 
@@ -96,7 +96,7 @@ public class BinReportStoreTest {
 
     @Test
     void addTwoReportsFromDifferentUsers() throws IOException {
-        BinReport report1 = new BinReport(new Bin(197, -43.605467593,
+        StatusReport report1 = new StatusReport(new Bin(197, -43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(123, "Test1"),
                 BinStatus.EMPTY,
@@ -105,7 +105,7 @@ public class BinReportStoreTest {
                 LocalDateTime.now()
         );
 
-        BinReport report2 = new BinReport(new Bin(483, -43.605467593,
+        StatusReport report2 = new StatusReport(new Bin(483, -43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(321, "Test2"),
                 BinStatus.FULL,
@@ -117,7 +117,7 @@ public class BinReportStoreTest {
         store.add(report1);
         store.add(report2);
 
-        List<BinReport> reports = store.getReports();
+        List<StatusReport> reports = store.getReports();
 
         assertEquals(2, reports.size());
 
@@ -126,7 +126,7 @@ public class BinReportStoreTest {
     @Test
     void addingReportPersists() throws IOException {
         LocalDateTime time = LocalDateTime.now();
-        BinReport report1 = new BinReport(new Bin(197, -43.605467593,
+        StatusReport report1 = new StatusReport(new Bin(197, -43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(123, "Test1"),
                 BinStatus.EMPTY,
@@ -135,9 +135,9 @@ public class BinReportStoreTest {
                 time
         );
         store.add(report1);
-        BinReportStore newStore = new BinReportStore(tempDir.resolve(testString));
+        StatusReportStore newStore = new StatusReportStore(tempDir.resolve(testString));
 
-        List<BinReport> reports = newStore.getReports();
+        List<StatusReport> reports = newStore.getReports();
 
         assertEquals(1, reports.size());
         assertEquals(197, reports.get(0).getBinID());
@@ -151,7 +151,7 @@ public class BinReportStoreTest {
 
     @Test
     void removeReportRemovesCorrectReport() throws IOException {
-        BinReport report1 = new BinReport(new Bin(197, -43.605467593,
+        StatusReport report1 = new StatusReport(new Bin(197, -43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(123, "Test1"),
                 BinStatus.EMPTY,
@@ -160,7 +160,7 @@ public class BinReportStoreTest {
                 LocalDateTime.now()
         );
 
-        BinReport report2 = new BinReport(new Bin(197, -43.605467593,
+        StatusReport report2 = new StatusReport(new Bin(197, -43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(321, "Test2"),
                 BinStatus.EMPTY,
@@ -169,7 +169,7 @@ public class BinReportStoreTest {
                 LocalDateTime.now()
         );
 
-        BinReport report3 = new BinReport(new Bin(197, -43.605467593,
+        StatusReport report3 = new StatusReport(new Bin(197, -43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(231, "Test3"),
                 BinStatus.EMPTY,
@@ -182,7 +182,7 @@ public class BinReportStoreTest {
         store.add(report2);
         store.add(report3);
         store.removeReport(report2);
-        List<BinReport> reports = store.getReports();
+        List<StatusReport> reports = store.getReports();
         assertEquals(2, reports.size());
         assertEquals(123, reports.get(0).getSubmittedBy().getUserID());
         assertEquals(231, reports.get(1).getSubmittedBy().getUserID());
@@ -190,7 +190,7 @@ public class BinReportStoreTest {
 
     @Test
     void removeReportPersists() throws IOException {
-        BinReport report1 = new BinReport(new Bin(197, -43.605467593,
+        StatusReport report1 = new StatusReport(new Bin(197, -43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(123, "Test1"),
                 BinStatus.EMPTY,
@@ -199,7 +199,7 @@ public class BinReportStoreTest {
                 LocalDateTime.now()
         );
 
-        BinReport report2 = new BinReport(new Bin(197, -43.605467593,
+        StatusReport report2 = new StatusReport(new Bin(197, -43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(321, "Test2"),
                 BinStatus.EMPTY,
@@ -208,7 +208,7 @@ public class BinReportStoreTest {
                 LocalDateTime.now()
         );
 
-        BinReport report3 = new BinReport(new Bin(197, -43.605467593,
+        StatusReport report3 = new StatusReport(new Bin(197, -43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(231, "Test3"),
                 BinStatus.EMPTY,
@@ -221,8 +221,8 @@ public class BinReportStoreTest {
         store.add(report2);
         store.add(report3);
         store.removeReport(report2);
-        BinReportStore newStore = new BinReportStore(tempDir.resolve(testString));
-        List<BinReport> reports = newStore.getReports();
+        StatusReportStore newStore = new StatusReportStore(tempDir.resolve(testString));
+        List<StatusReport> reports = newStore.getReports();
         assertEquals(2, reports.size());
         assertEquals(123, reports.get(0).getSubmittedBy().getUserID());
         assertEquals(231, reports.get(1).getSubmittedBy().getUserID());
@@ -230,7 +230,7 @@ public class BinReportStoreTest {
 
     @Test
     void differentUsersCanReportSameBin() throws IOException {
-        BinReport report1 = new BinReport(new Bin(197, 43.605467593,
+        StatusReport report1 = new StatusReport(new Bin(197, 43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(123, "Test1"),
                 BinStatus.EMPTY,
@@ -239,7 +239,7 @@ public class BinReportStoreTest {
                 LocalDateTime.now()
         );
 
-        BinReport report2 = new BinReport(new Bin(197, -43.605467593,
+        StatusReport report2 = new StatusReport(new Bin(197, -43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(321, "Test2"),
                 BinStatus.EMPTY,
@@ -251,14 +251,14 @@ public class BinReportStoreTest {
         store.add(report1);
         store.add(report2);
 
-        List<BinReport> reports = store.getReports();
+        List<StatusReport> reports = store.getReports();
 
         assertEquals(2, reports.size());
     }
 
     @Test
     void sameUserReportingSameBinReplacesOldReport() throws IOException {
-        BinReport report1 = new BinReport(new Bin(197, 43.605467593,
+        StatusReport report1 = new StatusReport(new Bin(197, 43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(123, "Test1"),
                 BinStatus.FULL,
@@ -267,7 +267,7 @@ public class BinReportStoreTest {
                 LocalDateTime.now()
         );
 
-        BinReport report2 = new BinReport(new Bin(197, -43.605467593,
+        StatusReport report2 = new StatusReport(new Bin(197, -43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(123, "Test1"),
                 BinStatus.EMPTY,
@@ -279,7 +279,7 @@ public class BinReportStoreTest {
         store.add(report1);
         store.add(report2);
 
-        List<BinReport> reports = store.getReports();
+        List<StatusReport> reports = store.getReports();
 
         assertEquals(1, reports.size());
         assertEquals(BinStatus.EMPTY, reports.get(0).getStatus());
@@ -288,7 +288,7 @@ public class BinReportStoreTest {
 
     @Test
     void sameUserReportingSameBinPersistsIssueIfNull() throws IOException {
-        BinReport report1 = new BinReport(new Bin(197, 43.605467593,
+        StatusReport report1 = new StatusReport(new Bin(197, 43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(123, "Test1"),
                 BinStatus.FULL,
@@ -297,7 +297,7 @@ public class BinReportStoreTest {
                 LocalDateTime.now()
         );
 
-        BinReport report2 = new BinReport(new Bin(197, -43.605467593,
+        StatusReport report2 = new StatusReport(new Bin(197, -43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(123, "Test1"),
                 BinStatus.EMPTY,
@@ -309,7 +309,7 @@ public class BinReportStoreTest {
         store.add(report1);
         store.add(report2);
 
-        List<BinReport> reports = store.getReports();
+        List<StatusReport> reports = store.getReports();
 
         assertEquals(1, reports.size());
         assertEquals(BinStatus.EMPTY, reports.get(0).getStatus());
@@ -319,7 +319,7 @@ public class BinReportStoreTest {
 
     @Test
     void sameUserReportingSameBinPersistsStatusIfNull() throws IOException {
-        BinReport report1 = new BinReport(new Bin(197, 43.605467593,
+        StatusReport report1 = new StatusReport(new Bin(197, 43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(123, "Test1"),
                 BinStatus.FULL,
@@ -328,7 +328,7 @@ public class BinReportStoreTest {
                 LocalDateTime.now()
         );
 
-        BinReport report2 = new BinReport(new Bin(197, -43.605467593,
+        StatusReport report2 = new StatusReport(new Bin(197, -43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(123, "Test1"),
                 null,
@@ -340,7 +340,7 @@ public class BinReportStoreTest {
         store.add(report1);
         store.add(report2);
 
-        List<BinReport> reports = store.getReports();
+        List<StatusReport> reports = store.getReports();
 
         assertEquals(1, reports.size());
         assertEquals(BinStatus.FULL, reports.get(0).getStatus());
@@ -350,7 +350,7 @@ public class BinReportStoreTest {
 
     @Test
     void sameUserReportingSameBinPersistsIfAllNull() throws IOException {
-        BinReport report1 = new BinReport(new Bin(197, 43.605467593,
+        StatusReport report1 = new StatusReport(new Bin(197, 43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(123, "Test1"),
                 BinStatus.FULL,
@@ -359,7 +359,7 @@ public class BinReportStoreTest {
                 LocalDateTime.now()
         );
 
-        BinReport report2 = new BinReport(new Bin(197, -43.605467593,
+        StatusReport report2 = new StatusReport(new Bin(197, -43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(123, "Test1"),
                 null,
@@ -371,7 +371,7 @@ public class BinReportStoreTest {
         store.add(report1);
         store.add(report2);
 
-        List<BinReport> reports = store.getReports();
+        List<StatusReport> reports = store.getReports();
 
         assertEquals(1, reports.size());
         assertEquals(BinStatus.FULL, reports.get(0).getStatus());
@@ -381,7 +381,7 @@ public class BinReportStoreTest {
 
     @Test
     void getReportsByIdReturnsCorrectSubset() throws IOException {
-        BinReport report1 = new BinReport(new Bin(483, -43.605467593,
+        StatusReport report1 = new StatusReport(new Bin(483, -43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(123, "Test1"),
                 BinStatus.EMPTY,
@@ -390,7 +390,7 @@ public class BinReportStoreTest {
                 LocalDateTime.now()
         );
 
-        BinReport report2 = new BinReport(new Bin(197, -43.605467593,
+        StatusReport report2 = new StatusReport(new Bin(197, -43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(321, "Test2"),
                 BinStatus.EMPTY,
@@ -399,7 +399,7 @@ public class BinReportStoreTest {
                 LocalDateTime.now()
         );
 
-        BinReport report3 = new BinReport(new Bin(197, -43.605467593,
+        StatusReport report3 = new StatusReport(new Bin(197, -43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(231, "Test3"),
                 BinStatus.EMPTY,
@@ -411,7 +411,7 @@ public class BinReportStoreTest {
         store.add(report1);
         store.add(report2);
         store.add(report3);
-        List<BinReport> reports = store.getReportsById(197);
+        List<StatusReport> reports = store.getReportsById(197);
         assertEquals(2, reports.size());
         assertEquals(321, reports.get(0).getSubmittedBy().getUserID());
         assertEquals(231, reports.get(1).getSubmittedBy().getUserID());
@@ -419,7 +419,7 @@ public class BinReportStoreTest {
 
     @Test
     void getReportsByIdReturnsEmptyWithNoMatchingId() throws IOException {
-        BinReport report1 = new BinReport(new Bin(483, -43.605467593,
+        StatusReport report1 = new StatusReport(new Bin(483, -43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(123, "Test1"),
                 BinStatus.EMPTY,
@@ -428,7 +428,7 @@ public class BinReportStoreTest {
                 LocalDateTime.now()
         );
 
-        BinReport report2 = new BinReport(new Bin(197, -43.605467593,
+        StatusReport report2 = new StatusReport(new Bin(197, -43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(321, "Test2"),
                 BinStatus.EMPTY,
@@ -437,7 +437,7 @@ public class BinReportStoreTest {
                 LocalDateTime.now()
         );
 
-        BinReport report3 = new BinReport(new Bin(197, -43.605467593,
+        StatusReport report3 = new StatusReport(new Bin(197, -43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(231, "Test3"),
                 BinStatus.EMPTY,
@@ -448,7 +448,7 @@ public class BinReportStoreTest {
         store.add(report1);
         store.add(report2);
         store.add(report3);
-        List<BinReport> reports = store.getReportsById(1);
+        List<StatusReport> reports = store.getReportsById(1);
         assertEquals(0, reports.size());
     }
 
@@ -459,7 +459,7 @@ public class BinReportStoreTest {
 
     @Test
     void getReportsListIsImmutable() throws IOException {
-        BinReport report1 = new BinReport(new Bin(483, -43.605467593,
+        StatusReport report1 = new StatusReport(new Bin(483, -43.605467593,
                 172.693149814, TrashCategory.RECYCLABLE),
                 new User(123, "Test1"),
                 BinStatus.EMPTY,
@@ -469,7 +469,7 @@ public class BinReportStoreTest {
         );
 
         store.add(report1);
-        List<BinReport> reports = store.getReports();
+        List<StatusReport> reports = store.getReports();
         assertThrows(UnsupportedOperationException.class, () -> reports.add(null));
     }
 }

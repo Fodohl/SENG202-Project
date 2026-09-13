@@ -20,6 +20,4 @@ public class UISpinner extends UIImage {
         rt.setInterpolator(Interpolator.LINEAR);
         rt.play();
     }
-
-
 }

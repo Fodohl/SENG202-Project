@@ -4,9 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import seng202.team1.data.bin.BinIssue;
-import seng202.team1.data.bin.BinReport;
+import seng202.team1.data.status.StatusReport;
 import seng202.team1.data.User;
-import seng202.team1.data.bin.BinReportWriter;
+import seng202.team1.data.status.StatusReportWriter;
 import seng202.team1.data.bin.BinStatus;
 
 import java.io.IOException;
@@ -18,16 +18,16 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Tests BinReportWriter
+ * Tests StatusReportWriter
  *
  * @author connorrocket
  * @author Archie Georgeson
  */
 
-public class BinReportWriterTest {
-    private BinReportWriter binReportWriter;
-    private BinReport testBinReport;
-    private BinReport testBinReport2;
+public class StatusReportWriterTest {
+    private StatusReportWriter statusReportWriter;
+    private StatusReport testStatusReport;
+    private StatusReport testStatusReport2;
     private Bin testBin;
     private User testUser;
 
@@ -36,7 +36,7 @@ public class BinReportWriterTest {
 
     @BeforeEach
     public void setUp() {
-        binReportWriter = new BinReportWriter();
+        statusReportWriter = new StatusReportWriter();
 
         testBin = new Bin(
                 1,
@@ -47,7 +47,7 @@ public class BinReportWriterTest {
 
         testUser = new User(1, "Test");
 
-        testBinReport = new BinReport(
+        testStatusReport = new StatusReport(
                 testBin,
                 testUser,
                 BinStatus.FULL,
@@ -56,7 +56,7 @@ public class BinReportWriterTest {
                 LocalDateTime.of(2026, 9, 9, 12, 0)
         );
 
-         testBinReport2 = new BinReport(
+         testStatusReport2 = new StatusReport(
                 testBin,
                 new User(2, "Test2"),
                 BinStatus.EMPTY,
@@ -70,7 +70,7 @@ public class BinReportWriterTest {
     public void testWriteJsonCreatesFile() throws IOException {
         Path testFile = tempDir.resolve("binreports.json");
 
-        binReportWriter.writeJson(testFile, List.of(testBinReport));
+        statusReportWriter.writeJson(testFile, List.of(testStatusReport));
 
         assertTrue(Files.exists(testFile));
     }
@@ -79,7 +79,7 @@ public class BinReportWriterTest {
     public void testWriteJsonContainsReport() throws IOException {
         Path testFile = tempDir.resolve("binreports.json");
 
-        binReportWriter.writeJson(testFile, List.of(testBinReport));
+        statusReportWriter.writeJson(testFile, List.of(testStatusReport));
 
         String contents = Files.readString(testFile);
 
@@ -94,10 +94,10 @@ public class BinReportWriterTest {
     @Test
     public void testEmptyListWritesEmptyJson() throws IOException {
         Path testFile = tempDir.resolve("binreports.json");
-        binReportWriter.writeJson(testFile, List.of());
+        statusReportWriter.writeJson(testFile, List.of());
         assertTrue(Files.exists(testFile));
         String contents = Files.readString(testFile);
-        assertTrue(contents.contains("\"binReports\":[]"));
+        assertTrue(contents.contains("\"statusReports\":[]"));
         assertFalse(contents.contains("\"binID\""));
         assertFalse(contents.contains("\"user\""));
         assertFalse(contents.contains("\"userID\""));
@@ -109,7 +109,7 @@ public class BinReportWriterTest {
     @Test
     public void testWriteJsonContainsMultipleReports() throws IOException {
         Path testFile = tempDir.resolve("binreports.json");
-        binReportWriter.writeJson(testFile, List.of(testBinReport, testBinReport2));
+        statusReportWriter.writeJson(testFile, List.of(testStatusReport, testStatusReport2));
 
         String contents = Files.readString(testFile);
 
@@ -131,8 +131,8 @@ public class BinReportWriterTest {
     @Test
     public void writeJsonOverwritesOldJson() throws IOException {
         Path testFile = tempDir.resolve("binreports.json");
-        binReportWriter.writeJson(testFile, List.of(testBinReport));
-        binReportWriter.writeJson(testFile, List.of(testBinReport2));
+        statusReportWriter.writeJson(testFile, List.of(testStatusReport));
+        statusReportWriter.writeJson(testFile, List.of(testStatusReport2));
         String contents = Files.readString(testFile);
         assertTrue(contents.contains("\"binID\":1"));
         assertTrue(contents.contains("\"user\":\"Test2\""));
@@ -151,14 +151,14 @@ public class BinReportWriterTest {
     @Test
     public void writeJsonWritesNull() throws IOException {
         Path testFile = tempDir.resolve("binreports.json");
-        BinReport nullReport = new BinReport(testBin,
+        StatusReport nullReport = new StatusReport(testBin,
                 testUser,
                 null,
                 null,
                 null,
                 LocalDateTime.of(2026, 9, 9, 12, 0)
         );
-        binReportWriter.writeJson(testFile, List.of(nullReport));
+        statusReportWriter.writeJson(testFile, List.of(nullReport));
 
         String contents = Files.readString(testFile);
 

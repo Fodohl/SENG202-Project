@@ -1,15 +1,18 @@
-package seng202.team1.data.bin;
+package seng202.team1.data.status;
 
 import seng202.team1.data.User;
+import seng202.team1.data.bin.Bin;
+import seng202.team1.data.bin.BinIssue;
+import seng202.team1.data.bin.BinStatus;
 
 import java.time.LocalDateTime;
 
 /**
- * BinReport
+ * StatusReport
  * Class represents a single bin report
  */
 
-public class BinReport {
+public class StatusReport {
     private final Bin bin;
     private final User submittedBy;
     private final BinStatus status;
@@ -18,19 +21,19 @@ public class BinReport {
     private final String description;
 
     /**
-     * Constructor for BinReport class
+     * Constructor for StatusReport class
      * @param bin
      * @param submittedBy
      * @param description
      * @param submittedAt
      */
 
-    public BinReport(Bin bin,
-                     User submittedBy,
-                     BinStatus status,
-                     BinIssue issue,
-                     String description,
-                     LocalDateTime submittedAt) {
+    public StatusReport(Bin bin,
+                        User submittedBy,
+                        BinStatus status,
+                        BinIssue issue,
+                        String description,
+                        LocalDateTime submittedAt) {
         this.bin = bin;
         this.submittedBy = submittedBy;
         this.status = status;
@@ -88,16 +91,16 @@ public class BinReport {
     public BinIssue getIssue() { return issue; }
 
     /**
-     * Checks if the supplied {@link BinReport} matches this {@link BinReport}
-     * @param binReport to be checked if equal
-     * @return a boolean for whether the two BinReports are equal
+     * Checks if the supplied {@link StatusReport} matches this {@link StatusReport}
+     * @param statusReport to be checked if equal
+     * @return a boolean for whether the two StatusReports are equal
      */
-    public boolean equals(BinReport binReport) {
-        return this.getBinID() == binReport.getBinID()
-                && this.getSubmittedBy().getUserID() == binReport.getSubmittedBy().getUserID()
-                && this.getStatus().equals(binReport.getStatus())
-                && this.getIssue().equals(binReport.getIssue())
-                && this.getDescription().equals(binReport.getDescription());
+    public boolean equals(StatusReport statusReport) {
+        return this.getBinID() == statusReport.getBinID()
+                && this.getSubmittedBy().getUserID() == statusReport.getSubmittedBy().getUserID()
+                && this.getStatus().equals(statusReport.getStatus())
+                && this.getIssue().equals(statusReport.getIssue())
+                && this.getDescription().equals(statusReport.getDescription());
     }
 
     /**
@@ -108,7 +111,7 @@ public class BinReport {
 
     @Override
     public String toString() {
-        return "BinReport{" +
+        return "StatusReport{" +
                 "binID=" + getBinID() +
                 ", submittedBy=" + getSubmittedBy() +
                 ", status=" + getStatus() +
