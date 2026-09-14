@@ -6,6 +6,7 @@ import seng202.team1.api.photon.PhotonClient;
 import seng202.team1.api.trashdb.TrashDBClient;
 import seng202.team1.api.trashdb.TrashDBLeaderboardResponse;
 import seng202.team1.data.bin.BinLoader;
+import seng202.team1.data.status.StatusReportStore;
 import seng202.team1.data.trashlog.TrashLogStore;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.pages.Pages;
@@ -24,10 +25,14 @@ public class GlobalState {
     /// The manager of the app's window
     private WindowManager windowManager;
 
+    private Stage stage;
+
     /// The handler for the static bin data
     private BinLoader binLoader;
 
     private TrashLogStore trashLogStore;
+
+    private StatusReportStore statusReportStore;
 
     private PhotonClient photonClient;
 
@@ -51,9 +56,14 @@ public class GlobalState {
         trashLogStore = new TrashLogStore(TrashLogStore.defaultDataPath());
         trashLogStore.load();
 
+        //@todo clean up loaders & paths
+        statusReportStore = new StatusReportStore(binLoader, StatusReportStore.defaultDataPath());
+        statusReportStore.load();
+
         photonClient = new PhotonClient();
         trashDBClient = new TrashDBClient();
 
+        this.stage = stage;
         windowManager = new WindowManager(this, stage);
 
         fetchData();
@@ -111,5 +121,9 @@ public class GlobalState {
 
     public TrashDBLeaderboardResponse getLeaderboard() {
         return leaderboard;
+    }
+
+    public void show() {
+        stage.show();
     }
 }
