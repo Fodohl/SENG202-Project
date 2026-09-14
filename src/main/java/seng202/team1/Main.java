@@ -61,7 +61,7 @@ public class Main extends Application {
 
         // Setup app state
         GlobalState globalState = new GlobalState(stage);
-        stage.show();
+        globalState.show();
     }
 
 

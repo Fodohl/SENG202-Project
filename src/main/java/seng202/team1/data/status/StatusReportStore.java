@@ -121,4 +121,20 @@ public class StatusReportStore {
         reports.clear();
         reports.addAll(updatedReports);
     }
+
+    /**
+     * Returns the default location for the user's saved trash history.
+     *
+     * @return default JSON file location
+     *
+     * @todo subclass this
+     */
+    public static Path defaultDataPath() {
+        return Path.of(
+                System.getProperty("user.home"),
+                ".trashapp",
+                "statusreports.json"
+        );
+    }
+
 }

@@ -119,6 +119,5 @@ public class ApiClient {
 
         // Send req
         send(request, handler, error, loader);
-
     }
 }
