@@ -1,12 +1,15 @@
 package seng202.team1.data.status;
 
 
-import seng202.team1.data.bin.BinIssue;
-import seng202.team1.data.bin.BinLoader;
-import seng202.team1.data.bin.BinStatus;
+import seng202.team1.data.User;
+import seng202.team1.data.bin.*;
+import seng202.team1.data.trashlog.Trash;
+import seng202.team1.data.trashlog.TrashLog;
+import seng202.team1.data.trashlog.TrashType;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -75,8 +78,10 @@ public class StatusReportStore {
      * @return a new {@link StatusReport} carrying over the unchanged values of a previous report for a user
      */
     public StatusReport checkForDuplicate(StatusReport newReport) throws IOException {
-        BinStatus resultStatus;
-        BinIssue resultIssue;
+
+        BinFullness resultStatus;
+        ReportType resultIssue;
+
         String resultDescription;
         StatusReport existingReport = reports.stream().filter(report -> report.getBinID() == newReport.getBinID()
                         && Objects.equals(report.getSubmittedBy().getName(), newReport.getSubmittedBy().getName())
@@ -89,10 +94,10 @@ public class StatusReportStore {
                 resultIssue = newReport.getIssue();
                 resultDescription = newReport.getDescription();
             }
-            if (newReport.getStatus() == null) {
-                resultStatus = existingReport.getStatus();
+            if (newReport.getFullness() == null) {
+                resultStatus = existingReport.getFullness();
             } else {
-                resultStatus = newReport.getStatus();
+                resultStatus = newReport.getFullness();
             }
             removeReport(existingReport);
             return new StatusReport(newReport.getBin(), newReport.getSubmittedBy(), resultStatus, resultIssue,
@@ -135,6 +140,21 @@ public class StatusReportStore {
                 ".trashapp",
                 "statusreports.json"
         );
+    }
+
+
+    public void logReport(Bin bin, BinFullness fullness, ReportType reportType, String description){
+
+        LocalDateTime timestamp = LocalDateTime.now();
+        StatusReport entry = new StatusReport(bin, null, fullness, reportType, description, timestamp);
+
+        try{
+            add(entry);
+        } catch (IOException e) {
+            // check fails
+            //@Todo log err
+        }
+
     }
 
 }

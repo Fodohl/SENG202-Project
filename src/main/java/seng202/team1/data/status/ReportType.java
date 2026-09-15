@@ -1,4 +1,4 @@
-package seng202.team1.data;
+package seng202.team1.data.status;
 
 public enum ReportType {
     GRAFFITI,
@@ -7,5 +7,6 @@ public enum ReportType {
     FIRE_HAZARD,
     ILLEGAL_DUMPING,
     BLOCKED_ACCESS,
+    BLOCKED,
     OTHER,
 }

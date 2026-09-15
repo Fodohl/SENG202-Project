@@ -82,6 +82,10 @@ public class GlobalState {
         return trashLogStore;
     }
 
+    public StatusReportStore getStatusReportStore() {
+        return statusReportStore;
+    }
+
     public PhotonClient getPhotonClient() {
         return photonClient;
     }

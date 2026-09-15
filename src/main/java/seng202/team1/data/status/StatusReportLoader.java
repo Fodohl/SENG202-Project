@@ -17,9 +17,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import seng202.team1.data.User;
 import seng202.team1.data.bin.Bin;
-import seng202.team1.data.bin.BinIssue;
+import seng202.team1.data.bin.BinFullness;
 import seng202.team1.data.bin.BinLoader;
-import seng202.team1.data.bin.BinStatus;
 
 /**
  * Loads bin report data from a JSON file into {@link StatusReport} instances
@@ -118,13 +117,13 @@ public class StatusReportLoader {
         User user = new User(reportUserID, reportUser);
         LocalDateTime time = LocalDateTime.parse(jsonObject.get("createdAt").toString());
 
-        BinStatus status;
+        BinFullness status;
         if (reportStatus != null) {
             status = switch (reportStatus.toUpperCase(Locale.ROOT)) {
-                case "FULL" -> BinStatus.FULL;
-                case "PARTIAL" -> BinStatus.PARTIAL;
-                case "EMPTY" -> BinStatus.EMPTY;
-                case "OVERFLOWING" -> BinStatus.OVERFLOWING;
+                case "FULL" -> BinFullness.FULL;
+                case "PARTIAL" -> BinFullness.SEMI_FULL;
+                case "EMPTY" -> BinFullness.EMPTY;
+                case "OVERFLOWING" -> BinFullness.OVERFLOWING;
                 default ->
                         throw new IllegalStateException("Unexpected value: " + reportStatus.toUpperCase(Locale.ROOT));
             };
@@ -132,16 +131,16 @@ public class StatusReportLoader {
             status = null;
         }
 
-        BinIssue issue;
+        ReportType issue;
         if (reportIssue != null) {
             issue = switch (reportIssue.toUpperCase(Locale.ROOT)) {
-                case "GRAFFITI" -> BinIssue.GRAFFITI;
-                case "DAMAGED" -> BinIssue.DAMAGED;
-                case "MISSING" -> BinIssue.MISSING;
-                case "FIRE_HAZARD" -> BinIssue.FIRE_HAZARD;
-                case "ILLEGAL_DUMPING" -> BinIssue.ILLEGAL_DUMPING;
-                case "BLOCKED" -> BinIssue.BLOCKED;
-                case "OTHER" -> BinIssue.OTHER;
+                case "GRAFFITI" -> ReportType.GRAFFITI;
+                case "DAMAGED" -> ReportType.DAMAGED;
+                case "MISSING" -> ReportType.MISSING;
+                case "FIRE_HAZARD" -> ReportType.FIRE_HAZARD;
+                case "ILLEGAL_DUMPING" -> ReportType.ILLEGAL_DUMPING;
+                case "BLOCKED" -> ReportType.BLOCKED;
+                case "OTHER" -> ReportType.OTHER;
                 default -> throw new IllegalStateException("Unexpected value: " + reportIssue.toUpperCase(Locale.ROOT));
             };
         } else {

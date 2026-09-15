@@ -3,7 +3,7 @@ package seng202.team1.gui.modals;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
-import seng202.team1.data.ReportType;
+import seng202.team1.data.status.ReportType;
 import seng202.team1.data.bin.BinFullness;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.components.*;
@@ -59,7 +59,6 @@ public class LogIssueModal extends Modal{
         statusInput.clear();
 
     }
-
 
     private void submitReport(){
 
