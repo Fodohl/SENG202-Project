@@ -27,4 +27,8 @@ public record TrashLog(int trashLogId, Trash trashLogged, LocalDateTime disposed
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         return String.format("TrashLog{%d, %s, %d, %s, %s}", trashLogId, trashLogged.toString(), binLogId, disposedAt.format(formatter), createdAt.format(formatter));
     }
+
+    public Trash getTrashLogged(){
+        return trashLogged;
+    }
 }

@@ -25,4 +25,8 @@ public record Trash(BinCategory binCategory, TrashType trashType, int trashWeigh
     public String toString() {
         return String.format("Trash{%s, %s, %d}", binCategory.toString(), trashType.toString(), trashWeight);
     }
+
+    public int getTrashWeight() {
+        return trashWeight;
+    }
 }

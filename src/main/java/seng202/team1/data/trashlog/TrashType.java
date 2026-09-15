@@ -1,12 +1,109 @@
 package seng202.team1.data.trashlog;
 
 /**
- * Specific item being thrown away
+ * Specific item being thrown away.
  */
 public enum TrashType {
-    PLASTIC_BOTTLE,
-    PAPER,
-    CARDBOARD_BOX,
-    COFFEE_CUP,
-    OTHER
+
+    // Beverage containers
+    PLASTIC_BOTTLE_500ML,
+    PLASTIC_BOTTLE_1L,
+    PLASTIC_BOTTLE_2L,
+    PLASTIC_MILK_BOTTLE_2L,
+    PLASTIC_BOTTLE_CAP,
+    ALUMINIUM_CAN_330ML,
+    ALUMINIUM_CAN_500ML,
+    STEEL_FOOD_CAN,
+    GLASS_BOTTLE_330ML,
+    GLASS_WINE_BOTTLE,
+    GLASS_JAR,
+    DRINK_CARTON_1L,
+
+    // Takeaway and food service
+    PAPER_COFFEE_CUP,
+    PLASTIC_CUP_LID,
+    CARDBOARD_CUP_SLEEVE,
+    PLASTIC_STRAW,
+    PLASTIC_CUTLERY_SET,
+    POLYSTYRENE_CLAMSHELL,
+    PAPER_NAPKIN,
+    PIZZA_BOX,
+
+    // Bags, film and wrappers
+    PLASTIC_SHOPPING_BAG,
+    PLASTIC_BIN_LINER,
+    CRISP_PACKET,
+    SWEET_WRAPPER,
+    CLING_FILM_SHEET,
+    BUBBLE_WRAP_SHEET,
+
+    // Paper and card
+    NEWSPAPER,
+    MAGAZINE,
+    JUNK_MAIL_ITEM,
+    OFFICE_PAPER_SHEET,
+    OFFICE_PAPER_REAM,
+    PAPER_RECEIPT,
+    CARDBOARD_BOX_SMALL,
+    CARDBOARD_BOX_LARGE,
+    PHONE_BOOK,
+    TEXTBOOK,
+
+    // Food waste
+    APPLE_CORE,
+    BANANA_PEEL,
+    VEGETABLE_PEELINGS,
+    BREAD_SLICE,
+    SANDWICH,
+    COOKED_RICE_PORTION,
+    MEAT_SCRAPS,
+    BEEF_SCRAPS,
+    POULTRY_SCRAPS,
+    DAIRY_WASTE,
+    COFFEE_GROUNDS,
+    FOOD_CADDY_FULL,
+
+    // Garden waste
+    GRASS_CLIPPINGS_BAG,
+    LEAVES_BAG,
+    GARDEN_PRUNINGS,
+    GARDEN_BIN_FULL,
+
+    // Electronics
+    SMARTPHONE,
+    TABLET,
+    LAPTOP,
+    DESKTOP_COMPUTER,
+    FLAT_PANEL_MONITOR,
+    CRT_MONITOR,
+    KEYBOARD,
+    COMPUTER_MOUSE,
+    PRINTER,
+    USB_CABLE,
+    SMALL_APPLIANCE,
+
+    // Household and personal
+    CIGARETTE_BUTT,
+    DISPOSABLE_FACE_MASK,
+    DISPOSABLE_NAPPY,
+    CAR_TYRE,
+    CARPET_OFFCUT,
+
+    // Construction and demolition
+    TIMBER_OFFCUT,
+    WOOD_FLOORING_PLANK,
+    CLAY_BRICK,
+    CONCRETE_RUBBLE,
+    PLASTERBOARD_SHEET,
+    ASPHALT_SHINGLE,
+    VINYL_FLOOR_TILE,
+    STEEL_BEAM_OFFCUT,
+    PVC_PIPE_LENGTH,
+
+    // Bulk / mixed streams
+    RECYCLING_BIN_FULL,
+    GENERAL_WASTE_BAG,
+    MIXED_ORGANICS_LOAD,
+
+    OTHER;
 }

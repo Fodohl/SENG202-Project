@@ -161,13 +161,7 @@ public class TrashLogLoader {
 
         Object trashLoggedTypeObj = trashLogged.get("trashType");
         String trashLoggedType = trashLoggedTypeObj == null ? "" : trashLoggedTypeObj.toString();
-        TrashType trashType = switch (trashLoggedType.toUpperCase(Locale.ROOT)) {
-            case "PLASTIC_BOTTLE" -> TrashType.PLASTIC_BOTTLE;
-            case "PAPER" -> TrashType.PAPER;
-            case "CARDBOARD_BOX" -> TrashType.CARDBOARD_BOX;
-            case "COFFEE_CUP" -> TrashType.COFFEE_CUP;
-            default -> TrashType.OTHER;
-        };
+        TrashType trashType = fromString(trashLoggedType);
 
         int trashWeight = ((Number) trashLogged.get("trashWeight")).intValue();
         LocalDateTime disposedAt = LocalDateTime.parse(jsonObject.get("disposedAt").toString());
@@ -177,4 +171,13 @@ public class TrashLogLoader {
         Trash trash = new Trash(binCategory, trashType, trashWeight);
         return new TrashLog(trashLogId, trash,  disposedAt, binLogId, createdAt);
     }
+
+    public static TrashType fromString(String name) {
+    if (name == null) return TrashType.OTHER;
+    try {
+        return TrashType.valueOf(name.trim().toUpperCase(Locale.ROOT));
+    } catch (IllegalArgumentException e) {
+        return TrashType.OTHER;
+    }
+}
 }
