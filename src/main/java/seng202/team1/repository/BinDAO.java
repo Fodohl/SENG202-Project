@@ -110,7 +110,7 @@ public class BinDAO implements DAOInterface<Bin>{
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, toAdd.getID());
             ps.setDouble(2, toAdd.getLatitude());
-            ps.setDouble(3, toAdd.getLatitude());
+            ps.setDouble(3, toAdd.getLongitude());
             ps.setString(4, toAdd.getCategory().toString());
             ps.setObject(5, toAdd.getUpdated());
             ps.setString(6, toAdd.getFullness().toString());
@@ -131,12 +131,46 @@ public class BinDAO implements DAOInterface<Bin>{
 
     @Override
     public void delete(int id) {
-
+        String sql = "DELETE FROM bin WHERE id = ?";
+        try (Connection conn = databaseManager.connect();
+             PreparedStatement ps =conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (SQLException sqlException) {
+            log.error(sqlException);
+        }
     }
 
     @Override
     public void update(Bin toUpdate) {
+        String sql = "UPDATE bin SET lat = ?, lng = ?, waste_type = ?, updated_at = ?, fullness = ?, photo_url = ?, area = ? WHERE id = ?";
+        try (Connection conn = databaseManager.connect();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setDouble(1, toUpdate.getLatitude());
+            ps.setDouble(2, toUpdate.getLongitude());
+            ps.setString(3, toUpdate.getCategory().toString());
+            ps.setObject(4, toUpdate.getUpdated());
+            ps.setString(5, toUpdate.getFullness().toString());
+            ps.setString(6, toUpdate.getPhotoURL());
+            ps.setString(7, toUpdate.getAreaName());
+            int rows = ps.executeUpdate();
+            if (rows == 0) {
+                log.warn("Update affected 0 rows for trash id {}", toUpdate.getID());
+            }
+        } catch (SQLException sqlException) {
+            log.error(sqlException);
+        }
+    }
 
+    public void updateBinFullness(BinFullness fullness, int id) {
+        String sql = "UPDATE bin SET fullness = ? WHERE id = ?";
+        try (Connection conn = databaseManager.connect();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, fullness.toString());
+            ps.setInt(2,  id);
+        } catch (SQLException sqlException) {
+            log.error(sqlException);
+        }
     }
 
 }

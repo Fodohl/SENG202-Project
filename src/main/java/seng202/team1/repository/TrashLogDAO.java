@@ -177,7 +177,7 @@ public class TrashLogDAO implements DAOInterface<TrashLog> {
     public void update(TrashLog trashLogToUpdate) {
         String sql = "UPDATE trash_log SET disposed_at = ?, user_id = ?, bin_id = ?, type = ?, weight = ? WHERE id = ?";
         try (Connection conn = databaseManager.connect();
-             PreparedStatement  ps = conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             setInstant(ps, 1, trashLogToUpdate.disposedAt());
             ps.setInt(2, trashLogToUpdate.userID());
             ps.setInt(3, trashLogToUpdate.binID());

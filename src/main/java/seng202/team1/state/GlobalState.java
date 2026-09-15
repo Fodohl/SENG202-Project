@@ -28,8 +28,8 @@ public class GlobalState {
 
     // private TrashLogStore trashLogStore;
 
-    static TrashLogDAO trashLogDAO;
-    static DatabaseManager databaseManager;
+    static TrashLogDAO trashLogDAO =  new TrashLogDAO();
+    static DatabaseManager databaseManager = DatabaseManager.getInstance();
 
     private PhotonClient photonClient;
 
@@ -52,9 +52,6 @@ public class GlobalState {
 
 //        trashLogStore = new TrashLogStore(TrashLogStore.defaultDataPath());
 //        trashLogStore.load();
-
-        databaseManager = DatabaseManager.initialiseInstanceWithUrl("jdbc:sqlite:./src/main/resources/database.db");
-        trashLogDAO = new TrashLogDAO();
 
         photonClient = new PhotonClient();
         trashDBClient = new TrashDBClient();
