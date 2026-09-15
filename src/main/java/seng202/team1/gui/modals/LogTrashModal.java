@@ -132,13 +132,17 @@ public class LogTrashModal extends Modal{
                 fullness = fullnessLevel;
             }
 
+        //@todo pull gui-ages fullness
+        if(fullness == null)
+            fullnessInput.setError("Not a valid fullness");
+
         // Invalid
         if(typeInput.isErroring() ||  weightInput.isErroring() || fullnessInput.isErroring())
             return;
 
         // Save
         windowManager.getGlobalState().getTrashLogStore().logTrash(category, type, weight, binID);
-        windowManager.getGlobalState().getStatusReportStore().logReport(bin, fullness, null, "");
+        windowManager.getGlobalState().getStatusReportStore().logReport(bin, fullness, ReportType._FULLNESS_UPDATE, "");
 
         closeModal();
     }

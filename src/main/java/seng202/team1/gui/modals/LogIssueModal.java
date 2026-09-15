@@ -3,15 +3,21 @@ package seng202.team1.gui.modals;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
+import seng202.team1.common.StringHelpers;
+import seng202.team1.data.bin.Bin;
+import seng202.team1.data.bin.BinCategory;
 import seng202.team1.data.status.ReportType;
 import seng202.team1.data.bin.BinFullness;
+import seng202.team1.data.trashlog.TrashType;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.components.*;
 
 public class LogIssueModal extends Modal{
 
 
-    private UIChipsInput statusInput;
+    private Bin bin = null;
+
+    private UIChipsInput fullnessInput;
     private UIChipsInput typeInput;
     private UIParagraphInput reportInput;
 
@@ -28,8 +34,8 @@ public class LogIssueModal extends Modal{
         UIIconText typeLabel = new UIIconText("tag", "Report Type");
         typeInput = new UIChipsInput(ReportType.class);
         UIIconText statusLabel = new UIIconText("bin-full", "Estimated Fullness");
-        statusInput = new UIChipsInput(BinFullness.class);
-        UISection binInputSection = new UISection(15, reportLabel, reportInput, typeLabel, typeInput, statusLabel, statusInput);
+        fullnessInput = new UIChipsInput(BinFullness.class);
+        UISection binInputSection = new UISection(15, reportLabel, reportInput, typeLabel, typeInput, statusLabel, reportLabel);
 
         // Actions
         UIButton submit = new UIButton("Submit Report");
@@ -51,24 +57,76 @@ public class LogIssueModal extends Modal{
     protected void updateContents() {
 
         // Not ready
-        if(reportInput == null || statusInput == null)
+        if(reportInput == null || fullnessInput == null)
             return;
 
         // Clear previous input
         reportInput.clear();
-        statusInput.clear();
+        fullnessInput.clear();
 
+    }
+
+    @Override
+    public void recvData(Object data) {
+
+        // Not a bin
+        if(!(data instanceof Bin))
+            return;
+
+        bin = (Bin)data;
     }
 
     private void submitReport(){
 
-        // Save
+        // No bin setup (@todo log error)
+        if(bin == null)
+            return;
 
-        // Errors
-        reportInput.setError("Not enough chars");
-        typeInput.setError("tag err");
-        statusInput.setError("To much");
+        BinCategory category = bin.getCategory();
+        Integer binID = bin.getID();
 
-//        closeTrashLog();
+        ReportType type = null;
+        BinFullness fullness = null;
+        String report = "";
+
+        // Get type
+        for(ReportType reportType : ReportType.values())
+            if(StringHelpers.enumNameToTitle(reportType.name()).equals(typeInput.getInput())){
+                type = reportType;
+            }
+
+        // Invalid type
+        if(type == null)
+            typeInput.setError("Not a valid trash type");
+
+        // No Category
+        if(!typeInput.hasInput())
+            typeInput.setError("Must select trash type");
+
+        // No Category
+        if(!reportInput.hasInput())
+            reportInput.setError("Must enter report");
+
+        report = reportInput.getInput();
+        if(report.isEmpty())
+            reportInput.setError("Must enter report");
+
+        // Get type
+        for(BinFullness fullnessLevel : BinFullness.values())
+            if(StringHelpers.enumNameToTitle(fullnessLevel.name()).equals(fullnessInput.getInput())){
+                fullness = fullnessLevel;
+            }
+
+        //@todo pull gui-ages fullness
+        if(fullness == null)
+            fullnessInput.setError("Not a valid fullness");
+
+        // Invalid
+        if(typeInput.isErroring() ||  reportInput.isErroring() || fullnessInput.isErroring())
+            return;
+
+
+        windowManager.getGlobalState().getStatusReportStore().logReport(bin, fullness, type, report);
+        closeModal();
     }
 }

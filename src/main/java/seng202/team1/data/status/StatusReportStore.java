@@ -145,8 +145,10 @@ public class StatusReportStore {
 
     public void logReport(Bin bin, BinFullness fullness, ReportType reportType, String description){
 
+        User dummy = new User(10, "null-user");
+
         LocalDateTime timestamp = LocalDateTime.now();
-        StatusReport entry = new StatusReport(bin, null, fullness, reportType, description, timestamp);
+        StatusReport entry = new StatusReport(bin, dummy, fullness, reportType, description, timestamp);
 
         try{
             add(entry);

@@ -24,7 +24,9 @@ public class UIChipsInput extends VBox implements UIInputComponent {
 
     public <T extends Enum<T>> UIChipsInput(Class<T> options){
 
-        List<UIIconButton> buttons = Arrays.stream(options.getEnumConstants()).map(e -> {
+        List<UIIconButton> buttons = Arrays.stream(options.getEnumConstants())
+        .filter(e -> !e.name().startsWith("_"))
+        .map(e -> {
 
             String path = String.format("/media/images/%s.svg", e.name().toLowerCase());
             String title = StringHelpers.enumNameToTitle(e.name());

@@ -84,8 +84,8 @@ public class StatusReportLoader {
             }
         } catch (Exception e) {
             String location = filePath == null ? TEST_FILE_PATH : filePath.toString();
-            log.error("Failed to parse JSON bin reports from " + location, e.getMessage());
-            throw new IllegalStateException("Failed to parse JSON bin reports: " + e.getMessage());
+            log.error("Failed to parse JSON status reports from " + location, e.getMessage());
+            throw new IllegalStateException("Failed to parse JSON status reports: " + e.getMessage());
         }
     }
 
@@ -134,6 +134,7 @@ public class StatusReportLoader {
         ReportType issue;
         if (reportIssue != null) {
             issue = switch (reportIssue.toUpperCase(Locale.ROOT)) {
+                case "_FULLNESS_UPDATE" -> ReportType._FULLNESS_UPDATE;
                 case "GRAFFITI" -> ReportType.GRAFFITI;
                 case "DAMAGED" -> ReportType.DAMAGED;
                 case "MISSING" -> ReportType.MISSING;

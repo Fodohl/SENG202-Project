@@ -1,6 +1,7 @@
 package seng202.team1.data.status;
 
 public enum ReportType {
+    _FULLNESS_UPDATE,
     GRAFFITI,
     DAMAGED,
     MISSING,
