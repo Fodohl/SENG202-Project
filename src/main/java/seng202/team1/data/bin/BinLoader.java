@@ -4,14 +4,21 @@ package seng202.team1.data.bin;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.time.DayOfWeek;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
+import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import seng202.team1.data.status.ReportType;
+import seng202.team1.data.status.StatusReport;
+import seng202.team1.data.status.StatusReportStore;
 import seng202.team1.data.table.StringTable;
 
 /**
@@ -29,7 +36,7 @@ public class BinLoader {
     private static final String BIN_DATA = "data/cc_bins_dataset.geojson";
 
     /// The list of bins loaded
-    private final List<Bin> binObjects = new ArrayList<>();
+    private List<Bin> binObjects = new ArrayList<>();
 
     /**
      * Get loaded bins list
@@ -127,5 +134,51 @@ public class BinLoader {
 
         return new Bin(binID, latitude, longitude, binType, updated, area);
     }
-    
+
+    public void loadBinFullness(StatusReportStore reports){
+
+        //@todo D3 maybe learn contracted day for emptying and use here rather than just this week
+        LocalDate startOfWeek = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+
+        // Only want recent reports of fullness
+        List<StatusReport> fullnessReports = reports.getReports().stream()
+                                                    .filter(r -> r.getIssue() == ReportType._FULLNESS_UPDATE)
+                                                    .filter(r -> r.getSubmittedAt().isAfter(startOfWeek.atStartOfDay()))
+                                                    .toList();
+
+        // Get each bin's new fullness as an average of this week's reports
+        binObjects = binObjects.stream().map(b -> {
+
+            List<StatusReport> reportsFoBin = fullnessReports.stream().filter(r -> r.getBinID() == b.getID()).toList();
+            return calcAverageFullness(b, reportsFoBin);
+        }).toList();
+
+
+    }
+
+    private Bin calcAverageFullness(Bin b, List<StatusReport> statusReportStream) {
+
+        // Average with no values will fault with div by 0
+        if(statusReportStream.isEmpty()){
+            b.fullness = BinFullness.UNKNOWN;
+            return b;
+        }
+
+        // Floor the average report value
+        int avg = (int)statusReportStream.stream()
+                                    .map(r -> r.getFullness().ordinal())
+                                    .mapToInt(Integer::intValue)
+                                    .average()
+                                    .getAsDouble();
+
+        // Map the average back to its enum value
+        BinFullness fullness = BinFullness.EMPTY;
+        for(BinFullness fullnessType : BinFullness.values())
+            if(fullnessType.ordinal() == avg)
+                fullness = fullnessType;
+
+        b.fullness = fullness;
+        return b;
+    }
+
 }

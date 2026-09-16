@@ -59,6 +59,7 @@ public class GlobalState {
         //@todo clean up loaders & paths
         statusReportStore = new StatusReportStore(binLoader, StatusReportStore.defaultDataPath());
         statusReportStore.load();
+        binLoader.loadBinFullness(statusReportStore);
 
         photonClient = new PhotonClient();
         trashDBClient = new TrashDBClient();
