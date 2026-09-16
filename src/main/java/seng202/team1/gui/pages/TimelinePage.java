@@ -1,14 +1,25 @@
 package seng202.team1.gui.pages;
 
 import javafx.scene.Parent;
+import javafx.scene.layout.VBox;
+import seng202.team1.common.DateHelpers;
+import seng202.team1.common.StringHelpers;
+import seng202.team1.data.bin.Bin;
+import seng202.team1.data.status.ReportType;
+import seng202.team1.data.status.StatusReport;
+import seng202.team1.data.trashlog.Trash;
+import seng202.team1.data.trashlog.TrashLog;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.components.UIImage;
 import seng202.team1.gui.components.UITimeline;
 import seng202.team1.gui.components.UITimelineEntry;
 
 import java.time.Instant;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -16,40 +27,86 @@ import java.util.List;
  */
 public class TimelinePage extends Page {
 
-   /**
-    * Constructs a new TimelinePage
-    *
-    * @param windowManager the window this page is on
-    */
-   public TimelinePage(WindowManager windowManager){
+    private VBox root;
+
+    /**
+     * Constructs a new TimelinePage
+     *
+     * @param windowManager the window this page is on
+     */
+    public TimelinePage(WindowManager windowManager) {
 
         super(windowManager, Pages.TIMELINE);
 
     }
 
-   /**
-    * Constructs the UI for the timeline page
-    *
-    * @return the UI layout for the page
-    */
-   @Override
-   protected Parent renderSelf() {
-        Instant now = Instant.now();
-        Instant twoDaysAgotwoDaysAgo = now.minus(2, ChronoUnit.DAYS);
-        Instant fiveDaysAgo = now.minus(5, ChronoUnit.DAYS);
+    /**
+     * Constructs the UI for the timeline page
+     *
+     * @return the UI layout for the page
+     */
+    @Override
+    protected Parent renderSelf() {
 
-        UIImage icon = new UIImage("/media/images/bin.svg", 50, 50);
-        UIImage icon2 = new UIImage("/media/images/full.svg", 50, 50);
-        UIImage icon3 = new UIImage("/media/images/recycle.svg", 50, 50);
 
-        UITimelineEntry e1 = new UITimelineEntry(now, icon, "T1", "ST1");
-        UITimelineEntry e2 = new UITimelineEntry(twoDaysAgotwoDaysAgo, icon2, "T1", "ST1");
-        UITimelineEntry e3 = new UITimelineEntry(fiveDaysAgo, icon3, "T1", "ST1");
-
-        List<UITimelineEntry> entries = Arrays.asList(e1, e2, e3);
-        UITimeline timeline = new UITimeline(entries);
-
-        return timeline;
+        root = new VBox(20);
+        renderTimelineEntries();
+        return root;
     }
 
+    @Override
+    public void updateContents() {
+        renderTimelineEntries();
+    }
+
+    void renderTimelineEntries() {
+
+        List<StatusReport> reports = windowManager.getGlobalState().getStatusReportStore().getReports();
+        List<TrashLog> trash = windowManager.getGlobalState().getTrashLogStore().getAll();
+
+        // Combine trash logs and status reports
+        ArrayList<UITimelineEntry> entries = new ArrayList<>();
+        entries.addAll(buildReportsEntries(reports));
+        entries.addAll(buildTrashEntries(trash));
+
+        UITimeline timeline = new UITimeline(entries);
+        root.getChildren().setAll(timeline);
+
+    }
+
+    private List<UITimelineEntry> buildReportsEntries(List<StatusReport> reports) {
+
+        return reports.stream()
+                .filter(r -> r.getIssue() != ReportType._FULLNESS_UPDATE)
+                .map(report -> {
+
+                    // Convert report into format expected by timeline entry
+                    UIImage icon = new UIImage(String.format("/media/images/%s.svg", report.getIssue().name().toLowerCase()), 50, 50);
+                    Instant time = DateHelpers.fromLocalTime(report.getSubmittedAt());
+
+                    return new UITimelineEntry(time, icon, "Status Report", report.getDescription());
+                })
+                .toList();
+    }
+
+    private List<UITimelineEntry> buildTrashEntries(List<TrashLog> trash) {
+        return trash.stream()
+                .map(log -> {
+
+                    // Get asociated log data
+                    Bin bin = windowManager.getGlobalState().getDataLoader().getBinById(log.binLogId());
+                    Trash trashLogged = log.trashLogged();
+
+                    String trashType = StringHelpers.enumNameToTitle(trashLogged.trashType().name());
+
+
+                    // Convert log into format expected by timeline entry
+                    UIImage icon = new UIImage(String.format("/media/images/%s.svg", bin.getCategory().name().toLowerCase()), 50, 50);
+                    String desciption = String.format("%s (%dg) logged at %s", trashType, trashLogged.trashWeight(), bin.getAreaName());
+
+                    return new UITimelineEntry(DateHelpers.fromLocalTime(log.disposedAt()), icon, "Trash Logged", desciption);
+                })
+                .toList();
+
+    }
 }

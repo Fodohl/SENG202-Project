@@ -3,10 +3,7 @@ package seng202.team1.gui.components;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
@@ -68,7 +65,7 @@ public class UITimelineEntry extends HBox {
         verticalAxis.setPrefWidth(30);
 
         // Combine
-        this.getChildren().addAll(detailsContainer, dateContainer, connector, verticalAxis);
+        this.getChildren().addAll(detailsContainer,  dateContainer, connector, verticalAxis);
     }
 
     public Instant getTime(){

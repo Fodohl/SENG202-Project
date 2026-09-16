@@ -69,7 +69,7 @@ public class DashboardPage extends Page {
         // Bottom cards
         trashLogged = new UICard("Total Rubbish Logged:", "150",  "", "/media/images/bin.svg");
         recycLogged = new UICard("Total Recycling Logged:", "300",  "", "/media/images/recycle.svg");
-        organicLogged = new UICard("Total Organics Logged:", "450",  "", "/media/images/organic_waste.svg");
+        organicLogged = new UICard("Total Organics Logged:", "450",  "", "/media/images/organic.svg");
 
         HBox botCards = new HBox(20, trashLogged, recycLogged, organicLogged);
         botCards.setAlignment(Pos.TOP_LEFT);

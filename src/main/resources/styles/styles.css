@@ -644,12 +644,11 @@
     -fx-fill: -active;
 }
 
-
 .timeline-details {
     -fx-alignment: center-left;
     -fx-text-alignment: right;
-    -fx-min-width: 250px;
-    -fx-max-width: 250px;
+    -fx-min-width: 350px;
+    -fx-max-width: 350px;
 }
 
 .timeline-details .label {
@@ -659,12 +658,15 @@
 }
 
 .timeline-details .subtext {
-    -fx-font-size: 20px;
+    -fx-font-weight: normal;
+    -fx-font-size: 18px;
     -fx-text-fill: -text-secondary;
 }
 
 .timeline-date {
     -fx-fill: -active;
+    -fx-padding: 0px 0px 0px 150px;
+
 }
 
 .timeline-date .label {

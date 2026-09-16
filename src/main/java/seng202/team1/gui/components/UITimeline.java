@@ -11,9 +11,10 @@ public class UITimeline extends VBox {
         super(0);
 
         // Timeline should be guaranteed in chronological order
-        List<UITimelineEntry> entries = nodes.stream().sorted(Comparator.comparing(UITimelineEntry::getTime)).toList();
+        List<UITimelineEntry> entries = nodes.stream()
+                                             .sorted(Comparator.comparing(UITimelineEntry::getTime))
+                                             .toList().reversed();
+
         getChildren().addAll(entries);
-
     }
-
 }
