@@ -1,4 +1,4 @@
-package seng202.team1.unittests.data;
+package seng202.team1.unittests.data.bin;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.Test;
@@ -23,8 +23,8 @@ public class BinTest extends TrashAppTest {
         Bin bin = new Bin(197, -43.605467593, 172.693149814, BinCategory.RECYCLABLE, Instant.now(), "Cloud");
 
         assertEquals(197, bin.getID());
-        assertEquals(172.693149814, bin.getLatitude());
-        assertEquals(-43.605467593, bin.getLongitude());
+        assertEquals(-43.605467593, bin.getLatitude());
+        assertEquals(172.693149814, bin.getLongitude());
         assertEquals(BinCategory.RECYCLABLE, bin.getCategory());
     }
 

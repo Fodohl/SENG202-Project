@@ -1,9 +1,10 @@
-package seng202.team1.unittests.data;
+package seng202.team1.unittests.data.trashlog;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
+import seng202.team1.data.bin.BinCategory;
 import seng202.team1.data.trashlog.Trash;
 import seng202.team1.data.trashlog.TrashLog;
 import seng202.team1.data.trashlog.TrashLogLoader;
@@ -42,7 +43,7 @@ public class TrashLogLoaderTest {
     @Test
     public void testGetLogsIsNotChangeable() {
         List<TrashLog> trashLogs = trashLogLoader.getTrashLogs();
-        Trash testTrash = new Trash(binCategory.E_WASTE, TrashType.OTHER, 2000);
+        Trash testTrash = new Trash(BinCategory.E_WASTE, TrashType.OTHER, 2000);
         assertThrows(UnsupportedOperationException.class, () ->
                 trashLogs.add(new TrashLog(0,  testTrash, LocalDateTime.parse("2026-04-20T00:00:00"), 1, LocalDateTime.now())));
 
@@ -55,7 +56,7 @@ public class TrashLogLoaderTest {
         assertEquals(1, trashLog.trashLogId());
         assertEquals(197, trashLog.binLogId());
 
-        assertEquals(binCategory.RECYCLABLE,
+        assertEquals(BinCategory.RECYCLABLE,
                 trashLog.trashLogged().binCategory());
 
         assertEquals(TrashType.PAPER,
@@ -93,7 +94,7 @@ public class TrashLogLoaderTest {
         assertNotNull(loadedLog);
         assertEquals(2463, loadedLog.binLogId());
         assertEquals(
-                binCategory.RECYCLABLE,
+                BinCategory.RECYCLABLE,
                 loadedLog.trashLogged().binCategory()
         );
         assertEquals(
@@ -142,7 +143,7 @@ public class TrashLogLoaderTest {
 
     @Test
     public void testMalformedExternalFileThrowsError() throws Exception {
-        Path jsonPath = temporaryDirectory.resolve("broken-exampe_trash_logs.json");
+        Path jsonPath = temporaryDirectory.resolve("broken-example_trash_logs.json");
 
         Files.writeString(
                 jsonPath,
@@ -165,7 +166,7 @@ public class TrashLogLoaderTest {
                 {
                   "trashLogId": %d,
                   "trashLogged": {
-                    "binCategory": "RECYCLABLE",
+                    "trashCategory": "RECYCLABLE",
                     "trashType": "PAPER",
                     "trashWeight": 50
                   },

@@ -1,8 +1,9 @@
-package seng202.team1.unittests.data;
+package seng202.team1.unittests.data.trashlog;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import seng202.team1.data.bin.BinCategory;
 import seng202.team1.data.trashlog.Trash;
 import seng202.team1.data.trashlog.TrashLog;
 import seng202.team1.data.trashlog.TrashLogStore;
@@ -270,7 +271,7 @@ public class TrashLogStoreTest {
             String disposedAt
     ) {
         Trash trash = new Trash(
-                binCategory.RECYCLABLE,
+                BinCategory.RECYCLABLE,
                 TrashType.PAPER,
                 50
         );

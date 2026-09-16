@@ -1,16 +1,21 @@
 package seng202.team1.unittests;
 
+import io.cucumber.java.bs.A;
 import javafx.application.Platform;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
+import seng202.team1.common.StringHelpers;
 import seng202.team1.data.bin.Bin;
+import seng202.team1.data.bin.BinCategory;
+import seng202.team1.data.bin.BinFullness;
 import seng202.team1.data.bin.BinLoader;
 import seng202.team1.data.table.StringTable;
+import seng202.team1.data.table.StringTableBuilder;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.state.GlobalState;
 
-import java.util.Map;
-import java.util.Random;
+import java.time.Instant;
+import java.util.*;
 
 public class TrashAppTest {
 
@@ -46,20 +51,29 @@ public class TrashAppTest {
         // Extract state for easier access
         windowManager = state.getWindowManager();
         binLoader = state.getDataLoader();
+
+        binLoader.readGeoJSON();
     }
 
-    protected StringTable testDataTable() {
-        Map<String, String> keys = Map.of(
-                                        "latitude", "lat",
-                                        "longitude", "long"
-                                        );
-        StringTable table = new StringTable(keys);
+    protected ArrayList<Bin> testData(){
+
+         return new ArrayList<>(List.of(new Bin(1,1,1, BinCategory.GENERAL_WASTE, Instant.now(), "testPark"),
+                                 new Bin(2,2,2, BinCategory.GENERAL_WASTE, Instant.now(), "testPark"),
+                                 new Bin(3,3,3, BinCategory.GENERAL_WASTE, Instant.now(), "testPark")
+         ));
+    }
+
+    protected StringTableBuilder<Bin> testDataTable() {
 
         // Add test data
-        table.add(new Bin(1,1,1,null));
-        table.add(new Bin(2,2,2, null));
-        table.add(new Bin(3,3,3, null));
+        ArrayList<Bin> data = testData();
 
+        StringTableBuilder<Bin> table = new StringTableBuilder<>(data)
+                                        .addColumn("binID", "ID")
+                                        .addColumn("fullness", "Fullness", val -> StringHelpers.enumNameToTitle(((BinFullness)val).name()))
+                                        .addColumn("areaName", "Location")
+                                        .addColumn("type", "Type", val -> StringHelpers.enumNameToTitle(((BinCategory)val).name()))
+                                        .sortBy(Comparator.comparing(item -> item.getID()));
         return table;
     }
 }

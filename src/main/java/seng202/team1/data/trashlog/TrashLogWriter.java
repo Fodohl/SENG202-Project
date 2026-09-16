@@ -85,7 +85,7 @@ public class TrashLogWriter {
     private JSONObject trashToJson(Trash trash) {
         JSONObject json = new JSONObject();
 
-        json.put("binCategory", trash.binCategory().name());
+        json.put("trashCategory", trash.binCategory().name());
         json.put("trashType", trash.trashType().name());
         json.put("trashWeight", trash.trashWeight());
 

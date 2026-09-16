@@ -4,6 +4,7 @@ package seng202.team1.data.bin;
 import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -77,7 +78,7 @@ public class BinLoader {
                 binObjects.add(parseFeature((JSONObject) obj));
             }
         } catch (Exception e) {
-            log.error("Failed to read GeoJSON file: " + e.getMessage(), e);
+            log.error("Failed to read GeoJSON file", e);
         }
     }
 
@@ -89,11 +90,11 @@ public class BinLoader {
      * @throws Exception if an error occurs while reading or parsing JSON file
      */
     private JSONObject parseGeoJson(JSONParser parser) throws Exception {
-        InputStream is = BinLoader.class.getClassLoader().getResourceAsStream(BIN_DATA);
-        if (is != null) {
-            return (JSONObject) parser.parse(new InputStreamReader(is));
+        InputStream is = BinLoader.class.getResourceAsStream("/" + BIN_DATA);
+        if (is == null) {
+            throw new IllegalArgumentException("Could not find resource: /" + BIN_DATA);
         }
-        return (JSONObject) parser.parse(new FileReader(BIN_DATA));
+        return (JSONObject) parser.parse(new InputStreamReader(is));
     }
 
     /**
@@ -147,11 +148,11 @@ public class BinLoader {
                                                     .toList();
 
         // Get each bin's new fullness as an average of this week's reports
-        binObjects = binObjects.stream().map(b -> {
+        binObjects = new ArrayList<>(binObjects.stream().map(b -> {
 
             List<StatusReport> reportsFoBin = fullnessReports.stream().filter(r -> r.getBinID() == b.getID()).toList();
             return calcAverageFullness(b, reportsFoBin);
-        }).toList();
+        }).toList());
 
 
     }

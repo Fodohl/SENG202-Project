@@ -26,7 +26,7 @@ import seng202.team1.data.bin.BinLoader;
  */
 public class StatusReportLoader {
     private static final Logger log = LogManager.getLogger(StatusReportLoader.class);
-    private static final String TEST_FILE_PATH = "json/binreports.json";
+    private static final String TEST_FILE_PATH = "/data/example_reports.json";
     private final Path filePath;
     private final List<StatusReport> statusReports = new ArrayList<>();
     private final BinLoader bins;

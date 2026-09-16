@@ -5,12 +5,15 @@ import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import seng202.team1.state.GlobalState;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
+
+import static seng202.team1.state.GlobalState.IS_HEADLESS_MODE;
 
 public class UIGraphLine extends UIWebRenderer {
 
@@ -22,6 +25,9 @@ public class UIGraphLine extends UIWebRenderer {
         setMinHeight(420);
         setMaxHeight(420);
 
+        // Webviews dont run in CI without graphics
+        if(IS_HEADLESS_MODE)
+            return;
 
         webView.addEventFilter(ScrollEvent.SCROLL, event -> {
 

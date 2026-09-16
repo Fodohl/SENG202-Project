@@ -26,8 +26,7 @@ public class TrashLogLoader {
     private static final Logger log =
             LogManager.getLogger(TrashLogLoader.class);
 
-    private static final String SAMPLE_RESOURCE_PATH =
-            "json/trashlogs.json";
+    private static final String SAMPLE_RESOURCE_PATH = "/data/example_trash_logs.json";
 
     private final Path filePath;
 
@@ -121,15 +120,10 @@ public class TrashLogLoader {
             );
         }
 
-        // Existing behaviour: use the bundled sample JSON resource.
-        InputStream stream = TrashLogLoader.class
-                .getClassLoader()
-                .getResourceAsStream(SAMPLE_RESOURCE_PATH);
+        InputStream stream = TrashLogLoader.class.getResourceAsStream(SAMPLE_RESOURCE_PATH);
 
         if (stream == null) {
-            throw new FileNotFoundException(
-                    "Could not find " + SAMPLE_RESOURCE_PATH
-            );
+            throw new FileNotFoundException("Could not find " + SAMPLE_RESOURCE_PATH);
         }
 
         return new InputStreamReader(stream, StandardCharsets.UTF_8);
@@ -150,7 +144,7 @@ public class TrashLogLoader {
         int trashLogId = ((Number) jsonObject.get("trashLogId")).intValue();
         JSONObject trashLogged = (JSONObject) jsonObject.get("trashLogged");
 
-        Object trashLoggedCategoryObj = trashLogged.get("binCategory");
+        Object trashLoggedCategoryObj = trashLogged.get("trashCategory");
         String trashLoggedCategory = trashLoggedCategoryObj == null ? "" : trashLoggedCategoryObj.toString();
         BinCategory binCategory = switch (trashLoggedCategory.toUpperCase(Locale.ROOT)) {
             case "RECYCLABLE" -> BinCategory.RECYCLABLE;

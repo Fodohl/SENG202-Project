@@ -1,15 +1,19 @@
-package seng202.team1.unittests.data;
+package seng202.team1.unittests.data.status;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import seng202.team1.data.bin.BinIssue;
+import seng202.team1.data.bin.Bin;
+import seng202.team1.data.bin.BinCategory;
+import seng202.team1.data.bin.BinFullness;
+import seng202.team1.data.status.ReportType;
 import seng202.team1.data.status.StatusReport;
 import seng202.team1.data.User;
 import seng202.team1.data.status.StatusReportLoader;
-import seng202.team1.data.bin.BinStatus;
+import seng202.team1.unittests.TrashAppTest;
 
 import java.nio.file.Path;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @author Archie Georgeson
  */
-public class StatusReportLoaderTest {
+public class StatusReportLoaderTest extends TrashAppTest {
     private StatusReportLoader statusReportLoader;
     private StatusReport testStatusReport;
     private Bin testBin;
@@ -31,15 +35,15 @@ public class StatusReportLoaderTest {
 
     @BeforeEach
     public void setUp() {
-        statusReportLoader = new StatusReportLoader();
+        statusReportLoader = new StatusReportLoader(binLoader);
         statusReportLoader.readJson();
-        testBin = new Bin(1, 1.0, 1.0, TrashCategory.GENERAL_WASTE);
+        testBin = new Bin(1, 1.0, 1.0, BinCategory.GENERAL_WASTE, Instant.now(), "testPark");
         testUser = new User(1, "Test");
         testStatusReport = new StatusReport(
                 testBin,
                 testUser,
-                BinStatus.FULL,
-                BinIssue.OTHER,
+                BinFullness.FULL,
+                ReportType.OTHER,
                 "Test description",
                 LocalDateTime.now()
         );
@@ -62,8 +66,8 @@ public class StatusReportLoaderTest {
         assertEquals(197, statusReports.get(1).getBinID());
         assertEquals("Test2", statusReports.get(1).getSubmittedBy().getName());
         assertEquals(321, statusReports.get(1).getSubmittedBy().getUserID());
-        assertEquals(BinStatus.EMPTY, statusReports.get(1).getStatus());
-        assertEquals(BinIssue.MISSING, statusReports.get(1).getIssue());
+        assertEquals(BinFullness.EMPTY, statusReports.get(1).getFullness());
+        assertEquals(ReportType.MISSING, statusReports.get(1).getIssue());
         assertEquals("Test description", statusReports.get(1).getDescription());
     }
 
@@ -73,7 +77,7 @@ public class StatusReportLoaderTest {
         assertEquals(197, statusReports.get(0).getBinID());
         assertEquals("Test1", statusReports.get(0).getSubmittedBy().getName());
         assertEquals(123, statusReports.get(0).getSubmittedBy().getUserID());
-        assertNull(statusReports.get(0).getStatus());
+        assertNull(statusReports.get(0).getFullness());
         assertNull(statusReports.get(0).getIssue());
         assertNull(statusReports.get(0).getDescription());
     }
@@ -95,7 +99,7 @@ public class StatusReportLoaderTest {
     @Test
     public void readJsonNonExistentFileReturnsEmpty() {
         Path missingPath = temporaryDirectory.resolve("does-not-exist.json");
-        statusReportLoader = new StatusReportLoader(missingPath);
+        statusReportLoader = new StatusReportLoader(binLoader, missingPath);
         assertTrue(statusReportLoader.getStatusReports().isEmpty());
     }
 
