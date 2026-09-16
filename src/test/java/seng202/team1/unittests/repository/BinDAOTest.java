@@ -11,9 +11,10 @@ import seng202.team1.exceptions.InstanceAlreadyExistsException;
 import seng202.team1.repository.BinDAO;
 import seng202.team1.repository.DatabaseManager;
 
-import java.sql.SQLException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class BinDAOTest {
     static BinDAO binDAO;
@@ -23,7 +24,7 @@ public class BinDAOTest {
     @BeforeAll
     static void setup() throws InstanceAlreadyExistsException {
         DatabaseManager.REMOVE_INSTANCE();
-        databaseManager = DatabaseManager.getInstance();
+        databaseManager = DatabaseManager.initialiseInstanceWithUrl("jdbc:sqlite:./src/test/resources/test_database.db");
         binDAO = new BinDAO();
     }
 
@@ -48,9 +49,65 @@ public class BinDAOTest {
     }
 
     @Test
+    void testAddBatchBin() {
+        Bin b1 = new Bin(1, 1, 1, BinCategory.RECYCLABLE, Instant.now(), BinFullness.EMPTY,null, null);
+        Bin b2 = new Bin(2, 2, 2, BinCategory.ORGANIC, Instant.now(), BinFullness.OVERFLOWING,null, null);
+        binDAO.addBatch(new ArrayList<>(Arrays.asList(b1, b2)));
+        Assertions.assertEquals(2, binDAO.getAll().size());
+    }
+
+    @Test
     void testGetBinById() {
         Bin toAdd = new Bin(1, 1, 1, BinCategory.RECYCLABLE, Instant.now(), BinFullness.EMPTY,null, null);
         int id = binDAO.add(toAdd);
+        Bin returnedBin = binDAO.getOne(id);
+        Assertions.assertEquals(toAdd.getID(), returnedBin.getID());
+        Assertions.assertEquals(toAdd.getLatitude(), returnedBin.getLatitude());
+        Assertions.assertEquals(toAdd.getLongitude(), returnedBin.getLongitude());
+        Assertions.assertEquals(toAdd.getCategory(), returnedBin.getCategory());
+        Instant expectedUpdate = toAdd.getUpdated().truncatedTo(ChronoUnit.MILLIS);
+        Assertions.assertEquals(expectedUpdate, returnedBin.getUpdated());
+        Assertions.assertEquals(toAdd.getFullness(), returnedBin.getFullness());
+        Assertions.assertEquals(toAdd.getPhotoURL(), returnedBin.getPhotoURL());
+        Assertions.assertEquals(toAdd.getAreaName(), returnedBin.getAreaName());
+    }
 
+    @Test
+    void testDeleteBin() {
+        int id = binDAO.add(new Bin(1, 1, 1, BinCategory.RECYCLABLE, Instant.now(), BinFullness.EMPTY,null, null));
+        int total = binDAO.getAll().size();
+        binDAO.delete(id);
+        Assertions.assertEquals(total - 1, binDAO.getAll().size());
+    }
+
+    @Test
+    void testUpdateBin() {
+        Bin bin = new Bin(1, 1, 1, BinCategory.RECYCLABLE, Instant.now(), BinFullness.EMPTY,null, null);
+        int id = binDAO.add(bin);
+        Bin updatedBin = new Bin(id, 2, 2, BinCategory.ORGANIC, Instant.now(), BinFullness.OVERFLOWING,null, null);
+        binDAO.update(updatedBin);
+        Bin result = binDAO.getOne(id);
+        Assertions.assertEquals(updatedBin.getID(), result.getID());
+        Assertions.assertEquals(updatedBin.getLatitude(), result.getLatitude());
+        Assertions.assertEquals(updatedBin.getLongitude(), result.getLongitude());
+        Assertions.assertEquals(updatedBin.getCategory(), result.getCategory());
+
+        Instant expectedUpdate = updatedBin.getUpdated().truncatedTo(ChronoUnit.MILLIS);
+        Assertions.assertEquals(expectedUpdate, result.getUpdated());
+
+        Assertions.assertEquals(updatedBin.getFullness(), result.getFullness());
+        Assertions.assertEquals(updatedBin.getPhotoURL(), result.getPhotoURL());
+        Assertions.assertEquals(updatedBin.getAreaName(), result.getAreaName());
+
+    }
+
+    @Test
+    void testUpdateBinFullness() {
+        Bin bin = new Bin(1, 1, 1, BinCategory.RECYCLABLE, Instant.now(), BinFullness.EMPTY,null, null);
+        int id = binDAO.add(bin);
+        BinFullness newFullness = BinFullness.FULL;
+        binDAO.updateBinFullness(newFullness, id);
+        Bin result = binDAO.getOne(id);
+        Assertions.assertEquals(newFullness, result.getFullness());
     }
 }

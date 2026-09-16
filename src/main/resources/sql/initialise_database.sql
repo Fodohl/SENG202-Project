@@ -1,19 +1,19 @@
-DROP TABLE IF EXISTS trash_log;
+DROP TABLE IF EXISTS trash_logs;
 --SPLIT
-DROP TABLE IF EXISTS bin;
+DROP TABLE IF EXISTS bins;
 --SPLIT
-CREATE TABLE bin (
+CREATE TABLE bins (
     id INTEGER PRIMARY KEY,
     lat DECIMAL(5, 20) NOT NULL,
     lng DECIMAL(5, 20) NOT NULL,
     waste_type VARCHAR(255),
-    updated_at DATETIME,
+    updated_at INTEGER,
     fullness VARCHAR(255),
     photo_url VARCHAR(255),
     area VARCHAR(255),
     UNIQUE (lat, lng));
 --SPLIT
-CREATE TABLE trash_log (
+CREATE TABLE trash_logs (
     id INTEGER PRIMARY KEY AUTO_INCREMENT,
     created_at INTEGER NOT NULL,
     disposed_at INTEGER NOT NULL,
@@ -23,5 +23,5 @@ CREATE TABLE trash_log (
     weight DECIMAL(10, 2),
     CONSTRAINT fk_trash_log_bin
        FOREIGN KEY (bin_id)
-           REFERENCES bin(id)
+           REFERENCES bins(id)
            ON DELETE CASCADE);

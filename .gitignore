@@ -16,5 +16,6 @@ build/
 # Gradle
 .gradle/
 
+# DB
 identifier.sqlite
-database.db
+*.db

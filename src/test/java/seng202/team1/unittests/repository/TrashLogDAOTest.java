@@ -10,7 +10,6 @@ import seng202.team1.data.bin.BinCategory;
 import seng202.team1.data.bin.BinFullness;
 import seng202.team1.data.trashlog.TrashLog;
 import seng202.team1.data.trashlog.TrashType;
-import seng202.team1.exceptions.DuplicateEntryException;
 import seng202.team1.exceptions.InstanceAlreadyExistsException;
 import seng202.team1.repository.BinDAO;
 import seng202.team1.repository.DatabaseManager;
@@ -72,11 +71,11 @@ public class TrashLogDAOTest {
     }
 
     @Test
-    void testDeleteSale() {
+    void testDeleteTrash() {
         int insertId  = trashLogDAO.add(new TrashLog(Instant.now(), Instant.now(), 1, 1, TrashType.COFFEE_CUP, 0));
-        int totalSalesBefore = trashLogDAO.getAll().size();
+        int totalTrashBefore = trashLogDAO.getAll().size();
         trashLogDAO.delete(insertId);
-        Assertions.assertEquals(totalSalesBefore - 1, trashLogDAO.getAll().size());
+        Assertions.assertEquals(totalTrashBefore - 1, trashLogDAO.getAll().size());
     }
 
     @Test

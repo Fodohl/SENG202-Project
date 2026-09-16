@@ -6,7 +6,6 @@ import seng202.team1.data.trashlog.TrashLog;
 import seng202.team1.data.trashlog.TrashType;
 
 import java.sql.*;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -16,7 +15,7 @@ import java.util.Locale;
  *
  * @author Marcus Demafeliz
  */
-public class TrashLogDAO implements DAOInterface<TrashLog> {
+public class TrashLogDAO extends SqlTimeUtils implements DAOInterface<TrashLog> {
     private final DatabaseManager databaseManager;
     private static final Logger log = LogManager.getLogger(TrashLogDAO.class);
 
@@ -42,33 +41,6 @@ public class TrashLogDAO implements DAOInterface<TrashLog> {
     }
 
     /**
-     * Convert the integer from the result set into an Instant to store in TrashLog
-     * @param rs result set
-     * @param column column name
-     * @return the Instant result
-     * @throws SQLException
-     */
-    private Instant getInstant(ResultSet rs, String column) throws SQLException {
-        long millis = rs.getLong(column);
-        return rs.wasNull() ? null : Instant.ofEpochMilli(millis);
-    }
-
-    /**
-     * Convert integer to Instant
-     * @param ps prepared statement
-     * @param index for the SQL query
-     * @param instant result
-     * @throws SQLException
-     */
-    private void setInstant(PreparedStatement ps, int index, Instant instant) throws SQLException {
-        if (instant == null) {
-            ps.setNull(index, Types.BIGINT);
-        } else {
-            ps.setLong(index, instant.toEpochMilli());
-        }
-    }
-
-    /**
      * Gets all trashLogs in database
      *
      * @return a list of all trash logs
@@ -76,7 +48,7 @@ public class TrashLogDAO implements DAOInterface<TrashLog> {
     @Override
     public List<TrashLog> getAll() {
         List<TrashLog> trash = new ArrayList<>();
-        String sql = "SELECT * FROM trash_log";
+        String sql = "SELECT * FROM trash_logs";
         try (Connection conn = databaseManager.connect();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -105,7 +77,7 @@ public class TrashLogDAO implements DAOInterface<TrashLog> {
     @Override
     public TrashLog getOne(int id) {
         TrashLog trashLog = null;
-        String sql = "SELECT * FROM trash_log WHERE id = ?";
+        String sql = "SELECT * FROM trash_logs WHERE id = ?";
         try (Connection conn = databaseManager.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -131,11 +103,11 @@ public class TrashLogDAO implements DAOInterface<TrashLog> {
     /**
      * Adds an individual trashLog to database
      * @param trashLogToAdd object of type T to add
-     * @return true if no error, false if sql error
+     * @return id of new trash log if no error, -1 if SQL error
      */
     @Override
     public int add(TrashLog trashLogToAdd) {
-        String sql = "INSERT INTO trash_log (created_at, disposed_at, user_id, bin_id, type, weight) VALUES (?, ?, ?, ?, ?, ?);";
+        String sql = "INSERT INTO trash_logs (created_at, disposed_at, user_id, bin_id, type, weight) VALUES (?, ?, ?, ?, ?, ?);";
         try (Connection conn = databaseManager.connect();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             setInstant(ps, 1, trashLogToAdd.createdAt());
@@ -163,7 +135,7 @@ public class TrashLogDAO implements DAOInterface<TrashLog> {
      */
     @Override
     public void delete (int id) {
-        String sql = "DELETE FROM trash_log WHERE id = ?";
+        String sql = "DELETE FROM trash_logs WHERE id = ?";
         try (Connection conn = databaseManager.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -175,7 +147,7 @@ public class TrashLogDAO implements DAOInterface<TrashLog> {
 
     @Override
     public void update(TrashLog trashLogToUpdate) {
-        String sql = "UPDATE trash_log SET disposed_at = ?, user_id = ?, bin_id = ?, type = ?, weight = ? WHERE id = ?";
+        String sql = "UPDATE trash_logs SET disposed_at = ?, user_id = ?, bin_id = ?, type = ?, weight = ? WHERE id = ?";
         try (Connection conn = databaseManager.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             setInstant(ps, 1, trashLogToUpdate.disposedAt());
