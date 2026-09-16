@@ -3,6 +3,8 @@ package seng202.team1.data;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -82,4 +84,7 @@ public class ExportManager {
         return value;
     }
 
+    public static String exportName(String name) {
+        return String.format("export_%s_%s.csv", name, Instant.now().toString()) ;
+    }
 }

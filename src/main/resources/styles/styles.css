@@ -135,13 +135,17 @@
     -fx-padding: 15px 15px;
     -fx-background-radius: 10px;
     -fx-cursor: hand;
+    -fx-background-color: -bg-primary;
+}
+
+.iconbutton * {
+    -fx-background-color: transparent;
 }
 
 .iconbutton:hover {
     -fx-background-color: -bg-secondary;
 
 }
-
 
 .iconbutton.active:hover {
     -fx-background-color: -active-dark;
@@ -689,4 +693,10 @@
     -fx-fill: -active;
     -fx-stroke: -bg-primary;
     -fx-stroke-width: 3px;
+}
+
+.data-button {
+    -fx-min-width: 250px;
+    -fx-pref-width: 250px;
+    -fx-max-width: 250px;
 }
