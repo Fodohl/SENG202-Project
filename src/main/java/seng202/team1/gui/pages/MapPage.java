@@ -109,7 +109,7 @@ public class MapPage extends Page {
         // Modals
         directionsButton.setOnMouseClicked(e -> tryDrawDirections());
         logButton.setOnMouseClicked(e -> windowManager.openModal(Modals.LOG_TRASH, selectedBin));
-        issueButton.setOnMouseClicked(e -> windowManager.openModal(Modals.LOG_ISSUE));
+        issueButton.setOnMouseClicked(e -> windowManager.openModal(Modals.LOG_ISSUE, selectedBin));
 
         // Combine
         VBox box = new VBox(titleSection, infoSection, addressSection, collectionSection, actionsSection);

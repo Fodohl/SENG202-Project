@@ -1,7 +1,7 @@
 package seng202.team1.api.trashdb;
 
 import seng202.team1.data.bin.BinFullness;
-import seng202.team1.data.report.ReportType;
+import seng202.team1.data.status.ReportType;
 import seng202.team1.data.trashlog.TrashType;
 
 import java.time.Instant;

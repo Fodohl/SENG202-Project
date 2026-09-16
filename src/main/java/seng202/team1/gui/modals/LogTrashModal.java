@@ -7,6 +7,8 @@ import seng202.team1.common.StringHelpers;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.BinFullness;
 import seng202.team1.data.bin.BinCategory;
+import seng202.team1.data.status.ReportType;
+import seng202.team1.data.status.StatusReport;
 import seng202.team1.data.trashlog.TrashType;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.components.*;
@@ -23,7 +25,7 @@ public class LogTrashModal extends Modal{
 
     private UIDropDown typeInput;
     private UITextInput weightInput;
-    private UIChipsInput statusInput;
+    private UIChipsInput fullnessInput;
 
     public LogTrashModal(WindowManager windowManager){
         super(windowManager, Modals.LOG_TRASH);
@@ -43,9 +45,9 @@ public class LogTrashModal extends Modal{
         UISection logInputSection = new UISection(15, typeLabel, typeInput, weightLabel, weightInput);
 
         // Bin data
-        UIIconText statusLabel = new UIIconText("bin-full", "Estimated Fullness");
-        statusInput = new UIChipsInput(BinFullness.class);
-        UISection binInputSection = new UISection(15, statusLabel, statusInput);
+        UIIconText fullnessLabel = new UIIconText("bin-full", "Estimated Fullness");
+        fullnessInput = new UIChipsInput(BinFullness.class);
+        UISection binInputSection = new UISection(15, fullnessLabel, fullnessInput);
 
         // Actions
         UIButton submit = new UIButton("Submit Log");
@@ -77,13 +79,13 @@ public class LogTrashModal extends Modal{
     protected void updateContents() {
 
         // Cant reset yet
-        if(typeInput == null || weightInput == null || statusInput == null)
+        if(typeInput == null || weightInput == null || fullnessInput == null)
             return;
 
         // Reset input
         typeInput.clear();
         weightInput.clear();
-        statusInput.clear();
+        fullnessInput.clear();
     }
 
     private void submitTrashLog(){
@@ -97,6 +99,7 @@ public class LogTrashModal extends Modal{
 
         TrashType type = null;
         Integer weight = null;
+        BinFullness fullness = null;
 
         // Get type
         for(TrashType trashType : TrashType.values())
@@ -123,15 +126,25 @@ public class LogTrashModal extends Modal{
         if(weight != null && weight <= 0)
             weightInput.setError("Weight must be positive");
 
-        //@todo merge in
-        statusInput.setError("not implemented");
+        UIIconButton fullnessChip = (UIIconButton)fullnessInput.getInput();
+        String selectedFullness = fullnessChip.getText();
+
+        // Get type
+        for(BinFullness fullnessLevel : BinFullness.values())
+            if(StringHelpers.enumNameToTitle(fullnessLevel.name()).equals(selectedFullness)){
+                fullness = fullnessLevel;
+            }
+
+        if(fullness == null)
+            fullnessInput.setError("Not a valid fullness");
 
         // Invalid
-        if(typeInput.isErroring() ||  weightInput.isErroring())// || statusInput.isErroring())
+        if(typeInput.isErroring() ||  weightInput.isErroring() || fullnessInput.isErroring())
             return;
 
         // Save
         windowManager.getGlobalState().getTrashLogStore().logTrash(category, type, weight, binID);
+        windowManager.getGlobalState().getStatusReportStore().logReport(bin, fullness, ReportType._FULLNESS_UPDATE, "");
 
         closeModal();
     }

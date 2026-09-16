@@ -1,12 +1,14 @@
-package seng202.team1.data.report;
+package seng202.team1.data.status;
 
 public enum ReportType {
-    _STATUS_UPDATE,
+    _FULLNESS_UPDATE,
+
     GRAFFITI,
     DAMAGED,
     MISSING,
     FIRE_HAZARD,
     ILLEGAL_DUMPING,
     BLOCKED_ACCESS,
+    BLOCKED,
     OTHER,
 }

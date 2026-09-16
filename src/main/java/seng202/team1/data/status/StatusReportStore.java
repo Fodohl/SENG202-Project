@@ -1,12 +1,15 @@
 package seng202.team1.data.status;
 
 
-import seng202.team1.data.bin.BinIssue;
-import seng202.team1.data.bin.BinLoader;
-import seng202.team1.data.bin.BinStatus;
+import seng202.team1.data.User;
+import seng202.team1.data.bin.*;
+import seng202.team1.data.trashlog.Trash;
+import seng202.team1.data.trashlog.TrashLog;
+import seng202.team1.data.trashlog.TrashType;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -62,44 +65,11 @@ public class StatusReportStore {
     public void add(StatusReport newReport) throws IOException {
         load();
         Objects.requireNonNull(newReport);
-        newReport = checkForDuplicate(newReport);
         List<StatusReport> updatedReports = new ArrayList<>(reports);
         updatedReports.add(newReport);
         writeToJSON(updatedReports);
     }
 
-    /**
-     * Checks if a user has reported the bin already, replaces the preexisting issue with the new issue and preexisting
-     * status with the new status, unless the new issue or status is null, where it keeps the old one
-     * @param newReport {@link StatusReport} to be checked
-     * @return a new {@link StatusReport} carrying over the unchanged values of a previous report for a user
-     */
-    public StatusReport checkForDuplicate(StatusReport newReport) throws IOException {
-        BinStatus resultStatus;
-        BinIssue resultIssue;
-        String resultDescription;
-        StatusReport existingReport = reports.stream().filter(report -> report.getBinID() == newReport.getBinID()
-                        && Objects.equals(report.getSubmittedBy().getName(), newReport.getSubmittedBy().getName())
-                        && report.getSubmittedBy().getUserID() == newReport.getSubmittedBy().getUserID()).findFirst().orElse(null);
-        if (existingReport != null) {
-            if (newReport.getIssue() == null) {
-                resultIssue = existingReport.getIssue();
-                resultDescription = existingReport.getDescription();
-            } else {
-                resultIssue = newReport.getIssue();
-                resultDescription = newReport.getDescription();
-            }
-            if (newReport.getStatus() == null) {
-                resultStatus = existingReport.getStatus();
-            } else {
-                resultStatus = newReport.getStatus();
-            }
-            removeReport(existingReport);
-            return new StatusReport(newReport.getBin(), newReport.getSubmittedBy(), resultStatus, resultIssue,
-                                    resultDescription, newReport.getSubmittedAt());
-        }
-        return newReport;
-    }
 
     /**
      * Removes a report from JSON file and from report array
@@ -135,6 +105,23 @@ public class StatusReportStore {
                 ".trashapp",
                 "statusreports.json"
         );
+    }
+
+
+    public void logReport(Bin bin, BinFullness fullness, ReportType reportType, String description){
+
+        User dummy = new User(10, "null-user");
+
+        LocalDateTime timestamp = LocalDateTime.now();
+        StatusReport entry = new StatusReport(bin, dummy, fullness, reportType, description, timestamp);
+
+        try{
+            add(entry);
+        } catch (IOException e) {
+            // check fails
+            //@Todo log err
+        }
+
     }
 
 }

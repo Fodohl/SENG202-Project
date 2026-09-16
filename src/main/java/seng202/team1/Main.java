@@ -10,8 +10,10 @@ import seng202.team1.gui.components.UIImage;
 import seng202.team1.state.GlobalState;
 
 import java.awt.*;
-
 import static javafx.application.Application.launch;
+
+// import net.maxtyson.jfxhr.HotReloader;
+// import net.maxtyson.jfxhr.ReloaderConfig;
 
 /**
  * Setups the JavaFX application and launches the app
@@ -54,6 +56,7 @@ public class Main extends Application {
 
         // Dev tools
         CSSFX.start();
+//        HotReloader.attach(config, stage);
 
         // Set up the window
         setAppIcon(stage);

@@ -418,4 +418,24 @@ s@font-face {
     -fx-background-radius: 0px 10px 10px 0px;
 }
 
+.timeline {
+    -fx-min-height: 150px;
+}
 
+.timeline-details {
+    -fx-alignment: center-left;
+    -fx-min-width: 250px;
+    -fx-max-width: 250px;
+
+}
+
+.timeline-connector {
+    -fx-stroke: -active;
+    -fx-stroke-width: 5px;
+}
+
+.timeline-indicator {
+    -fx-fill: -text-primary;
+    -fx-stroke: -active;;
+    -fx-stroke-width: 5px;
+}

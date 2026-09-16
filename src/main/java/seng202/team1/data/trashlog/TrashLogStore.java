@@ -70,6 +70,7 @@ public class TrashLogStore {
     }
 
 
+    //@todo interface
     public void logTrash(BinCategory category, TrashType type, int weight, int binID){
 
         LocalDateTime timestamp = LocalDateTime.now();
@@ -81,7 +82,7 @@ public class TrashLogStore {
             add(entry);
         } catch (IOException e) {
             // Should never fail as uses nextID()
-            //@Todo lgo
+            //@Todo log err
         }
 
     }
