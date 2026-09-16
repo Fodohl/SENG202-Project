@@ -630,3 +630,61 @@
 .active{
     -fx-background-color: -active-secondary;
 }
+
+.timeline {
+    -fx-alignment: center;
+    -fx-min-height: 150;
+}
+
+.timeline .svg-icon * {
+    -fx-stroke: -active;
+}
+
+.timeline .svg-icon-fill * {
+    -fx-fill: -active;
+}
+
+
+.timeline-details {
+    -fx-alignment: center-left;
+    -fx-text-alignment: right;
+    -fx-min-width: 250px;
+    -fx-max-width: 250px;
+}
+
+.timeline-details .label {
+    -fx-font-weight: bold;
+    -fx-font-size: 28px;
+    -fx-text-fill: -text-primary;
+}
+
+.timeline-details .subtext {
+    -fx-font-size: 20px;
+    -fx-text-fill: -text-secondary;
+}
+
+.timeline-date {
+    -fx-fill: -active;
+}
+
+.timeline-date .label {
+    -fx-text-alignment: center;
+    -fx-alignment: center;
+}
+
+.timeline-connector {
+    -fx-stroke: -active;
+    -fx-stroke-width: 10px;
+}
+
+.timeline-line-chunk {
+    -fx-background-color: -text-secondary-half;
+    -fx-min-width: 30px;
+    -fx-max-width: 30px;
+}
+
+.timeline-indicator {
+    -fx-fill: -active;
+    -fx-stroke: -bg-primary;
+    -fx-stroke-width: 3px;
+}

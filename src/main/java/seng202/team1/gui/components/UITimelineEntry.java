@@ -38,18 +38,20 @@ public class UITimelineEntry extends HBox {
         VBox detailsContainer = new VBox(5, titleLabel, textLabel);
         detailsContainer.getStyleClass().add("timeline-details");
 
-        Circle dateBorder = new Circle(40);
+        Circle dateBorder = new Circle(100);
+        dateBorder.getStyleClass().add("timeline-date-bg");
         Label dateText = new Label(StringHelpers.toLocaleString(timestamp));
 
         // Combine icon and date
-        VBox iconDateBox = new VBox(5, icon, dateText);
+        VBox iconDateBox = new VBox(15, icon, dateText);
         iconDateBox.setAlignment(Pos.CENTER);
         StackPane dateContainer = new StackPane(dateBorder, iconDateBox);
+        dateContainer.getStyleClass().add("timeline-date");
 
         // Line to indicate place on timeline
         Line connector = new Line();
         connector.setStartX(0);
-        connector.setEndX(50);
+        connector.setEndX(100);
         connector.getStyleClass().add("timeline-connector");
 
         // Ensure the line part of the timeline grows so that it touches start end of neighbouring chunks
