@@ -48,9 +48,14 @@ public abstract class UIWebRenderer extends StackPane {
     /// Bridge to pass calls from JavaScript to Java
     public class JavaBridge {
         public void callJavaAPI(String functionName, String jsonParams) {
-            Platform.runLater(() -> { processAPICall(functionName, jsonParams);});
+            Platform.runLater(() -> {
+                processAPICall(functionName, jsonParams);
+            });
         }
     }
+
+    /// Instance of bridge to do the JS handling
+    private final JavaBridge javaBridge = new JavaBridge();
 
     /**
      * Constructs a new UIWebRenderer
@@ -84,10 +89,11 @@ public abstract class UIWebRenderer extends StackPane {
                 return;
 
             // Inject API caller for JS side communication
-            ((JSObject) engine.executeScript("window")).setMember("javaBridge", new JavaBridge());
+            ((JSObject) engine.executeScript("window")).setMember("javaBridge",javaBridge);
             call(parseAPISourceCode());
 
             webReady = true;
+            System.out.println("ready");
             proccessCalls();
         });
 

@@ -7,8 +7,10 @@ callJavaAPI = (functionName, params = {}) => {
    window.javaBridge.callJavaAPI(functionName, JSON.stringify(params));
 }
 
-callJavaAPI("func", {id: 2});
-
 console.log = (...args) => {
     callJavaAPI("onConsoleLog", {message: args.map(String).join(' ')})
 }
+
+window.onerror = (msg, src, line, col, err) => {
+    callJavaAPI("onConsoleError", {message: ` ${line}:${col} - ${msg}`});
+};
