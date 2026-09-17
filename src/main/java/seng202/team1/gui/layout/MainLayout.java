@@ -28,9 +28,6 @@ import static seng202.team1.gui.GraphicsCommon.precentWindowX;
  * Composite UI component that contains elements consistent across the whole app
  *
  * Note: there should be only one per window
- *
- * @todo move search bar to own compontent
- * @credit https://stackoverflow.com/questions/34784037/javafx-8-how-to-add-a-timedelay-to-a-listener deboucer
  */
 public class MainLayout extends LayoutElement {
 
@@ -96,7 +93,7 @@ public class MainLayout extends LayoutElement {
     private Parent header() {
 
         // Search Bard
-        UILocationInput searchBar = new UILocationInput(this);
+        UILocationInput searchBar = new UILocationInput(getWindow().getGlobalState());
 
         // Account
         Label accountLabel = new Label("Account (DB)");

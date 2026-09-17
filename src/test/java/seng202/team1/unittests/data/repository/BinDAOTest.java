@@ -33,7 +33,7 @@ public class BinDAOTest {
 
     @Test
     void testAddBin() {
-        Bin toAdd = new Bin(1, 1, 1, BinCategory.RECYCLABLE, Instant.now(), BinFullness.EMPTY,null, null);
+        Bin toAdd = new Bin(1, 1, 1, BinCategory.RECYCLABLE, Instant.now(),null, null);
         binDAO.add(toAdd);
         Assertions.assertEquals(1, binDAO.getAll().size());
         Bin bin = binDAO.getAll().getFirst();
@@ -50,15 +50,15 @@ public class BinDAOTest {
 
     @Test
     void testAddBatchBin() {
-        Bin b1 = new Bin(1, 1, 1, BinCategory.RECYCLABLE, Instant.now(), BinFullness.EMPTY,null, null);
-        Bin b2 = new Bin(2, 2, 2, BinCategory.ORGANIC, Instant.now(), BinFullness.OVERFLOWING,null, null);
+        Bin b1 = new Bin(1, 1, 1, BinCategory.RECYCLABLE, Instant.now(), null, null);
+        Bin b2 = new Bin(2, 2, 2, BinCategory.ORGANIC, Instant.now(), null, null);
         binDAO.addBatch(new ArrayList<>(Arrays.asList(b1, b2)));
         Assertions.assertEquals(2, binDAO.getAll().size());
     }
 
     @Test
     void testGetBinById() {
-        Bin toAdd = new Bin(1, 1, 1, BinCategory.RECYCLABLE, Instant.now(), BinFullness.EMPTY,null, null);
+        Bin toAdd = new Bin(1, 1, 1, BinCategory.RECYCLABLE, Instant.now(), null, null);
         int id = binDAO.add(toAdd);
         Bin returnedBin = binDAO.getOne(id);
         Assertions.assertEquals(toAdd.getID(), returnedBin.getID());
@@ -74,7 +74,7 @@ public class BinDAOTest {
 
     @Test
     void testDeleteBin() {
-        int id = binDAO.add(new Bin(1, 1, 1, BinCategory.RECYCLABLE, Instant.now(), BinFullness.EMPTY,null, null));
+        int id = binDAO.add(new Bin(1, 1, 1, BinCategory.RECYCLABLE, Instant.now(), null, null));
         int total = binDAO.getAll().size();
         binDAO.delete(id);
         Assertions.assertEquals(total - 1, binDAO.getAll().size());
@@ -82,9 +82,9 @@ public class BinDAOTest {
 
     @Test
     void testUpdateBin() {
-        Bin bin = new Bin(1, 1, 1, BinCategory.RECYCLABLE, Instant.now(), BinFullness.EMPTY,null, null);
+        Bin bin = new Bin(1, 1, 1, BinCategory.RECYCLABLE, Instant.now(),null, null);
         int id = binDAO.add(bin);
-        Bin updatedBin = new Bin(id, 2, 2, BinCategory.ORGANIC, Instant.now(), BinFullness.OVERFLOWING,null, null);
+        Bin updatedBin = new Bin(id, 2, 2, BinCategory.ORGANIC, Instant.now(),null, null);
         binDAO.update(updatedBin);
         Bin result = binDAO.getOne(id);
         Assertions.assertEquals(updatedBin.getID(), result.getID());
@@ -99,15 +99,5 @@ public class BinDAOTest {
         Assertions.assertEquals(updatedBin.getPhotoURL(), result.getPhotoURL());
         Assertions.assertEquals(updatedBin.getAreaName(), result.getAreaName());
 
-    }
-
-    @Test
-    void testUpdateBinFullness() {
-        Bin bin = new Bin(1, 1, 1, BinCategory.RECYCLABLE, Instant.now(), BinFullness.EMPTY,null, null);
-        int id = binDAO.add(bin);
-        BinFullness newFullness = BinFullness.FULL;
-        binDAO.updateBinFullness(newFullness, id);
-        Bin result = binDAO.getOne(id);
-        Assertions.assertEquals(newFullness, result.getFullness());
     }
 }

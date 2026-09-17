@@ -8,7 +8,6 @@ import seng202.team1.gui.WindowManager;
  */
 public abstract class Page extends LayoutElement {
 
-
     /// The type of page this UI component represents
     protected Pages pageType = null;
 

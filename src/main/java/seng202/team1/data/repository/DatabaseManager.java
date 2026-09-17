@@ -206,4 +206,8 @@ public class DatabaseManager {
             log.error("Error executing sql statements in database initialisation file", e);
         }
     }
+
+    public String getUrl() {
+        return url;
+    }
 }

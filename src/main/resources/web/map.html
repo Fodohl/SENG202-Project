@@ -48,10 +48,6 @@
 
     const ICON_FOLDER = new URL('../media/images/', document.location.href).href;
 
-    // Required by submethods during initialisation, but will not be injected when Java backend ready. Until then just
-    // safely discard calls
-    callJavaAPI = () => {};
-
     onPointClicked = (id) => {
         setSelectedPoint(id);
         callJavaAPI("onPointClicked", {id});
@@ -60,7 +56,6 @@
     onPosClicked = (lat, lng) => {
         callJavaAPI("onPosClicked", {lat, lng});
     }
-
 
     // Marker helpers
     styleActiveMarker = (target, isActive) => {

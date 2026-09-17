@@ -2,7 +2,6 @@ package seng202.team1.gui.pages;
 
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -10,7 +9,6 @@ import seng202.team1.common.StringHelpers;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.BinCategory;
 import seng202.team1.data.trashlog.TrashLog;
-import seng202.team1.gui.GraphicsCommon;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.components.UICard;
 import seng202.team1.gui.components.UIGraphLine;
@@ -69,7 +67,7 @@ public class DashboardPage extends Page {
         // Bottom cards
         trashLogged = new UICard("Total Rubbish Logged:", "150",  "", "/media/images/bin.svg");
         recycLogged = new UICard("Total Recycling Logged:", "300",  "", "/media/images/recycle.svg");
-        organicLogged = new UICard("Total Organics Logged:", "450",  "", "/media/images/organic_waste.svg");
+        organicLogged = new UICard("Total Organics Logged:", "450",  "", "/media/images/organic.svg");
 
         HBox botCards = new HBox(20, trashLogged, recycLogged, organicLogged);
         botCards.setAlignment(Pos.TOP_LEFT);
@@ -88,20 +86,20 @@ public class DashboardPage extends Page {
     @Override
     public void updateContents() {
 
-        dataset.setText(String.format("%s", windowManager.getGlobalState().getBinDAO().getAll().size()));
 
         // Get usage
         List<TrashLog> uses = windowManager.getGlobalState().getTrashLogDAO()
-                                           .getAll().stream()
-                                           .sorted(Comparator.comparing(TrashLog::createdAt))
-                                           .toList();
+                .getAll().stream()
+                .sorted(Comparator.comparing(TrashLog::createdAt))
+                .toList();
         List<Bin> bins = uses.stream()
-                              .map(b -> windowManager.getGlobalState().getBinDAO().getOne(b.binID()))
-                              .toList();
+                .map(b -> windowManager.getGlobalState().getBinDAO().getOne(b.binID()))
+                .toList();
 
         TrashLog newestLog = uses.isEmpty() ? null : uses.getLast();
         Bin newestBin = bins.isEmpty() ? null : bins.getLast();
 
+        dataset.setText(String.format("%s", bins.size()));
 
         trashLogged.setText(String.format("%d", newestBin == null ? 0 : bins.stream().filter(b -> b.getCategory() == BinCategory.GENERAL_WASTE).toList().size()));
         recycLogged.setText(String.format("%d", newestBin == null ? 0 : bins.stream().filter(b -> b.getCategory() == BinCategory.RECYCLABLE).toList().size()));

@@ -5,18 +5,20 @@ import seng202.team1.api.photon.Feature;
 import seng202.team1.api.photon.PhotonClient;
 import seng202.team1.api.trashdb.TrashDBClient;
 import seng202.team1.api.trashdb.TrashDBLeaderboardResponse;
-import seng202.team1.data.bin.BinLoader;
-import seng202.team1.data.repository.BinDAO;
-import seng202.team1.exceptions.InstanceAlreadyExistsException;
+import seng202.team1.data.status.StatusReportStore;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.pages.Pages;
 import seng202.team1.data.repository.DatabaseManager;
 import seng202.team1.data.repository.TrashLogDAO;
+import seng202.team1.data.repository.BinDAO;
+import seng202.team1.exceptions.InstanceAlreadyExistsException;
+import seng202.team1.data.bin.BinLoader;
+
 
 /**
  * Stores the current state of the app and provides managers to control it
  */
-public class GlobalState {
+public class    GlobalState {
 
     private static GlobalState instance;
 
@@ -25,6 +27,9 @@ public class GlobalState {
 
     /// The manager of the app's window
     private WindowManager windowManager;
+
+    /// The current window
+    private Stage stage;
 
     /// The handler for the static bin data
     private BinLoader binLoader;
@@ -43,16 +48,20 @@ public class GlobalState {
 
     private TrashDBLeaderboardResponse leaderboard;
 
+    /// The handler for issue reports
+    private StatusReportStore statusReportStore;
+
     private GlobalState() {
     }
 
     /**
      * Factory method that creates and fully initialises the singleton {@code GlobalState} instance.
      * Called once per application run
+     *
      * @param stage the primary JavaFX stage to hand off to the {@link WindowManager}
      * @return the newly created singleton {@code GlobalState} instance
      * @throws InstanceAlreadyExistsException if {@code create} has already been called in this
-     * application run
+     *                                        application run
      */
     public static GlobalState create(Stage stage) throws InstanceAlreadyExistsException {
         if (instance != null) {
@@ -61,12 +70,17 @@ public class GlobalState {
 
         GlobalState state = new GlobalState();
 
-        state.databaseManager = DatabaseManager.initialiseInstanceWithUrl(
-                "jdbc:sqlite:./src/main/resources/database.db");
+        state.databaseManager = DatabaseManager.getInstance();
 
         state.binLoader = new BinLoader();
+        state.binLoader.readGeoJSON();
+
         state.binDAO = new BinDAO();
         state.trashLogDAO = new TrashLogDAO();
+
+        state.statusReportStore = new StatusReportStore(state.binLoader, StatusReportStore.defaultDataPath());
+        state.statusReportStore.load();
+        state.binLoader.loadBinFullness(state.statusReportStore);
 
         state.loadBins();
 
@@ -93,6 +107,7 @@ public class GlobalState {
         return instance;
     }
 
+
     private void fetchData() {
 
         trashDBClient.getLeaderboard(leaderboard -> {
@@ -112,7 +127,6 @@ public class GlobalState {
         return windowManager;
     }
 
-
     public TrashLogDAO getTrashLogDAO() {
         return trashLogDAO;
     }
@@ -128,6 +142,10 @@ public class GlobalState {
         windowManager.switchPage(Pages.MAP);
     }
 
+    public BinLoader getBinLoader() {
+        return binLoader;
+    }
+
     public Feature consumeMapSearchRequest(){
 
         // Clear the request
@@ -135,6 +153,15 @@ public class GlobalState {
         requestedLocation = null;
 
         return location;
+    }
+
+    /**
+     * Get the status log handler
+     *
+     * @return The status log handler
+     */
+    public StatusReportStore getStatusReportStore() {
+        return statusReportStore;
     }
 
     /**
@@ -149,5 +176,12 @@ public class GlobalState {
 
     public TrashDBLeaderboardResponse getLeaderboard() {
         return leaderboard;
+    }
+
+    /**
+     * Resets the singleton instance. Intended for test use only.
+     */
+    public static void REMOVE_INSTANCE() {
+        instance = null;
     }
 }

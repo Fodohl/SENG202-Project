@@ -5,9 +5,18 @@ import javafx.scene.layout.HBox;
 
 import javafx.scene.control.Label;
 
+/**
+ * A UI Component for rending an icon next to some text
+ */
 public class UIIconText extends HBox {
 
-   public UIIconText(String iconName, String textValue){
+    /**
+     * Constructs a new UIIconText
+     *
+     * @param iconName The name of the icon (should be located in the media/images folder)
+     * @param textValue The text to display
+     */
+    public UIIconText(String iconName, String textValue) {
         super(5);
 
         // Build
@@ -18,5 +27,5 @@ public class UIIconText extends HBox {
         // Style
         setAlignment(Pos.CENTER_LEFT);
         getStyleClass().add("icon-text");
-   }
+    }
 }

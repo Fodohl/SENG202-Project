@@ -3,8 +3,10 @@ package seng202.team1.gui.components;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import seng202.team1.data.table.StringTable;
 import seng202.team1.data.table.StringTableBuilder;
 
@@ -17,8 +19,8 @@ import java.util.function.Function;
 
 /**
  * A UI Component to handle rendering tables
- *
- * Takes a given {@link table} and converts it into a viewable table
+ * <p>
+ * Takes a given {@link StringTableBuilder} and converts it into a viewable table
  */
 public class UITable extends GridPane {
 
@@ -37,13 +39,19 @@ public class UITable extends GridPane {
     /// Whether to highlight the first data row or not
     private boolean highlightFirst = true;
 
+    /// The data to show in the table
     private StringTableBuilder sourceData;
+
+    /// The currently parsed and computed data
     private StringTable outData;
 
-
+    /// A function to indicate whether a certain row should be highlighted or not
     Function<HashMap<String, String>, Boolean> highlighter;
 
+    /// Curent key being used to sort the table, if null will used the default one in StringTableBuilder
     private String currentSortDataKey = null;
+
+    /// Whether the data is currently being sorted ascendingly
     private boolean sortAscending = false;
 
     /**
@@ -51,14 +59,14 @@ public class UITable extends GridPane {
      *
      * @see #UITable(StringTableBuilder, boolean)
      */
-    public UITable(StringTableBuilder data){
+    public UITable(StringTableBuilder data) {
         this(data, true);
     }
 
     /**
      * Constructs a new UI table with a desired header ordering and highlight rules
      *
-     * @param data The data to show in the table
+     * @param data           The data to show in the table
      * @param highlightFirst Whether to highlight the first row or not
      */
     public UITable(StringTableBuilder data, boolean highlightFirst) {
@@ -66,13 +74,13 @@ public class UITable extends GridPane {
         this(data, highlightFirst, null);
     }
 
-     /**
+    /**
      * Constructs a new UI table with a desired header ordering and highlight rules
      *
-     * @param data The data to show in the table
+     * @param data           The data to show in the table
      * @param highlightFirst Whether to highlight the first row or not
      */
-    public UITable(StringTableBuilder data, boolean highlightFirst, Function<HashMap<String, String>, Boolean> highlighter){
+    public UITable(StringTableBuilder data, boolean highlightFirst, Function<HashMap<String, String>, Boolean> highlighter) {
 
         this.highlightFirst = highlightFirst;
         this.sourceData = data;
@@ -81,6 +89,11 @@ public class UITable extends GridPane {
         // Style the table
         getStyleClass().add("table");
         setAlignment(Pos.CENTER);
+
+        // Force columns to stretch to container's bounds
+        ColumnConstraints columnConstraints = new ColumnConstraints();
+        columnConstraints.setHgrow(Priority.ALWAYS);
+        columnConstraints.setMaxWidth(Double.MAX_VALUE);
 
         buildTableContent();
     }
@@ -92,12 +105,12 @@ public class UITable extends GridPane {
      */
     private void setupHeader(Map<String, String> colMap, Set<String> headers) {
 
-       // Setup state
+        // Setup state
         headerColumns.clear();
         rowWidth = headers.size();
 
         int i = 0;
-        for (String headerDataKey : colMap.keySet()){
+        for (String headerDataKey : colMap.keySet()) {
 
             String headerDisplayName = colMap.get(headerDataKey);
 
@@ -108,6 +121,13 @@ public class UITable extends GridPane {
         }
     }
 
+    /**
+     * Create a new cell for a header row, makes it clickable to toggle sorting
+     *
+     * @param dataKey     The key this column represents
+     * @param displayName The human readable version of this key
+     * @return
+     */
     private HBox headerCell(String dataKey, String displayName) {
 
         // Style the displayed title
@@ -133,6 +153,9 @@ public class UITable extends GridPane {
 
     }
 
+    /**
+     * Turn the contents of the StringTable into UICells
+     */
     public void buildTableContent() {
 
         // Reset state
@@ -142,7 +165,7 @@ public class UITable extends GridPane {
         currentCol = 0;
 
         // Preserve default sorting if yet to manually sort
-        if(currentSortDataKey != null)
+        if (currentSortDataKey != null)
             sourceData = sourceData.sortBy(currentSortDataKey, sortAscending);
 
         // Add header row
@@ -155,10 +178,15 @@ public class UITable extends GridPane {
 
     }
 
+    /**
+     * Cycles the sorting mode for the give column
+     *
+     * @param dataKey The col to sort by
+     */
     private void updateSelectedSort(String dataKey) {
 
         // Cycle sorted on subsequent presses
-        if(currentSortDataKey != null && currentSortDataKey.equals(dataKey)) {
+        if (currentSortDataKey != null && currentSortDataKey.equals(dataKey)) {
             sortAscending = !sortAscending;
             return;
         }
@@ -174,15 +202,15 @@ public class UITable extends GridPane {
      *
      * @param dataRow The data to display
      */
-    private void addTableRow(HashMap<String, String> dataRow){
+    private void addTableRow(HashMap<String, String> dataRow) {
 
         // Order the data
         String[] data = new String[dataRow.size()];
-        for (String header : dataRow.keySet()){
+        for (String header : dataRow.keySet()) {
 
             // Check if this header is displayed
             Integer col = headerColumns.get(header);
-            if(col == null)
+            if (col == null)
                 return;
 
             // Add to its correct place
@@ -192,18 +220,18 @@ public class UITable extends GridPane {
 
         // Add
         for (String value : data)
-          addCell(value);
+            addCell(value);
     }
 
     /**
      * Update current cell state tracking to next valid cell on the table
      */
-    private void nextCell(){
+    private void nextCell() {
 
         currentCol++;
 
         // Overflow
-        if (currentCol >= rowWidth){
+        if (currentCol >= rowWidth) {
             currentCol = 0;
             currentRow++;
         }
@@ -212,74 +240,81 @@ public class UITable extends GridPane {
 
     /**
      * Add a cell to the table
-     * 
+     *
      * @see #addCell(String, boolean)
      */
-    private void addCell(String value){
+    private void addCell(String value) {
 
         addCell(value, false);
     }
 
     /**
      * Add a cell to the table
-     *
+     * <p>
      * Call when finished with operations on the current working cell
-     * 
-     * @param value The text to show in the cell
+     *
+     * @param value    The text to show in the cell
      * @param isHeader Whether the cell is in the header row or not
      */
-    private void addCell(String value, boolean isHeader){
+    private void addCell(String value, boolean isHeader) {
 
         // Create a new cell
         Label label = new Label(value);
         addCell(label, isHeader);
     }
 
-        /**
-         * Add a cell to the table
-         *
-         * Call when finished with operations on the current working cell
-         *
-         * @param cell The cell to add
-         * @param isHeader Whether the cell is in the header row or not
-         */
-        private void addCell(Node cell, boolean isHeader){
+    /**
+     * Add a cell to the table
+     * <p>
+     * Call when finished with operations on the current working cell
+     *
+     * @param cell     The cell to add
+     * @param isHeader Whether the cell is in the header row or not
+     */
+    private void addCell(Node cell, boolean isHeader) {
 
-            cell.getStyleClass().add("table-cell");
+        cell.getStyleClass().add("table-cell");
 
-            // Highlight the header row
-            if(isHeader)
-                cell.getStyleClass().add("table-cell-header");
+        // Highlight the header row
+        if (isHeader)
+            cell.getStyleClass().add("table-cell-header");
 
-            // Style
-            roundEdges(cell);
-            highlight(cell);
+        // Style
+        roundEdges(cell);
+        highlight(cell);
 
-            // Add the cell
-            add(cell, currentCol, currentRow);
-            nextCell();
+        // Add the cell
+        add(cell, currentCol, currentRow);
+        nextCell();
     }
 
+    /**
+     * Highlight the give cell if it meets the current highlighting conditions
+     *
+     * Warning: assumes the cell is in place currentRow,Col
+     *
+     * @param cell The cell to apply highlighting to
+     */
     private void highlight(Node cell) {
 
         // First row gets special highlighting
-        if (highlightFirst && currentRow == 1){
+        if (highlightFirst && currentRow == 1) {
             cell.getStyleClass().add("table-cell-highlight-first");
             return;
         }
 
         // Some rows may be highlighted according to external rules
-        if(highlighter == null || currentRow == 0 || !highlighter.apply(outData.getDataRow(currentRow - 1)))
+        if (highlighter == null || currentRow == 0 || !highlighter.apply(outData.getDataRow(currentRow - 1)))
             return;
 
         cell.getStyleClass().add("table-cell-highlight");
 
         // Left
-        if(currentCol == 0)
-            cell.getStyleClass().addAll("cell-round ",  "cell-round-l");
+        if (currentCol == 0)
+            cell.getStyleClass().addAll("cell-round ", "cell-round-l");
 
         // Right
-        if(currentCol == rowWidth - 1)
+        if (currentCol == rowWidth - 1)
             cell.getStyleClass().addAll("cell-round ", "cell-round-r");
     }
 
@@ -289,30 +324,30 @@ public class UITable extends GridPane {
      *
      * @param cell The cell to style
      */
-    private void roundEdges(Node cell){
+    private void roundEdges(Node cell) {
 
         // If highlighting a single cell, must bake both values in otherwise will override each-other
         String leftClass = highlightFirst ? "cell-round-tl" : "cell-round-l";
         String rightClass = highlightFirst ? "cell-round-tr" : "cell-round-r";
 
         // Top left
-        if(currentCol == 0 && currentRow == 0)
+        if (currentCol == 0 && currentRow == 0)
             cell.getStyleClass().addAll("cell-round ", leftClass);
 
         // Top right
-        if(currentCol == rowWidth - 1 && currentRow == 0)
+        if (currentCol == rowWidth - 1 && currentRow == 0)
             cell.getStyleClass().addAll("cell-round ", rightClass);
 
         // Not styling the first row
-        if(!highlightFirst)
+        if (!highlightFirst)
             return;
 
         // Bottom left
-        if(currentCol == 0 && currentRow == 1)
+        if (currentCol == 0 && currentRow == 1)
             cell.getStyleClass().addAll("cell-round ", "cell-round-bl");
 
         // Bottom right
-        if(currentCol == rowWidth - 1 && currentRow == 1)
+        if (currentCol == rowWidth - 1 && currentRow == 1)
             cell.getStyleClass().addAll("cell-round ", "cell-round-br");
     }
 

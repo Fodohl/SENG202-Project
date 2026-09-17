@@ -30,7 +30,7 @@ public class TrashLogDAOTest {
         databaseManager = DatabaseManager.initialiseInstanceWithUrl("jdbc:sqlite:./src/test/resources/test_database.db");
         trashLogDAO = new TrashLogDAO();
         binDAO = new BinDAO();
-        Bin testBin = new Bin(1, 0, 0, BinCategory.GENERAL_WASTE, Instant.now(), BinFullness.EMPTY, null, null);
+        Bin testBin = new Bin(1, 0, 0, BinCategory.GENERAL_WASTE, Instant.now(), null, null);
         binDAO.add(testBin);
     }
 

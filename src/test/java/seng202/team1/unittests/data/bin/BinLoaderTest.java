@@ -1,4 +1,4 @@
-package seng202.team1.unittests.data;
+package seng202.team1.unittests.data.bin;
 
 import java.time.Instant;
 import java.util.List;
@@ -6,30 +6,21 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import org.junit.jupiter.api.BeforeEach;
+
 import org.junit.jupiter.api.Test;
 
 import seng202.team1.data.bin.Bin;
-import seng202.team1.data.bin.BinFullness;
-import seng202.team1.data.bin.BinLoader;
 import seng202.team1.data.bin.BinCategory;
+import seng202.team1.data.bin.BinFullness;
+import seng202.team1.unittests.TrashAppTest;
 
 /**
- * Test DataLoader
+ * Test binLoader
  * @author Stanley Easthope
  */
-public class BinLoaderTest {
-    private BinLoader binLoader;
+public class BinLoaderTest extends TrashAppTest {
 
-    /**
-     * Setup before each test
-     * Gets a new read from the GeoJSON file
-     */
-    @BeforeEach
-    public void setupTest() {
-        binLoader = new BinLoader();
-        binLoader.readGeoJSON();
-    }
+
 
     /**
      * Check that the bins aren't empty
@@ -46,7 +37,7 @@ public class BinLoaderTest {
     public void testGetBinObjectsIsNotChangable() {
         List<Bin> bins = binLoader.getBinObjects();
         assertThrows(UnsupportedOperationException.class, () ->
-                bins.add(new Bin(0, 0, 0, BinCategory.GENERAL_WASTE, Instant.now(), BinFullness.EMPTY, null, null)));
+                bins.add(new Bin(0, 0, 0, BinCategory.GENERAL_WASTE, Instant.now(),null, null)));
     }
 
     /**

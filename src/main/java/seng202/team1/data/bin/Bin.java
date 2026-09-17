@@ -36,13 +36,12 @@ public class Bin {
 
     /**
      * Constructor for Bin class
-     *
      * @param binID - unique identifier for the bin
      * @param latitude - latitude of the bin
      * @param longitude - longitude of the bin
      * @param type - type of bin (general waste, recycling, organic)
      */
-    public Bin(Integer binID, double latitude, double longitude, BinCategory type, Instant updated, BinFullness fullness, String photoURL, String areaName) {
+    public Bin(Integer binID, double latitude, double longitude, BinCategory type, Instant updated, String photoURL, String areaName) {
         this.binID = binID;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -50,7 +49,10 @@ public class Bin {
         this.updated = updated;
         this.photoURL = photoURL;
         this.areaName = areaName;
-        this.fullness = fullness;
+    }
+
+    public Bin(Integer binID, double latitude, double longitude, BinCategory type, Instant updated, String areaName) {
+        this(binID, latitude, longitude, type, updated, null, areaName);
     }
 
     /**

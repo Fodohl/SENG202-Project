@@ -42,20 +42,6 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
         };
     }
 
-    /**
-     * Converts string from database to Bin Fullness
-     * @param category string name
-     * @return bin fullness level that matches the string
-     */
-    private BinFullness convertStringToFullness(String category) {
-        return switch(category.toUpperCase(Locale.ROOT)) {
-            case "EMPTY" -> BinFullness.EMPTY;
-            case "SEMI-FULL" -> BinFullness.SEMI_FULL;
-            case "FULL" -> BinFullness.FULL;
-            case "OVERFLOWING" -> BinFullness.OVERFLOWING;
-            default ->  BinFullness.UNKNOWN;
-        };
-    }
 
     /**
      * Gets all bins in the database
@@ -75,7 +61,6 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
                         rs.getFloat("lng"),
                         convertStringToCategory(rs.getString("waste_type")),
                         getInstant(rs, "updated_at"),
-                        convertStringToFullness(rs.getString("fullness")),
                         rs.getString("photo_url"),
                         rs.getString("area")));
             }
@@ -106,7 +91,6 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
                             rs.getFloat("lng"),
                             convertStringToCategory(rs.getString("waste_type")),
                             getInstant(rs, "updated_at"),
-                            convertStringToFullness(rs.getString("fullness")),
                             rs.getString("photo_url"),
                             rs.getString("area"));
                 }
@@ -125,7 +109,7 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
      */
     @Override
     public int add(Bin toAdd) {
-        String sql = "INSERT INTO bins (id, lat, lng, waste_type, updated_at, fullness, photo_url, area) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO bins (id, lat, lng, waste_type, updated_at, photo_url, area) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = databaseManager.connect();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, toAdd.getID());
@@ -133,9 +117,8 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
             ps.setDouble(3, toAdd.getLongitude());
             ps.setString(4, toAdd.getCategory().toString());
             setInstant(ps, 5, toAdd.getUpdated());
-            ps.setString(6, toAdd.getFullness().toString());
-            ps.setString(7, toAdd.getPhotoURL());
-            ps.setString(8, toAdd.getAreaName());
+            ps.setString(6, toAdd.getPhotoURL());
+            ps.setString(7, toAdd.getAreaName());
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
             int insertId = -1;
@@ -169,7 +152,6 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
                                     DSL.field("lng"),
                                     DSL.field("waste_type"),
                                     DSL.field("updated_at"),
-                                    DSL.field("fullness"),
                                     DSL.field("photo_url"),
                                     DSL.field("area")
                             )
@@ -179,7 +161,6 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
                                     bin.getLongitude(),
                                     bin.getCategory().toString(),
                                     updatedMillis,
-                                    bin.getFullness().toString(),
                                     bin.getPhotoURL(),
                                     bin.getAreaName()
                             )
@@ -214,17 +195,16 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
      */
     @Override
     public void update(Bin toUpdate) {
-        String sql = "UPDATE bins SET lat = ?, lng = ?, waste_type = ?, updated_at = ?, fullness = ?, photo_url = ?, area = ? WHERE id = ?";
+        String sql = "UPDATE bins SET lat = ?, lng = ?, waste_type = ?, updated_at = ?, photo_url = ?, area = ? WHERE id = ?";
         try (Connection conn = databaseManager.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setDouble(1, toUpdate.getLatitude());
             ps.setDouble(2, toUpdate.getLongitude());
             ps.setString(3, toUpdate.getCategory().toString());
             setInstant(ps, 4, toUpdate.getUpdated());
-            ps.setString(5, toUpdate.getFullness().toString());
-            ps.setString(6, toUpdate.getPhotoURL());
-            ps.setString(7, toUpdate.getAreaName());
-            ps.setInt(8, toUpdate.getID());
+            ps.setString(5, toUpdate.getPhotoURL());
+            ps.setString(6, toUpdate.getAreaName());
+            ps.setInt(7, toUpdate.getID());
             int rows = ps.executeUpdate();
             if (rows == 0) {
                 log.warn("Update affected 0 rows for bin id {}", toUpdate.getID());
@@ -233,26 +213,4 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
             log.error(sqlException);
         }
     }
-
-    /**
-     * Updates the fullness of a bin based of its id
-     * @param fullness new fullness level
-     * @param id bin id to update
-     */
-    public void updateBinFullness(BinFullness fullness, int id) {
-        String sql = "UPDATE bins SET fullness = ?, updated_at = ? WHERE id = ?";
-        try (Connection conn = databaseManager.connect();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, fullness.toString());
-            setInstant(ps, 2, Instant.now());
-            ps.setInt(3,  id);
-            int rows = ps.executeUpdate();
-            if (rows == 0) {
-                log.warn("Update fullness affected 0 rows for bin id {}", id);
-            }
-        } catch (SQLException sqlException) {
-            log.error(sqlException);
-        }
-    }
-
 }

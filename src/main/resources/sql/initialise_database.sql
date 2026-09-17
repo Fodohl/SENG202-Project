@@ -8,7 +8,6 @@ CREATE TABLE bins (
     lng DECIMAL(5, 20) NOT NULL,
     waste_type VARCHAR(255),
     updated_at INTEGER,
-    fullness VARCHAR(255),
     photo_url VARCHAR(255),
     area VARCHAR(255),
     UNIQUE (lat, lng));

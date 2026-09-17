@@ -3,6 +3,8 @@ package seng202.team1.gui.pages;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import seng202.team1.api.trashdb.LeaderBoardEntry;
 import seng202.team1.common.StringHelpers;
@@ -11,6 +13,8 @@ import seng202.team1.data.bin.BinCategory;
 import seng202.team1.data.bin.BinFullness;
 import seng202.team1.data.table.StringTableBuilder;
 import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.components.UIImage;
+import seng202.team1.gui.components.UISlider;
 import seng202.team1.gui.components.UITable;
 import seng202.team1.gui.components.UITitle;
 
@@ -25,6 +29,8 @@ public class LeaderboardPage extends Page {
 
     private UITable table;
 
+    private HBox milstone;
+
     /**
      * Constructs a new LeaderboardPage
      *
@@ -34,6 +40,21 @@ public class LeaderboardPage extends Page {
 
         super(windowManager, Pages.LEADERBOARD);
 
+    }
+
+    public HBox buildNextMileStone(){
+
+        UIImage icon = new UIImage("/media/images/medal-gold.svg", 100, 100);
+
+        Label nextMilestone = new Label("Next Milestone: 1.5 Trees Saved!");
+        UISlider progress = new UISlider();
+        VBox nextContainer = new VBox(nextMilestone, progress);
+
+        HBox container =  new HBox(100, icon, nextContainer);
+
+        container.setAlignment(Pos.CENTER_LEFT);
+        container.setMaxWidth(Double.MAX_VALUE);
+        return container;
     }
 
     /**
@@ -49,13 +70,13 @@ public class LeaderboardPage extends Page {
         UITitle pageTitle = new UITitle("Leaderboard");
         pageTitle.setAlignment(Pos.CENTER);
 
-        String thisUser = "Mike M";
-
         // Data
+        String thisUser = "Mike M";
         tableData = new StringTableBuilder<LeaderBoardEntry>(windowManager.getGlobalState().getLeaderboard().entries())
                 .addColumn("position", "Position")
                 .addColumn("name", "Name", item -> {
 
+                    // Indicate which row the user belongs to
                     String name = (String)item;
                     return thisUser.equals(name) ? name + " (You)" : name;
                 })
@@ -65,9 +86,21 @@ public class LeaderboardPage extends Page {
 
         table = new UITable(tableData, true, row -> row.get("Name").contains("(You)"));
 
+        // Mile stone
+        milstone = new HBox(buildNextMileStone());
+        milstone.getStyleClass().add("milestone");
+        milstone.setAlignment(Pos.CENTER);
+
+//        table.layoutBoundsProperty().addListener((obs, oldVal, newVal) -> {
+//            System.out.printf("table: %f\n", table.getActualWidth());
+//        });
+
+        milstone.widthProperty().addListener((obs, oldVal, newVal) -> {
+            System.out.printf("milestone: %f\n", newVal.doubleValue());
+        });
 
         // Combine
-        VBox root = new VBox(20, pageTitle, table);
+        VBox root = new VBox(20, pageTitle, milstone, table);
         root.setAlignment(Pos.CENTER);
         return root;
 
@@ -83,5 +116,7 @@ public class LeaderboardPage extends Page {
         tableData.updateData(windowManager.getGlobalState().getLeaderboard().entries());
         table.buildTableContent();
 
+        HBox newInner = buildNextMileStone();
+        milstone.getChildren().set(0, newInner);
     }
 }
