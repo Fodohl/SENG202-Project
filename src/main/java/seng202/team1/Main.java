@@ -68,7 +68,7 @@ public class Main extends Application {
         stage.setTitle("TrashApp v1");
 
         // Setup app state
-        DatabaseManager.initialiseInstanceWithUrl("jdbc:sqlite:./src/main/resources/database.db");
+        DatabaseManager.initialiseInstanceWithUrl("jdbc:sqlite:database.db");
         GlobalState.create(stage);
         stage.show();
     }
