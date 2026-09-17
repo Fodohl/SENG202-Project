@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.BinCategory;
+import seng202.team1.data.bin.BinFullness;
 import seng202.team1.unittests.TrashAppTest;
 
 /**
@@ -36,7 +37,7 @@ public class BinLoaderTest extends TrashAppTest {
     public void testGetBinObjectsIsNotChangable() {
         List<Bin> bins = binLoader.getBinObjects();
         assertThrows(UnsupportedOperationException.class, () ->
-                bins.add(new Bin(0, 0, 0, BinCategory.GENERAL_WASTE, Instant.now(), "testPark")));
+                bins.add(new Bin(0, 0, 0, BinCategory.GENERAL_WASTE, Instant.now(),null, null)));
     }
 
     /**

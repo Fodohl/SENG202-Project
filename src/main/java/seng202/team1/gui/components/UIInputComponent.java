@@ -11,7 +11,7 @@ import seng202.team1.gui.GraphicsCommon;
  *
  * Note: state implementation and boilerplate is messy here due to the limitations of Java on multiple subclasses
  */
-public abstract interface UIInputComponent {
+public interface UIInputComponent {
 
     /// UIInputComponent specific logger
     static final Logger log = LogManager.getLogger(UIInputComponent.class);

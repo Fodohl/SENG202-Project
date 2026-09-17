@@ -267,7 +267,7 @@ public class WindowManager extends StateReferrer {
 
     /**
      * Open a modal as an overlay
-     * 
+     *
      * @see #openModal(Modals, Object)
      */
     public void openModal(Modals modalType){
@@ -276,7 +276,7 @@ public class WindowManager extends StateReferrer {
 
     /**
      * Open a modal as an overlay
-     * 
+     *
      * @param modalType The modal to show
      * @param data The data to pass to the overlay
      */
@@ -321,7 +321,7 @@ public class WindowManager extends StateReferrer {
 
     /**
      * Open a instance of a modal into a popup window
-     * 
+     *
      * @see #spawnModal(Modals, Object)
      */
     public long spawnModal(Modals modalType){
@@ -330,7 +330,7 @@ public class WindowManager extends StateReferrer {
 
     /**
      * Open a instance of a modal into a popup window
-     * 
+     *
      * @param modalType The modal to show
      * @param data The data to pass to the overlay
      * @return The ID of the opened modal

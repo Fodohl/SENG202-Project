@@ -39,7 +39,7 @@ public class ApiClient {
 
     /**
      * Constructs a new API client
-     * 
+     *
      * @see #ApiClient(String, String)
      */
     public ApiClient(String hostUrl) {
@@ -133,7 +133,7 @@ public class ApiClient {
     /**
      * Perform a HTTP GET request on the endpoint
      *
-     * @see #httpGET(String, Map, Consumer, UIKeyValuePair, UISpinner) 
+     * @see #httpGET(String, Map, Consumer, UIKeyValuePair, UISpinner)
      */
     protected void httpGET(String path, Map<String, String> queryParams, Consumer<String> handler) {
         httpGET(path, queryParams, handler, null, null);

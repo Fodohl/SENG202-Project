@@ -6,6 +6,8 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import seng202.team1.data.repository.DatabaseManager;
+import seng202.team1.exceptions.InstanceAlreadyExistsException;
 import seng202.team1.gui.components.UIImage;
 import seng202.team1.state.GlobalState;
 
@@ -52,7 +54,10 @@ public class Main extends Application {
      *              the application scene can be set.
      */
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws InstanceAlreadyExistsException {
+
+        // Dev tools
+        CSSFX.start();
 
         // Dev tools
         CSSFX.start();
@@ -63,8 +68,9 @@ public class Main extends Application {
         stage.setTitle("TrashApp v1");
 
         // Setup app state
-        GlobalState globalState = new GlobalState(stage);
-        globalState.show();
+        DatabaseManager.initialiseInstanceWithUrl("jdbc:sqlite:./src/main/resources/database.db");
+        GlobalState.create(stage);
+        stage.show();
     }
 
 
