@@ -24,7 +24,7 @@ class UIImageTest extends TrashAppTest {
     public void shouldBeAbleToLoadSvg(){
 
         // Should not add a image node if doesn't exist
-        UIImage image = new UIImage("/images/bin.svg", 10,10);
+        UIImage image = new UIImage("/media/images/empty.svg", 10,10);
         assertInstanceOf(SVGImage.class, image.getChildren().getFirst());
 
     }
@@ -33,7 +33,7 @@ class UIImageTest extends TrashAppTest {
     public void shouldLoadStandardImagesNativesly(){
 
         // Should not add a image node if doesn't exist
-        UIImage image = new UIImage("/images/bin.png", 10,10);
+        UIImage image = new UIImage("/media/images/bin.png", 10,10);
         assertInstanceOf(ImageView.class, image.getChildren().getFirst());
 
     }

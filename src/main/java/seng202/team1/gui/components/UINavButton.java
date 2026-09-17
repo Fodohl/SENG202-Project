@@ -4,8 +4,9 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import seng202.team1.common.StringHelpers;
-import seng202.team1.gui.core.WindowManager;
-import seng202.team1.gui.pages.PageType;
+import seng202.team1.gui.GraphicsCommon;
+import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.pages.Pages;
 
 /**
  * A UI Component to handle rendering navigation buttons
@@ -15,13 +16,13 @@ import seng202.team1.gui.pages.PageType;
  *
  * Note: No onClick needed, will automatically handle navigation calls
  */
-public class UINavButton extends HBox {
+public class UINavButton extends UIIconButton {
 
     /// The window manager responsible for the active page and switching to others
     private WindowManager windowManager;
 
     /// The page type this nav button represents as a clickable destination
-    private PageType dest;
+    private Pages dest;
 
     /**
      * Constructs a new UINavButton
@@ -29,55 +30,34 @@ public class UINavButton extends HBox {
      * @param windowManager The current window manger for the page this button is on
      * @param dest The navigation destination
      */
-    public UINavButton(WindowManager windowManager, PageType dest) {
+    public UINavButton(WindowManager windowManager, Pages dest) {
 
         // Setup state
-        super();
+        super(String.format("/media/images/%s.svg", dest.name().toLowerCase()), StringHelpers.toTitleCase(dest.name()));
         this.windowManager = windowManager;
         this.dest = dest;
 
-        // Extract info from page type
-        String iconPath = String.format("/images/%s.svg", dest.name().toLowerCase());
-        String title = StringHelpers.toTitleCase(dest.name());
-
         // Apply styles
-        getStyleClass().add("navitem");
         updateIsActive(windowManager.getCurrentPage());
-
-        // Add icon
-        StackPane icon = new UIImage(iconPath, 25, 25);
-        icon.getStyleClass().add("nav-icon");
-
-        // Add text
-        Label label = new Label(title);
-        label.getStyleClass().add("nav-text");
-
-        // Combine
-        getChildren().addAll(icon, label);
 
         // Handle events
         setOnMouseClicked(e -> windowManager.switchPage(dest));
         windowManager.registerPageChangeCallback(this::updateIsActive);
     }
 
+
     /**
      * Updates the style of this nav button to indicate whether this button's page is currently being shown or not
      *
      * @param currentActive The currently active page
      */
-    private void updateIsActive(PageType currentActive){
+    private void updateIsActive(Pages currentActive){
 
         // No active page
         if(currentActive == null || dest == null)
             return;
 
-        if(dest == currentActive){
-
-            // Dont add if already added
-            if(!getStyleClass().contains("active"))
-                getStyleClass().add("active");
-        } else{
-            getStyleClass().remove("active");
-        }
+        // Add styling accordingly
+        GraphicsCommon.toggleClass(dest == currentActive, this, "active");
     }
 }

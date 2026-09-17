@@ -1,0 +1,31 @@
+{
+  "statusReports": [
+    {
+      "binID": 197,
+      "user": "Test1",
+      "userID": 123,
+      "fullness": null,
+      "issue": null,
+      "description": null,
+      "createdAt": "2026-08-06T00:00:00"
+    },
+    {
+      "binID": 197,
+      "user": "Test2",
+      "userID": 321,
+      "fullness": "EMPTY",
+      "issue": "MISSING",
+      "description": "Test description",
+      "createdAt": "2026-08-06T00:00:00"
+    },
+    {
+      "binID": 483,
+      "user": "Test3",
+      "userID": 231,
+      "fullness": "OVERFLOWING",
+      "issue": "GRAFFITI",
+      "description": "Test description",
+      "createdAt": "2026-08-06T00:00:00"
+    }
+  ]
+}

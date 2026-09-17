@@ -3,8 +3,8 @@ package seng202.team1.unittests.gui.core;
 import javafx.scene.Parent;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import seng202.team1.gui.core.CoreUI;
-import seng202.team1.gui.core.LayoutElement;
+import seng202.team1.gui.layout.MainLayout;
+import seng202.team1.gui.layout.LayoutElement;
 import seng202.team1.unittests.TrashAppTest;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,7 +15,7 @@ class LayoutElementTest extends TrashAppTest {
 
     @BeforeEach
     public void init(){
-        layoutElement = new CoreUI(windowManager);
+        layoutElement = new MainLayout(windowManager);
     }
 
     @Test

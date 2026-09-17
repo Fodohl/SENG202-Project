@@ -93,6 +93,12 @@ dependencies {
 
     /// https://mvnrepository.com/artifact/org.testfx/openjfx-monocle
     testImplementation "org.testfx:openjfx-monocle:jdk-12.0.1+2"
+
+    // https://mvnrepository.com/artifact/fr.brouillard.oss/cssfx
+    implementation 'fr.brouillard.oss:cssfx:11.5.1'
+
+    // https://mvnrepository.com/artifact/com.google.code.gson/gson
+    implementation 'com.google.code.gson:gson:2.14.0'
 }
 
 application {
@@ -102,7 +108,7 @@ application {
 
 javafx {
     version = "${javafxVersion}"
-    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.web' ]
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.web', 'javafx.swing' ]
 }
 
 test {

@@ -57,4 +57,9 @@ IntelliJ has built-in support for Gradle. To import your project:
 - Font: https://fontlibrary.org (OFL)
 - Map: https://leafletjs.com (BSD)
 - Map Tiles: https://snazzymaps.com (CC0)
+- Map Tiles Style Conversion: https://github.com/julienben/gmaps-apistyle-encoder
+- Map Location Server: 
+- Map Location Sample Code: https://eng-git.canterbury.ac.nz/public-seng-resources/seng202/seng202-advanced-fx-public/-/tree/master?ref_type=heads
 
+# Thirdparty
+- unpkg

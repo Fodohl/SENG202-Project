@@ -6,6 +6,7 @@ package seng202.team1.data;
  */
 
 public class User {
+
     private final int userID;
     private final String name;
 
@@ -14,7 +15,6 @@ public class User {
      * @param userID
      * @param name
      */
-
     public User(int userID, String name) {
         this.userID = userID;
         this.name = name;
@@ -24,7 +24,6 @@ public class User {
      * Gets the userID
      * @return the userID
      */
-
     public int getUserID() {
         return userID;
     }
@@ -33,7 +32,6 @@ public class User {
      * Gets the name
      * @return the name
      */
-
     public String getName() {
         return name;
     }
@@ -42,7 +40,6 @@ public class User {
      * String toString
      * @return name
      */
-
     @Override
     public String toString() {
         return name;

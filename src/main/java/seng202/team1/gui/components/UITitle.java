@@ -19,7 +19,6 @@ public class UITitle extends Label {
 
         setText(title);
         getStyleClass().add("title");
-        setAlignment(Pos.CENTER);
     }
 
 }
