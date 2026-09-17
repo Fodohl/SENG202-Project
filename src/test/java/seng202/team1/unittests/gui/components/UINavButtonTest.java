@@ -3,7 +3,7 @@ package seng202.team1.unittests.gui.components;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import seng202.team1.gui.components.UINavButton;
-import seng202.team1.gui.pages.PageType;
+import seng202.team1.gui.pages.Pages;
 import seng202.team1.unittests.TrashAppTest;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,7 +13,7 @@ class UINavButtonTest extends TrashAppTest {
 
     private UINavButton button;
 
-    private static PageType NAV_TYPE = PageType.TIMELINE;
+    private static Pages NAV_TYPE = Pages.TIMELINE;
 
     @BeforeEach
     public void init(){
@@ -53,7 +53,7 @@ class UINavButtonTest extends TrashAppTest {
     private void switchAway() {
 
         // Make sure to switch to something else
-        PageType switchType = PageType.DATA;
+        Pages switchType = Pages.DATA;
         assert NAV_TYPE != switchType;
 
         windowManager.switchPage(switchType);

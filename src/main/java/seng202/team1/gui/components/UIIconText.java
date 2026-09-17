@@ -1,0 +1,31 @@
+package seng202.team1.gui.components;
+
+import javafx.geometry.Pos;
+import javafx.scene.layout.HBox;
+
+import javafx.scene.control.Label;
+
+/**
+ * A UI Component for rending an icon next to some text
+ */
+public class UIIconText extends HBox {
+
+    /**
+     * Constructs a new UIIconText
+     *
+     * @param iconName The name of the icon (should be located in the media/images folder)
+     * @param textValue The text to display
+     */
+    public UIIconText(String iconName, String textValue) {
+        super(5);
+
+        // Build
+        UIImage icon = new UIImage(String.format("/media/images/%s.svg", iconName), 20, 20);
+        Label text = new Label(textValue);
+        getChildren().addAll(icon, text);
+
+        // Style
+        setAlignment(Pos.CENTER_LEFT);
+        getStyleClass().add("icon-text");
+    }
+}

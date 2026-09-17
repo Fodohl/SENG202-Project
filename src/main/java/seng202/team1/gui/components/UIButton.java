@@ -1,0 +1,33 @@
+package seng202.team1.gui.components;
+
+
+import javafx.scene.control.Button;
+
+/**
+ * A UI Component to handle rendering buttons
+ */
+public class UIButton extends Button {
+
+    /**
+     * Construct a new primary button
+     *
+     * @param prompt The prompt to put on the button
+     */
+    public UIButton(String prompt){
+        this(prompt, false);
+    }
+
+     /**
+     * Construct a new  button
+     *
+     * @param prompt The prompt to put on the button
+     * @param secondary Whether the button is a primary input or secondary input
+     */
+    public UIButton(String prompt, boolean secondary){
+        super(prompt);
+
+        getStyleClass().add("button");
+        if(secondary)
+            getStyleClass().add("secondary");
+    }
+}
