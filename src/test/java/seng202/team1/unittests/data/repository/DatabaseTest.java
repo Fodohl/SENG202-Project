@@ -1,8 +1,8 @@
-package seng202.team1.unittests.repository;
+package seng202.team1.unittests.data.repository;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import seng202.team1.repository.DatabaseManager;
+import seng202.team1.data.repository.DatabaseManager;
 
 import java.sql.Connection;
 import java.sql.SQLException;

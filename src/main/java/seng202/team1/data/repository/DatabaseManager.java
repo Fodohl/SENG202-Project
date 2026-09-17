@@ -1,4 +1,4 @@
-package seng202.team1.repository;
+package seng202.team1.data.repository;
 
 
 import io.github.cdimascio.dotenv.Dotenv;

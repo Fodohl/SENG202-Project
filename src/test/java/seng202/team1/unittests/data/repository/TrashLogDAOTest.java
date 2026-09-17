@@ -1,4 +1,4 @@
-package seng202.team1.unittests.repository;
+package seng202.team1.unittests.data.repository;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -11,9 +11,9 @@ import seng202.team1.data.bin.BinFullness;
 import seng202.team1.data.trashlog.TrashLog;
 import seng202.team1.data.trashlog.TrashType;
 import seng202.team1.exceptions.InstanceAlreadyExistsException;
-import seng202.team1.repository.BinDAO;
-import seng202.team1.repository.DatabaseManager;
-import seng202.team1.repository.TrashLogDAO;
+import seng202.team1.data.repository.BinDAO;
+import seng202.team1.data.repository.DatabaseManager;
+import seng202.team1.data.repository.TrashLogDAO;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

@@ -9,8 +9,8 @@ import seng202.team1.data.bin.BinLoader;
 import seng202.team1.exceptions.InstanceAlreadyExistsException;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.pages.Pages;
-import seng202.team1.repository.DatabaseManager;
-import seng202.team1.repository.TrashLogDAO;
+import seng202.team1.data.repository.DatabaseManager;
+import seng202.team1.data.repository.TrashLogDAO;
 
 /**
  * Stores the current state of the app and provides managers to control it
