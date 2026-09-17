@@ -131,7 +131,7 @@ public class MapPage extends Page {
 
         // Populate the map
         map = new UIMap();
-        for (Bin bin : windowManager.getGlobalState().getDataLoader().getBinObjects())
+        for (Bin bin : windowManager.getGlobalState().getBinDAO().getAll())
             map.addPoint(bin.getLatitude(), bin.getLongitude(), bin.getID(), bin.getCategory().toString().toLowerCase());
 
         // Handle map events
@@ -207,7 +207,7 @@ public class MapPage extends Page {
         if (Objects.equals(selectedBin, binID))
             selectedBin = null;
         else
-            selectedBin = windowManager.getGlobalState().getDataLoader().getBinById(binID);
+            selectedBin = windowManager.getGlobalState().getBinDAO().getOne(binID);
 
         clearPreviousBin();
         updateContents();

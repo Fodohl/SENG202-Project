@@ -57,7 +57,7 @@ public class DatabaseManager {
      * Singleton method to get current Instance if exists otherwise create it
      * @return the single instance DatabaseSingleton
      */
-    public static DatabaseManager getInstance() {
+    public static DatabaseManager getInstance(){
         if(instance == null) {
             instance = new DatabaseManager(null);
         }

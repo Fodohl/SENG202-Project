@@ -159,6 +159,9 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
             context.transaction(configuration -> {
                 DSLContext ctx = DSL.using(configuration);
                 for (Bin bin : bins) {
+                    Long updatedMillis = bin.getUpdated() != null
+                            ? bin.getUpdated().toEpochMilli()
+                            : null;
                     ctx.insertInto(DSL.table("bins"))
                             .columns(
                                     DSL.field("id"),
@@ -175,7 +178,7 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
                                     bin.getLatitude(),
                                     bin.getLongitude(),
                                     bin.getCategory().toString(),
-                                    bin.getUpdated().toEpochMilli(),
+                                    updatedMillis,
                                     bin.getFullness().toString(),
                                     bin.getPhotoURL(),
                                     bin.getAreaName()

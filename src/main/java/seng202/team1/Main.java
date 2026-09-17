@@ -61,7 +61,7 @@ public class Main extends Application {
         stage.setTitle("TrashApp v1");
 
         // Setup app state
-        GlobalState globalState = new GlobalState(stage);
+        GlobalState.create(stage);
         stage.show();
     }
 

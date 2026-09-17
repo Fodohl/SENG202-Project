@@ -43,11 +43,8 @@ public class TrashAppTest {
     @BeforeEach
     void initState() throws InstanceAlreadyExistsException {
 
-        state = new GlobalState(null);
-
         // Extract state for easier access
         windowManager = state.getWindowManager();
-        binLoader = state.getDataLoader();
     }
 
     protected StringTable testDataTable() {

@@ -3,6 +3,7 @@
 *.iml
 *.iws
 
+
 # Mac
 .DS_Store
 
@@ -19,3 +20,4 @@ build/
 # DB
 identifier.sqlite
 *.db
+test_database.db

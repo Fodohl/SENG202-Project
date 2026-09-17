@@ -88,7 +88,7 @@ public class DashboardPage extends Page {
     @Override
     public void updateContents() {
 
-        dataset.setText(String.format("%s", windowManager.getGlobalState().getDataLoader().getBinObjects().size()));
+        dataset.setText(String.format("%s", windowManager.getGlobalState().getBinDAO().getAll().size()));
 
         // Get usage
         List<TrashLog> uses = windowManager.getGlobalState().getTrashLogDAO()
@@ -96,7 +96,7 @@ public class DashboardPage extends Page {
                                            .sorted(Comparator.comparing(TrashLog::createdAt))
                                            .toList();
         List<Bin> bins = uses.stream()
-                              .map(b -> windowManager.getGlobalState().getDataLoader().getBinById(b.binID()))
+                              .map(b -> windowManager.getGlobalState().getBinDAO().getOne(b.binID()))
                               .toList();
 
         TrashLog newestLog = uses.isEmpty() ? null : uses.getLast();

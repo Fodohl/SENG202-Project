@@ -6,6 +6,7 @@ import seng202.team1.api.photon.PhotonClient;
 import seng202.team1.api.trashdb.TrashDBClient;
 import seng202.team1.api.trashdb.TrashDBLeaderboardResponse;
 import seng202.team1.data.bin.BinLoader;
+import seng202.team1.data.repository.BinDAO;
 import seng202.team1.exceptions.InstanceAlreadyExistsException;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.pages.Pages;
@@ -17,6 +18,8 @@ import seng202.team1.data.repository.TrashLogDAO;
  */
 public class GlobalState {
 
+    private static GlobalState instance;
+
     /// Whether there is a screen to draw to or now
     public static boolean IS_HEADLESS_MODE = false;
 
@@ -26,10 +29,11 @@ public class GlobalState {
     /// The handler for the static bin data
     private BinLoader binLoader;
 
-    // private TrashLogStore trashLogStore;
+    private TrashLogDAO trashLogDAO;
 
-    static TrashLogDAO trashLogDAO =  new TrashLogDAO();
-    static DatabaseManager databaseManager = DatabaseManager.getInstance();
+    private BinDAO binDAO;
+
+    private DatabaseManager databaseManager;
 
     private PhotonClient photonClient;
 
@@ -39,26 +43,54 @@ public class GlobalState {
 
     private TrashDBLeaderboardResponse leaderboard;
 
+    private GlobalState() {
+    }
+
     /**
-     * Constructs a new GlobalState and sets up managers
-     *
-     * @param stage The window for the app
+     * Factory method that creates and fully initialises the singleton {@code GlobalState} instance.
+     * Called once per application run
+     * @param stage the primary JavaFX stage to hand off to the {@link WindowManager}
+     * @return the newly created singleton {@code GlobalState} instance
+     * @throws InstanceAlreadyExistsException if {@code create} has already been called in this
+     * application run
      */
-    public GlobalState(Stage stage) throws InstanceAlreadyExistsException {
+    public static GlobalState create(Stage stage) throws InstanceAlreadyExistsException {
+        if (instance != null) {
+            throw new InstanceAlreadyExistsException("GlobalState already initialized");
+        }
 
-        // Data must be loaded first as UI depends on it
-        binLoader = new BinLoader();
-        binLoader.readGeoJSON();
+        GlobalState state = new GlobalState();
 
-//        trashLogStore = new TrashLogStore(TrashLogStore.defaultDataPath());
-//        trashLogStore.load();
+        state.databaseManager = DatabaseManager.initialiseInstanceWithUrl(
+                "jdbc:sqlite:./src/main/resources/database.db");
 
-        photonClient = new PhotonClient();
-        trashDBClient = new TrashDBClient();
+        state.binLoader = new BinLoader();
+        state.binDAO = new BinDAO();
+        state.trashLogDAO = new TrashLogDAO();
 
-        windowManager = new WindowManager(this, stage);
+        state.loadBins();
 
-        fetchData();
+        state.photonClient = new PhotonClient();
+        state.trashDBClient = new TrashDBClient();
+
+        state.windowManager = new WindowManager(state, stage);
+
+        state.fetchData();
+
+        instance = state;
+        return state;
+    }
+
+    /**
+     * Returns the singleton {@code GlobalState} instance.
+     * @return the singleton {@code GlobalState} instance
+     * @throws IllegalStateException if {@link #create(Stage)} has not yet been called
+     */
+    public static GlobalState getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("GlobalState not initialized — call create() first");
+        }
+        return instance;
     }
 
     private void fetchData() {
@@ -80,26 +112,12 @@ public class GlobalState {
         return windowManager;
     }
 
-    /**
-     * Get the current data loader
-     *
-     * @return The data loader for the app
-     */
-    public BinLoader getDataLoader() {
-        return binLoader;
-    }
-
-//    public TrashLogStore getTrashLogStore() {
-//        return trashLogStore;
-//    }
-
-    public DatabaseManager getDatabaseManager() {
-        return databaseManager;
-    }
 
     public TrashLogDAO getTrashLogDAO() {
         return trashLogDAO;
     }
+
+    public BinDAO getBinDAO() { return binDAO; }
 
     public PhotonClient getPhotonClient() {
         return photonClient;
@@ -117,6 +135,16 @@ public class GlobalState {
         requestedLocation = null;
 
         return location;
+    }
+
+    /**
+     * Loads the bins from JSON file to the database if there are no bins in the
+     * current database
+     */
+    private void loadBins() {
+        if (binDAO.getAll().isEmpty()) {
+            binDAO.addBatch(binLoader.getBinObjects());
+        }
     }
 
     public TrashDBLeaderboardResponse getLeaderboard() {
