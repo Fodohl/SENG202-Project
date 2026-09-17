@@ -17,7 +17,7 @@ public class UICard extends VBox {
 
     /// The statistic being shown in the card
     private Label valueNode;
-    
+
     /// The statistic unit or similar
     private Label subtitleNode;
 

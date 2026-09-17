@@ -31,7 +31,7 @@ class UIInputComponentTest extends TrashAppTest {
     }
 
     @Test
-    void isErrorShouldSafleyHandleNull() {
+    void isErrorShouldSafelyHandleNull() {
         assertFalse(inputComponent.isErroringInternal(null));
     }
 

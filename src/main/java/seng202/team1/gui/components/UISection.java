@@ -10,7 +10,7 @@ public class UISection extends VBox {
 
     /**
      * Constructs a new UISection
-     * 
+     *
      * @see #UISection(Integer, Node...)
      */
     public UISection(Node... children) {

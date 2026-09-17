@@ -10,15 +10,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import seng202.team1.common.URLHelpers;
-import seng202.team1.data.bin.BinLoader;
 import seng202.team1.state.GlobalState;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
@@ -42,7 +37,7 @@ public abstract class UIWebRenderer extends StackPane {
     /// List of calls that are waiting to be executed once the JS runtime is ready
     private Queue<String> engineCalls = new ArrayDeque<>();
 
-    /// Whether the webview has finished initalisation
+    /// Whether the webview has finished initialisation
     private boolean webReady = false;
 
     /// Bridge to pass calls from JavaScript to Java
@@ -60,7 +55,7 @@ public abstract class UIWebRenderer extends StackPane {
     /**
      * Constructs a new UIWebRenderer
      *
-     * @param htmlFile The source code for the webveiw contents
+     * @param htmlFile The source code for the webview contents
      */
     public UIWebRenderer(String htmlFile) {
 
@@ -94,15 +89,15 @@ public abstract class UIWebRenderer extends StackPane {
 
             webReady = true;
             System.out.println("ready");
-            proccessCalls();
+            processCalls();
         });
 
-        // Pipe js logs to sout
+        // Pipe js logs to south
         webView.getEngine().setOnError(e -> log.error("{}", e));
     }
 
-     /**
-     * Process a API call from the JS in the webview
+    /**
+     * Process an API call from the JS in the webview
      *
      * @param callURL The full API url that the JS queried
      */
@@ -134,7 +129,7 @@ public abstract class UIWebRenderer extends StackPane {
     }
 
     /**
-     * Process a API call from the JS in the webview
+     * Process an API call from the JS in the webview
      *
      * @param callURL The full API url that the JS queried
      */
@@ -154,7 +149,7 @@ public abstract class UIWebRenderer extends StackPane {
                     break;
                 }
 
-                 case "onConsoleError" : {
+                case "onConsoleError" : {
                     log.error(params.get("message"));
                     break;
                 }
@@ -168,7 +163,7 @@ public abstract class UIWebRenderer extends StackPane {
 
         } catch (Exception e){
 
-            // Drop any packets that dont have requried keys or required type
+            // Drop any packets that do not have required keys or required type
             log.warn(String.format("Trash App API Call Dropped: %s(%s) - 2 - %s", function, params, e.getMessage()));
             return;
         }
@@ -183,7 +178,7 @@ public abstract class UIWebRenderer extends StackPane {
     /**
      * Clears the waiting queue of calls to the web engine by running them all
      */
-    private void proccessCalls() {
+    private void processCalls() {
 
         // Run all calls that are waiting to be run
         for (String js : engineCalls)

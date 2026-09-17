@@ -5,16 +5,22 @@ import seng202.team1.api.photon.Feature;
 import seng202.team1.api.photon.PhotonClient;
 import seng202.team1.api.trashdb.TrashDBClient;
 import seng202.team1.api.trashdb.TrashDBLeaderboardResponse;
-import seng202.team1.data.bin.BinLoader;
 import seng202.team1.data.status.StatusReportStore;
-import seng202.team1.data.trashlog.TrashLogStore;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.pages.Pages;
+import seng202.team1.data.repository.DatabaseManager;
+import seng202.team1.data.repository.TrashLogDAO;
+import seng202.team1.data.repository.BinDAO;
+import seng202.team1.exceptions.InstanceAlreadyExistsException;
+import seng202.team1.data.bin.BinLoader;
+
 
 /**
  * Stores the current state of the app and provides managers to control it
  */
-public class GlobalState {
+public class    GlobalState {
+
+    private static GlobalState instance;
 
     /// Whether there is a screen to draw to or now
     public static boolean IS_HEADLESS_MODE = false;
@@ -28,55 +34,80 @@ public class GlobalState {
     /// The handler for the static bin data
     private BinLoader binLoader;
 
-    /// The handler for trash logs
-    private TrashLogStore trashLogStore;
+    private TrashLogDAO trashLogDAO;
+
+    private BinDAO binDAO;
+
+    private DatabaseManager databaseManager;
+
+    private PhotonClient photonClient;
+
+    private TrashDBClient trashDBClient;
+
+    private Feature requestedLocation;
+
+    private TrashDBLeaderboardResponse leaderboard;
 
     /// The handler for issue reports
     private StatusReportStore statusReportStore;
 
-    /// The handler for geocoding API requests
-    private PhotonClient photonClient;
-
-    /// The handler for app API requests
-    private TrashDBClient trashDBClient;
-
-    /// The current pending location request, or null if none pending
-    private Feature requestedLocation;
-
-    /// The current leaderboard state
-    private TrashDBLeaderboardResponse leaderboard;
-
-    /**
-     * Constructs a new GlobalState and sets up managers
-     *
-     * @param stage The window for the app
-     */
-    public GlobalState(Stage stage) {
-
-        // Data must be loaded first as UI depends on it
-        binLoader = new BinLoader();
-        binLoader.readGeoJSON();
-
-        trashLogStore = new TrashLogStore(TrashLogStore.defaultDataPath());
-        trashLogStore.load();
-
-        //@todo clean up loaders & paths
-        statusReportStore = new StatusReportStore(binLoader, StatusReportStore.defaultDataPath());
-        statusReportStore.load();
-        binLoader.loadBinFullness(statusReportStore);
-
-        photonClient = new PhotonClient();
-        trashDBClient = new TrashDBClient();
-
-        this.stage = stage;
-        windowManager = new WindowManager(this, stage);
-
-        fetchData();
+    private GlobalState() {
     }
 
     /**
-     * Fetch the data the app needs in the background
+     * Factory method that creates and fully initialises the singleton {@code GlobalState} instance.
+     * Called once per application run
+     *
+     * @param stage the primary JavaFX stage to hand off to the {@link WindowManager}
+     * @return the newly created singleton {@code GlobalState} instance
+     * @throws InstanceAlreadyExistsException if {@code create} has already been called in this
+     *                                        application run
      */
+    public static GlobalState create(Stage stage) throws InstanceAlreadyExistsException {
+        if (instance != null) {
+            throw new InstanceAlreadyExistsException("GlobalState already initialized");
+        }
+
+        GlobalState state = new GlobalState();
+
+        state.databaseManager = DatabaseManager.getInstance();
+
+        state.binLoader = new BinLoader();
+        state.binLoader.readGeoJSON();
+
+        state.binDAO = new BinDAO();
+        state.trashLogDAO = new TrashLogDAO();
+
+        state.statusReportStore = new StatusReportStore(state.binLoader, StatusReportStore.defaultDataPath());
+        state.statusReportStore.load();
+        state.binLoader.loadBinFullness(state.statusReportStore);
+
+        state.loadBins();
+
+        state.photonClient = new PhotonClient();
+        state.trashDBClient = new TrashDBClient();
+
+        state.windowManager = new WindowManager(state, stage);
+
+        state.fetchData();
+
+        instance = state;
+        return state;
+    }
+
+    /**
+     * Returns the singleton {@code GlobalState} instance.
+     * @return the singleton {@code GlobalState} instance
+     * @throws IllegalStateException if {@link #create(Stage)} has not yet been called
+     */
+    public static GlobalState getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("GlobalState not initialized — call create() first");
+        }
+        return instance;
+    }
+
+
     private void fetchData() {
 
         trashDBClient.getLeaderboard(leaderboard -> {
@@ -96,23 +127,32 @@ public class GlobalState {
         return windowManager;
     }
 
-    /**
-     * Get the bin data loader
-     *
-     * @return The bin loader for the app
-     */
+    public TrashLogDAO getTrashLogDAO() {
+        return trashLogDAO;
+    }
+
+    public BinDAO getBinDAO() { return binDAO; }
+
+    public PhotonClient getPhotonClient() {
+        return photonClient;
+    }
+
+    public void setMapSearchRequest(Feature location) {
+        requestedLocation = location;
+        windowManager.switchPage(Pages.MAP);
+    }
+
     public BinLoader getBinLoader() {
         return binLoader;
     }
 
+    public Feature consumeMapSearchRequest(){
 
-    /**
-     * Get the trash log handler
-     *
-     * @return The trash log handler
-     */
-    public TrashLogStore getTrashLogStore() {
-        return trashLogStore;
+        // Clear the request
+        Feature location = requestedLocation;
+        requestedLocation = null;
+
+        return location;
     }
 
     /**
@@ -125,51 +165,23 @@ public class GlobalState {
     }
 
     /**
-     * Get the geocoding API handler
-     *
-     * @return The geocoding API handler
+     * Loads the bins from JSON file to the database if there are no bins in the
+     * current database
      */
-    public PhotonClient getPhotonClient() {
-        return photonClient;
+    private void loadBins() {
+        if (binDAO.getAll().isEmpty()) {
+            binDAO.addBatch(binLoader.getBinObjects());
+        }
     }
 
-    /**
-     * Get the current leaderboard
-     *
-     * @return The current leaderboard
-     */
     public TrashDBLeaderboardResponse getLeaderboard() {
         return leaderboard;
     }
 
     /**
-     * Set a pending map search request
-     *
-     * @param location The location searched
+     * Resets the singleton instance. Intended for test use only.
      */
-    public void setMapSearchRequest(Feature location) {
-        requestedLocation = location;
-        windowManager.switchPage(Pages.MAP);
-    }
-
-    /**
-     * Get and clear a pending search request
-     *
-     * @return The search request or null if none currently requested
-     */
-    public Feature consumeMapSearchRequest() {
-
-        // Clear the request
-        Feature location = requestedLocation;
-        requestedLocation = null;
-
-        return location;
-    }
-
-    /**
-     * Spawn the main app window
-     */
-    public void show() {
-        stage.show();
+    public static void REMOVE_INSTANCE() {
+        instance = null;
     }
 }

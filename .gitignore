@@ -3,6 +3,7 @@
 *.iml
 *.iws
 
+
 # Mac
 .DS_Store
 
@@ -15,3 +16,8 @@ build/
 
 # Gradle
 .gradle/
+
+# DB
+identifier.sqlite
+*.db
+test_database.db

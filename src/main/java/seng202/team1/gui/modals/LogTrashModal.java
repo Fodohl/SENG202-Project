@@ -10,10 +10,12 @@ import seng202.team1.data.bin.BinFullness;
 import seng202.team1.data.bin.BinCategory;
 import seng202.team1.data.status.ReportType;
 import seng202.team1.data.status.StatusReport;
+import seng202.team1.data.trashlog.TrashLog;
 import seng202.team1.data.trashlog.TrashType;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.components.*;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
@@ -132,8 +134,9 @@ public class LogTrashModal extends Modal {
         Integer binID = bin.getID();
 
         TrashType type = null;
-        Integer weight = null;
+        Integer weight = 0;
         BinFullness fullness = null;
+        Integer userID = 1;
 
         // Get type
         for (TrashType trashType : TrashType.values())
@@ -177,7 +180,7 @@ public class LogTrashModal extends Modal {
             return;
 
         // Save
-        windowManager.getGlobalState().getTrashLogStore().logTrash(category, type, weight, binID);
+        windowManager.getGlobalState().getTrashLogDAO().add(new TrashLog(Instant.now(), Instant.now(), userID, binID, type, weight));
         windowManager.getGlobalState().getStatusReportStore().logReport(bin, fullness, ReportType._FULLNESS_UPDATE, "");
 
         closeModal();

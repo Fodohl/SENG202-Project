@@ -7,7 +7,6 @@ import seng202.team1.common.StringHelpers;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.status.ReportType;
 import seng202.team1.data.status.StatusReport;
-import seng202.team1.data.trashlog.Trash;
 import seng202.team1.data.trashlog.TrashLog;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.components.UIImage;
@@ -15,6 +14,8 @@ import seng202.team1.gui.components.UITimeline;
 import seng202.team1.gui.components.UITimelineEntry;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,7 +59,7 @@ public class TimelinePage extends Page {
     void renderTimelineEntries() {
 
         List<StatusReport> reports = windowManager.getGlobalState().getStatusReportStore().getReports();
-        List<TrashLog> trash = windowManager.getGlobalState().getTrashLogStore().getAll();
+        List<TrashLog> trash = windowManager.getGlobalState().getTrashLogDAO().getAll();
 
         // Combine trash logs and status reports
         ArrayList<UITimelineEntry> entries = new ArrayList<>();
@@ -89,18 +90,17 @@ public class TimelinePage extends Page {
         return trash.stream()
                 .map(log -> {
 
-                    // Get asociated log data
-                    Bin bin = windowManager.getGlobalState().getBinLoader().getBinById(log.binLogId());
-                    Trash trashLogged = log.trashLogged();
+                    // Get associated log data
+                    Bin bin = windowManager.getGlobalState().getBinDAO().getOne(log.binID());
 
-                    String trashType = StringHelpers.enumNameToTitle(trashLogged.trashType().name());
+                    String trashType = StringHelpers.enumNameToTitle(log.trashType().name());
 
 
                     // Convert log into format expected by timeline entry
                     UIImage icon = new UIImage(String.format("/media/images/%s.svg", bin.getCategory().name().toLowerCase()), 50, 50);
-                    String desciption = String.format("%s (%dg) logged at %s", trashType, trashLogged.trashWeight(), bin.getAreaName());
+                    String desciption = String.format("%s (%dg) logged at %s", trashType, log.trashWeight(), bin.getAreaName());
 
-                    return new UITimelineEntry(DateHelpers.fromLocalTime(log.disposedAt()), icon, "Trash Logged", desciption);
+                    return new UITimelineEntry(DateHelpers.fromLocalTime(LocalDateTime.ofInstant(log.disposedAt(), ZoneId.systemDefault())), icon, "Trash Logged", desciption);
                 })
                 .toList();
 

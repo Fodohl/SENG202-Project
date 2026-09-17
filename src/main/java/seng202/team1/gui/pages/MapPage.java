@@ -251,11 +251,11 @@ public class MapPage extends Page {
             return;
 
         // Get usage
-        List<TrashLog> uses = windowManager.getGlobalState().getTrashLogStore()
-                                           .getAll().stream()
-                                           .filter(l -> l.binLogId() == selectedBin.getID())
-                                           .sorted(Comparator.comparing(TrashLog::createdAt))
-                                           .toList();
+        List<TrashLog> uses = windowManager.getGlobalState().getTrashLogDAO()
+                .getAll().stream()
+                .filter(l -> l.binID() == selectedBin.getID())
+                .sorted(Comparator.comparing(TrashLog::createdAt))
+                .toList();
         TrashLog newest = uses.isEmpty() ? null : uses.getLast();
 
         sidebarBinID.setText(selectedBin.getID().toString());
@@ -291,7 +291,7 @@ public class MapPage extends Page {
         mapDialog.setVisible(false);
     }
 
-     private void tryDrawDirections(){
+    private void tryDrawDirections(){
 
         // Dont have a dest point
         if(selectedBin == null)

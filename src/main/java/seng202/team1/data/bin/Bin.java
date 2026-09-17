@@ -28,24 +28,31 @@ public class Bin {
     /// When the bin's info was last updated
     protected Instant updated;
 
+    // The bin's photo url
+    protected String photoURL;
+
     /// Name of the area the bin is located in (@todo resolve to address using api)
     protected String areaName;
 
     /**
      * Constructor for Bin class
-     *
      * @param binID - unique identifier for the bin
      * @param latitude - latitude of the bin
      * @param longitude - longitude of the bin
      * @param type - type of bin (general waste, recycling, organic)
      */
-    public Bin(Integer binID, double latitude, double longitude, BinCategory type, Instant updated, String areaName) {
+    public Bin(Integer binID, double latitude, double longitude, BinCategory type, Instant updated, String photoURL, String areaName) {
         this.binID = binID;
         this.latitude = latitude;
         this.longitude = longitude;
         this.type = type;
         this.updated = updated;
+        this.photoURL = photoURL;
         this.areaName = areaName;
+    }
+
+    public Bin(Integer binID, double latitude, double longitude, BinCategory type, Instant updated, String areaName) {
+        this(binID, latitude, longitude, type, updated, null, areaName);
     }
 
     /**
@@ -95,6 +102,16 @@ public class Bin {
     public Instant getUpdated() {
         return updated;
     }
+
+
+    /**
+     * Get the bin's photo URL
+     * @return Bin's photo URL
+     */
+    public String getPhotoURL() {
+        return photoURL;
+    }
+
 
     /**
      * Get the bin's general area of location

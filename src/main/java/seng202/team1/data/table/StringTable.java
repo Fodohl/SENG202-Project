@@ -75,11 +75,11 @@ public class StringTable extends LinkedHashMap<String, List<String>> {
     public boolean add(Object object, Map<String, Function<Object, String>> formatters){
 
         // Get fields the object has
-        List<Field> declearedFields = Arrays.asList(object.getClass().getDeclaredFields());
+        List<Field> declaredFields = Arrays.asList(object.getClass().getDeclaredFields());
 
         // Map field name to field
         HashMap<String, Field> fields = new HashMap<>();
-        for(Field field : declearedFields)
+        for(Field field : declaredFields)
             fields.put(field.getName(), field);
 
         // Validate that object has required keys and that they are accessible

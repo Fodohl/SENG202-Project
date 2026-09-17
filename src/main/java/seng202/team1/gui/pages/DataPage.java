@@ -64,12 +64,12 @@ public class DataPage extends Page {
         pageTitle.setAlignment(Pos.CENTER);
 
         // Data
-        StringTableBuilder<Bin> tableData = new StringTableBuilder<Bin>(windowManager.getGlobalState().getBinLoader().getBinObjects())
+        StringTableBuilder<Bin> tableData = new StringTableBuilder<Bin>(windowManager.getGlobalState().getBinDAO().getAll())
             .addColumn("binID", "ID")
             .addColumn("fullness", "Fullness", val -> StringHelpers.enumNameToTitle(((BinFullness)val).name()))
             .addColumn("areaName", "Location")
             .addColumn("type", "Type", val -> StringHelpers.enumNameToTitle(((BinCategory)val).name()))
-            .sortBy(Comparator.comparing(item -> item.getID()));
+            .sortBy(Comparator.comparing(Bin::getID));
 
         UIIconButton exportButton = new UIIconButton("/media/images/export.svg", "Export Data");
         exportButton.getStyleClass().add("data-button");

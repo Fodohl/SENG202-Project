@@ -3,9 +3,6 @@ package seng202.team1.data.status;
 
 import seng202.team1.data.User;
 import seng202.team1.data.bin.*;
-import seng202.team1.data.trashlog.Trash;
-import seng202.team1.data.trashlog.TrashLog;
-import seng202.team1.data.trashlog.TrashType;
 
 import java.io.IOException;
 import java.nio.file.Path;
