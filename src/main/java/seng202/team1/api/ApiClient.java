@@ -102,7 +102,6 @@ public class ApiClient {
      */
     private void send(HttpRequest request, Consumer<String> handler, UIKeyValuePair error, UISpinner loader){
 
-        //@todo super should map error to human readable
 
         // Begin request
         trySetLoader(loader, true);
@@ -150,7 +149,6 @@ public class ApiClient {
      */
     protected void httpGET(String path, Map<String, String> queryParams, Consumer<String> handler, UIKeyValuePair error, UISpinner loader) {
 
-        // @todo check cache
 
         // Build the full url
         String queryString = queryParams.entrySet().stream()

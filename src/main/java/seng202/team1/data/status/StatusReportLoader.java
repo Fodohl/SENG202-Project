@@ -18,7 +18,7 @@ import org.json.simple.parser.JSONParser;
 import seng202.team1.data.User;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.BinFullness;
-import seng202.team1.data.bin.BinLoader;
+import seng202.team1.data.sqlite.DAO.BinDAO;
 
 /**
  * Loads bin report data from a JSON file into {@link StatusReport} instances
@@ -26,15 +26,15 @@ import seng202.team1.data.bin.BinLoader;
  */
 public class StatusReportLoader {
     private static final Logger log = LogManager.getLogger(StatusReportLoader.class);
-    private static final String TEST_FILE_PATH = "/data/example_reports.json";
+    protected static final String TEST_FILE_PATH = "/data/example_reports.json";
     private final Path filePath;
     private final List<StatusReport> statusReports = new ArrayList<>();
-    private final BinLoader bins;
+    private final BinDAO bins;
 
     /**
      * Instantiates StatusReportLoader
      */
-    public StatusReportLoader(BinLoader bins) {
+    public StatusReportLoader(BinDAO bins) {
         this(bins, null);
     }
 
@@ -42,7 +42,7 @@ public class StatusReportLoader {
      * Instantiates StatusReportLoader for use in app
      * @param filePath Path of JSON file for bin reports
      */
-    public StatusReportLoader(BinLoader bins, Path filePath) {
+    public StatusReportLoader(BinDAO bins, Path filePath) {
         this.bins = bins;
         this.filePath = filePath;
     }
@@ -58,7 +58,8 @@ public class StatusReportLoader {
      */
     public List<StatusReport> getStatusReportsById(int id) {
         return statusReports.stream()
-                .filter(bin -> bin.getBinID() == id)
+                .filter(r -> r.getBin() != null)
+                .filter(r -> r.getBinID() == id)
                 .toList();
     }
 
@@ -108,7 +109,7 @@ public class StatusReportLoader {
      */
     private StatusReport parseReport(JSONObject jsonObject) {
         int binID = ((Number) jsonObject.get("binID")).intValue();
-        Bin bin = bins.getBinById(binID);
+        Bin bin = bins.getOne(binID);
         String reportStatus = (String) jsonObject.get("fullness");
         String reportUser = (String) jsonObject.get("user");
         int reportUserID = ((Number) jsonObject.get("userID")).intValue();

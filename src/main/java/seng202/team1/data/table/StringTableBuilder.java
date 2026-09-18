@@ -119,7 +119,6 @@ public class StringTableBuilder<T> {
 
             } catch (Exception e) {
 
-                //@todo warn
                 return 0;
             }
         };

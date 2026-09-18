@@ -1,4 +1,4 @@
-package seng202.team1.data.repository;
+package seng202.team1.data.sqlite.DAO;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -7,10 +7,11 @@ import org.jooq.impl.DSL;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.BinCategory;
 import seng202.team1.data.bin.BinFullness;
+import seng202.team1.data.sqlite.DatabaseManager;
+import seng202.team1.data.sqlite.SqlTimeUtils;
 
 
 import java.sql.*;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -24,9 +25,10 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
     private static final Logger log = LogManager.getLogger(BinDAO.class);
 
 
-    public BinDAO(){
-        databaseManager = DatabaseManager.getInstance();}
+    public BinDAO(DatabaseManager databaseManager) {
+        this.databaseManager = databaseManager;
 
+    }
 
     /**
      * Converts string from database to BinCategory
@@ -57,12 +59,14 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
             while (rs.next()) {
                 bins.add(new Bin(
                         rs.getInt("id"),
-                        rs.getFloat("lat"),
-                        rs.getFloat("lng"),
+                        rs.getDouble("lat"),
+                        rs.getDouble("lng"),
                         convertStringToCategory(rs.getString("waste_type")),
                         getInstant(rs, "updated_at"),
                         rs.getString("photo_url"),
-                        rs.getString("area")));
+                        rs.getString("area"),
+                        convertStringToFullness(rs.getString("fullness"))
+                ));
             }
             return bins;
         } catch (SQLException sqlException) {
@@ -87,12 +91,14 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
                 while (rs.next()) {
                     bin = new Bin(
                             rs.getInt("id"),
-                            rs.getFloat("lat"),
-                            rs.getFloat("lng"),
+                            rs.getDouble("lat"),
+                            rs.getDouble("lng"),
                             convertStringToCategory(rs.getString("waste_type")),
                             getInstant(rs, "updated_at"),
                             rs.getString("photo_url"),
-                            rs.getString("area"));
+                            rs.getString("area"),
+                            convertStringToFullness(rs.getString("fullness"))
+                            );
                 }
                 return bin;
             }
@@ -195,7 +201,7 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
      */
     @Override
     public void update(Bin toUpdate) {
-        String sql = "UPDATE bins SET lat = ?, lng = ?, waste_type = ?, updated_at = ?, photo_url = ?, area = ? WHERE id = ?";
+        String sql = "UPDATE bins SET lat = ?, lng = ?, waste_type = ?, updated_at = ?, photo_url = ?, area = ?, fullness = ? WHERE id = ?";
         try (Connection conn = databaseManager.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setDouble(1, toUpdate.getLatitude());
@@ -204,13 +210,25 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
             setInstant(ps, 4, toUpdate.getUpdated());
             ps.setString(5, toUpdate.getPhotoURL());
             ps.setString(6, toUpdate.getAreaName());
-            ps.setInt(7, toUpdate.getID());
+            ps.setString(7, toUpdate.getFullness().toString());
+            ps.setInt(8, toUpdate.getID());
             int rows = ps.executeUpdate();
             if (rows == 0) {
                 log.warn("Update affected 0 rows for bin id {}", toUpdate.getID());
             }
         } catch (SQLException sqlException) {
             log.error(sqlException);
+        }
+    }
+
+    private BinFullness convertStringToFullness(String fullness) {
+        if (fullness == null)
+            return BinFullness.UNKNOWN;
+
+        try {
+            return BinFullness.valueOf(fullness.toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException e) {
+            return BinFullness.UNKNOWN;
         }
     }
 }

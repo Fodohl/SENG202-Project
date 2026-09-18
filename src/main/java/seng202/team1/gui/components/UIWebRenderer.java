@@ -88,7 +88,6 @@ public abstract class UIWebRenderer extends StackPane {
             call(parseAPISourceCode());
 
             webReady = true;
-            System.out.println("ready");
             processCalls();
         });
 

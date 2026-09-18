@@ -10,6 +10,9 @@ import java.util.List;
  */
 public class UITimeline extends VBox {
 
+
+    private List<UITimelineEntry> entries;
+
     /**
      * Constructs a new UITimline sorted by date descending
      *
@@ -24,5 +27,15 @@ public class UITimeline extends VBox {
                                              .toList().reversed();
 
         getChildren().addAll(entries);
+    }
+
+
+    /**
+     * Get the entries this timeline has
+     *
+     * @return The entries (unordered)
+     */
+    public List<UITimelineEntry> getEntries() {
+        return entries;
     }
 }
