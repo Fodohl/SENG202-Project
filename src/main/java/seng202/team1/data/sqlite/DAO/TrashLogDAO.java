@@ -1,7 +1,9 @@
-package seng202.team1.data.repository;
+package seng202.team1.data.sqlite.DAO;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import seng202.team1.data.sqlite.DatabaseManager;
+import seng202.team1.data.sqlite.SqlTimeUtils;
 import seng202.team1.data.trashlog.TrashLog;
 import seng202.team1.data.trashlog.TrashType;
 
@@ -22,7 +24,9 @@ public class TrashLogDAO extends SqlTimeUtils implements DAOInterface<TrashLog> 
     /**
      * Creates a new TrashLogDAO object and gets a reference to the database singleton
      */
-    public TrashLogDAO(){databaseManager = DatabaseManager.getInstance(); }
+    public TrashLogDAO(DatabaseManager databaseManager){
+        this.databaseManager = databaseManager;
+    }
 
 
     /**

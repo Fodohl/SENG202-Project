@@ -1,4 +1,4 @@
-package seng202.team1.data.repository;
+package seng202.team1.data.sqlite;
 
 import java.sql.*;
 import java.time.Instant;
@@ -9,7 +9,7 @@ import java.time.Instant;
  */
 public class SqlTimeUtils {
 
-    SqlTimeUtils() {}
+    public SqlTimeUtils() {}
 
     /**
      * Retrieves a timestamp from a result set and converts it to an Instant.

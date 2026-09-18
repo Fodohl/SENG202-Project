@@ -1,0 +1,6 @@
+Feature: Timeline (UC_5)
+
+  Scenario: Timeline for user successfully displays (AT_11)
+    Given the user has logged bin usages, and issue reports
+    When the user opens their timeline
+    Then the GUI displays a timeline of their reports and logs

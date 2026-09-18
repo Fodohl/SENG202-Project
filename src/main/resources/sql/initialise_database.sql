@@ -10,10 +10,12 @@ CREATE TABLE bins (
     updated_at INTEGER,
     photo_url VARCHAR(255),
     area VARCHAR(255),
+    fullness VARCHAR(255) NOT NULL DEFAULT 'UNKNOWN',
     UNIQUE (lat, lng));
+
 --SPLIT
 CREATE TABLE trash_logs (
-    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
     created_at INTEGER NOT NULL,
     disposed_at INTEGER NOT NULL,
     user_id INTEGER,

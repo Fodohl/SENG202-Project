@@ -81,8 +81,6 @@ public class DashboardPage extends Page {
         return root;
     }
 
-    //@todo auto attach bin to log class
-
     @Override
     public void updateContents() {
 

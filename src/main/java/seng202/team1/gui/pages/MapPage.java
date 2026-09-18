@@ -127,7 +127,7 @@ public class MapPage extends Page {
 
         // Populate the map
         map = new UIMap();
-        for (Bin bin : windowManager.getGlobalState().getBinLoader().getBinObjects())
+        for (Bin bin : windowManager.getGlobalState().getBinDAO().getAll())
             map.addPoint(bin.getLatitude(), bin.getLongitude(), bin.getID(), bin.getCategory().toString().toLowerCase());
 
         // Handle map events
@@ -203,7 +203,7 @@ public class MapPage extends Page {
         if (Objects.equals(selectedBin, binID))
             selectedBin = null;
         else
-            selectedBin = windowManager.getGlobalState().getBinLoader().getBinById(binID);
+            selectedBin = windowManager.getGlobalState().getBinDAO().getOne(binID);
 
         clearPreviousBin();
         updateContents();
@@ -240,7 +240,6 @@ public class MapPage extends Page {
     /**
      * Update the contents of the status bar to show the selected bin (if any). If no bin is selected sidebar is not shown
      *
-     * @todo image
      */
     private void refreshSidebar() {
 
@@ -257,6 +256,9 @@ public class MapPage extends Page {
                 .sorted(Comparator.comparing(TrashLog::createdAt))
                 .toList();
         TrashLog newest = uses.isEmpty() ? null : uses.getLast();
+
+        // Refresh the bins' average status
+        selectedBin = getWindow().getGlobalState().getBinDAO().getOne(selectedBin.getID());
 
         sidebarBinID.setText(selectedBin.getID().toString());
         sidebarBinType.setText(StringHelpers.enumNameToTitle(selectedBin.getCategory().name()));
