@@ -171,6 +171,9 @@
     var map = L.map('map').setView(coords, zoomLevel);
     L.Browser.any3d = false;
 
+    //remove leaflet link (keep words for attribution)
+    map.attributionControl.setPrefix('Leaflet'); 
+
     // Custom style to fit the app
     // see toolchain/snazzy.js for conversion
     var snazzyStyle = 's.e%3Al.i%7Cp.v%3Aoff%2Cs.e%3Al.t.f%7Cp.c%3A%23ffffffff%2Cs.e%3Al.t.s%7Cp.c%3A%23ff10141a%2Cs.t%3A0%7Cs.e%3Ag%7Cp.c%3A%23ff364253%2Cs.t%3A81%7Cs.e%3Ag%7Cp.c%3A%23ff2c3645%2Cs.t%3A6%7Cs.e%3Ag%7Cp.c%3A%23ff2d6ca3%2Cs.t%3A3%7Cs.e%3Ag%7Cp.c%3A%23ff5c6978%2Cs.t%3A39%7Cs.e%3Ag%7Cp.c%3A%23ff1f6b45%2Cs.t%3A40%7Cs.e%3Ag%7Cp.c%3A%23ff1f6b45%2Cs.t%3A33%7Cs.e%3Ag%7Cp.c%3A%23ff1f6b45%2Cs.t%3A37%7Cs.e%3Ag%7Cp.c%3A%23ff1f6b45%2Cs.t%3A36%7Cs.e%3Ag%7Cp.c%3A%23ff364253%2Cs.t%3A4%7Cs.e%3Al%7Cp.v%3Aoff';
@@ -197,6 +200,11 @@
     let marker;
     let markers = L.markerClusterGroup({disableClusteringAtZoom: 16});
     map.addLayer(markers);
+
+    //prevent right clicking map
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+    }, false);
 
 </script>
 </body>
