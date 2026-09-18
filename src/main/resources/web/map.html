@@ -11,11 +11,11 @@
     <!-- Leaflet.markercluster plugin -->
     <link rel="stylesheet" href="../thirdparty/unpkg/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
     <link rel="stylesheet" href="../thirdparty/unpkg/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
-    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <script src="../thirdparty/unpkg/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
     <!-- Leflet.pouchdb plugin -->
     <script src="../thirdparty/unpkg/pouchdb@^5.2.0/dist/pouchdb.js"></script>
-    <script src="../thirdparty/unpkg/leaflet.tilelayer.pouchdbcached@latest/L.TileLayer.PouchDBCached.js"></script>
+    <script src="../thirdparty/unpkg/pouchdb@^5.2.0/dist/L.TileLayer.PouchDBCached.js"></script>
 
     <!-- Leflet.routing plugin -->
     <link rel="stylesheet" href="../thirdparty/unpkg/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
@@ -105,7 +105,7 @@
             return iconCache[name];
 
         const icon = L.icon({
-            iconUrl: `${ICON_FOLDER}/pin-${name}.svg`,
+            iconUrl: `${ICON_FOLDER}pin-${name}.svg`,
             iconSize: [40, 50],
         });
 
