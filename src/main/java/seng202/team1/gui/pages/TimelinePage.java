@@ -8,7 +8,7 @@ import seng202.team1.data.bin.Bin;
 import seng202.team1.data.status.ReportType;
 import seng202.team1.data.status.StatusReport;
 import seng202.team1.data.trashlog.TrashLog;
-import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.Router;
 import seng202.team1.gui.components.UIImage;
 import seng202.team1.gui.components.UITimeline;
 import seng202.team1.gui.components.UITimelineEntry;
@@ -29,11 +29,11 @@ public class TimelinePage extends Page {
     /**
      * Constructs a new TimelinePage
      *
-     * @param windowManager the window this page is on
+     * @param router the window this page is on
      */
-    public TimelinePage(WindowManager windowManager) {
+    public TimelinePage(Router router) {
 
-        super(windowManager, Pages.TIMELINE);
+        super(router, Pages.TIMELINE);
 
     }
 
@@ -58,8 +58,8 @@ public class TimelinePage extends Page {
 
     void renderTimelineEntries() {
 
-        List<StatusReport> reports = windowManager.getGlobalState().getStatusReportStore().getReports();
-        List<TrashLog> trash = windowManager.getGlobalState().getTrashLogDAO().getAll();
+        List<StatusReport> reports = getState().getStatusReportStore().getReports();
+        List<TrashLog> trash = getState().getTrashLogDAO().getAll();
 
         // Combine trash logs and status reports
         ArrayList<UITimelineEntry> entries = new ArrayList<>();
@@ -91,7 +91,7 @@ public class TimelinePage extends Page {
                 .map(log -> {
 
                     // Get associated log data
-                    Bin bin = windowManager.getGlobalState().getBinDAO().getOne(log.binID());
+                    Bin bin = getState().getBinDAO().getOne(log.binID());
 
                     String trashType = StringHelpers.enumNameToTitle(log.trashType().name());
 

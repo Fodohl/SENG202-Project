@@ -13,7 +13,7 @@ import seng202.team1.data.bin.BinLoader;
 import seng202.team1.data.repository.DatabaseManager;
 import seng202.team1.data.table.StringTableBuilder;
 import seng202.team1.exceptions.InstanceAlreadyExistsException;
-import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.Router;
 import seng202.team1.state.GlobalState;
 
 import java.time.Instant;
@@ -27,7 +27,7 @@ public class TrashAppTest {
 
     protected GlobalState state;
 
-    protected WindowManager windowManager;
+    protected Router router;
     protected BinLoader binLoader;
 
     static DatabaseManager databaseManager;
@@ -63,7 +63,7 @@ public class TrashAppTest {
         state = GlobalState.create(null);
 
         // Extract state for easier access
-        windowManager = state.getWindowManager();
+        router = state.getRouter();
         binLoader = state.getBinLoader();
 
         binLoader.readGeoJSON();

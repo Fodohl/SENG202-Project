@@ -7,7 +7,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import seng202.team1.helpers.StringHelpers;
 import seng202.team1.gui.GraphicsCommon;
-import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.Router;
 import seng202.team1.gui.pages.Pages;
 
 /**

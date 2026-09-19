@@ -9,7 +9,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import seng202.team1.helpers.StringHelpers;
 import seng202.team1.data.route.RouteInstruction;
-import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.Router;
 import seng202.team1.gui.components.UIImage;
 
 import java.util.List;
@@ -25,10 +25,10 @@ public class DirectionsModal extends Modal{
     /**
      * Construct a new DirectionsModal
      *
-     * @param windowManager The window manager responsible for this modal
+     * @param router The router responsible for this modal
      */
-    public DirectionsModal(WindowManager windowManager){
-        super(windowManager, Modals.DIRECTIONS);
+    public DirectionsModal(Router router){
+        super(router, Modals.DIRECTIONS);
     }
 
     /**

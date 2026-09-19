@@ -1,7 +1,6 @@
 package seng202.team1.gui.modals;
 
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
@@ -10,8 +9,7 @@ import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.BinCategory;
 import seng202.team1.data.status.ReportType;
 import seng202.team1.data.bin.BinFullness;
-import seng202.team1.data.trashlog.TrashType;
-import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.Router;
 import seng202.team1.gui.components.*;
 
 /**
@@ -37,10 +35,10 @@ public class LogIssueModal extends Modal {
     /**
      * Construct a new LogTrashModal
      *
-     * @param windowManager The window manager responsible for this modal
+     * @param router The router responsible for this modal
      */
-    public LogIssueModal(WindowManager windowManager) {
-        super(windowManager, Modals.LOG_ISSUE);
+    public LogIssueModal(Router router) {
+        super(router, Modals.LOG_ISSUE);
     }
 
     /**
@@ -167,7 +165,7 @@ public class LogIssueModal extends Modal {
             return;
 
 
-        windowManager.getGlobalState().getStatusReportStore().logReport(bin, fullness, type, report);
+        getState().getStatusReportStore().logReport(bin, fullness, type, report);
         closeModal();
     }
 

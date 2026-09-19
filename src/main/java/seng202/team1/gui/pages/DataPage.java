@@ -12,7 +12,7 @@ import seng202.team1.data.table.StringTableBuilder;
 import seng202.team1.gui.components.UIIconButton;
 import seng202.team1.gui.components.UITable;
 import seng202.team1.gui.components.UITitle;
-import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.Router;
 
 import java.util.Comparator;
 
@@ -26,11 +26,11 @@ public class DataPage extends Page {
     /**
      * Constructs a new DataPage
      *
-     * @param windowManager the window this page is on
+     * @param router the window this page is on
      */
-    public DataPage(WindowManager windowManager){
+    public DataPage(Router router){
 
-        super(windowManager, Pages.DATA);
+        super(router, Pages.DATA);
 
     }
 
@@ -64,7 +64,7 @@ public class DataPage extends Page {
         pageTitle.setAlignment(Pos.CENTER);
 
         // Data
-        StringTableBuilder<Bin> tableData = new StringTableBuilder<Bin>(windowManager.getGlobalState().getBinDAO().getAll())
+        StringTableBuilder<Bin> tableData = new StringTableBuilder<Bin>(getState().getBinDAO().getAll())
             .addColumn("binID", "ID")
             .addColumn("fullness", "Fullness", val -> StringHelpers.enumNameToTitle(((BinFullness)val).name()))
             .addColumn("areaName", "Location")
@@ -76,7 +76,7 @@ public class DataPage extends Page {
 
         // Download the table to CSV for exports
         exportButton.setOnMouseClicked(e -> {
-            ExportManager.exportToCSV(windowManager.getStage(), ExportManager.exportName("bin_data"), tableData.build());
+            ExportManager.exportToCSV(router.getStage(), ExportManager.exportName("bin_data"), tableData.build());
         });
 
         // Combine

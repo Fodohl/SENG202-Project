@@ -48,7 +48,7 @@ public class Main extends Application {
     }
 
     /**
-     * The JavaFX entry point to the game. Will setup the window and show the main menu
+     * The JavaFX entry point to the app. Will set up the window and show the main menu
      *
      * @param stage the primary stage for this application, onto which
      *              the application scene can be set.

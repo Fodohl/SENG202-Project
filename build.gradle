@@ -244,6 +244,7 @@ def spec = layout.projectDirectory.file('src/common/resources/openapi.json')
 
 // https://openapi-generator.tech/docs/plugins
 openApiGenerate {
+    cleanupOutput.set(true)
     generatorName.set('java')
     library.set('native')
     inputSpec.set(spec)
@@ -258,6 +259,7 @@ openApiGenerate {
 }
 
 tasks.register('generateBackend', GenerateTask) {
+    cleanupOutput.set(true)
     generatorName.set('spring')
     inputSpec.set(spec)
     outputDir.set(layout.buildDirectory.dir('generated/backend'))

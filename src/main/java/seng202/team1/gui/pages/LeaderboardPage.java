@@ -4,15 +4,10 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import seng202.team1.api.trashdb.LeaderBoardEntry;
-import seng202.team1.helpers.StringHelpers;
-import seng202.team1.data.bin.Bin;
-import seng202.team1.data.bin.BinCategory;
-import seng202.team1.data.bin.BinFullness;
 import seng202.team1.data.table.StringTableBuilder;
-import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.Router;
 import seng202.team1.gui.components.UIImage;
 import seng202.team1.gui.components.UISlider;
 import seng202.team1.gui.components.UITable;
@@ -34,11 +29,11 @@ public class LeaderboardPage extends Page {
     /**
      * Constructs a new LeaderboardPage
      *
-     * @param windowManager the window this page is on
+     * @param router the window this page is on
      */
-    public LeaderboardPage(WindowManager windowManager) {
+    public LeaderboardPage(Router router) {
 
-        super(windowManager, Pages.LEADERBOARD);
+        super(router, Pages.LEADERBOARD);
 
     }
 
@@ -72,7 +67,7 @@ public class LeaderboardPage extends Page {
 
         // Data
         String thisUser = "Mike M";
-        tableData = new StringTableBuilder<LeaderBoardEntry>(windowManager.getGlobalState().getLeaderboard().entries())
+        tableData = new StringTableBuilder<LeaderBoardEntry>(getState().getLeaderboard().entries())
                 .addColumn("position", "Position")
                 .addColumn("name", "Name", item -> {
 
@@ -113,7 +108,7 @@ public class LeaderboardPage extends Page {
             return;
 
         // Show the latest leaderboard info
-        tableData.updateData(windowManager.getGlobalState().getLeaderboard().entries());
+        tableData.updateData(getState().getLeaderboard().entries());
         table.buildTableContent();
 
         HBox newInner = buildNextMileStone();

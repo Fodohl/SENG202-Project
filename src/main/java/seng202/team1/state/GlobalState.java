@@ -6,7 +6,7 @@ import seng202.team1.api.photon.PhotonClient;
 import seng202.team1.api.trashdb.TrashDBClient;
 import seng202.team1.api.trashdb.TrashDBLeaderboardResponse;
 import seng202.team1.data.status.StatusReportStore;
-import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.Router;
 import seng202.team1.gui.pages.Pages;
 import seng202.team1.data.repository.DatabaseManager;
 import seng202.team1.data.repository.TrashLogDAO;
@@ -26,7 +26,7 @@ public class    GlobalState {
     public static boolean IS_HEADLESS_MODE = false;
 
     /// The manager of the app's window
-    private WindowManager windowManager;
+    private Router router;
 
     /// The current window
     private Stage stage;
@@ -58,7 +58,7 @@ public class    GlobalState {
      * Factory method that creates and fully initialises the singleton {@code GlobalState} instance.
      * Called once per application run
      *
-     * @param stage the primary JavaFX stage to hand off to the {@link WindowManager}
+     * @param stage the primary JavaFX stage to hand off to the {@link Router}
      * @return the newly created singleton {@code GlobalState} instance
      * @throws InstanceAlreadyExistsException if {@code create} has already been called in this
      *                                        application run
@@ -87,7 +87,7 @@ public class    GlobalState {
         state.photonClient = new PhotonClient();
         state.trashDBClient = new TrashDBClient();
 
-        state.windowManager = new WindowManager(state, stage);
+        state.router = new Router(state, stage);
 
         state.fetchData();
 
@@ -113,7 +113,7 @@ public class    GlobalState {
         trashDBClient.getLeaderboard(leaderboard -> {
 
             this.leaderboard = leaderboard;
-            windowManager.refreshPage(Pages.LEADERBOARD);
+            router.refreshPage(Pages.LEADERBOARD);
 
         });
     }
@@ -123,8 +123,8 @@ public class    GlobalState {
      *
      * @return The window manager for the app
      */
-    public WindowManager getWindowManager() {
-        return windowManager;
+    public Router getRouter() {
+        return router;
     }
 
     public TrashLogDAO getTrashLogDAO() {
@@ -139,7 +139,7 @@ public class    GlobalState {
 
     public void setMapSearchRequest(Feature location) {
         requestedLocation = location;
-        windowManager.switchPage(Pages.MAP);
+        router.switchPage(Pages.MAP);
     }
 
     public BinLoader getBinLoader() {

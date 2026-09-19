@@ -11,7 +11,7 @@ import seng202.team1.data.bin.Bin;
 import seng202.team1.data.route.RouteInstruction;
 import seng202.team1.data.trashlog.TrashLog;
 import seng202.team1.gui.components.*;
-import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.Router;
 import seng202.team1.gui.modals.Modals;
 
 import java.util.Comparator;
@@ -52,11 +52,11 @@ public class MapPage extends Page {
     /**
      * Constructs a new MapPage
      *
-     * @param windowManager the window this page is on
+     * @param router the window this page is on
      */
-    public MapPage(WindowManager windowManager) {
+    public MapPage(Router router) {
 
-        super(windowManager, Pages.MAP, true);
+        super(router, Pages.MAP, true);
 
     }
 
@@ -104,8 +104,8 @@ public class MapPage extends Page {
 
         // Modals
         directionsButton.setOnMouseClicked(e -> tryDrawDirections());
-        logButton.setOnMouseClicked(e -> windowManager.openModal(Modals.LOG_TRASH, selectedBin));
-        issueButton.setOnMouseClicked(e -> windowManager.openModal(Modals.LOG_ISSUE, selectedBin));
+        logButton.setOnMouseClicked(e -> router.openModal(Modals.LOG_TRASH, selectedBin));
+        issueButton.setOnMouseClicked(e -> router.openModal(Modals.LOG_ISSUE, selectedBin));
 
         // Combine
         VBox box = new VBox(titleSection, infoSection, addressSection, collectionSection, actionsSection);
@@ -127,7 +127,7 @@ public class MapPage extends Page {
 
         // Populate the map
         map = new UIMap();
-        for (Bin bin : windowManager.getGlobalState().getBinLoader().getBinObjects())
+        for (Bin bin : getState().getBinLoader().getBinObjects())
             map.addPoint(bin.getLatitude(), bin.getLongitude(), bin.getID(), bin.getCategory().toString().toLowerCase());
 
         // Handle map events
@@ -136,7 +136,7 @@ public class MapPage extends Page {
         map.registerMapRouted(this::onMapRouted);
 
         // Refresh sidebar on log
-        windowManager.registerModalChangeCallback(e -> {
+        router.registerModalChangeCallback(e -> {
             if(e == Modals._CLOSED)
                 refreshSidebar();
         });
@@ -166,7 +166,7 @@ public class MapPage extends Page {
     private void handleLocationRequest() {
 
         // No requested location
-        Feature location = windowManager.getGlobalState().consumeMapSearchRequest();
+        Feature location = getState().consumeMapSearchRequest();
         if(location == null)
             return;
 
@@ -203,7 +203,7 @@ public class MapPage extends Page {
         if (Objects.equals(selectedBin, binID))
             selectedBin = null;
         else
-            selectedBin = windowManager.getGlobalState().getBinLoader().getBinById(binID);
+            selectedBin = getState().getBinLoader().getBinById(binID);
 
         clearPreviousBin();
         updateContents();
@@ -234,7 +234,7 @@ public class MapPage extends Page {
     }
 
     private void onMapRouted(List<RouteInstruction> instructions){
-        directionsModalID = windowManager.spawnModal(Modals.DIRECTIONS, instructions);
+        directionsModalID = router.spawnModal(Modals.DIRECTIONS, instructions);
     }
 
     /**
@@ -251,7 +251,7 @@ public class MapPage extends Page {
             return;
 
         // Get usage
-        List<TrashLog> uses = windowManager.getGlobalState().getTrashLogDAO()
+        List<TrashLog> uses = getState().getTrashLogDAO()
                 .getAll().stream()
                 .filter(l -> l.binID() == selectedBin.getID())
                 .sorted(Comparator.comparing(TrashLog::createdAt))
@@ -269,7 +269,7 @@ public class MapPage extends Page {
 
     private void clearPreviousBin(){
 
-        windowManager.hideOverlay();
+        router.hideOverlay();
         removeDirections();
 
     }
@@ -305,7 +305,7 @@ public class MapPage extends Page {
     }
 
     private void removeDirections(){
-        windowManager.killModal(directionsModalID);
+        router.killModal(directionsModalID);
         map.clearRoute();
     }
 }

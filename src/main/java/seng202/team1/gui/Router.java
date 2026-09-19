@@ -3,7 +3,6 @@ package seng202.team1.gui;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,9 +26,9 @@ import static seng202.team1.gui.GraphicsCommon.WINDOW_WIDTH;
 /**
  * Manages loading all pages and switching between them. Also manages the main app window and the lifetime of other windows
  */
-public class WindowManager extends StateReferrer {
+public class Router extends StateReferrer {
 
-    /// WindowManager specific logger
+    /// Router specific logger
     private static final Logger log = LogManager.getLogger(UIImage.class);
 
     /// The window reference this manager is responsible for
@@ -50,10 +49,10 @@ public class WindowManager extends StateReferrer {
 
     private final List<Consumer<Modals>> modalSwitchCallbacks = new ArrayList<>();
 
-    /// The pages this window can switch between
+    /// The pages this app can switch between
     private final Map<Pages, Page> pages = new HashMap<>();
 
-    /// The modals this window can display
+    /// The modals this app can display
     private final Map<Modals, Modal> modals = new HashMap<>();
 
     /// The list of modals currently being shown in a separate window
@@ -62,22 +61,22 @@ public class WindowManager extends StateReferrer {
     /// The next available ID to assign a window
     private long nextWindowId = 0;
 
-    /// The layout that contains the pages for this window
+    /// The layout that contains the pages for this app
     private final MainLayout layout = new MainLayout(this);
 
-    /// The lay that contains the overlayed elements for this window
+    /// The lay that contains the overlayed elements for this app
     private final OverlayLayout overlay = new OverlayLayout(this);
 
     /// The root scene
     private final StackPane root = new StackPane(layout.getRendered(), overlay.getRendered());
 
     /**
-     * Constructs a new WindowManager, loading the pages for this window
+     * Constructs a new Router, loading the pages for this app
      *
      * @param state The reference to global state
      * @param currentStage The main app window
      */
-    public WindowManager(GlobalState state, Stage currentStage){
+    public Router(GlobalState state, Stage currentStage){
         super(state);
 
         // Load core ui

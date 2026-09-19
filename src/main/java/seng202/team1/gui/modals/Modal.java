@@ -1,17 +1,15 @@
 package seng202.team1.gui.modals;
 
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import seng202.team1.helpers.StringHelpers;
-import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.Router;
 import seng202.team1.gui.components.UIButton;
 import seng202.team1.gui.components.UIImage;
 import seng202.team1.gui.components.UITitle;
 import seng202.team1.gui.layout.LayoutElement;
-import seng202.team1.gui.pages.Pages;
 
 //@todo abstract away the simaliries between this and page?
 
@@ -29,16 +27,16 @@ public abstract class Modal extends LayoutElement implements Cloneable {
        /**
      * Constructs a new Modal
      *
-    * @param windowManager The window this modal is on
+    * @param router The window this modal is on
      * @param modalType The type of modal this is
      */
-    public Modal(WindowManager windowManager, Modals modalType){
+    public Modal(Router router, Modals modalType){
 
-        super(windowManager);
+        super(router);
 
         // Register handler for page changes
         this.modalType = modalType;
-        this.windowManager.registerModalChangeCallback(this::onModalChange);
+        this.router.registerModalChangeCallback(this::onModalChange);
     }
 
     abstract Parent buildBody();
@@ -105,9 +103,9 @@ public abstract class Modal extends LayoutElement implements Cloneable {
     public void closeModal(){
 
         if(modalWindow == -1)
-            windowManager.closeModal();
+            router.closeModal();
         else
-            windowManager.killModal(modalWindow);
+            router.killModal(modalWindow);
     }
 
 

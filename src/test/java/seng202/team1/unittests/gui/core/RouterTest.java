@@ -8,26 +8,26 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static seng202.team1.gui.WindowManager.START_PAGE;
+import static seng202.team1.gui.Router.START_PAGE;
 
-class WindowManagerTest extends TrashAppTest {
+class RouterTest extends TrashAppTest {
 
 
     @Test
     public void entryPageShouldBeDashboard() {
-        assertEquals(START_PAGE, windowManager.getCurrentPage());
+        assertEquals(START_PAGE, router.getCurrentPage());
     }
 
     @Test
     public void switchPageShouldUpdateCurrentPage() {
 
         // Switch to a page
-        windowManager.switchPage(Pages.DASHBOARD);
-        assertEquals(Pages.DASHBOARD, windowManager.getCurrentPage());
+        router.switchPage(Pages.DASHBOARD);
+        assertEquals(Pages.DASHBOARD, router.getCurrentPage());
 
         // Switch to a different page
-        windowManager.switchPage(Pages.MAP);
-        assertEquals(Pages.MAP, windowManager.getCurrentPage());
+        router.switchPage(Pages.MAP);
+        assertEquals(Pages.MAP, router.getCurrentPage());
     }
 
     @Test
@@ -35,10 +35,10 @@ class WindowManagerTest extends TrashAppTest {
 
         // Set up a handler
         AtomicReference<Pages> pageType = new AtomicReference<>();
-        windowManager.registerPageChangeCallback(pageType::set);
+        router.registerPageChangeCallback(pageType::set);
 
         // Switch the page
-        windowManager.switchPage(Pages.SETTINGS);
+        router.switchPage(Pages.SETTINGS);
         assertEquals(Pages.SETTINGS, pageType.get());
     }
 
@@ -47,22 +47,22 @@ class WindowManagerTest extends TrashAppTest {
 
         // Set up a handler
         Consumer<Pages> callback = pageType -> {};
-        windowManager.registerPageChangeCallback(callback);
+        router.registerPageChangeCallback(callback);
 
         // Should fail
-        assertFalse(windowManager.registerPageChangeCallback(callback));
+        assertFalse(router.registerPageChangeCallback(callback));
     }
 
     @Test
     public void backShouldGoToPreviousPage() {
 
         // Switch to a page
-        windowManager.switchPage(Pages.DASHBOARD);
-        windowManager.switchPage(Pages.MAP);
+        router.switchPage(Pages.DASHBOARD);
+        router.switchPage(Pages.MAP);
 
         // Go back
-        windowManager.backPage();
-        assertEquals(Pages.DASHBOARD, windowManager.getCurrentPage());
+        router.backPage();
+        assertEquals(Pages.DASHBOARD, router.getCurrentPage());
     }
 
 }

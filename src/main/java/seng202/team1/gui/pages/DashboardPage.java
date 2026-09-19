@@ -9,7 +9,7 @@ import seng202.team1.helpers.StringHelpers;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.BinCategory;
 import seng202.team1.data.trashlog.TrashLog;
-import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.Router;
 import seng202.team1.gui.components.UICard;
 import seng202.team1.gui.components.UIGraphLine;
 
@@ -32,11 +32,11 @@ public class DashboardPage extends Page {
     /**
      * Constructs a new DashboardPage
      *
-     * @param windowManager the window this page is on
+     * @param router the window this page is on
      */
-    public DashboardPage(WindowManager windowManager){
+    public DashboardPage(Router router){
 
-        super(windowManager, Pages.DASHBOARD);
+        super(router, Pages.DASHBOARD);
 
     }
 
@@ -88,12 +88,12 @@ public class DashboardPage extends Page {
 
 
         // Get usage
-        List<TrashLog> uses = windowManager.getGlobalState().getTrashLogDAO()
+        List<TrashLog> uses = getState().getTrashLogDAO()
                 .getAll().stream()
                 .sorted(Comparator.comparing(TrashLog::createdAt))
                 .toList();
         List<Bin> bins = uses.stream()
-                .map(b -> windowManager.getGlobalState().getBinDAO().getOne(b.binID()))
+                .map(b -> getState().getBinDAO().getOne(b.binID()))
                 .toList();
 
         TrashLog newestLog = uses.isEmpty() ? null : uses.getLast();

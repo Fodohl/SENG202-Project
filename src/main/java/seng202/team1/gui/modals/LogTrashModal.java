@@ -9,10 +9,9 @@ import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.BinFullness;
 import seng202.team1.data.bin.BinCategory;
 import seng202.team1.data.status.ReportType;
-import seng202.team1.data.status.StatusReport;
 import seng202.team1.data.trashlog.TrashLog;
 import seng202.team1.data.trashlog.TrashType;
-import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.Router;
 import seng202.team1.gui.components.*;
 
 import java.time.Instant;
@@ -45,10 +44,10 @@ public class LogTrashModal extends Modal {
     /**
      * Construct a new LogTrashModal
      *
-     * @param windowManager The window manager responsible for this modal
+     * @param router The router responsible for this modal
      */
-    public LogTrashModal(WindowManager windowManager) {
-        super(windowManager, Modals.LOG_TRASH);
+    public LogTrashModal(Router router) {
+        super(router, Modals.LOG_TRASH);
     }
 
     /**
@@ -180,8 +179,8 @@ public class LogTrashModal extends Modal {
             return;
 
         // Save
-        windowManager.getGlobalState().getTrashLogDAO().add(new TrashLog(Instant.now(), Instant.now(), userID, binID, type, weight));
-        windowManager.getGlobalState().getStatusReportStore().logReport(bin, fullness, ReportType._FULLNESS_UPDATE, "");
+        getState().getTrashLogDAO().add(new TrashLog(Instant.now(), Instant.now(), userID, binID, type, weight));
+        getState().getStatusReportStore().logReport(bin, fullness, ReportType._FULLNESS_UPDATE, "");
 
         closeModal();
     }

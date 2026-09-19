@@ -1,7 +1,7 @@
 package seng202.team1.gui.layout;
 
 import javafx.scene.Parent;
-import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.Router;
 
 /**
  * Composite UI component that contains elements for a modal
@@ -11,10 +11,10 @@ public class ModalLayout extends LayoutElement{
 
     /**
      * Constuct a new ModalLayout
-     * @param windowManager
+     * @param router
      */
-    public ModalLayout(WindowManager windowManager){
-        super(windowManager);
+    public ModalLayout(Router router){
+        super(router);
     }
 
     /**

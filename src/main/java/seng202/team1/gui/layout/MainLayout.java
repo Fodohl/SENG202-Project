@@ -1,20 +1,11 @@
 package seng202.team1.gui.layout;
 
-import javafx.animation.PauseTransition;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
-import javafx.stage.Popup;
-import javafx.util.Duration;
-import seng202.team1.api.photon.Feature;
-import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.Router;
 import seng202.team1.gui.components.UIImage;
 import seng202.team1.gui.components.UILocationInput;
 import seng202.team1.gui.components.UINavButton;
@@ -38,10 +29,10 @@ public class MainLayout extends LayoutElement {
     /**
      * Construct a new CoreUI for a given window
      *
-     * @param windowManager The reference to the window this UI & its pages will be shown on
+     * @param router The reference to the window this UI & its pages will be shown on
      */
-    public MainLayout(WindowManager windowManager) {
-        super(windowManager);
+    public MainLayout(Router router) {
+        super(router);
 
     }
 
@@ -66,12 +57,12 @@ public class MainLayout extends LayoutElement {
         VBox navbar = new VBox(8);
         for (Pages option : Pages.values())
             if(option != Pages.SETTINGS)
-                navbar.getChildren().add(new UINavButton(windowManager, option));
+                navbar.getChildren().add(new UINavButton(router, option));
 
         // Settings at the bottom
         Region spacer = new Region();
         VBox.setVgrow(spacer, Priority.ALWAYS);
-        HBox navSettings = new UINavButton(windowManager, Pages.SETTINGS);
+        HBox navSettings = new UINavButton(router, Pages.SETTINGS);
 
         // Combine
         VBox sidebar = new VBox();
@@ -91,7 +82,7 @@ public class MainLayout extends LayoutElement {
     private Parent header() {
 
         // Search Bard
-        UILocationInput searchBar = new UILocationInput(getWindow().getGlobalState());
+        UILocationInput searchBar = new UILocationInput(getRouter().getGlobalState());
 
         // Account
         Label accountLabel = new Label("Account (DB)");

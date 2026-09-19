@@ -2,7 +2,7 @@ package seng202.team1.gui.pages;
 
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.Router;
 
 /**
  * Page that displays the configuration menu of the app
@@ -12,11 +12,11 @@ public class SettingsPage extends Page {
     /**
      * Constructs a new SettingsPage
      *
-     * @param windowManager the window this page is on
+     * @param router the window this page is on
      */
-   public SettingsPage(WindowManager windowManager){
+   public SettingsPage(Router router){
 
-        super(windowManager, Pages.SETTINGS);
+        super(router, Pages.SETTINGS);
 
     }
 

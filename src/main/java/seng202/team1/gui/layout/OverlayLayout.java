@@ -4,7 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.Router;
 
 /**
  * Composite UI component that contains elements that are being shown over the app
@@ -19,15 +19,15 @@ public class OverlayLayout extends LayoutElement {
     /**
      * Constructs a new OverlayLayout
      *
-     * @param windowManager The window manager to handle closing the overlay
+     * @param router The window manager to handle closing the overlay
      */
-    public OverlayLayout(WindowManager windowManager) {
-        super(windowManager);
+    public OverlayLayout(Router router) {
+        super(router);
 
         // Background overlay
         VBox background = new VBox();
         background.getStyleClass().add("overlay");
-        background.setOnMouseClicked(e -> windowManager.hideOverlay());
+        background.setOnMouseClicked(e -> router.hideOverlay());
 
         root.getChildren().add(background);
     }
