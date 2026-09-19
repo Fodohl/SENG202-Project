@@ -59,7 +59,13 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "message": {
+                    "health": {
+                      "type": "string"
+                    },
+                    "env" : {
+                      "type": "string"
+                    },
+                    "motd": {
                       "type": "string"
                     }
                   }

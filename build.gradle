@@ -135,6 +135,19 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.19.2'
     implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.19.2'
     implementation 'jakarta.annotation:jakarta.annotation-api:3.0.0'
+    implementation 'io.swagger.core.v3:swagger-annotations:2.2.54'
+
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot
+    implementation 'org.springframework.boot:spring-boot:4.2.0-M1'
+
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter
+    implementation 'org.springframework.boot:spring-boot-starter:4.2.0-M1'
+
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web
+    implementation 'org.springframework.boot:spring-boot-starter-web:4.2.0-M1'
+
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-validation
+    implementation 'org.springframework.boot:spring-boot-starter-validation:4.2.0-M1'
 }
 
 application {
@@ -239,7 +252,9 @@ openApiGenerate {
     modelPackage.set('seng202.team1.taserver.model')
     invokerPackage.set('seng202.team1.taserver.client')
     workerIsolation.set('process')
-    configOptions.set([openApiNullable: 'false', useJakartaEe: 'true'])
+    configOptions.set([openApiNullable: 'false',
+                       useJakartaEe: 'true'
+                    ])
 }
 
 tasks.register('generateBackend', GenerateTask) {
@@ -250,8 +265,13 @@ tasks.register('generateBackend', GenerateTask) {
     modelPackage.set('seng202.team1.taserver.model')
     workerIsolation.set('process')
     globalProperties.set([apis: ''])
-    configOptions.set([interfaceOnly: 'true', useSpringBoot3: 'true', useTags: 'true',
-                       skipDefaultInterface: 'true', openApiNullable: 'false'])
+    configOptions.set([interfaceOnly: 'true',
+                       useSpringBoot3: 'true',
+                       useTags: 'true',
+                       skipDefaultInterface: 'true',
+                       openApiNullable: 'false',
+                       requestMappingMode: 'api_interface'
+                    ])
 }
 
 sourceSets.common.java.srcDir  layout.buildDirectory.dir('generated/common/src/main/java')
