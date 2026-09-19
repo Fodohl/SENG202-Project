@@ -127,7 +127,7 @@ public class MapPage extends Page {
 
         // Populate the map
         map = new UIMap();
-        for (Bin bin : getState().getBinLoader().getBinObjects())
+        for (Bin bin : getState().getBinDAO().getAll())
             map.addPoint(bin.getLatitude(), bin.getLongitude(), bin.getID(), bin.getCategory().toString().toLowerCase());
 
         // Handle map events
@@ -203,7 +203,7 @@ public class MapPage extends Page {
         if (Objects.equals(selectedBin, binID))
             selectedBin = null;
         else
-            selectedBin = getState().getBinLoader().getBinById(binID);
+            selectedBin = getState().getBinDAO().getOne(binID);
 
         clearPreviousBin();
         updateContents();
@@ -257,6 +257,9 @@ public class MapPage extends Page {
                 .sorted(Comparator.comparing(TrashLog::createdAt))
                 .toList();
         TrashLog newest = uses.isEmpty() ? null : uses.getLast();
+
+        // Refresh the bins' average status
+        selectedBin = getRouter().getGlobalState().getBinDAO().getOne(selectedBin.getID());
 
         sidebarBinID.setText(selectedBin.getID().toString());
         sidebarBinType.setText(StringHelpers.enumNameToTitle(selectedBin.getCategory().name()));

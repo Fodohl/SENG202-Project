@@ -3,24 +3,28 @@ package seng202.team1.state;
 import javafx.stage.Stage;
 import seng202.team1.api.photon.Feature;
 import seng202.team1.api.photon.PhotonClient;
-import seng202.team1.api.trashdb.TrashDBClient;
-import seng202.team1.api.trashdb.TrashDBLeaderboardResponse;
+import seng202.team1.data.status.ReportType;
+import seng202.team1.data.status.StatusReport;
 import seng202.team1.data.status.StatusReportStore;
+import seng202.team1.data.sqlite.DAO.TrashLogDAO;
+import seng202.team1.gui.Router;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.pages.Pages;
-import seng202.team1.data.repository.DatabaseManager;
-import seng202.team1.data.repository.TrashLogDAO;
-import seng202.team1.data.repository.BinDAO;
-import seng202.team1.exceptions.InstanceAlreadyExistsException;
-import seng202.team1.data.bin.BinLoader;
+import seng202.team1.data.sqlite.DatabaseManager;
+import seng202.team1.data.sqlite.DAO.BinDAO;
+import seng202.team1.data.sqlite.exceptions.InstanceAlreadyExistsException;
+import seng202.team1.data.bin.BinDataset;
+import seng202.team1.data.bin.Bin;
+
+import java.time.LocalDate;
+import java.util.List;
 
 
 /**
  * Stores the current state of the app and provides managers to control it
  */
-public class    GlobalState {
+public class GlobalState {
 
-    private static GlobalState instance;
 
     /// Whether there is a screen to draw to or now
     public static boolean IS_HEADLESS_MODE = false;
@@ -32,7 +36,7 @@ public class    GlobalState {
     private Stage stage;
 
     /// The handler for the static bin data
-    private BinLoader binLoader;
+    private BinDataset binDataset;
 
     private TrashLogDAO trashLogDAO;
 
@@ -42,80 +46,41 @@ public class    GlobalState {
 
     private PhotonClient photonClient;
 
-    private TrashDBClient trashDBClient;
-
     private Feature requestedLocation;
 
-    private TrashDBLeaderboardResponse leaderboard;
+    boolean testState = false;
 
     /// The handler for issue reports
     private StatusReportStore statusReportStore;
 
-    private GlobalState() {
-    }
-
     /**
-     * Factory method that creates and fully initialises the singleton {@code GlobalState} instance.
-     * Called once per application run
+     * Construct a new Global state instance
      *
-     * @param stage the primary JavaFX stage to hand off to the {@link Router}
-     * @return the newly created singleton {@code GlobalState} instance
-     * @throws InstanceAlreadyExistsException if {@code create} has already been called in this
-     *                                        application run
+     * @param stage the primary JavaFX stage to hand off to the {@link WindowManager}
      */
-    public static GlobalState create(Stage stage) throws InstanceAlreadyExistsException {
-        if (instance != null) {
-            throw new InstanceAlreadyExistsException("GlobalState already initialized");
-        }
+    public GlobalState(Stage stage, boolean testState) {
 
-        GlobalState state = new GlobalState();
+        this.testState = testState;
+        databaseManager = new DatabaseManager(testState ?
+                                                "jdbc:sqlite:./src/test/resources/test_database.db" :
+                                                "jdbc:sqlite:database.db"
+                                            );
+        binDataset = new BinDataset();
+        binDataset.readGeoJSON();
 
-        state.databaseManager = DatabaseManager.getInstance();
+        binDAO = new BinDAO(databaseManager);
+        trashLogDAO = new TrashLogDAO(databaseManager);
 
-        state.binLoader = new BinLoader();
-        state.binLoader.readGeoJSON();
+        statusReportStore = new StatusReportStore(binDAO, testState ? StatusReportStore.testDataPath()
+                                                                    : StatusReportStore.defaultDataPath());
+        if(!testState)
+            statusReportStore.load();
 
-        state.binDAO = new BinDAO();
-        state.trashLogDAO = new TrashLogDAO();
+        loadBins();
+        refreshBinFullness();
+        router = new Router(this, stage);
 
-        state.statusReportStore = new StatusReportStore(state.binLoader, StatusReportStore.defaultDataPath());
-        state.statusReportStore.load();
-        state.binLoader.loadBinFullness(state.statusReportStore);
-
-        state.loadBins();
-
-        state.photonClient = new PhotonClient();
-        state.trashDBClient = new TrashDBClient();
-
-        state.router = new Router(state, stage);
-
-        state.fetchData();
-
-        instance = state;
-        return state;
-    }
-
-    /**
-     * Returns the singleton {@code GlobalState} instance.
-     * @return the singleton {@code GlobalState} instance
-     * @throws IllegalStateException if {@link #create(Stage)} has not yet been called
-     */
-    public static GlobalState getInstance() {
-        if (instance == null) {
-            throw new IllegalStateException("GlobalState not initialized — call create() first");
-        }
-        return instance;
-    }
-
-
-    private void fetchData() {
-
-        trashDBClient.getLeaderboard(leaderboard -> {
-
-            this.leaderboard = leaderboard;
-            router.refreshPage(Pages.LEADERBOARD);
-
-        });
+        photonClient = new PhotonClient();
     }
 
     /**
@@ -142,10 +107,6 @@ public class    GlobalState {
         router.switchPage(Pages.MAP);
     }
 
-    public BinLoader getBinLoader() {
-        return binLoader;
-    }
-
     public Feature consumeMapSearchRequest(){
 
         // Clear the request
@@ -169,19 +130,51 @@ public class    GlobalState {
      * current database
      */
     private void loadBins() {
-        if (binDAO.getAll().isEmpty()) {
-            binDAO.addBatch(binLoader.getBinObjects());
-        }
+        if (binDAO.getAll().isEmpty())
+            binDAO.addBatch(binDataset.getBinDataset());
     }
 
-    public TrashDBLeaderboardResponse getLeaderboard() {
-        return leaderboard;
+
+    public void refreshBinFullness(){
+
+        // No need to recalc fullness every test
+        if(testState)
+            return;
+
+        // Only want recent reports of fullness
+        List<StatusReport> fullnessReports = statusReportStore.getReports().stream()
+                                                    .filter(r -> r.getIssue() == ReportType._FULLNESS_UPDATE)
+                                                    .filter(r -> r.getSubmittedAt().isAfter(LocalDate.now().atStartOfDay()))
+                                                    .toList();
+
+        // Get each bin's new fullness as an average of this week's reports
+        getBinDAO().getAll().stream().forEach(b -> {
+            List<StatusReport> reportsFoBin = fullnessReports.stream().filter(r -> r.getBinID() == b.getID()).toList();
+            refreshBinFullness(b, binDAO, reportsFoBin);
+        });
     }
 
-    /**
-     * Resets the singleton instance. Intended for test use only.
-     */
-    public static void REMOVE_INSTANCE() {
-        instance = null;
+    public void refreshBinFullness(Bin bin){
+
+         // Only want recent reports of fullness
+        List<StatusReport> reportsFoBin = statusReportStore.getReports().stream()
+                                                    .filter(r -> r.getIssue() == ReportType._FULLNESS_UPDATE)
+                                                    .filter(r -> r.getSubmittedAt().isAfter(LocalDate.now().atStartOfDay()))
+                                                    .filter(r -> r.getBinID() == bin.getID())
+                                                    .toList();
+
+        refreshBinFullness(bin, binDAO, reportsFoBin);
+    }
+
+    private void refreshBinFullness(Bin bin, BinDAO binDAO, List<StatusReport> reportsFoBin) {
+        bin.updateFullness(binDAO, reportsFoBin);
+    }
+
+    public DatabaseManager getDatabaseManager() {
+        return databaseManager;
+    }
+
+    public BinDataset getDataset() {
+        return binDataset;
     }
 }

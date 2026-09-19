@@ -18,8 +18,6 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
-//@todo confimation icon
-//@todo animate components
 
 /**
  * A Modal (overlay) to display trash log controls
@@ -64,7 +62,7 @@ public class LogTrashModal extends Modal {
         // Log data
         UIIconText typeLabel = new UIIconText("bin", "Trash Type");
         typeInput = new UIDropDown("Select waste type...", trashTypes);
-        UIIconText weightLabel = new UIIconText("scales", "Estimated Weight");
+        UIIconText weightLabel = new UIIconText("scales", "Estimated Weight (grams)");
         weightInput = new UITextInput("Enter waste weight...");
         UISection logInputSection = new UISection(15, typeLabel, typeInput, weightLabel, weightInput);
 
@@ -125,7 +123,7 @@ public class LogTrashModal extends Modal {
      */
     private void submitTrashLog() {
 
-        // No bin setup (@todo log error)
+        // No bin setup
         if (bin == null)
             return;
 
@@ -181,6 +179,9 @@ public class LogTrashModal extends Modal {
         // Save
         getState().getTrashLogDAO().add(new TrashLog(Instant.now(), Instant.now(), userID, binID, type, weight));
         getState().getStatusReportStore().logReport(bin, fullness, ReportType._FULLNESS_UPDATE, "");
+
+         // Refresh the bins' average status
+        getRouter().getGlobalState().refreshBinFullness(bin);
 
         closeModal();
     }

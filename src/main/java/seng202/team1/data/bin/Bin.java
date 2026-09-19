@@ -1,6 +1,12 @@
 package seng202.team1.data.bin;
 
+import seng202.team1.data.bin.BinCategory;
+import seng202.team1.data.sqlite.DAO.BinDAO;
+import seng202.team1.data.bin.BinFullness;
+import seng202.team1.data.status.StatusReport;
+
 import java.time.Instant;
+import java.util.List;
 
 
 /**
@@ -31,7 +37,7 @@ public class Bin {
     // The bin's photo url
     protected String photoURL;
 
-    /// Name of the area the bin is located in (@todo resolve to address using api)
+    /// Name of the area the bin is located in
     protected String areaName;
 
     /**
@@ -41,7 +47,7 @@ public class Bin {
      * @param longitude - longitude of the bin
      * @param type - type of bin (general waste, recycling, organic)
      */
-    public Bin(Integer binID, double latitude, double longitude, BinCategory type, Instant updated, String photoURL, String areaName) {
+    public Bin(Integer binID, double latitude, double longitude, BinCategory type, Instant updated, String photoURL, String areaName, BinFullness fullness) {
         this.binID = binID;
         this.latitude = latitude;
         this.longitude = longitude;
@@ -49,10 +55,11 @@ public class Bin {
         this.updated = updated;
         this.photoURL = photoURL;
         this.areaName = areaName;
+        this.fullness = fullness;
     }
 
     public Bin(Integer binID, double latitude, double longitude, BinCategory type, Instant updated, String areaName) {
-        this(binID, latitude, longitude, type, updated, null, areaName);
+        this(binID, latitude, longitude, type, updated, null, areaName, BinFullness.UNKNOWN);
     }
 
     /**
@@ -133,4 +140,30 @@ public class Bin {
                 '}';
     }
 
+    public void updateFullness(BinDAO db, List<StatusReport> reportsForBin) {
+
+
+        // Average with no values will fault with div by 0
+        if(reportsForBin.isEmpty()){
+            fullness = BinFullness.UNKNOWN;
+            db.update(this);
+            return;
+        }
+
+        // Floor the average report value
+        int avg = (int)reportsForBin.stream()
+                                    .map(r -> r.getFullness().ordinal())
+                                    .mapToInt(Integer::intValue)
+                                    .average()
+                                    .getAsDouble();
+
+        // Map the average back to its enum value
+        fullness = BinFullness.EMPTY;
+        for(BinFullness fullnessType : BinFullness.values())
+            if(fullnessType.ordinal() == avg)
+                fullness = fullnessType;
+
+        // Store change
+        db.update(this);
+    }
 }

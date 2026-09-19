@@ -19,7 +19,6 @@ public class MainPhase extends Phase{
             Pages.DASHBOARD,
             Pages.MAP,
             Pages.TIMELINE,
-            Pages.LEADERBOARD,
             Pages.DATA,
             Pages.SETTINGS
         );

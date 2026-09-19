@@ -5,7 +5,6 @@ import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import seng202.team1.api.trashdb.LeaderBoardEntry;
 import seng202.team1.data.table.StringTableBuilder;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.components.UIImage;
@@ -18,9 +17,7 @@ import java.util.Comparator;
 /**
  * Page that displays a ranking of the TrashApps users
  */
-public class LeaderboardPage extends Page {
-
-    private StringTableBuilder<LeaderBoardEntry> tableData = null;
+public class LeaderboardPage {
 
     private UITable table;
 
@@ -33,7 +30,7 @@ public class LeaderboardPage extends Page {
      */
     public LeaderboardPage(Router router) {
 
-        super(router, Pages.LEADERBOARD);
+//        super(router, Pages.LEADERBOARD);
 
     }
 
@@ -57,7 +54,6 @@ public class LeaderboardPage extends Page {
      *
      * @return the UI layout for the page
      */
-    @Override
     protected Parent renderSelf() {
 
 
@@ -67,19 +63,19 @@ public class LeaderboardPage extends Page {
 
         // Data
         String thisUser = "Mike M";
-        tableData = new StringTableBuilder<LeaderBoardEntry>(getState().getLeaderboard().entries())
-                .addColumn("position", "Position")
-                .addColumn("name", "Name", item -> {
-
-                    // Indicate which row the user belongs to
-                    String name = (String)item;
-                    return thisUser.equals(name) ? name + " (You)" : name;
-                })
-                .addColumn("items_logged", "Items Logged")
-                .addColumn("trees", "Trees Saved")
-                .sortBy(Comparator.comparing(item -> item.position()));
-
-        table = new UITable(tableData, true, row -> row.get("Name").contains("(You)"));
+//        tableData = new StringTableBuilder<LeaderBoardEntry>(getState().getLeaderboard().entries())
+//                .addColumn("position", "Position")
+//                .addColumn("name", "Name", item -> {
+//
+//                    // Indicate which row the user belongs to
+//                    String name = (String)item;
+//                    return thisUser.equals(name) ? name + " (You)" : name;
+//                })
+//                .addColumn("items_logged", "Items Logged")
+//                .addColumn("trees", "Trees Saved")
+//                .sortBy(Comparator.comparing(item -> item.position()));
+//
+//        table = new UITable(tableData, true, row -> row.get("Name").contains("(You)"));
 
         // Mile stone
         milstone = new HBox(buildNextMileStone());
@@ -101,14 +97,13 @@ public class LeaderboardPage extends Page {
 
     }
 
-    @Override
     public void updateContents() {
-
-        if(tableData == null)
-            return;
-
-        // Show the latest leaderboard info
-        tableData.updateData(getState().getLeaderboard().entries());
+//
+//        if(tableData == null)
+//            return;
+//
+//        // Show the latest leaderboard info
+//        tableData.updateData(getState().getLeaderboard().entries());
         table.buildTableContent();
 
         HBox newInner = buildNextMileStone();

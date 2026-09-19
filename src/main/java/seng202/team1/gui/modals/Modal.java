@@ -11,7 +11,6 @@ import seng202.team1.gui.components.UIImage;
 import seng202.team1.gui.components.UITitle;
 import seng202.team1.gui.layout.LayoutElement;
 
-//@todo abstract away the simaliries between this and page?
 
 /**
  * A Modal to display overlay contents
