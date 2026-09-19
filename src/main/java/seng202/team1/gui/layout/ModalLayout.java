@@ -7,7 +7,7 @@ import seng202.team1.gui.Router;
  * Composite UI component that contains elements for a modal
  *
  */
-public class ModalLayout extends LayoutElement{
+public class ModalLayout extends Layout{
 
     /**
      * Constuct a new ModalLayout
@@ -25,5 +25,10 @@ public class ModalLayout extends LayoutElement{
     @Override
     protected Parent renderSelf() {
         return null;
+    }
+
+    @Override
+    public void swap(Parent rendered) {
+        // modals content isnt dynamic
     }
 }

@@ -3,14 +3,16 @@ package seng202.team1.gui;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import seng202.team1.gui.layout.Layout;
+import seng202.team1.gui.phases.*;
 import seng202.team1.helpers.StringHelpers;
 import seng202.team1.gui.components.UIImage;
 import seng202.team1.gui.layout.OverlayLayout;
 import seng202.team1.gui.modals.*;
-import seng202.team1.gui.layout.MainLayout;
 import seng202.team1.gui.layout.LayoutElement;
 import seng202.team1.gui.pages.*;
 import seng202.team1.state.GlobalState;
@@ -35,11 +37,16 @@ public class Router extends StateReferrer {
     private Stage currentStage;
 
     /// What page to show on start up
-    public static Pages START_PAGE = Pages.DASHBOARD;
+    public static Phases START_PHASE = Phases.MAIN;
 
     /// The page that is currently shown
     private Pages currentPage;
+
+    /// The modal that is currently shown
     private Modals currentModal;
+
+    /// The phase of GUI the app is currently in
+    private Phases currentPhase;
 
     /// The list of the pages that have been show in order
     private Stack<Pages> history = new Stack<>();
@@ -48,6 +55,9 @@ public class Router extends StateReferrer {
     private final List<Consumer<Pages>> pageSwitchCallbacks = new ArrayList<>();
 
     private final List<Consumer<Modals>> modalSwitchCallbacks = new ArrayList<>();
+
+    /// The phases this app can switch between
+    private final Map<Phases, Phase> phases = new HashMap<>();
 
     /// The pages this app can switch between
     private final Map<Pages, Page> pages = new HashMap<>();
@@ -62,13 +72,13 @@ public class Router extends StateReferrer {
     private long nextWindowId = 0;
 
     /// The layout that contains the pages for this app
-    private final MainLayout layout = new MainLayout(this);
+    private Layout layout = null;
 
     /// The lay that contains the overlayed elements for this app
     private final OverlayLayout overlay = new OverlayLayout(this);
 
     /// The root scene
-    private final StackPane root = new StackPane(layout.getRendered(), overlay.getRendered());
+    private final StackPane root = new StackPane(new VBox(), overlay.getRendered());
 
     /**
      * Constructs a new Router, loading the pages for this app
@@ -79,7 +89,7 @@ public class Router extends StateReferrer {
     public Router(GlobalState state, Stage currentStage){
         super(state);
 
-        // Load core ui
+        // Setup window
         this.currentStage = currentStage;
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 
@@ -91,12 +101,24 @@ public class Router extends StateReferrer {
         String cssPath = Objects.requireNonNull(getClass().getResource("/styles/styles.css")).toExternalForm();
         scene.getStylesheets().add(cssPath);
 
-        // Show dashboard
+        // Start UI
+        loadPhases();
         loadPages();
         loadModals();
-        switchPage(START_PAGE);
+        switchPhase(START_PHASE);
         hideOverlay();
     }
+
+
+    /**
+     * Creates & stores a new page for each type
+     */
+    private void loadPhases() {
+        loadPhase(Phases.PREFLIGHT, new PreflightPhase(this));
+        loadPhase(Phases.AUTH, new AuthPhase(this));
+        loadPhase(Phases.MAIN, new MainPhase(this));
+    }
+
 
     /**
      * Creates & stores a new page for each type
@@ -119,6 +141,41 @@ public class Router extends StateReferrer {
         loadModal(Modals.DIRECTIONS, new DirectionsModal(this));
     }
 
+     /**
+     * Store a phase given its type
+     *
+     * Warning: will unsafely fail if phase is already loaded
+     *
+     * @param type The type of phase
+     * @param phase The phase contents
+     */
+    private void loadPhase(Phases type, Phase phase){
+
+        // Should never have two of the same page types
+        if(phases.get(type) != null)
+            throw new InvalidParameterException("Phase type already exists");
+
+        phases.put(type, phase);
+    }
+
+     /**
+     * Store a page given its type
+     *
+     * Warning: will unsafely fail if page is already loaded
+     *
+     * @param type The type of page
+     * @param page The page contents
+     */
+    private void loadPage(Pages type, Page page){
+
+        // Should never have two of the same page types
+        if(pages.get(type) != null)
+            throw new InvalidParameterException("Page type already exists");
+
+        pages.put(type, page);
+    }
+
+
     /**
      * Store a modal given its type
      *
@@ -137,20 +194,28 @@ public class Router extends StateReferrer {
     }
 
      /**
-     * Store a page given its type
+     * Change the phase to another desired one
      *
-     * Warning: will unsafely fail if page is already loaded
+     * Note: idempotent
+     * Note: will not switch if phase not loaded, warning will be logged
      *
-     * @param type The type of page
-     * @param page The page contents
+     * @param phaseType The page to switch to
      */
-    private void loadPage(Pages type, Page page){
+    public void switchPhase(Phases phaseType) {
 
-        // Should never have two of the same page types
-        if(pages.get(type) != null)
-            throw new InvalidParameterException("Page type already exists");
+        // Select the page
+        currentPhase = phaseType;
+        Phase phase = phases.get(phaseType);
 
-        pages.put(type, page);
+        // phase not stored
+        if(phase == null){
+            log.warn("Phase not loaded for type: {}", phaseType.name());
+            return;
+        }
+
+        // Render the new phase
+        updateLayout(phase.getLayout());
+        switchPage(phase.entryPage());
     }
 
     /**
@@ -173,6 +238,12 @@ public class Router extends StateReferrer {
             return;
         }
 
+        // Page not allowed
+        if(!phases.get(currentPhase).allowsPage(pageType)){
+            log.warn("Page invalid for phase: {}", pageType.name());
+            return;
+        }
+
         // Show the page
         history.add(currentPage);
         layout.swap(page.getRendered());
@@ -180,6 +251,15 @@ public class Router extends StateReferrer {
        // Update pages to show latest data post render
         for (Consumer<Pages> callback : pageSwitchCallbacks)
             callback.accept(pageType);
+    }
+
+    /**
+     * Get the phase the GUI is currently in
+     *
+     * @return The phase that is shown
+     */
+    public Phases getCurrentPhase() {
+        return currentPhase;
     }
 
     /**
@@ -417,5 +497,14 @@ public class Router extends StateReferrer {
      */
     public Stage getStage() {
         return currentStage;
+    }
+
+    private void updateLayout(Layout layout){
+        this.layout = layout;
+        root.getChildren().set(0, this.layout.getRendered());
+    }
+
+    public List<Pages> getPagesInPhase() {
+        return phases.get(currentPhase).allowedPages();
     }
 }

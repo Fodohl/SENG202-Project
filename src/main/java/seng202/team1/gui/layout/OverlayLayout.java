@@ -11,7 +11,7 @@ import seng202.team1.gui.Router;
  * <p>
  * Note: there should be only one per window
  */
-public class OverlayLayout extends LayoutElement {
+public class OverlayLayout extends Layout {
 
     /// The base container for the overlay
     StackPane root = new StackPane();
@@ -65,5 +65,10 @@ public class OverlayLayout extends LayoutElement {
         // Center the modal content over the overlay
         StackPane.setAlignment(contents, Pos.CENTER);
         root.getChildren().add(contents);
+    }
+
+    @Override
+    public void swap(Parent rendered) {
+        // overlays dont change content
     }
 }

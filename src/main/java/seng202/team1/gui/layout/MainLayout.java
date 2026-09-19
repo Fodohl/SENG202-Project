@@ -18,7 +18,7 @@ import static seng202.team1.gui.GraphicsCommon.precentWindowX;
  *
  * Note: there should be only one per window
  */
-public class MainLayout extends LayoutElement {
+public class MainLayout extends Layout {
 
     /// The element that contains the content of the current page
     private ScrollPane content = new ScrollPane();
@@ -55,7 +55,7 @@ public class MainLayout extends LayoutElement {
 
         // Navigation Menu
         VBox navbar = new VBox(8);
-        for (Pages option : Pages.values())
+        for (Pages option : router.getPagesInPhase())
             if(option != Pages.SETTINGS)
                 navbar.getChildren().add(new UINavButton(router, option));
 
