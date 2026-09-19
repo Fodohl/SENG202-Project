@@ -5,7 +5,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
-import seng202.team1.common.StringHelpers;
+import seng202.team1.helpers.StringHelpers;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.components.UIButton;
 import seng202.team1.gui.components.UIImage;

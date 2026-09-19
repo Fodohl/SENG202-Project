@@ -1,7 +1,7 @@
 package seng202.team1.unittests.common;
 
 import org.junit.jupiter.api.Test;
-import seng202.team1.common.StringHelpers;
+import seng202.team1.helpers.StringHelpers;
 import seng202.team1.unittests.TrashAppTest;
 
 import java.time.Instant;

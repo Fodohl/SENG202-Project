@@ -6,7 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.layout.*;
 import javafx.scene.control.Label;
 import seng202.team1.api.photon.Feature;
-import seng202.team1.common.StringHelpers;
+import seng202.team1.helpers.StringHelpers;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.route.RouteInstruction;
 import seng202.team1.data.trashlog.TrashLog;

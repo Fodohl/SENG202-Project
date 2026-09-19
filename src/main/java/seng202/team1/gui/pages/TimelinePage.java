@@ -3,7 +3,7 @@ package seng202.team1.gui.pages;
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
 import seng202.team1.common.DateHelpers;
-import seng202.team1.common.StringHelpers;
+import seng202.team1.helpers.StringHelpers;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.status.ReportType;
 import seng202.team1.data.status.StatusReport;

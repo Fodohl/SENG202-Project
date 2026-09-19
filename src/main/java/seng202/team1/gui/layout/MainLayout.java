@@ -14,14 +14,12 @@ import javafx.scene.layout.*;
 import javafx.stage.Popup;
 import javafx.util.Duration;
 import seng202.team1.api.photon.Feature;
-import seng202.team1.common.StringHelpers;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.components.UIImage;
 import seng202.team1.gui.components.UILocationInput;
 import seng202.team1.gui.components.UINavButton;
 import seng202.team1.gui.pages.Pages;
 
-import static seng202.team1.common.StringHelpers.featureToAddress;
 import static seng202.team1.gui.GraphicsCommon.precentWindowX;
 
 /**

@@ -3,7 +3,7 @@ package seng202.team1.gui.pages;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
-import seng202.team1.common.StringHelpers;
+import seng202.team1.helpers.StringHelpers;
 import seng202.team1.data.ExportManager;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.BinCategory;

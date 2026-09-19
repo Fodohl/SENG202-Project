@@ -12,7 +12,7 @@ import javafx.stage.Popup;
 import javafx.util.Duration;
 import seng202.team1.api.photon.Feature;
 import seng202.team1.api.photon.PhotonClient;
-import seng202.team1.common.StringHelpers;
+import seng202.team1.helpers.StringHelpers;
 import seng202.team1.gui.layout.LayoutElement;
 import seng202.team1.state.GlobalState;
 
@@ -148,7 +148,7 @@ public class UILocationInput extends HBox {
      */
     private Label makeLocationLable(Feature location) {
 
-        String addressText = StringHelpers.featureToAddress(location);
+        String addressText = PhotonClient.featureToAddress(location);
         Label suggestion = new Label(addressText);
 
         suggestion.setOnMouseClicked(e -> {

@@ -68,4 +68,21 @@ public class PhotonClient extends ApiClient {
 
         }, error, loader);
     }
+
+
+    /**
+     * Convert a photon location feature to a readable address
+     *
+     * @param feature The location
+     * @return The assembled address
+     */
+    public static String featureToAddress(Feature feature){
+
+        Properties properties = feature.properties();
+
+        boolean isAddress = properties.name() == null;
+
+        return isAddress ? String.format("%s %s, %s, %s", properties.housenumber(), properties.street(), properties.city(), properties.postcode())
+                         : String.format("%s, %s, %s", properties.name(), properties.city(), properties.county());
+    }
 }

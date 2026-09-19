@@ -1,8 +1,12 @@
+// https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-gradle-plugin/build.gradle
+import org.openapitools.generator.gradle.plugin.tasks.GenerateTask
+
 plugins {
     id 'application'
     id 'java'
     id "org.openjfx.javafxplugin" version "0.1.0"
     id 'jacoco'
+    id "org.openapi.generator" version "7.25.0"
 }
 
 base {
@@ -30,6 +34,30 @@ java {
 repositories {
     mavenCentral()
     maven { url 'https://jitpack.io' }
+}
+
+sourceSets {
+    common {
+    }
+    backend {
+        java.srcDir 'src/backend/java'
+        resources.srcDir 'src/backend/resources'
+        compileClasspath += sourceSets.common.output
+        runtimeClasspath += sourceSets.common.output
+    }
+    main {
+        compileClasspath += sourceSets.common.output
+        runtimeClasspath += sourceSets.common.output
+    }
+    test {
+        compileClasspath += sourceSets.common.output
+        runtimeClasspath += sourceSets.common.output
+    }
+}
+
+configurations {
+    commonImplementation.extendsFrom implementation
+    backendImplementation.extendsFrom implementation
 }
 
 dependencies {
@@ -102,6 +130,11 @@ dependencies {
 
     // https://mvnrepository.com/artifact/com.google.code.gson/gson
     implementation 'com.google.code.gson:gson:2.14.0'
+
+    // deps of openapi
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.19.2'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.19.2'
+    implementation 'jakarta.annotation:jakarta.annotation-api:3.0.0'
 }
 
 application {
@@ -193,4 +226,42 @@ tasks.withType(JavaExec).configureEach {
         '--enable-native-access=ALL-UNNAMED',
         '--enable-native-access=javafx.web'
     ]
+}
+def spec = layout.projectDirectory.file('src/common/resources/openapi.json')
+
+// https://openapi-generator.tech/docs/plugins
+openApiGenerate {
+    generatorName.set('java')
+    library.set('native')
+    inputSpec.set(spec)
+    outputDir.set(layout.buildDirectory.dir('generated/common'))
+    apiPackage.set('seng202.team1.taserver.api')
+    modelPackage.set('seng202.team1.taserver.model')
+    invokerPackage.set('seng202.team1.taserver.client')
+    workerIsolation.set('process')
+    configOptions.set([openApiNullable: 'false', useJakartaEe: 'true'])
+}
+
+tasks.register('generateBackend', GenerateTask) {
+    generatorName.set('spring')
+    inputSpec.set(spec)
+    outputDir.set(layout.buildDirectory.dir('generated/backend'))
+    apiPackage.set('seng202.team1.api')
+    modelPackage.set('seng202.team1.taserver.model')
+    workerIsolation.set('process')
+    globalProperties.set([apis: ''])
+    configOptions.set([interfaceOnly: 'true', useSpringBoot3: 'true', useTags: 'true',
+                       skipDefaultInterface: 'true', openApiNullable: 'false'])
+}
+
+sourceSets.common.java.srcDir  layout.buildDirectory.dir('generated/common/src/main/java')
+sourceSets.backend.java.srcDir layout.buildDirectory.dir('generated/backend/src/main/java')
+
+compileCommonJava.dependsOn tasks.named("openApiGenerate")
+compileBackendJava.dependsOn tasks.named("generateBackend")
+
+tasks.register('server', JavaExec) {
+    group = 'application'
+    classpath = sourceSets.backend.runtimeClasspath
+    mainClass = 'seng202.team1.TAServer'
 }

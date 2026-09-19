@@ -1,7 +1,6 @@
-package seng202.team1.common;
+package seng202.team1.helpers;
 
-import seng202.team1.api.photon.Feature;
-import seng202.team1.api.photon.Properties;
+import seng202.team1.common.DateHelpers;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -97,21 +96,5 @@ public class StringHelpers {
         // Covert back to
         return String.format("%d", rounded * nearest);
 
-    }
-
-    /**
-     * Convert a photon location feature to a readable address
-     *
-     * @param feature The location
-     * @return The assembled address
-     */
-    public static String featureToAddress(Feature feature){
-
-        Properties properties = feature.properties();
-
-        boolean isAddress = properties.name() == null;
-
-        return isAddress ? String.format("%s %s, %s, %s", properties.housenumber(), properties.street(), properties.city(), properties.postcode())
-                         : String.format("%s, %s, %s", properties.name(), properties.city(), properties.county());
     }
 }

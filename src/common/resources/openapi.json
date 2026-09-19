@@ -1,0 +1,960 @@
+{
+  "openapi": "3.0.0",
+  "servers": [
+    {
+      "url": "https://trashapp.maxtyson.net/api/v1/",
+      "variables": {},
+      "description": "Demo server for the trash app. Unrealiable"
+    }
+  ],
+  "info": {
+    "description": "Provides endpoints for marshaling data regrading items of trash logged in bins around Christchurch by the community. ",
+    "version": "1.0.0",
+    "title": "TrashApp API",
+    "termsOfService": "https://trashapp.maxtyson.net/terms/",
+    "contact": {
+      "email": "mty24@uclive.ac.nz",
+      "name": "Max Tyson",
+      "url": "https://trashapp.maxtyson.net/"
+    }
+  },
+  "tags": [
+    {
+      "name": "bin",
+      "description": "Endpoints for searching, and managing community waste bins"
+    },
+    {
+      "name": "user",
+      "description": "Endpoints for searching, and managing community users of the app"
+    },
+    {
+      "name": "report",
+      "description": "Endpoints for creating, searching, and managing status reports of bins"
+    },
+    {
+      "name": "trash",
+      "description": "Endpoints for creating, searching, and managing trash logs in bins"
+    },
+    {
+      "name": "community",
+      "description": "Endpoints for querying statistics about community trash logging activity"
+    },
+    {
+      "name": "auth",
+      "description": "Endpoints for managing user session and access"
+    }
+  ],
+  "paths": {
+    "/heartbeat": {
+      "get": {
+        "summary": "Check if the server at the endpoint is reachable",
+        "description": "",
+        "parameters": [],
+        "operationId": "heartbeat",
+        "responses": {
+          "200": {
+            "description": "Server running",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/bins": {
+      "get": {
+        "summary": "Get the bins available in the database",
+        "description": "",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "50"
+            },
+            "allowEmptyValue": true,
+            "description": "How many bins to fetch"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "What page to get (ordered by id)",
+            "allowEmptyValue": true
+          }
+        ],
+        "operationId": "getBins",
+        "responses": {
+          "200": {
+            "description": "List of bins",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid paramater value",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No bins found for specified parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "bin"
+        ]
+      }
+    },
+    "/bins/fullness": {
+      "get": {
+        "tags": [
+          "bin"
+        ],
+        "operationId": "getBinsFullness",
+        "responses": {
+          "200": {
+            "description": "ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "bins": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "integer",
+                            "format": "int64"
+                          },
+                          "fullness": {
+                            "type": "number"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/reports": {
+      "get": {
+        "summary": "Get a list of issued reports",
+        "description": "Will get the submitted issues by this user",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "50"
+            },
+            "description": "How many reports to fetch"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "What page to get (ordered by id)"
+          }
+        ],
+        "operationId": "getUserReports",
+        "responses": {
+          "200": {
+            "description": "List of issue reports",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid parameter value",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No reports found for specified parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "report"
+        ]
+      },
+      "post": {
+        "summary": "Report a new issue",
+        "description": "",
+        "parameters": [],
+        "operationId": "addUserReport",
+        "responses": {
+          "200": {
+            "description": "Description"
+          }
+        },
+        "tags": [
+          "report"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          },
+          "description": "The report to add"
+        }
+      }
+    },
+    "/report/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Get a specific report",
+        "description": "",
+        "parameters": [],
+        "operationId": "getReportById",
+        "responses": {
+          "200": {
+            "description": "Report found successfully",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "404": {
+            "description": "No report found for specified ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "report"
+        ]
+      }
+    },
+    "/trash": {
+      "get": {
+        "summary": "Get a list of trash logged",
+        "description": "Will get the submitted trash by this user",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "How many logs to fetch"
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "What page to get (ordered by id)"
+          }
+        ],
+        "operationId": "getUserTrashLogs",
+        "responses": {
+          "200": {
+            "description": "List of trash reports",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid parameter value",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "No trash found for specified parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "trash"
+        ]
+      },
+      "post": {
+        "summary": "Log a new item of trash",
+        "description": "",
+        "parameters": [],
+        "operationId": "addUserTrashLog",
+        "responses": {
+          "201": {
+            "description": "Report created successfully",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "tags": [
+          "trash"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          },
+          "description": "The trash to log"
+        }
+      }
+    },
+    "/trash/{id}": {
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "schema": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      ],
+      "get": {
+        "summary": "Get a specific trash log",
+        "description": "",
+        "parameters": [],
+        "operationId": "getTrashLogByID",
+        "responses": {
+          "200": {
+            "description": "Report found successfully",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "404": {
+            "description": "No report found for specified ID",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "trash"
+        ]
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Create a new logged in session for a user",
+        "description": "",
+        "parameters": [],
+        "operationId": "logUserIn",
+        "responses": {
+          "200": {
+            "description": "User logged in successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Token"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Incorrect login details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "*/*": {
+              "schema": {}
+            }
+          },
+          "description": "The users credintials"
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "summary": "Rotate a user session before expiry",
+        "description": "",
+        "parameters": [],
+        "operationId": "rotateUserAPIToken",
+        "responses": {
+          "200": {
+            "description": "Auth token refreshed",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Token"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ]
+      }
+    },
+    "/auth/reset": {
+      "post": {
+        "summary": "Change the password for a user",
+        "description": "",
+        "parameters": [],
+        "operationId": "resetUserPassword",
+        "responses": {
+          "200": {
+            "description": "Password changed successfully",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid password",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "auth"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          },
+          "description": "The reset credentials. If code is null it will be sent to email"
+        }
+      }
+    },
+    "/user": {
+      "get": {
+        "summary": "Get the user's profile",
+        "description": "",
+        "parameters": [],
+        "operationId": "getUserDetails",
+        "responses": {
+          "200": {
+            "description": "User exists",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "tags": [
+          "user"
+        ]
+      },
+      "post": {
+        "summary": "Create a new user",
+        "description": "",
+        "parameters": [],
+        "operationId": "addNewUser",
+        "responses": {
+          "200": {
+            "description": "User created",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "tags": [
+          "user"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          },
+          "description": "The user's details"
+        }
+      },
+      "put": {
+        "summary": "Change details for a user",
+        "description": "",
+        "parameters": [],
+        "operationId": "updateUserDetails",
+        "responses": {
+          "409": {
+            "description": "User with email already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "user"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          },
+          "description": "Any updated fields"
+        }
+      },
+      "delete": {
+        "summary": "Remove this user from the app ",
+        "description": "",
+        "parameters": [],
+        "operationId": "removeUser",
+        "responses": {
+          "200": {
+            "description": "User deleted",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "tags": [
+          "user"
+        ]
+      }
+    },
+    "/community/cleanliness": {
+      "get": {
+        "summary": "Get the past 6 months of collective trash logging",
+        "description": "",
+        "parameters": [],
+        "operationId": "getCollectiveCleanilness",
+        "responses": {
+          "200": {
+            "description": "Cleanliness report fetched",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        },
+        "tags": [
+          "community"
+        ]
+      }
+    },
+    "/community/leaderboard": {
+      "get": {
+        "summary": "Get the leaderboard of cleanliness score",
+        "description": "",
+        "parameters": [],
+        "operationId": "getLeaderboard",
+        "responses": {
+          "200": {
+            "description": "Leaderboard fetched",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "201": {
+            "description": "Description"
+          },
+          "404": {
+            "description": "No leaderboard found for specified parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "tags": [
+          "community"
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      },
+      "Token": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "expires": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "requestBodies": {
+      "Pet": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "name",
+                "photoUrls"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "category": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  },
+                  "xml": {
+                    "name": "Category"
+                  }
+                },
+                "name": {
+                  "type": "string",
+                  "example": "doggie"
+                },
+                "photoUrls": {
+                  "type": "array",
+                  "xml": {
+                    "name": "photoUrl",
+                    "wrapped": true
+                  },
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "tags": {
+                  "type": "array",
+                  "xml": {
+                    "name": "tag",
+                    "wrapped": true
+                  },
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "xml": {
+                      "name": "Tag"
+                    }
+                  }
+                },
+                "status": {
+                  "type": "string",
+                  "description": "pet status in the store",
+                  "enum": [
+                    "available",
+                    "pending",
+                    "sold"
+                  ]
+                }
+              },
+              "xml": {
+                "name": "Pet"
+              }
+            }
+          },
+          "application/xml": {
+            "schema": {
+              "type": "object",
+              "required": [
+                "name",
+                "photoUrls"
+              ],
+              "properties": {
+                "id": {
+                  "type": "integer",
+                  "format": "int64"
+                },
+                "category": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "integer",
+                      "format": "int64"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  },
+                  "xml": {
+                    "name": "Category"
+                  }
+                },
+                "name": {
+                  "type": "string",
+                  "example": "doggie"
+                },
+                "photoUrls": {
+                  "type": "array",
+                  "xml": {
+                    "name": "photoUrl",
+                    "wrapped": true
+                  },
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "tags": {
+                  "type": "array",
+                  "xml": {
+                    "name": "tag",
+                    "wrapped": true
+                  },
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "integer",
+                        "format": "int64"
+                      },
+                      "name": {
+                        "type": "string"
+                      }
+                    },
+                    "xml": {
+                      "name": "Tag"
+                    }
+                  }
+                },
+                "status": {
+                  "type": "string",
+                  "description": "pet status in the store",
+                  "enum": [
+                    "available",
+                    "pending",
+                    "sold"
+                  ]
+                }
+              },
+              "xml": {
+                "name": "Pet"
+              }
+            }
+          }
+        },
+        "description": "Pet object that needs to be added to the store",
+        "required": true
+      },
+      "UserArray": {
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "integer",
+                    "format": "int64"
+                  },
+                  "username": {
+                    "type": "string"
+                  },
+                  "firstName": {
+                    "type": "string"
+                  },
+                  "lastName": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  },
+                  "phone": {
+                    "type": "string"
+                  },
+                  "userStatus": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "User Status"
+                  }
+                },
+                "xml": {
+                  "name": "User"
+                }
+              }
+            }
+          }
+        },
+        "description": "List of user object",
+        "required": true
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "kwwa"
+      }
+    },
+    "links": {},
+    "callbacks": {}
+  },
+  "security": [
+    {
+      "api_key": []
+    },
+    {
+      "Bearer": []
+    }
+  ]
+}
