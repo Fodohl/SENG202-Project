@@ -700,3 +700,25 @@
     -fx-pref-width: 250px;
     -fx-max-width: 250px;
 }
+
+
+.starting{
+    -fx-padding: 250px 0px 200px 0px;
+    -fx-alignment: top-center;
+}
+
+.starting .logo{
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+}
+
+.starting .label{
+    -fx-text-fill: -text-primary;
+    -fx-text-alignment: center;
+
+}
+
+.starting .load .svg-icon * {
+    -fx-stroke: -text-primary;
+}
+

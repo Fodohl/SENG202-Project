@@ -37,7 +37,7 @@ public class Router extends StateReferrer {
     private Stage currentStage;
 
     /// What page to show on start up
-    public static Phases START_PHASE = Phases.MAIN;
+    public static Phases START_PHASE = Phases.PREFLIGHT;
 
     /// The page that is currently shown
     private Pages currentPage;
@@ -124,11 +124,17 @@ public class Router extends StateReferrer {
      * Creates & stores a new page for each type
      */
     private void loadPages() {
+        loadPage(Pages.STARTING, new StartingPage(this));
+
+//        loadPage(Pages.LOGIN, new DashboardPage(this));
+//        loadPage(Pages.SIGN_UP, new DashboardPage(this));
+//        loadPage(Pages.RESET, new DashboardPage(this));
+
         loadPage(Pages.DASHBOARD, new DashboardPage(this));
         loadPage(Pages.MAP, new MapPage(this));
         loadPage(Pages.TIMELINE, new TimelinePage(this));
-        loadPage(Pages.SETTINGS, new SettingsPage(this));
         loadPage(Pages.DATA, new DataPage(this));
+        loadPage(Pages.SETTINGS, new SettingsPage(this));
     }
 
     /**
@@ -391,6 +397,7 @@ public class Router extends StateReferrer {
     public void closeModal(){
 
         // Run close handlers
+        //@TODO
 
         // Special modal that represents closed state, allows for modals to update self when closed via a change callback
         openModal(Modals._CLOSED);
@@ -440,7 +447,7 @@ public class Router extends StateReferrer {
         Scene scene = new Scene(modalRoot);
         stage.setScene(scene);
 
-        // Style the window
+        // Style the window @todo func
         String cssPath = Objects.requireNonNull(getClass().getResource("/styles/styles.css")).toExternalForm();
         scene.getStylesheets().add(cssPath);
 

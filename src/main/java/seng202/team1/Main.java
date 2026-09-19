@@ -57,9 +57,6 @@ public class Main extends Application {
 
         // Dev tools
         CSSFX.start();
-
-        // Dev tools
-        CSSFX.start();
 //        HotReloader.attach(config, stage);
 
         // Set up the window
