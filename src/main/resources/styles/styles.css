@@ -703,7 +703,7 @@
 
 
 .starting{
-    -fx-padding: 250px 0px 200px 0px;
+    -fx-padding: 200px 0px 200px 0px;
     -fx-alignment: top-center;
 }
 
@@ -722,3 +722,6 @@
     -fx-stroke: -text-primary;
 }
 
+.starting .logo-h1 {
+    -fx-font-size: 54px;
+}

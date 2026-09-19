@@ -11,11 +11,17 @@ import seng202.team1.gui.components.UIButton;
 import seng202.team1.gui.components.UIImage;
 import seng202.team1.gui.components.UISpinner;
 import seng202.team1.gui.phases.Phases;
+import seng202.team1.state.preflight.PreflightManager;
+import seng202.team1.state.preflight.PreflightTask;
 
 /**
  * Page that displays a loader while app is getting ready
  */
 public class StartingPage extends Page {
+
+    private Label loadingText;
+
+    private PreflightManager manager;
 
     /**
      * Constructs a new StartingPage
@@ -26,6 +32,22 @@ public class StartingPage extends Page {
 
         super(router, Pages.STARTING);
 
+        manager = getState().getPreflightManager();
+        manager.registerTaskCompletionCallback(e -> onTaskCompleted(e));
+
+
+    }
+
+    private void onTaskCompleted(PreflightTask e) {
+
+        // Preflight startup done
+        if(!manager.hasTasksUncompleted()){
+            router.switchPhase(Phases.MAIN);
+            return;
+        }
+
+        // Show the next task
+        updateContents();
     }
 
     /**
@@ -51,11 +73,20 @@ public class StartingPage extends Page {
         spinner.getStyleClass().add("load");
         logo.getChildren().addAll(logoIcon, logoTitle, spinner);
 
-        Label loadingText = new Label("Waiting for 'name o stage' to complete..");
+        loadingText = new Label("Waiting for 'name o stage' to complete..");
 
-        VBox root = new VBox(50, logo, loadingText);
+        VBox root = new VBox(100, logo, loadingText);
         root.getStyleClass().add("starting");
         return root;
     }
 
+    @Override
+    public void updateContents() {
+
+        loadingText.setText(String.format("Waiting for '%s' to complete..", manager.hasTasksUncompleted() ?
+                                                                                   manager.getTasksUncompleted().getFirst().getTaskName()
+                                                                                 : "N/A"
+                        ));
+
+    }
 }

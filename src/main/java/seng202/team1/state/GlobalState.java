@@ -15,6 +15,7 @@ import seng202.team1.data.sqlite.DAO.BinDAO;
 import seng202.team1.data.sqlite.exceptions.InstanceAlreadyExistsException;
 import seng202.team1.data.bin.BinDataset;
 import seng202.team1.data.bin.Bin;
+import seng202.team1.state.preflight.PreflightManager;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -53,13 +54,16 @@ public class GlobalState {
     /// The handler for issue reports
     private StatusReportStore statusReportStore;
 
+    private PreflightManager preflightManager;
+
     /**
      * Construct a new Global state instance
      *
-     * @param stage the primary JavaFX stage to hand off to the {@link WindowManager}
+     * @param stage the primary JavaFX stage to hand off to the {@link Router}
      */
     public GlobalState(Stage stage, boolean testState) {
 
+        // Setup data
         this.testState = testState;
         databaseManager = new DatabaseManager(testState ?
                                                 "jdbc:sqlite:./src/test/resources/test_database.db" :
@@ -76,11 +80,21 @@ public class GlobalState {
         if(!testState)
             statusReportStore.load();
 
+
+        // Load data
         loadBins();
         refreshBinFullness();
-        router = new Router(this, stage);
 
+        // Set up API
         photonClient = new PhotonClient();
+
+
+        // Run start up tasks
+        preflightManager= new PreflightManager(this);
+        preflightManager.runAll();
+
+        // Start the app
+        router = new Router(this, stage);
     }
 
     /**
@@ -176,5 +190,9 @@ public class GlobalState {
 
     public BinDataset getDataset() {
         return binDataset;
+    }
+
+    public PreflightManager getPreflightManager() {
+        return preflightManager;
     }
 }
