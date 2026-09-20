@@ -15,8 +15,10 @@ public class PreflightManager extends TaskManager {
         super(state);
 
         // Start preflight tasks
-        runTask(new CheckBackendTask(this));
-        runTask(new PropegateBinsTask(this));
-
+        long checkBackendTask = runTask(new CheckBackendTask(this));
+        long parseDataSetTask = runTask(new ParseDatasetTask(this));
+        long propegateBinTask = runTask(new PropegateBinsTask(this), parseDataSetTask);
+        long readSatusReports = runTask(new ReadStatusReportsTask(this));
+        long refreshBinsFulls = runTask(new RefreshBinFullnessTask(this), readSatusReports, propegateBinTask);
     }
 }

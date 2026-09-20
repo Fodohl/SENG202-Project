@@ -49,7 +49,8 @@ public class StatusReportStore {
     }
 
     public List<StatusReport> getReports() {
-        load();
+        if(reports.isEmpty())
+            load();
         return List.copyOf(reports);
     }
 
@@ -63,6 +64,8 @@ public class StatusReportStore {
      *
      * @param newReport {@link StatusReport} to be added
      * @throws IOException if the JSON file cannot be written
+     *
+     * @todo why copy reports just to setall?
      */
     public void add(StatusReport newReport) throws IOException {
         load();

@@ -66,9 +66,8 @@ public class Main extends Application {
         stage.show();
 
          // Set up the window
-        setAppIcon(stage);
         state.getBackgroundTasks().runTask("Setup App Icon", e -> {
-            Platform.runLater(() -> setAppIcon(stage));
+//            Platform.runLater(() -> setAppIcon(stage));
         });
         stage.setTitle("TrashApp v1");
 

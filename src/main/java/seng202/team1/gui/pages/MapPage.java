@@ -56,7 +56,7 @@ public class MapPage extends Page {
      */
     public MapPage(Router router) {
 
-        super(router, Pages.MAP, true);
+        super(router, Pages.MAP);
 
     }
 

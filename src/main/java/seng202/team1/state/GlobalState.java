@@ -72,19 +72,12 @@ public class GlobalState {
                                                 "jdbc:sqlite:database.db"
                                             );
         binDataset = new BinDataset();
-        binDataset.readGeoJSON();
 
         binDAO = new BinDAO(databaseManager);
         trashLogDAO = new TrashLogDAO(databaseManager);
 
         statusReportStore = new StatusReportStore(binDAO, testState ? StatusReportStore.testDataPath()
                                                                     : StatusReportStore.defaultDataPath());
-        if(!testState)
-            statusReportStore.load();
-
-
-        // Load data
-        refreshBinFullness();
 
         // Set up API
         photonClient = new PhotonClient();
@@ -187,5 +180,9 @@ public class GlobalState {
 
     public TaskManager getBackgroundTasks() {
         return backgroundTasks;
+    }
+
+    public boolean isTestState() {
+        return testState;
     }
 }

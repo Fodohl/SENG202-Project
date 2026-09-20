@@ -2,11 +2,13 @@ package seng202.team1.tasks;
 
 import javafx.application.Platform;
 
-public abstract class Task {
+public abstract class Task implements Cloneable{
 
     private TaskManager manager;
 
     private String taskName;
+
+    private Long taskID = -1L;
 
     public Task(TaskManager manager, String taskName) {
 
@@ -30,4 +32,25 @@ public abstract class Task {
     }
 
     public abstract void task(TaskManager manager);
+
+   @Override
+    public Task clone() {
+       try {
+           return (Task) super.clone();
+       } catch (CloneNotSupportedException e) {
+           throw new RuntimeException(e);
+       }
+   }
+
+    public Task instantiate(Long taskID) {
+
+        Task instance = this.clone();
+        instance.taskID = taskID;
+
+        return instance;
+    }
+
+    public Long getID() {
+        return taskID;
+    }
 }
