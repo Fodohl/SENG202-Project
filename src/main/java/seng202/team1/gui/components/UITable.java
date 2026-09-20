@@ -247,7 +247,7 @@ public class UITable extends GridPane {
          *
          * Call when finished with operations on the current working cell
          *
-         * @param cell The cell to add
+         * @param cell The cell to addRowToTable
          * @param isHeader Whether the cell is in the header row or not
          */
         private void addCell(Node cell, boolean isHeader){
@@ -292,7 +292,7 @@ public class UITable extends GridPane {
 
 
     /**
-     * Calculate and add the required rounding styles for the cell given how it is placed in the table
+     * Calculate and addRowToTable the required rounding styles for the cell given how it is placed in the table
      *
      * @param cell The cell to style
      */

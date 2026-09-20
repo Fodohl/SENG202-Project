@@ -26,7 +26,7 @@ public class Bin {
     protected BinFullness fullness = BinFullness.UNKNOWN;
 
     /// When the bin's info was last updated
-    protected Instant updated;
+    protected Instant timeLastUpdated;
 
     /// Name of the area the bin is located in (@todo resolve to address using api)
     protected String areaName;
@@ -44,7 +44,7 @@ public class Bin {
         this.latitude = latitude;
         this.longitude = longitude;
         this.type = type;
-        this.updated = updated;
+        this.timeLastUpdated = updated;
         this.areaName = areaName;
     }
 
@@ -93,7 +93,7 @@ public class Bin {
      * @return Bin last updated time
      */
     public Instant getUpdated() {
-        return updated;
+        return timeLastUpdated;
     }
 
     /**

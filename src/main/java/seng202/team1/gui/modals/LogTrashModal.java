@@ -40,8 +40,8 @@ public class LogTrashModal extends Modal{
         // Log data
         UIIconText typeLabel = new UIIconText("bin", "Trash Type");
         typeInput = new UIDropDown("Select waste type...", trashTypes);
-        UIIconText weightLabel = new UIIconText("scales", "Estimated Weight");
-        weightInput = new UITextInput("Enter waste weight...");
+        UIIconText weightLabel = new UIIconText("scales", "Estimated Weight in Grams");
+        weightInput = new UITextInput("Enter waste weight in g...");
         UISection logInputSection = new UISection(15, typeLabel, typeInput, weightLabel, weightInput);
 
         // Bin data

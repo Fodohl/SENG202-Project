@@ -67,12 +67,12 @@ public class StringTable extends LinkedHashMap<String, List<String>> {
      * the variable is inaccessible.
      *
      * Note: If data failed to add, table will remain unaltered.
-     * Note: Data does not have be a consistent type, just must conform to the specified headers.
+     * Note: Data does not have to be a consistent type, just must conform to the specified headers.
      *
      * @param object The data for the row
      * @return True if the row was added successfully, false otherwise.
      */
-    public boolean add(Object object, Map<String, Function<Object, String>> formatters){
+    public boolean addRowToTable(Object object, Map<String, Function<Object, String>> formatters){
 
         // Get fields the object has
         List<Field> declearedFields = Arrays.asList(object.getClass().getDeclaredFields());
@@ -119,7 +119,7 @@ public class StringTable extends LinkedHashMap<String, List<String>> {
             } catch (IllegalAccessException e) {
 
                 // Should never happen as prechecked above, unrecoverable as data may have been added here
-                throw new RuntimeException(String.format("Failed mid object add to StringTable: %s", e.getMessage()));
+                throw new RuntimeException(String.format("Failed mid object addRowToTable to StringTable: %s", e.getMessage()));
             }
         });
 

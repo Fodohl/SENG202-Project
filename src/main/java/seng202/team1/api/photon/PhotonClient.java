@@ -14,11 +14,6 @@ import static seng202.team1.TrashApp.GSON;
 
 public class PhotonClient extends ApiClient {
 
-    private final Integer LIMIT_LOCATIONS = 3;
-
-    private final Double SEARCH_PRIO_LAT = -43.5233;
-    private final Double SEARCH_PRIO_LON = 172.5822;
-
     public PhotonClient(){
         super("https://photon.komoot.io/api/");
     }
@@ -29,10 +24,13 @@ public class PhotonClient extends ApiClient {
 
     public void searchLocation(String address, Consumer<PhotonLocationResponse> callback, UIKeyValuePair error, UISpinner loader){
 
-        Map<String, String> params = Map.of("limit", LIMIT_LOCATIONS.toString(),
+        double SEARCH_PRIO_LAT = -43.5233;
+        double SEARCH_PRIO_LON = 172.5822;
+        int LIMIT_LOCATIONS = 3;
+        Map<String, String> params = Map.of("limit", Integer.toString(LIMIT_LOCATIONS),
                                             "q", address,
-                                            "lat", SEARCH_PRIO_LAT.toString(),
-                                            "lon", SEARCH_PRIO_LON.toString()
+                                            "lat", Double.toString(SEARCH_PRIO_LAT),
+                                            "lon", Double.toString(SEARCH_PRIO_LON)
                                             );
 
         GET("", params, json -> {

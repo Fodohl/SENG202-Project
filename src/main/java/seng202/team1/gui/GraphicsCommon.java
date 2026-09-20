@@ -47,7 +47,7 @@ public class GraphicsCommon {
 
           if(enable){
 
-            // Dont add if already added
+            // Dont addRowToTable if already added
             if(!node.getStyleClass().contains(className))
                 node.getStyleClass().add(className);
         } else{

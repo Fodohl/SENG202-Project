@@ -25,7 +25,7 @@ public class MathStepDefs {
         result = x * y;
     }
 
-    @When("I add the two numbers")
+    @When("I addRowToTable the two numbers")
     public void iAddTheTwoNumbers() {
         result = x + y;
     }

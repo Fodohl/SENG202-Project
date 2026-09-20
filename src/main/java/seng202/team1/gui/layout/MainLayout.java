@@ -30,7 +30,7 @@ import static seng202.team1.gui.GraphicsCommon.precentWindowX;
  * Note: there should be only one per window
  *
  * @todo move search bar to own compontent
- * @credit https://stackoverflow.com/questions/34784037/javafx-8-how-to-add-a-timedelay-to-a-listener deboucer
+ * @credit https://stackoverflow.com/questions/34784037/javafx-8-how-to-addRowToTable-a-timedelay-to-a-listener deboucer
  */
 public class MainLayout extends LayoutElement {
 

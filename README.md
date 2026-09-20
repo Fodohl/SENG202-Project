@@ -1,7 +1,9 @@
-# SENG202 Template Project Overview
-Welcome to the template project for SENG202-2024 which you will transform into your own.
-This README file includes some useful information to help you get started.
-However, we expect that this README becomes your own
+## Trash App
+
+# Overview
+
+TrashApp is a desktop application designed to help users view nearby bins. The app shows 
+
 
 ## Authors
 - SENG202 Teaching team

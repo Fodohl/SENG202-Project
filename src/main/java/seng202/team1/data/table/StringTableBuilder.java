@@ -98,7 +98,7 @@ public class StringTableBuilder<T> {
 
         StringTable table = new StringTable(colMap);
         for (T item : rawData) {
-            table.add(item, formatters);
+            table.addRowToTable(item, formatters);
         }
 
         return table;

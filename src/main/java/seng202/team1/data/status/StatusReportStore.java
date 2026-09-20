@@ -40,7 +40,7 @@ public class StatusReportStore {
     /**
      * Loads all {@link StatusReport} and saves them to reports array
      */
-    public void load() {
+    public void loadStatusReport() {
         loader.readJson();
 
         reports.clear();
@@ -48,12 +48,12 @@ public class StatusReportStore {
     }
 
     public List<StatusReport> getReports() {
-        load();
+        loadStatusReport();
         return List.copyOf(reports);
     }
 
     public List<StatusReport> getReportsById(int id) {
-        load();
+        loadStatusReport();
         return loader.getStatusReportsById(id);
     }
 
@@ -62,8 +62,8 @@ public class StatusReportStore {
      * @param newReport {@link StatusReport} to be added
      * @throws IOException if the JSON file cannot be written
      */
-    public void add(StatusReport newReport) throws IOException {
-        load();
+    public void addReportToJson(StatusReport newReport) throws IOException {
+        loadStatusReport();
         Objects.requireNonNull(newReport);
         List<StatusReport> updatedReports = new ArrayList<>(reports);
         updatedReports.add(newReport);
@@ -116,7 +116,7 @@ public class StatusReportStore {
         StatusReport entry = new StatusReport(bin, dummy, fullness, reportType, description, timestamp);
 
         try{
-            add(entry);
+            addReportToJson(entry);
         } catch (IOException e) {
             // check fails
             //@Todo log err
