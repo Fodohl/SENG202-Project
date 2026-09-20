@@ -8,14 +8,14 @@ import seng202.team1.data.status.StatusReport;
 import seng202.team1.data.status.StatusReportStore;
 import seng202.team1.data.sqlite.DAO.TrashLogDAO;
 import seng202.team1.gui.Router;
-import seng202.team1.gui.Router;
 import seng202.team1.gui.pages.Pages;
 import seng202.team1.data.sqlite.DatabaseManager;
 import seng202.team1.data.sqlite.DAO.BinDAO;
-import seng202.team1.data.sqlite.exceptions.InstanceAlreadyExistsException;
 import seng202.team1.data.bin.BinDataset;
 import seng202.team1.data.bin.Bin;
-import seng202.team1.state.preflight.PreflightManager;
+import seng202.team1.tasks.Task;
+import seng202.team1.tasks.TaskManager;
+import seng202.team1.tasks.preflight.PreflightManager;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -56,6 +56,8 @@ public class GlobalState {
 
     private PreflightManager preflightManager;
 
+    public TaskManager backgroundTasks = new TaskManager(this);
+
     /**
      * Construct a new Global state instance
      *
@@ -87,12 +89,8 @@ public class GlobalState {
         // Set up API
         photonClient = new PhotonClient();
 
-
-        // Run start up tasks
-        preflightManager= new PreflightManager(this);
-        preflightManager.runAll();
-
         // Start the app
+        preflightManager= new PreflightManager(this);
         router = new Router(this, stage);
     }
 
@@ -184,5 +182,10 @@ public class GlobalState {
 
     public PreflightManager getPreflightManager() {
         return preflightManager;
+    }
+
+
+    public TaskManager getBackgroundTasks() {
+        return backgroundTasks;
     }
 }

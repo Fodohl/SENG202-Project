@@ -1,18 +1,14 @@
 package seng202.team1.gui.pages;
 
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import seng202.team1.gui.Router;
-import seng202.team1.gui.components.UIButton;
 import seng202.team1.gui.components.UIImage;
 import seng202.team1.gui.components.UISpinner;
 import seng202.team1.gui.phases.Phases;
-import seng202.team1.state.preflight.PreflightManager;
-import seng202.team1.state.preflight.PreflightTask;
+import seng202.team1.tasks.Task;
+import seng202.team1.tasks.preflight.PreflightManager;
 
 /**
  * Page that displays a loader while app is getting ready
@@ -38,7 +34,7 @@ public class StartingPage extends Page {
 
     }
 
-    private void onTaskCompleted(PreflightTask e) {
+    private void onTaskCompleted(Task e) {
 
         // Preflight startup done
         if(!manager.hasTasksUncompleted()){

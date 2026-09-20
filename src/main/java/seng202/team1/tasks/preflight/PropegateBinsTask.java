@@ -1,16 +1,18 @@
-package seng202.team1.state.preflight;
+package seng202.team1.tasks.preflight;
 
 import seng202.team1.data.bin.BinDataset;
 import seng202.team1.data.sqlite.DAO.BinDAO;
+import seng202.team1.tasks.Task;
+import seng202.team1.tasks.TaskManager;
 
-public class PropegateBinsTask extends PreflightTask{
+public class PropegateBinsTask extends Task {
 
-    public PropegateBinsTask(PreflightManager manager){
+    public PropegateBinsTask(TaskManager manager){
         super(manager, "initial bin dataset caching");
     }
 
     @Override
-    public void task(PreflightManager manager) {
+    public void task(TaskManager manager) {
 
         BinDAO binDB = manager.getGlobalState().getBinDAO();
         BinDataset binDataset = manager.getGlobalState().getDataset();

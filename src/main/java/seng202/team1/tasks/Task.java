@@ -1,17 +1,14 @@
-package seng202.team1.state.preflight;
+package seng202.team1.tasks;
 
 import javafx.application.Platform;
-import seng202.team1.gui.pages.Pages;
 
-import java.util.function.Consumer;
+public abstract class Task {
 
-public abstract class PreflightTask {
-
-    private PreflightManager manager;
+    private TaskManager manager;
 
     private String taskName;
 
-    public PreflightTask(PreflightManager manager, String taskName) {
+    public Task(TaskManager manager, String taskName) {
 
         this.manager = manager;
         this.taskName = taskName;
@@ -32,5 +29,5 @@ public abstract class PreflightTask {
         return taskName;
     }
 
-    public abstract void task(PreflightManager manager);
+    public abstract void task(TaskManager manager);
 }

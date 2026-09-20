@@ -2,11 +2,13 @@ package seng202.team1;
 
 import fr.brouillard.oss.cssfx.CSSFX;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import seng202.team1.data.sqlite.DatabaseManager;
 import seng202.team1.data.sqlite.exceptions.InstanceAlreadyExistsException;
+import seng202.team1.debug.JFRMarker;
 import seng202.team1.gui.components.UIImage;
 import seng202.team1.state.GlobalState;
 
@@ -59,13 +61,21 @@ public class Main extends Application {
         CSSFX.start();
 //        HotReloader.attach(config, stage);
 
-        // Set up the window
-        setAppIcon(stage);
-        stage.setTitle("TrashApp v1");
-
         // Setup app state
         GlobalState state = new GlobalState(stage, false);
         stage.show();
+
+         // Set up the window
+        setAppIcon(stage);
+        state.getBackgroundTasks().runTask("Setup App Icon", e -> {
+            Platform.runLater(() -> setAppIcon(stage));
+        });
+        stage.setTitle("TrashApp v1");
+
+        JFRMarker guiReady = new JFRMarker("GUI Shown");
+        guiReady.commit();
+        TrashApp.startUpTime.commit();
+
     }
 
 
