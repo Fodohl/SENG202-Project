@@ -21,9 +21,8 @@ public class PreflightManager extends StateReferrer {
 
 
     public void runAll() {
-        runTask(new CheckBackendTask(this, 1));
-        runTask(new CheckBackendTask(this, 2));
-        runTask(new CheckBackendTask(this, 3));
+        runTask(new CheckBackendTask(this));
+        runTask(new PropegateBinsTask(this));
     }
 
     public void runTask(PreflightTask task){

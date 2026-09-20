@@ -82,7 +82,6 @@ public class GlobalState {
 
 
         // Load data
-        loadBins();
         refreshBinFullness();
 
         // Set up API
@@ -137,15 +136,6 @@ public class GlobalState {
      */
     public StatusReportStore getStatusReportStore() {
         return statusReportStore;
-    }
-
-    /**
-     * Loads the bins from JSON file to the database if there are no bins in the
-     * current database
-     */
-    private void loadBins() {
-        if (binDAO.getAll().isEmpty())
-            binDAO.addBatch(binDataset.getBinDataset());
     }
 
 
