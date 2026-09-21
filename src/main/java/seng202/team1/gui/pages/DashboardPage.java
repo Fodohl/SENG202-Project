@@ -104,7 +104,7 @@ public class DashboardPage extends Page {
         organicLogged.setText(String.format("%d", newestBin == null ? 0 : bins.stream().filter(b -> b.getCategory() == BinCategory.ORGANIC).toList().size()));
 
         // Hasn't logged
-        if(newestLog == null){
+        if(newestLog == null || newestBin == null){
             lastLog.setText("No trash logged yet.");
             lastLog.setSubtitle("Use the map to log some trash");
             return;
