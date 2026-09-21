@@ -1,5 +1,6 @@
 package seng202.team1.gui.pages;
 
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
@@ -47,13 +48,16 @@ public class LeaderboardPage extends Page {
         UIImage icon = new UIImage("/media/images/medal-gold.svg", 100, 100);
 
         Label nextMilestone = new Label("Next Milestone: 1.5 Trees Saved!");
-        UISlider progress = new UISlider();
-        VBox nextContainer = new VBox(nextMilestone, progress);
+        UISlider progress = new UISlider(true);
+        progress.setInput(80.0);
 
+        VBox nextContainer = new VBox(nextMilestone, progress);
         HBox container =  new HBox(100, icon, nextContainer);
 
-        container.setAlignment(Pos.CENTER_LEFT);
-        container.setMaxWidth(Double.MAX_VALUE);
+        nextContainer.getStyleClass().add("milestone-container");
+        nextContainer.setMaxWidth(Double.MAX_VALUE);
+
+
         return container;
     }
 
@@ -86,22 +90,15 @@ public class LeaderboardPage extends Page {
 
         table = new UITable(tableData, true, row -> row.get("Name").contains("(You)"));
 
-        // Mile stone
+        // Milestone
         milstone = new HBox(buildNextMileStone());
         milstone.getStyleClass().add("milestone");
         milstone.setAlignment(Pos.CENTER);
 
-//        table.layoutBoundsProperty().addListener((obs, oldVal, newVal) -> {
-//            System.out.printf("table: %f\n", table.getActualWidth());
-//        });
-
-        milstone.widthProperty().addListener((obs, oldVal, newVal) -> {
-            System.out.printf("milestone: %f\n", newVal.doubleValue());
-        });
-
         // Combine
-        VBox root = new VBox(20, pageTitle, milstone, table);
+        VBox root = new VBox(50, pageTitle, milstone, table);
         root.setAlignment(Pos.CENTER);
+
         return root;
 
     }

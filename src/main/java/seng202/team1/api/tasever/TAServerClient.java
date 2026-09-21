@@ -72,6 +72,13 @@ public class TAServerClient extends ApiClient {
                       "name": "Steve L",
                       "items_logged": 100,
                       "trees": 1.0
+                    },
+                      {
+                      "position": 8,
+                      "user_id": 107,
+                      "name": "Steve L",
+                      "items_logged": 100,
+                      "trees": 1.0
                     }
                   ],
                   "nextPage": null
