@@ -54,7 +54,7 @@
     -fx-font-size: 18px;
 }
 
-.text-area *{
+.combo-box *, .text-field *, .text-area *{
     -fx-background-color: -bg-primary;
 }
 
@@ -202,6 +202,10 @@
     -fx-border-width: 0;
     -fx-padding: 0;
     -fx-min-width: 400px;
+}
+
+.search-bar .text-field *{
+    -fx-background-color: -bg-third;
 }
 
 .search-bar  .svg-icon * {
