@@ -240,9 +240,12 @@ jacocoTestReport {
 tasks.withType(JavaExec).configureEach {
     jvmArgs += [
         '--enable-native-access=ALL-UNNAMED',
-        '--enable-native-access=javafx.web'
+        '--enable-native-access=javafx.web',
+        '--enable-native-access=javafx.graphics',
     ]
 }
+
+
 def spec = layout.projectDirectory.file('src/common/resources/openapi.json')
 
 // https://openapi-generator.tech/docs/plugins

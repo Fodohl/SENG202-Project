@@ -48,6 +48,17 @@ public class Main extends Application {
         taskbar.setIconImage(SwingFXUtils.fromFXImage(logoIcon, null));
     }
 
+    void deferLoadAppIcon(Stage stage){
+         try{
+            Thread.sleep(800);
+        } catch (InterruptedException e) {
+            //nvm
+        }
+
+        // Begin loading
+        Platform.runLater(() -> setAppIcon(stage));
+    }
+
     /**
      * The JavaFX entry point to the app. Will set up the window and show the main menu
      *
@@ -66,15 +77,15 @@ public class Main extends Application {
         stage.show();
 
          // Set up the window
-        state.getBackgroundTasks().runTask("Setup App Icon", e -> {
-//            Platform.runLater(() -> setAppIcon(stage));
-        });
+        state.getBackgroundTasks().runTask("Setup App Icon", e -> deferLoadAppIcon(stage));
         stage.setTitle("TrashApp v1");
 
         JFRMarker guiReady = new JFRMarker("GUI Shown");
         guiReady.commit();
         TrashApp.startUpTime.commit();
 
+        long end = System.nanoTime();
+        System.out.printf("Took %.1f ms%n", (end - TrashApp.start) / 1_000_000.0);
     }
 
 

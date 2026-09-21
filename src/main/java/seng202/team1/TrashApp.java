@@ -16,6 +16,8 @@ public class TrashApp {
 
      public static final Gson GSON = new Gson();
 
+    public static long start;
+
     public static JFRMarker startUpTime;
 
     /**
@@ -28,6 +30,8 @@ public class TrashApp {
         JFRMarker startApp = new JFRMarker("Start App");
         startApp.commit();
         startUpTime = new JFRMarker("Start Up Time");
+        start = System.nanoTime();
+
 
         System.setProperty("sun.net.http.allowRestrictedHeaders", "true");
         Main.main(args);

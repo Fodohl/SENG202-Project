@@ -269,7 +269,7 @@
 }
 
 .card .body, .card *{
-    -fx-background-color: -transparent;
+    -fx-background-color: transparent;
 }
 
 

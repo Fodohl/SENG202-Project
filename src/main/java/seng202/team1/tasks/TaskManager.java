@@ -7,6 +7,7 @@ import seng202.team1.state.GlobalState;
 import seng202.team1.state.StateReferrer;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
 public class TaskManager extends StateReferrer {
@@ -17,11 +18,11 @@ public class TaskManager extends StateReferrer {
     /// TaskManager specific logger
     private static final Logger log = LogManager.getLogger(TaskManager.class);
 
-    private HashMap<Long, Task> remainingTasks = new HashMap<>();
+    private ConcurrentHashMap<Long, Task> remainingTasks = new ConcurrentHashMap<>();
 
-    private HashMap<Task, Set<Long>> waitingTasks = new HashMap<>();
+    private ConcurrentHashMap<Task, Set<Long>> waitingTasks = new ConcurrentHashMap<>();
 
-    private Long nextTaskID = 0L;
+    private static Long nextTaskID = 0L;
 
     public TaskManager(GlobalState state){
         super(state);
