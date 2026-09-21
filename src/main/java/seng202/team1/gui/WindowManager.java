@@ -106,8 +106,9 @@ public class WindowManager extends StateReferrer {
         loadPage(Pages.DASHBOARD, new DashboardPage(this));
         loadPage(Pages.MAP, new MapPage(this));
         loadPage(Pages.TIMELINE, new TimelinePage(this));
-        loadPage(Pages.SETTINGS, new SettingsPage(this));
+        loadPage(Pages.LEADERBOARD, new LeaderboardPage(this));
         loadPage(Pages.DATA, new DataPage(this));
+        loadPage(Pages.SETTINGS, new SettingsPage(this));
     }
 
     /**

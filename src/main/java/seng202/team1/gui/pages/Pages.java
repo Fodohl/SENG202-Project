@@ -9,7 +9,8 @@ public enum Pages {
     DASHBOARD,
     MAP,
     TIMELINE,
-    SETTINGS,
+    LEADERBOARD,
     DATA,
+    SETTINGS,
 
 }
