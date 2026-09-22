@@ -25,8 +25,8 @@ This version includes:
 - Interactive map of bin locations around the city
 - Viewing bin status, fullness and other information
 - Logging rubbish disposal and issues with bins
-- Dashboard statistics
-- Leaderboard
+- Home statistics
+- Community
 - CSV export
 
 ## Prerequisites

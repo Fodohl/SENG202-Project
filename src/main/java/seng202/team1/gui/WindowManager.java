@@ -92,7 +92,7 @@ public class WindowManager extends StateReferrer {
         String cssPath = Objects.requireNonNull(getClass().getResource("/styles/styles.css")).toExternalForm();
         scene.getStylesheets().add(cssPath);
 
-        // Show dashboard
+        // Show home
         loadPages();
         loadModals();
         switchPage(START_PAGE);
@@ -107,10 +107,10 @@ public class WindowManager extends StateReferrer {
         loadPage(Pages.SIGN_UP, new SignUpPage(this));
         loadPage(Pages.RESET, new ResetPage(this));
 
-        loadPage(Pages.DASHBOARD, new DashboardPage(this));
+        loadPage(Pages.HOME, new HomePage(this));
         loadPage(Pages.MAP, new MapPage(this));
         loadPage(Pages.TIMELINE, new TimelinePage(this));
-        loadPage(Pages.LEADERBOARD, new LeaderboardPage(this));
+        loadPage(Pages.COMMUNITY, new CommunityPage(this));
         loadPage(Pages.DATA, new DataPage(this));
         loadPage(Pages.SETTINGS, new SettingsPage(this));
     }

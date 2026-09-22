@@ -148,8 +148,9 @@ public class MainLayout extends LayoutElement {
      */
     public void swap(Parent rendered) {
 
-        // Change the content to the new page
+        // Show the top of the new page
         content.setContent(rendered);
+        content.setVvalue(0);
     }
 
     /**

@@ -19,7 +19,7 @@ public class TAServerClient extends ApiClient {
     }
 
 
-    public void getLeaderboard(Consumer<TrashDBLeaderboardResponse> callback){
+    public void getCommunity(Consumer<TrashDBLeaderboardResponse> callback){
 
         String mockJson = """
                 {

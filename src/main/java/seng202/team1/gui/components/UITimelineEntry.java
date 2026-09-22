@@ -21,15 +21,20 @@ public class UITimelineEntry extends HBox {
 
     private String text;
 
-    /**
-     * Constructs a new chunk node for the timeline that represents this entry
-     *
-     * @param timestamp When in the timeline this entry should go
-     * @param icon The icon that categorises the timeline
-     * @param title The entry title
-     * @param text The entry information
+ /**
+     * Constructs a new start chunk node for the top of the timeline
      */
+    public UITimelineEntry(boolean isFirst) {
+        this(Instant.now(), new UIImage("", 0,0), "", "", true);
+
+    }
+
+
     public UITimelineEntry(Instant timestamp, UIImage icon, String title, String text) {
+        this(timestamp, icon, title, text, false);
+    }
+
+    public UITimelineEntry(Instant timestamp, UIImage icon, String title, String text, boolean isFirst) {
 
         super();
         this.timestamp = timestamp;
@@ -37,6 +42,9 @@ public class UITimelineEntry extends HBox {
 
         setAlignment(Pos.CENTER);
         getStyleClass().add("timeline");
+
+        if(isFirst)
+            getStyleClass().add("timeline-first");
 
         Label titleLabel = new Label(title);
         Label textLabel = new Label(text);
@@ -76,6 +84,12 @@ public class UITimelineEntry extends HBox {
         // This entries portion of the timeline axis
         StackPane verticalAxis = new StackPane(timelineChunk, dot);
         verticalAxis.setPrefWidth(30);
+        verticalAxis.getStyleClass().add("timeline-axis");
+
+        if(isFirst){
+            StackPane.setAlignment(dot, Pos.BASELINE_CENTER);
+            verticalAxis.getChildren().add(new Label("Today"));
+        }
 
         // Combine
         this.getChildren().addAll(detailsContainer,  dateContainer, connector, verticalAxis);

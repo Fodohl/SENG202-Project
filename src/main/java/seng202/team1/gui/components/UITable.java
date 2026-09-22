@@ -7,6 +7,7 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import seng202.team1.data.table.StringTable;
 import seng202.team1.data.table.StringTableBuilder;
 
@@ -90,11 +91,6 @@ public class UITable extends GridPane {
         getStyleClass().add("table");
         setAlignment(Pos.CENTER);
 
-        // Force columns to stretch to container's bounds
-        ColumnConstraints columnConstraints = new ColumnConstraints();
-        columnConstraints.setHgrow(Priority.ALWAYS);
-        columnConstraints.setMaxWidth(Double.MAX_VALUE);
-
         buildTableContent();
     }
 
@@ -109,15 +105,37 @@ public class UITable extends GridPane {
         headerColumns.clear();
         rowWidth = headers.size();
 
+        // Force columns to stretch evenly across the container's full width
+        getColumnConstraints().clear();
+        for (int col = 0; col < rowWidth; col++) {
+            ColumnConstraints columnConstraints = new ColumnConstraints();
+            columnConstraints.setHgrow(Priority.ALWAYS);
+            columnConstraints.setFillWidth(true);
+            columnConstraints.setPercentWidth(100.0 / rowWidth);
+            getColumnConstraints().add(columnConstraints);
+        }
+
         int i = 0;
+        List<Node> headerCells = new java.util.ArrayList<>();
         for (String headerDataKey : colMap.keySet()) {
 
             String headerDisplayName = colMap.get(headerDataKey);
 
             // Add
-            addCell(headerCell(headerDataKey, headerDisplayName), true);
+            Node cell = addCell(headerCell(headerDataKey, headerDisplayName), true);
+            headerCells.add(cell);
             headerColumns.put(headerDisplayName, i);
             i++;
+        }
+
+        attachHeaderHover(headerCells);
+    }
+
+    private void attachHeaderHover(List<Node> headerCells) {
+
+        for (Node cell : headerCells) {
+            cell.setOnMouseEntered(event -> headerCells.forEach(sibling -> sibling.getStyleClass().add("table-cell-header-hover")));
+            cell.setOnMouseExited(event -> headerCells.forEach(sibling -> sibling.getStyleClass().remove("table-cell-header-hover")));
         }
     }
 
@@ -218,9 +236,30 @@ public class UITable extends GridPane {
             data[col] = value;
         }
 
-        // Add
+        // Add, keeping track of every cell placed in this row
+        List<Node> rowCells = new java.util.ArrayList<>();
         for (String value : data)
-            addCell(value);
+            rowCells.add(addCell(value));
+
+        attachRowHover(rowCells);
+    }
+
+
+    private void attachRowHover(List<Node> rowCells) {
+
+        boolean alreadyHighlighted = rowCells.stream().anyMatch(cell ->
+                            cell.getStyleClass().contains("table-cell-highlight")
+                        ||  cell.getStyleClass().contains("table-cell-highlight-first"));
+
+        if (alreadyHighlighted)
+            return;
+
+        for (Node cell : rowCells) {
+            cell.setOnMouseEntered(event ->
+                    rowCells.forEach(sibling -> sibling.getStyleClass().add("table-cell-row-hover")));
+            cell.setOnMouseExited(event ->
+                    rowCells.forEach(sibling -> sibling.getStyleClass().remove("table-cell-row-hover")));
+        }
     }
 
     /**
@@ -243,9 +282,9 @@ public class UITable extends GridPane {
      *
      * @see #addCell(String, boolean)
      */
-    private void addCell(String value) {
+    private Node addCell(String value) {
 
-        addCell(value, false);
+        return addCell(value, false);
     }
 
     /**
@@ -256,11 +295,11 @@ public class UITable extends GridPane {
      * @param value    The text to show in the cell
      * @param isHeader Whether the cell is in the header row or not
      */
-    private void addCell(String value, boolean isHeader) {
+    private Node addCell(String value, boolean isHeader) {
 
         // Create a new cell
         Label label = new Label(value);
-        addCell(label, isHeader);
+        return addCell(label, isHeader);
     }
 
     /**
@@ -271,7 +310,7 @@ public class UITable extends GridPane {
      * @param cell     The cell to add
      * @param isHeader Whether the cell is in the header row or not
      */
-    private void addCell(Node cell, boolean isHeader) {
+    private Node addCell(Node cell, boolean isHeader) {
 
         cell.getStyleClass().add("table-cell");
 
@@ -279,13 +318,27 @@ public class UITable extends GridPane {
         if (isHeader)
             cell.getStyleClass().add("table-cell-header");
 
+        // Make the cell fill its full grid column/row so its background shows the whole
+        GridPane.setHgrow(cell, Priority.ALWAYS);
+        GridPane.setVgrow(cell, Priority.ALWAYS);
+        GridPane.setFillWidth(cell, true);
+        GridPane.setFillHeight(cell, true);
+        if (cell instanceof Region) {
+            Region region = (Region) cell;
+            region.setMaxWidth(Double.MAX_VALUE);
+            region.setMaxHeight(Double.MAX_VALUE);
+        }
+
         // Style
         roundEdges(cell);
         highlight(cell);
+        stripe(cell);
 
         // Add the cell
         add(cell, currentCol, currentRow);
         nextCell();
+
+        return cell;
     }
 
     /**
@@ -316,6 +369,25 @@ public class UITable extends GridPane {
         // Right
         if (currentCol == rowWidth - 1)
             cell.getStyleClass().addAll("cell-round ", "cell-round-r");
+    }
+
+    /**
+     * Applies zebra striping to ordinary data rows
+     * @param cell The cell to stripe
+     */
+    private void stripe(Node cell) {
+
+        // Skip the header row
+        if (currentRow == 0)
+            return;
+
+        // Don't stripe over a highlighted row
+        if (cell.getStyleClass().contains("table-cell-highlight") || cell.getStyleClass().contains("table-cell-highlight-first"))
+            return;
+
+        // Alternate every other data row
+        if (currentRow % 2 == 0)
+            cell.getStyleClass().add("table-cell-alt");
     }
 
 

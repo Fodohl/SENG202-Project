@@ -14,7 +14,7 @@ class WindowManagerTest extends TrashAppTest {
 
 
     @Test
-    public void entryPageShouldBeDashboard() {
+    public void entryPageShouldBeHome() {
         assertEquals(START_PAGE, windowManager.getCurrentPage());
     }
 
@@ -22,8 +22,8 @@ class WindowManagerTest extends TrashAppTest {
     public void switchPageShouldUpdateCurrentPage() {
 
         // Switch to a page
-        windowManager.switchPage(Pages.DASHBOARD);
-        assertEquals(Pages.DASHBOARD, windowManager.getCurrentPage());
+        windowManager.switchPage(Pages.HOME);
+        assertEquals(Pages.HOME, windowManager.getCurrentPage());
 
         // Switch to a different page
         windowManager.switchPage(Pages.MAP);
@@ -57,12 +57,12 @@ class WindowManagerTest extends TrashAppTest {
     public void backShouldGoToPreviousPage() {
 
         // Switch to a page
-        windowManager.switchPage(Pages.DASHBOARD);
+        windowManager.switchPage(Pages.HOME);
         windowManager.switchPage(Pages.MAP);
 
         // Go back
         windowManager.backPage();
-        assertEquals(Pages.DASHBOARD, windowManager.getCurrentPage());
+        assertEquals(Pages.HOME, windowManager.getCurrentPage());
     }
 
 }

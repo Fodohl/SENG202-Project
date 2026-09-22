@@ -171,7 +171,7 @@ img {
     overflow-y: auto;
 }
 
-.dashboard{
+.home{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     width: 100%;

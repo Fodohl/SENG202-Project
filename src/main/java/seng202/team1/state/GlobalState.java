@@ -100,10 +100,10 @@ public class GlobalState {
      */
     private void fetchData() {
 
-        taServer.getLeaderboard(leaderboard -> {
+        taServer.getCommunity(leaderboard -> {
 
             this.leaderboard = leaderboard;
-            windowManager.refreshPage(Pages.LEADERBOARD);
+            windowManager.refreshPage(Pages.COMMUNITY);
 
         });
     }
@@ -211,7 +211,7 @@ public class GlobalState {
      *
      * @return The current leaderboard
      */
-    public TrashDBLeaderboardResponse getLeaderboard() {
+    public TrashDBLeaderboardResponse getCommunity() {
         return leaderboard;
     }
 
