@@ -68,21 +68,23 @@
     // Theme colours (react cant parse css vars)
     const text_primary = "#21262e"
     const text_secondary = "#6c6d68"
-    const active = "#24412e"
+    const active = "#278c4a"
+    const active_light = "#7dba92"
     const bg_primary = "#ffffff"
+    const grid_line = "#d2cbc2"
 
-    const stroke = text_secondary
+    const stroke = grid_line
 
     // Chart components
     const grid = React.createElement(CartesianGrid, {stroke, strokeDasharray: "4 4"})
     const xlabel = React.createElement(Label, {value: "Month", style: { fill: text_primary }})
-    const xaxis = React.createElement(XAxis, {dataKey: "name",  stroke, tick: {fill: text_secondary}, axisLine: {stroke}, height: 60}, xlabel)
+    const xaxis = React.createElement(XAxis, {dataKey: "name",  stroke: text_secondary, tick: {fill: text_secondary}, axisLine: {stroke: text_secondary}, height: 60}, xlabel)
     const ylabel = React.createElement(Label, {value: "Items", angle: -90, position: "insideLeft", offset: 15, style: { fill: text_primary }})
-    const yaxis = React.createElement(YAxis, {dataKey: "value", stroke, tick: {fill: text_secondary}, axisLine: {stroke}, width: 70}, ylabel)
+    const yaxis = React.createElement(YAxis, {dataKey: "value", stroke: text_secondary, tick: {fill: text_secondary}, axisLine: {stroke: text_secondary}, width: 70}, ylabel)
     const tooltip = React.createElement(Tooltip, {
         contentStyle: {
             background: bg_primary,
-            border: `1px solid ${text_secondary}`,
+            border: `1px solid ${grid_line}`,
             borderRadius: 15,
             color: text_primary
         }
@@ -90,7 +92,7 @@
     const area = React.createElement(Area, {
         type: "monotone",
         dataKey: "value",
-        stroke: "#24412e",
+        stroke: active,
         strokeWidth: 3,
         fill: active,
         fillOpacity: 0.2,
