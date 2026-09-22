@@ -698,3 +698,44 @@
     -fx-pref-width: 0px;
     -fx-pref-height: 0px;
 }
+
+.auth-form{
+    -fx-background-color: -bg-secondary;
+    -fx-background-radius: 10px;
+    -fx-max-width: 450px;
+    -fx-padding: 30px;
+}
+
+.auth-form > *{
+    -fx-background-color: transparent;
+}
+
+.auth-form > .button{
+    -fx-background-color: -bg-primary;
+}
+
+.auth-form > .action{
+    -fx-background-color: -active-secondary;
+}
+
+.auth-form .label{
+    -fx-background-color: transparent;
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+}
+
+.auth-logo {
+    -fx-padding: 50px;
+    -fx-alignment: center;
+}
+
+.forgot{
+    -fx-padding: 10px;
+    -fx-text-fill: -active;
+    -fx-cursor: hand;
+    -fx-font-weight: bold;
+}
+
+.forgot:hover{
+    -fx-text-fill: -active-secondary;
+}
