@@ -135,6 +135,14 @@
     -fx-padding: 15px 15px;
     -fx-background-radius: 10px;
     -fx-cursor: hand;
+<<<<<<< HEAD
+=======
+    -fx-background-color: -bg-primary;
+}
+
+.iconbutton * {
+    -fx-background-color: transparent;
+>>>>>>> main
 }
 
 .iconbutton:hover {
@@ -142,7 +150,10 @@
 
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
 .iconbutton.active:hover {
     -fx-background-color: -active-dark;
 }
@@ -629,4 +640,73 @@
 
 .active{
     -fx-background-color: -active-secondary;
+<<<<<<< HEAD
+=======
+}
+
+.timeline {
+    -fx-alignment: center;
+    -fx-min-height: 150;
+}
+
+.timeline .svg-icon * {
+    -fx-stroke: -active;
+}
+
+.timeline .svg-icon-fill * {
+    -fx-fill: -active;
+}
+
+.timeline-details {
+    -fx-alignment: center-left;
+    -fx-text-alignment: right;
+    -fx-min-width: 350px;
+    -fx-max-width: 350px;
+}
+
+.timeline-details .label {
+    -fx-font-weight: bold;
+    -fx-font-size: 28px;
+    -fx-text-fill: -text-primary;
+}
+
+.timeline-details .subtext {
+    -fx-font-weight: normal;
+    -fx-font-size: 18px;
+    -fx-text-fill: -text-secondary;
+}
+
+.timeline-date {
+    -fx-fill: -active;
+    -fx-padding: 0px 0px 0px 150px;
+
+}
+
+.timeline-date .label {
+    -fx-text-alignment: center;
+    -fx-alignment: center;
+}
+
+.timeline-connector {
+    -fx-stroke: -active;
+    -fx-stroke-width: 10px;
+}
+
+.timeline-line-chunk {
+    -fx-background-color: -text-secondary-half;
+    -fx-min-width: 30px;
+    -fx-max-width: 30px;
+}
+
+.timeline-indicator {
+    -fx-fill: -active;
+    -fx-stroke: -bg-primary;
+    -fx-stroke-width: 3px;
+}
+
+.data-button {
+    -fx-min-width: 250px;
+    -fx-pref-width: 250px;
+    -fx-max-width: 250px;
+>>>>>>> main
 }

@@ -3,6 +3,11 @@ package seng202.team1.data;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+<<<<<<< HEAD
+=======
+import java.time.Instant;
+import java.time.LocalDateTime;
+>>>>>>> main
 import java.util.List;
 import java.util.Map;
 
@@ -82,4 +87,16 @@ public class ExportManager {
         return value;
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Get a unique name for a export file
+     *
+     * @param name The base export name
+     * @return The new name
+     */
+    public static String exportName(String name) {
+        return String.format("export_%s_%s.csv", name, Instant.now().toString()) ;
+    }
+>>>>>>> main
 }

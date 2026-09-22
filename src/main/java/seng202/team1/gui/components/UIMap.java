@@ -29,7 +29,11 @@ import static seng202.team1.TrashApp.GSON;
  * Map JS errors will be logged to stdio
  * <p>
  * Warning: API calls are NOT synchronous, calls may be queued to run later when web engine is ready to run them
+<<<<<<< HEAD
  * <p>
+=======
+ *
+>>>>>>> main
  * JSObject work around as depricated builds on the idea of (2) to inject an /api/ route that is passed to here as the
  * backend (3)
  *
@@ -37,7 +41,10 @@ import static seng202.team1.TrashApp.GSON;
  * @credit (2) https://stackoverflow.com/questions/48855972/webview-javafx-redirect-a-certain-url-when-accessed
  * @credit (3) https://stackoverflow.com/questions/31160253/how-to-handle-html-form-in-javafx-application
  * @credit (4) https://stackoverflow.com/questions/5554217/deserialize-a-listt-object-with-gson
+<<<<<<< HEAD
  * @todo performance improvements: local tile cache backend
+=======
+>>>>>>> main
  */
 public class UIMap extends UIWebRenderer {
 
@@ -67,6 +74,15 @@ public class UIMap extends UIWebRenderer {
 
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Handle a webview function call
+     *
+     * @param function The function that the JS code called
+     * @param params Any arguments for the function
+     */
+>>>>>>> main
     @Override
     public void handleFunctionCall(String function, Map<String, String> params) {
         switch (function) {
@@ -124,6 +140,14 @@ public class UIMap extends UIWebRenderer {
         call(js);
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Remove a point from the map if it exists
+     *
+     * @param markerID The ID of the point on the map
+     */
+>>>>>>> main
     public void removePoint(int markerID) {
         String js = String.format(
                 "if (markerMap[%d]) { " +
@@ -134,11 +158,28 @@ public class UIMap extends UIWebRenderer {
         call(js);
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Set a route to be rendered between two points on the map
+     *
+     * @param startLat The start latitude position
+     * @param startLng The start longitude position
+     * @param endLat The end latitude position
+     * @param endLng The end longitude position
+     */
+>>>>>>> main
     public void setRoute(double startLat, double startLng, double endLat, double endLng) {
         String js = String.format("setRoute(%f,%f,%f,%f);", startLat, startLng, endLat, endLng);
         call(js);
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Clear any shown route
+     */
+>>>>>>> main
     public void clearRoute() {
         String js = String.format("clearRoute();");
         call(js);
@@ -146,7 +187,11 @@ public class UIMap extends UIWebRenderer {
 
     /**
      * Register an event handler for a point click event
+<<<<<<< HEAD
      * <p>
+=======
+     *
+>>>>>>> main
      * Warning: an event handler cannot be registered twice
      *
      * @param callback The function to run when a point on the map is clicked
@@ -165,7 +210,11 @@ public class UIMap extends UIWebRenderer {
 
     /**
      * Register an event handler for a position click event
+<<<<<<< HEAD
      * <p>
+=======
+     *
+>>>>>>> main
      * Warning: an event handler cannot be registered twice
      *
      * @param callback The function to run when a position on the map is clicked
@@ -182,6 +231,17 @@ public class UIMap extends UIWebRenderer {
         return false;
     }
 
+<<<<<<< HEAD
+=======
+     /**
+     * Register an event handler for a map routing event
+     *
+     * Warning: an event handler cannot be registered twice
+     *
+     * @param callback The function to run when a route is found between two points
+     * @return True if the callback was registered successfully
+     */
+>>>>>>> main
     public boolean registerMapRouted(Consumer<List<RouteInstruction>> callback) {
 
         // Prevent a callback being triggered twice
@@ -193,6 +253,14 @@ public class UIMap extends UIWebRenderer {
         return false;
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Pass the event of a marker on the map being clicked to registered callback
+     *
+     * @param params Expects params: id={num}
+     */
+>>>>>>> main
     private void onPointClicked(Map<String, String> params) {
 
         String id = params.get("id");
@@ -202,6 +270,14 @@ public class UIMap extends UIWebRenderer {
             callback.accept(pointId);
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Pass the event of a point on the map being clicked to registered callback
+     *
+     * @param params Expects params: lat={float} lng={float}
+     */
+>>>>>>> main
     private void onPosClicked(Map<String, String> params) {
 
         String lat = params.get("lat");
@@ -214,6 +290,14 @@ public class UIMap extends UIWebRenderer {
             callback.accept(latPos, lngPos);
     }
 
+<<<<<<< HEAD
+=======
+     /**
+     * Pass the event of a route being found to registered callback
+     *
+     * @param params Expects params: rotue=[{RouteInstruction}]
+     */
+>>>>>>> main
     private void onMapRouted(Map<String, String> params) {
 
         List<RouteInstruction> result = GSON.fromJson(params.get("route"), listType);
@@ -222,7 +306,17 @@ public class UIMap extends UIWebRenderer {
             callback.accept(result);
     }
 
+<<<<<<< HEAD
     public void centreOnPoint(int userPosMarkerID) {
         call(String.format("centerOnMarker(%d);", userPosMarkerID));
+=======
+    /**
+     * Centre the map around a point
+     *
+     * @param markerId The ID of the marker to centre on
+     */
+    public void centreOnPoint(int markerId) {
+        call(String.format("centerOnMarker(%d);", markerId));
+>>>>>>> main
     }
 }

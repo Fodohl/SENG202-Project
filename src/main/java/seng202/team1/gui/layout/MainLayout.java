@@ -96,7 +96,11 @@ public class MainLayout extends LayoutElement {
     private Parent header() {
 
         // Search Bard
+<<<<<<< HEAD
         UILocationInput searchBar = new UILocationInput(this);
+=======
+        UILocationInput searchBar = new UILocationInput(getWindow().getGlobalState());
+>>>>>>> main
 
         // Account
         Label accountLabel = new Label("Account (DB)");

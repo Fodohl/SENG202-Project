@@ -1,6 +1,7 @@
 package seng202.team1.data.trashlog;
 
 /**
+<<<<<<< HEAD
  * Specific item being thrown away.
  */
 public enum TrashType {
@@ -106,4 +107,14 @@ public enum TrashType {
     MIXED_ORGANICS_LOAD,
 
     OTHER;
+=======
+ * Specific item being thrown away
+ */
+public enum TrashType {
+    PLASTIC_BOTTLE,
+    PAPER,
+    CARDBOARD_BOX,
+    COFFEE_CUP,
+    OTHER
+>>>>>>> main
 }

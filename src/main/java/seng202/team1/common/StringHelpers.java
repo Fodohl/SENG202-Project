@@ -7,6 +7,10 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+<<<<<<< HEAD
+=======
+import java.util.Date;
+>>>>>>> main
 
 /**
  * Utility class that provides helpers for common string tasks
@@ -28,6 +32,15 @@ public class StringHelpers {
         return string.substring(0, 1).toUpperCase() + string.substring(1).toLowerCase();
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Covert each word in a string to title case
+     *
+     * @param string The string to convert
+     * @return The title-cased string
+     */
+>>>>>>> main
     public static String toTitleCase(String string){
 
         StringBuilder out = new StringBuilder();
@@ -39,15 +52,43 @@ public class StringHelpers {
         return out.toString().trim();
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Converts an enum to a human-readable title
+     *
+     * @param string The enum constant name
+     * @return The enum title
+     */
+>>>>>>> main
     public static String enumNameToTitle(String string){
         return toTitleCase(string.replace("_", " "));
     }
 
+<<<<<<< HEAD
     public static String toLocaleString(LocalDateTime date){
         return toLocaleString(Instant.from(date.atZone(ZoneId.systemDefault())));
 
     }
 
+=======
+    /**
+     * Print a local time in the format 'dd MMM yyyy, h:mm a'
+     *
+     * @param date The local time
+     * @return The converted date string
+     */
+    public static String toLocaleString(LocalDateTime date){
+        return toLocaleString(DateHelpers.fromLocalTime(date));
+    }
+
+    /**
+     * Print a instant in the format "dd MMM yyyy, h:mm a" or "Unknown" if null
+     *
+     * @param date The instant
+     * @return The converted date string
+     */
+>>>>>>> main
     public static String toLocaleString(Instant date){
 
         if(date == null)
@@ -58,6 +99,16 @@ public class StringHelpers {
                                 .format(date);
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Print a value rounded to the nearest increment
+     *
+     * @param value The value to convert
+     * @param nearest The nearest multiple
+     * @return The rounded string
+     */
+>>>>>>> main
     public static String roundToNearest(Double value, Integer nearest){
 
         // Round to nearest multiple of x
@@ -68,6 +119,15 @@ public class StringHelpers {
 
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Convert a photon location feature to a readable address
+     *
+     * @param feature The location
+     * @return The assembled address
+     */
+>>>>>>> main
     public static String featureToAddress(Feature feature){
 
         Properties properties = feature.properties();

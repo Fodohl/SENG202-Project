@@ -14,7 +14,10 @@ import seng202.team1.gui.components.*;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.modals.Modals;
 
+<<<<<<< HEAD
 import java.time.Instant;
+=======
+>>>>>>> main
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -46,7 +49,10 @@ public class MapPage extends Page {
     private UIKeyValuePair sidebarBinTimesUsed;
     private UIKeyValuePair sidebarBinLastUsed;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
     private Double userPosLat = null;
     private Double userPosLong = null;
 
@@ -109,7 +115,11 @@ public class MapPage extends Page {
         // Modals
         directionsButton.setOnMouseClicked(e -> tryDrawDirections());
         logButton.setOnMouseClicked(e -> windowManager.openModal(Modals.LOG_TRASH, selectedBin));
+<<<<<<< HEAD
         issueButton.setOnMouseClicked(e -> windowManager.openModal(Modals.LOG_ISSUE));
+=======
+        issueButton.setOnMouseClicked(e -> windowManager.openModal(Modals.LOG_ISSUE, selectedBin));
+>>>>>>> main
 
         // Combine
         VBox box = new VBox(titleSection, infoSection, addressSection, collectionSection, actionsSection);
@@ -131,7 +141,11 @@ public class MapPage extends Page {
 
         // Populate the map
         map = new UIMap();
+<<<<<<< HEAD
         for (Bin bin : windowManager.getGlobalState().getDataLoader().getBinObjects())
+=======
+        for (Bin bin : windowManager.getGlobalState().getBinDAO().getAll())
+>>>>>>> main
             map.addPoint(bin.getLatitude(), bin.getLongitude(), bin.getID(), bin.getCategory().toString().toLowerCase());
 
         // Handle map events
@@ -207,7 +221,11 @@ public class MapPage extends Page {
         if (Objects.equals(selectedBin, binID))
             selectedBin = null;
         else
+<<<<<<< HEAD
             selectedBin = windowManager.getGlobalState().getDataLoader().getBinById(binID);
+=======
+            selectedBin = windowManager.getGlobalState().getBinDAO().getOne(binID);
+>>>>>>> main
 
         clearPreviousBin();
         updateContents();
@@ -244,7 +262,10 @@ public class MapPage extends Page {
     /**
      * Update the contents of the status bar to show the selected bin (if any). If no bin is selected sidebar is not shown
      *
+<<<<<<< HEAD
      * @todo image
+=======
+>>>>>>> main
      */
     private void refreshSidebar() {
 
@@ -255,6 +276,7 @@ public class MapPage extends Page {
             return;
 
         // Get usage
+<<<<<<< HEAD
         List<TrashLog> uses = windowManager.getGlobalState().getTrashLogStore()
                                            .getAll().stream()
                                            .filter(l -> l.binLogId() == selectedBin.getID())
@@ -262,6 +284,18 @@ public class MapPage extends Page {
                                            .toList();
         TrashLog newest = uses.isEmpty() ? null : uses.getLast();
 
+=======
+        List<TrashLog> uses = windowManager.getGlobalState().getTrashLogDAO()
+                .getAll().stream()
+                .filter(l -> l.binID() == selectedBin.getID())
+                .sorted(Comparator.comparing(TrashLog::createdAt))
+                .toList();
+        TrashLog newest = uses.isEmpty() ? null : uses.getLast();
+
+        // Refresh the bins' average status
+        selectedBin = getWindow().getGlobalState().getBinDAO().getOne(selectedBin.getID());
+
+>>>>>>> main
         sidebarBinID.setText(selectedBin.getID().toString());
         sidebarBinType.setText(StringHelpers.enumNameToTitle(selectedBin.getCategory().name()));
         sidebarBinStatus.setText(String.format("%s (estimate)", StringHelpers.enumNameToTitle(selectedBin.getFullness().name())));
@@ -295,7 +329,11 @@ public class MapPage extends Page {
         mapDialog.setVisible(false);
     }
 
+<<<<<<< HEAD
      private void tryDrawDirections(){
+=======
+    private void tryDrawDirections(){
+>>>>>>> main
 
         // Dont have a dest point
         if(selectedBin == null)

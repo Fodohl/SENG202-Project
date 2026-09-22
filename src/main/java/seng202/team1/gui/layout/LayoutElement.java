@@ -86,6 +86,14 @@ public abstract class LayoutElement implements Cloneable{
         }
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Get the window manager responsible for this component
+     *
+     * @return The window manager responsible for this component
+     */
+>>>>>>> main
     public WindowManager getWindow(){
         return windowManager;
     }

@@ -14,14 +14,38 @@ import seng202.team1.gui.components.UIImage;
 
 import java.util.List;
 
+<<<<<<< HEAD
 public class DirectionsModal extends Modal{
 
     private List<RouteInstruction> instructions = null;
 
+=======
+/**
+ * A Modal (popout) to display routing directions
+ */
+public class DirectionsModal extends Modal{
+
+    /// The list of instruction steps to display
+    private List<RouteInstruction> instructions = null;
+
+    /**
+     * Construct a new DirectionsModal
+     *
+     * @param windowManager The window manager responsible for this modal
+     */
+>>>>>>> main
     public DirectionsModal(WindowManager windowManager){
         super(windowManager, Modals.DIRECTIONS);
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Composite subcomponents into a inner UI for this modal
+     *
+     * @return The UI for this modal
+     */
+>>>>>>> main
     @Override
     Parent buildBody() {
 
@@ -33,6 +57,15 @@ public class DirectionsModal extends Modal{
         return root;
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Build a node that formats and displays a step in the rout
+     *
+     * @param instruction The route instruction to render
+     * @return The container of this route instruction
+     */
+>>>>>>> main
     HBox buildInstructionDisplay(RouteInstruction instruction ){
 
         UIImage icon = new UIImage(String.format("/media/images/dir-%s.svg", instruction.getType().toLowerCase()), 25, 25);
@@ -48,6 +81,14 @@ public class DirectionsModal extends Modal{
         return root;
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Handle data being sent to this modal
+     *
+     * @param data The list of routing instructions
+     */
+>>>>>>> main
     @Override
     public void recvData(Object data) {
 

@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+<<<<<<< HEAD
 public class UIChipsInput extends VBox implements UIInputComponent {
 
 
@@ -24,6 +25,37 @@ public class UIChipsInput extends VBox implements UIInputComponent {
 
     public <T extends Enum<T>> UIChipsInput(Class<T> options){
 
+=======
+/**
+ * A UI component to handle rendering selectable buttons
+ */
+public class UIChipsInput extends VBox implements UIInputComponent {
+
+    /// The label to show invalid input messages in
+    private Label errorText = new Label();
+
+    /// The container for the chip buttons
+    private FlowPane chips = new FlowPane(5, 5);
+
+    /// The currently selected chip or null if none
+    private UIIconButton selectedChip = null;
+
+    /// The butttons that form the options for the input
+    private HashMap<String, UIIconButton> buttons = new HashMap<>();
+
+    /**
+     * Construct a new chips input for the values of a enum
+     *
+     * Note: expects a svg to exist of the lowercase enum value
+     * Note: for internal values, prefix with '_' to not show
+     *
+     * @param options The enum that denotes the options
+     * @param <T> The enum type
+     */
+    public <T extends Enum<T>> UIChipsInput(Class<T> options){
+
+        // Map each enum constant to a button
+>>>>>>> main
         List<UIIconButton> buttons = Arrays.stream(options.getEnumConstants())
         .filter(e -> !e.name().startsWith("_"))
         .map(e -> {
@@ -37,6 +69,14 @@ public class UIChipsInput extends VBox implements UIInputComponent {
         this(buttons.toArray(new UIIconButton[0]));
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Construct a new chips input for a given set of options
+     *
+     * @param options The options the user can select
+     */
+>>>>>>> main
     public UIChipsInput(UIIconButton... options){
 
         super(5);
@@ -59,37 +99,98 @@ public class UIChipsInput extends VBox implements UIInputComponent {
     }
 
 
+<<<<<<< HEAD
+=======
+    /**
+     * Get the selected UIIconButton or null if none
+     *
+     * @return The selected option
+     */
+>>>>>>> main
     @Override
     public Object getInput() {
         return selectedChip;
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Set the input to a desired value
+     *
+     * @param value The new string input value, must match a button
+     */
+>>>>>>> main
     @Override
     public void setInput(Object value) {
         selectChip((String) value);
 
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Get whether a user has entered input yet
+     *
+     * Note: if true then getInput() will not be null
+     *
+     * @return True if the user has inputted a value
+     */
+>>>>>>> main
     @Override
     public boolean hasInput() {
         return selectedChip != null;
     }
 
+<<<<<<< HEAD
     @Override
     public void clear() {
         selectChip(null);
     }
 
+=======
+    /**
+     * Reset the value of the input to default, clearing any errors
+     */
+    @Override
+    public void clear() {
+        selectChip(null);
+        setError("");
+    }
+
+    /**
+     * Check if the current input has resulted in an error
+     *
+     * @return True if there is an error set
+     */
+>>>>>>> main
     @Override
     public boolean isErroring(){
         return isErroringInternal(errorText);
     }
 
+<<<<<<< HEAD
     @Override
     public void setError(String isError) {
         setIsErrorInternal(isError, this, errorText);
     }
 
+=======
+    /**
+     * Set the error for this input
+     *
+     * @param error The error message
+     */
+    @Override
+    public void setError(String error) {
+        setIsErrorInternal(error, this, errorText);
+    }
+
+    /**
+     * Try select a chip for a given text input. Will unselect previous chip if any.
+     *
+     * @param value The chip to select
+     */
+>>>>>>> main
     void selectChip(String value){
 
         // Not an option

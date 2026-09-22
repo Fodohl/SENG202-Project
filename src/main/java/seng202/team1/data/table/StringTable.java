@@ -75,11 +75,11 @@ public class StringTable extends LinkedHashMap<String, List<String>> {
     public boolean add(Object object, Map<String, Function<Object, String>> formatters){
 
         // Get fields the object has
-        List<Field> declearedFields = Arrays.asList(object.getClass().getDeclaredFields());
+        List<Field> declaredFields = Arrays.asList(object.getClass().getDeclaredFields());
 
         // Map field name to field
         HashMap<String, Field> fields = new HashMap<>();
-        for(Field field : declearedFields)
+        for(Field field : declaredFields)
             fields.put(field.getName(), field);
 
         // Validate that object has required keys and that they are accessible
@@ -103,8 +103,20 @@ public class StringTable extends LinkedHashMap<String, List<String>> {
 
                 // Get the object
                 Object objectValue = fields.get(data).get(object);
+<<<<<<< HEAD
                 Function<Object, String> formatter = formatters.get(data);
 
+=======
+
+                // No formater
+                if(formatters == null){
+                     get(display).add(objectValue.toString());
+                     return;
+                }
+
+                Function<Object, String> formatter = formatters.get(data);
+
+>>>>>>> main
                 // Format the data
                 String formattedValue = formatter != null ? formatter.apply(objectValue) : (objectValue.toString());
                 get(display).add(formattedValue);
@@ -139,6 +151,14 @@ public class StringTable extends LinkedHashMap<String, List<String>> {
         return get(keySet().stream().toList().getFirst()).size();
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Get the map of header to data key
+     *
+     * @return The map of headers to feilds
+     */
+>>>>>>> main
     public Map<String, String> getColMap() {
         return colMap;
     }

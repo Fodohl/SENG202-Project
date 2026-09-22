@@ -53,6 +53,7 @@ public class WindowManager extends StateReferrer {
     /// The pages this window can switch between
     private final Map<Pages, Page> pages = new HashMap<>();
 
+<<<<<<< HEAD
     private final Map<Modals, Modal> modals = new HashMap<>();
 
     private Map<Long, Stage> windowedModals = new HashMap<>();
@@ -68,6 +69,26 @@ public class WindowManager extends StateReferrer {
     private final StackPane root = new StackPane(layout.getRendered(), overlay.getRendered());
 
 
+=======
+    /// The modals this window can display
+    private final Map<Modals, Modal> modals = new HashMap<>();
+
+    /// The list of modals currently being shown in a separate window
+    private Map<Long, Stage> windowedModals = new HashMap<>();
+
+    /// The next available ID to assign a window
+    private long nextWindowId = 0;
+
+    /// The layout that contains the pages for this window
+    private final MainLayout layout = new MainLayout(this);
+
+    /// The lay that contains the overlayed elements for this window
+    private final OverlayLayout overlay = new OverlayLayout(this);
+
+    /// The root scene
+    private final StackPane root = new StackPane(layout.getRendered(), overlay.getRendered());
+
+>>>>>>> main
     /**
      * Constructs a new WindowManager, loading the pages for this window
      *
@@ -102,7 +123,10 @@ public class WindowManager extends StateReferrer {
     private void loadPages() {
         loadPage(Pages.DASHBOARD, new DashboardPage(this));
         loadPage(Pages.MAP, new MapPage(this));
+<<<<<<< HEAD
         loadPage(Pages.LEADERBOARD, new LeaderboardPage(this));
+=======
+>>>>>>> main
         loadPage(Pages.TIMELINE, new TimelinePage(this));
         loadPage(Pages.SETTINGS, new SettingsPage(this));
         loadPage(Pages.DATA, new DataPage(this));
@@ -240,6 +264,14 @@ public class WindowManager extends StateReferrer {
         switchPage(dest);
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Show an element as an overlay
+     *
+     * @param contents The element to overlay
+     */
+>>>>>>> main
     public void showOverlay(Parent contents){
 
         // Remove the currently shown overlay
@@ -250,15 +282,38 @@ public class WindowManager extends StateReferrer {
         overlay.setContents(contents);
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Hide the currently shown overlay
+     */
+>>>>>>> main
     public void hideOverlay(){
         overlay.setVisible(false);
     }
 
+<<<<<<< HEAD
 
+=======
+    /**
+     * Open a modal as an overlay
+     *
+     * @see #openModal(Modals, Object)
+     */
+>>>>>>> main
     public void openModal(Modals modalType){
         openModal(modalType, null);
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Open a modal as an overlay
+     *
+     * @param modalType The modal to show
+     * @param data The data to pass to the overlay
+     */
+>>>>>>> main
     public void openModal(Modals modalType, Object data){
 
         // Update pages to show latest data pre render
@@ -286,6 +341,7 @@ public class WindowManager extends StateReferrer {
         showOverlay(modal.getRendered());
     }
 
+<<<<<<< HEAD
     public void closeModal(){
 
         // Run close handlers
@@ -295,14 +351,92 @@ public class WindowManager extends StateReferrer {
         openModal(Modals._CLOSED);
     }
 
+=======
+    /**
+     * Close the shown modal
+     */
+    public void closeModal(){
+
+        // Run close handlers
+
+        // Special modal that represents closed state, allows for modals to update self when closed via a change callback
+        openModal(Modals._CLOSED);
+    }
+
+    /**
+     * Open a instance of a modal into a popup window
+     *
+     * @see #spawnModal(Modals, Object)
+     */
+>>>>>>> main
     public long spawnModal(Modals modalType){
         return spawnModal(modalType, null);
     }
 
+<<<<<<< HEAD
     public long spawnModal(Modals modalType, Object data) {
         return 0;
     }
 
+=======
+    /**
+     * Open a instance of a modal into a popup window
+     *
+     * @param modalType The modal to show
+     * @param data The data to pass to the overlay
+     * @return The ID of the opened modal
+     */
+    public long spawnModal(Modals modalType, Object data){
+
+        // Select the page
+        currentModal = modalType;
+        Modal modal = modals.get(modalType);
+
+        // Page not stored
+        if(modal == null){
+            log.warn("Modal not loaded for type: {}", modalType.name());
+            return -1;
+        }
+
+        // Setup a new modal instance for this window
+        modal = modal.clone();
+        modal.recvData(data);
+
+        // Contain the modal in a separate root so it can be in multiple windows
+        StackPane modalRoot = new StackPane(modal.getRendered());
+        modalRoot.getStyleClass().add("modal-window");
+
+        // Create the window
+        Stage stage = new Stage();
+        stage.setTitle(StringHelpers.enumNameToTitle(modalType.name()));
+
+        // Put the modal in the window
+        Scene scene = new Scene(modalRoot);
+        stage.setScene(scene);
+
+        // Style the window
+        String cssPath = Objects.requireNonNull(getClass().getResource("/styles/styles.css")).toExternalForm();
+        scene.getStylesheets().add(cssPath);
+
+        // Spawn the window to the right of the map
+        stage.setX(currentStage.getX() + GraphicsCommon.precentWindowX(0.75));
+        stage.show();
+
+        // Assign the window an ID for tracking
+        long windowID = nextWindowId++;
+        modal.setWindowed(windowID);
+
+        // Store
+        windowedModals.put(windowID, stage);
+        return windowID;
+    }
+
+    /**
+     * Close the window for a popup modal
+     *
+     * @param windowID The ID of the popup modal
+     */
+>>>>>>> main
     public void killModal(long windowID){
 
         // Get the modal
@@ -315,6 +449,14 @@ public class WindowManager extends StateReferrer {
         windowedModals.remove(windowID);
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Force a soft-rerender of a page
+     *
+     * @param pageType The page to update
+     */
+>>>>>>> main
     public void refreshPage(Pages pageType) {
 
         Page page = pages.get(pageType);
@@ -324,7 +466,19 @@ public class WindowManager extends StateReferrer {
         page.updateContents();
     }
 
+<<<<<<< HEAD
     public Stage getStage() {
         return currentStage;
     }
 }
+=======
+    /**
+     * Get the current window
+     *
+     * @return The current window
+     */
+    public Stage getStage() {
+        return currentStage;
+    }
+}
+>>>>>>> main

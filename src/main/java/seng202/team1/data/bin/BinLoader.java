@@ -1,10 +1,13 @@
 package seng202.team1.data.bin;
 
 
-import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.time.Instant;
+<<<<<<<< HEAD:src/main/java/seng202/team1/data/bin/BinLoader.java
+========
+import java.time.LocalDate;
+>>>>>>>> main:src/main/java/seng202/team1/data/bin/BinDataset.java
 import java.util.*;
 
 import org.apache.logging.log4j.LogManager;
@@ -12,7 +15,13 @@ import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+<<<<<<<< HEAD:src/main/java/seng202/team1/data/bin/BinLoader.java
 import seng202.team1.data.table.StringTable;
+========
+import seng202.team1.data.status.ReportType;
+import seng202.team1.data.status.StatusReport;
+import seng202.team1.data.status.StatusReportStore;
+>>>>>>>> main:src/main/java/seng202/team1/data/bin/BinDataset.java
 
 /**
  * DataLoader
@@ -20,23 +29,30 @@ import seng202.team1.data.table.StringTable;
  *
  * @author Stanley Easthope
  */
+<<<<<<<< HEAD:src/main/java/seng202/team1/data/bin/BinLoader.java
 public class BinLoader {
 
     /// DataLoader specific logger
     private static final Logger log = LogManager.getLogger(BinLoader.class);
+========
+public class BinDataset {
+
+    /// DataLoader specific logger
+    private static final Logger log = LogManager.getLogger(BinDataset.class);
+>>>>>>>> main:src/main/java/seng202/team1/data/bin/BinDataset.java
 
     /// Where to load the bins from
     private static final String BIN_DATA = "data/cc_bins_dataset.geojson";
 
     /// The list of bins loaded
-    private final List<Bin> binObjects = new ArrayList<>();
+    private List<Bin> binObjects = new ArrayList<>();
 
     /**
      * Get loaded bins list
      *
      * @return List of Bin instances
      */
-    public List<Bin> getBinObjects() {
+    public List<Bin> getBinDataset() {
         return Collections.unmodifiableList(binObjects);
     }
 
@@ -70,7 +86,7 @@ public class BinLoader {
                 binObjects.add(parseFeature((JSONObject) obj));
             }
         } catch (Exception e) {
-            log.error("Failed to read GeoJSON file: " + e.getMessage(), e);
+            log.error("Failed to read GeoJSON file", e);
         }
     }
 
@@ -82,11 +98,17 @@ public class BinLoader {
      * @throws Exception if an error occurs while reading or parsing JSON file
      */
     private JSONObject parseGeoJson(JSONParser parser) throws Exception {
+<<<<<<<< HEAD:src/main/java/seng202/team1/data/bin/BinLoader.java
         InputStream is = BinLoader.class.getClassLoader().getResourceAsStream(BIN_DATA);
         if (is != null) {
             return (JSONObject) parser.parse(new InputStreamReader(is));
+========
+        InputStream is = BinDataset.class.getResourceAsStream("/" + BIN_DATA);
+        if (is == null) {
+            throw new IllegalArgumentException("Could not find resource: /" + BIN_DATA);
+>>>>>>>> main:src/main/java/seng202/team1/data/bin/BinDataset.java
         }
-        return (JSONObject) parser.parse(new FileReader(BIN_DATA));
+        return (JSONObject) parser.parse(new InputStreamReader(is));
     }
 
     /**
@@ -109,6 +131,10 @@ public class BinLoader {
         int binID = ((Number) properties.get("BinID")).intValue();
         Object wasteTypeObj = properties.get("WasteType");
         Object lastEditDateObj = properties.get("LastEditDate");
+<<<<<<<< HEAD:src/main/java/seng202/team1/data/bin/BinLoader.java
+========
+        String photoURL = (String) properties.get("PhotographURL");
+>>>>>>>> main:src/main/java/seng202/team1/data/bin/BinDataset.java
 
         // Parse site name
         Object siteName = properties.get("SiteName");
@@ -125,7 +151,10 @@ public class BinLoader {
         // Parse the date
         Instant updated = lastEditDateObj != null ? Instant.parse(lastEditDateObj.toString()) : null;
 
+<<<<<<<< HEAD:src/main/java/seng202/team1/data/bin/BinLoader.java
         return new Bin(binID, latitude, longitude, binType, updated, area);
+========
+        return new Bin(binID, latitude, longitude, binType, updated, photoURL, area, BinFullness.UNKNOWN);
+>>>>>>>> main:src/main/java/seng202/team1/data/bin/BinDataset.java
     }
-    
 }

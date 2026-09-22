@@ -2,8 +2,12 @@ package seng202.team1.data.status;
 
 import seng202.team1.data.User;
 import seng202.team1.data.bin.Bin;
+<<<<<<< HEAD
 import seng202.team1.data.bin.BinIssue;
 import seng202.team1.data.bin.BinStatus;
+=======
+import seng202.team1.data.bin.BinFullness;
+>>>>>>> main
 
 import java.time.LocalDateTime;
 
@@ -15,13 +19,17 @@ import java.time.LocalDateTime;
 public class StatusReport {
     private final Bin bin;
     private final User submittedBy;
-    private final BinStatus status;
-    private final BinIssue issue;
+    private final BinFullness fullness;
+    private final ReportType issue;
     private final LocalDateTime submittedAt;
     private final String description;
 
     /**
      * Constructor for StatusReport class
+<<<<<<< HEAD
+=======
+     *
+>>>>>>> main
      * @param bin
      * @param submittedBy
      * @param description
@@ -30,13 +38,18 @@ public class StatusReport {
 
     public StatusReport(Bin bin,
                         User submittedBy,
+<<<<<<< HEAD
                         BinStatus status,
                         BinIssue issue,
+=======
+                        BinFullness fullness,
+                        ReportType issue,
+>>>>>>> main
                         String description,
                         LocalDateTime submittedAt) {
         this.bin = bin;
         this.submittedBy = submittedBy;
-        this.status = status;
+        this.fullness = fullness;
         this.issue = issue;
         this.description = description;
         this.submittedAt = submittedAt;
@@ -56,7 +69,18 @@ public class StatusReport {
      * Get the bin ID
      * @return binID associated with report
      */
+<<<<<<< HEAD
     public int getBinID() { return bin.getID(); }
+=======
+    public int getBinID() {
+
+        if(bin ==null)
+            return -1;
+
+        return bin.getID();
+
+    }
+>>>>>>> main
 
     /**
      * Get the reporter
@@ -86,9 +110,9 @@ public class StatusReport {
         return description;
     }
 
-    public BinStatus getStatus() { return status; }
+    public BinFullness getFullness() { return fullness; }
 
-    public BinIssue getIssue() { return issue; }
+    public ReportType getIssue() { return issue; }
 
     /**
      * Checks if the supplied {@link StatusReport} matches this {@link StatusReport}
@@ -98,7 +122,11 @@ public class StatusReport {
     public boolean equals(StatusReport statusReport) {
         return this.getBinID() == statusReport.getBinID()
                 && this.getSubmittedBy().getUserID() == statusReport.getSubmittedBy().getUserID()
+<<<<<<< HEAD
                 && this.getStatus().equals(statusReport.getStatus())
+=======
+                && this.getFullness().equals(statusReport.getFullness())
+>>>>>>> main
                 && this.getIssue().equals(statusReport.getIssue())
                 && this.getDescription().equals(statusReport.getDescription());
     }
@@ -114,7 +142,7 @@ public class StatusReport {
         return "StatusReport{" +
                 "binID=" + getBinID() +
                 ", submittedBy=" + getSubmittedBy() +
-                ", status=" + getStatus() +
+                ", fullness=" + getFullness() +
                 ", issue=" + getIssue() +
                 ", description="+ description +
                 ", submittedAt=" + getSubmittedAt() + "}";

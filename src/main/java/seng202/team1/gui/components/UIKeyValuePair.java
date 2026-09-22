@@ -4,10 +4,27 @@ import javafx.scene.layout.HBox;
 
 import javafx.scene.control.Label;
 
+<<<<<<< HEAD
 public class UIKeyValuePair extends HBox {
 
     private Label value;
 
+=======
+/**
+ * A UI Component to handle a value and its name
+ */
+public class UIKeyValuePair extends HBox {
+
+    /// The value field
+    private Label value;
+
+    /**
+     * Construct a new UIKeyValuePair
+     *
+     * @param keyText The text to display for the key
+     * @param valueText The value to display
+     */
+>>>>>>> main
     public UIKeyValuePair(String keyText, String valueText){
         super();
 
@@ -23,6 +40,14 @@ public class UIKeyValuePair extends HBox {
         getChildren().addAll(key, value);
     }
 
+<<<<<<< HEAD
+=======
+    /**
+     * Update the value to be a new string
+     *
+     * @param newValue The new value for this key
+     */
+>>>>>>> main
     public void setText(String newValue){
         value.setText(newValue);
     }

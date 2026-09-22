@@ -4,14 +4,26 @@ import fr.brouillard.oss.cssfx.CSSFX;
 import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
+<<<<<<< HEAD
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+=======
+import javafx.stage.Stage;
+import seng202.team1.data.sqlite.DatabaseManager;
+import seng202.team1.data.sqlite.exceptions.InstanceAlreadyExistsException;
+>>>>>>> main
 import seng202.team1.gui.components.UIImage;
 import seng202.team1.state.GlobalState;
 
 import java.awt.*;
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
 import static javafx.application.Application.launch;
+
+// import net.maxtyson.jfxhr.HotReloader;
+// import net.maxtyson.jfxhr.ReloaderConfig;
 
 /**
  * Setups the JavaFX application and launches the app
@@ -25,7 +37,11 @@ public class Main extends Application {
      */
     public void setAppIcon(Stage stage) {
 
+<<<<<<< HEAD
         // Set icon (bg
+=======
+        // Set icon
+>>>>>>> main
         UIImage appLogo = new UIImage("/media/images/icon.png", 512, 512);
         Image logoIcon = appLogo.toRawImage();
         stage.getIcons().add(logoIcon);
@@ -50,7 +66,14 @@ public class Main extends Application {
      *              the application scene can be set.
      */
     @Override
-    public void start(Stage stage) {
+    public void start(Stage stage) throws InstanceAlreadyExistsException {
+
+        // Dev tools
+        CSSFX.start();
+
+        // Dev tools
+        CSSFX.start();
+//        HotReloader.attach(config, stage);
 
         // Dev tools
         CSSFX.start();
@@ -60,8 +83,13 @@ public class Main extends Application {
         stage.setTitle("TrashApp v1");
 
         // Setup app state
+<<<<<<< HEAD
         GlobalState globalState = new GlobalState(stage);
         globalState.show();
+=======
+        GlobalState state = new GlobalState(stage, false);
+        stage.show();
+>>>>>>> main
     }
 
 

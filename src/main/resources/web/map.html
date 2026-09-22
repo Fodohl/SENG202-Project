@@ -11,11 +11,19 @@
     <!-- Leaflet.markercluster plugin -->
     <link rel="stylesheet" href="../thirdparty/unpkg/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"/>
     <link rel="stylesheet" href="../thirdparty/unpkg/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"/>
+<<<<<<< HEAD
     <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 
     <!-- Leflet.pouchdb plugin -->
     <script src="../thirdparty/unpkg/pouchdb@^5.2.0/dist/pouchdb.js"></script>
     <script src="../thirdparty/unpkg/leaflet.tilelayer.pouchdbcached@latest/L.TileLayer.PouchDBCached.js"></script>
+=======
+    <script src="../thirdparty/unpkg/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+    <!-- Leflet.pouchdb plugin -->
+    <script src="../thirdparty/unpkg/pouchdb@^5.2.0/dist/pouchdb.js"></script>
+    <script src="../thirdparty/unpkg/pouchdb@^5.2.0/dist/L.TileLayer.PouchDBCached.js"></script>
+>>>>>>> main
 
     <!-- Leflet.routing plugin -->
     <link rel="stylesheet" href="../thirdparty/unpkg/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
@@ -48,10 +56,13 @@
 
     const ICON_FOLDER = new URL('../media/images/', document.location.href).href;
 
+<<<<<<< HEAD
     // Required by submethods during initialisation, but will not be injected when Java backend ready. Until then just
     // safely discard calls
     callJavaAPI = () => {};
 
+=======
+>>>>>>> main
     onPointClicked = (id) => {
         setSelectedPoint(id);
         callJavaAPI("onPointClicked", {id});
@@ -61,7 +72,10 @@
         callJavaAPI("onPosClicked", {lat, lng});
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
     // Marker helpers
     styleActiveMarker = (target, isActive) => {
 
@@ -110,7 +124,11 @@
             return iconCache[name];
 
         const icon = L.icon({
+<<<<<<< HEAD
             iconUrl: `${ICON_FOLDER}/pin-${name}.svg`,
+=======
+            iconUrl: `${ICON_FOLDER}pin-${name}.svg`,
+>>>>>>> main
             iconSize: [40, 50],
         });
 
@@ -176,6 +194,12 @@
     var map = L.map('map').setView(coords, zoomLevel);
     L.Browser.any3d = false;
 
+<<<<<<< HEAD
+=======
+    //remove leaflet link (keep words for attribution)
+    map.attributionControl.setPrefix('Leaflet'); 
+
+>>>>>>> main
     // Custom style to fit the app
     // see toolchain/snazzy.js for conversion
     var snazzyStyle = 's.e%3Al.i%7Cp.v%3Aoff%2Cs.e%3Al.t.f%7Cp.c%3A%23ffffffff%2Cs.e%3Al.t.s%7Cp.c%3A%23ff10141a%2Cs.t%3A0%7Cs.e%3Ag%7Cp.c%3A%23ff364253%2Cs.t%3A81%7Cs.e%3Ag%7Cp.c%3A%23ff2c3645%2Cs.t%3A6%7Cs.e%3Ag%7Cp.c%3A%23ff2d6ca3%2Cs.t%3A3%7Cs.e%3Ag%7Cp.c%3A%23ff5c6978%2Cs.t%3A39%7Cs.e%3Ag%7Cp.c%3A%23ff1f6b45%2Cs.t%3A40%7Cs.e%3Ag%7Cp.c%3A%23ff1f6b45%2Cs.t%3A33%7Cs.e%3Ag%7Cp.c%3A%23ff1f6b45%2Cs.t%3A37%7Cs.e%3Ag%7Cp.c%3A%23ff1f6b45%2Cs.t%3A36%7Cs.e%3Ag%7Cp.c%3A%23ff364253%2Cs.t%3A4%7Cs.e%3Al%7Cp.v%3Aoff';
@@ -203,6 +227,14 @@
     let markers = L.markerClusterGroup({disableClusteringAtZoom: 16});
     map.addLayer(markers);
 
+<<<<<<< HEAD
+=======
+    //prevent right clicking map
+    document.addEventListener('contextmenu', function(e) {
+        e.preventDefault();
+    }, false);
+
+>>>>>>> main
 </script>
 </body>
 </html>
