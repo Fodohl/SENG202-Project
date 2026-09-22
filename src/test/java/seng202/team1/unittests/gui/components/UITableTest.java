@@ -6,13 +6,9 @@ import javafx.scene.layout.HBox;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import seng202.team1.data.bin.Bin;
-<<<<<<< HEAD
-import seng202.team1.data.table.StringTable;
-=======
 import seng202.team1.data.bin.BinCategory;
 import seng202.team1.data.table.StringTable;
 import seng202.team1.data.table.StringTableBuilder;
->>>>>>> main
 import seng202.team1.gui.components.UITable;
 import seng202.team1.unittests.TrashAppTest;
 

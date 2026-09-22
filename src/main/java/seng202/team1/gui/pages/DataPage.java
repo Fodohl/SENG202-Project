@@ -2,21 +2,14 @@ package seng202.team1.gui.pages;
 
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import seng202.team1.common.StringHelpers;
-<<<<<<< HEAD
-=======
 import seng202.team1.data.ExportManager;
->>>>>>> main
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.BinCategory;
 import seng202.team1.data.bin.BinFullness;
 import seng202.team1.data.table.StringTableBuilder;
-<<<<<<< HEAD
-=======
 import seng202.team1.gui.components.UIIconButton;
->>>>>>> main
 import seng202.team1.gui.components.UITable;
 import seng202.team1.gui.components.UITitle;
 import seng202.team1.gui.WindowManager;
@@ -50,29 +43,10 @@ public class DataPage extends Page {
     @Override
     protected Parent renderSelf() {
 
-<<<<<<< HEAD
-        // Title
-        UITitle pageTitle = new UITitle("Raw Data");
-        pageTitle.setAlignment(Pos.CENTER);
-
-        // Data
-       StringTableBuilder<Bin> tableData = new StringTableBuilder<Bin>(windowManager.getGlobalState().getDataLoader().getBinObjects())
-            .addColumn("binID", "ID")
-            .addColumn("fullness", "Fullness", val -> StringHelpers.enumNameToTitle(((BinFullness)val).name()))
-            .addColumn("areaName", "Location")
-            .addColumn("type", "Type", val -> StringHelpers.enumNameToTitle(((BinCategory)val).name()))
-            .sortBy(Comparator.comparing(item -> item.getID()));
-
-        UITable table = new UITable(tableData, false);
-
-        // Combine
-        VBox root = new VBox(20, pageTitle, table);
-=======
         // First build
         root = new VBox(20);
         refreshData();
 
->>>>>>> main
         root.setAlignment(Pos.CENTER);
         return root;
     }

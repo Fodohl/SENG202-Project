@@ -16,25 +16,6 @@ import seng202.team1.common.StringHelpers;
 import seng202.team1.gui.layout.LayoutElement;
 import seng202.team1.state.GlobalState;
 
-<<<<<<< HEAD
-public class UILocationInput extends HBox {
-
-
-    private Popup searchPopup = new Popup();
-    private VBox suggestionContainer = new VBox();
-    private TextField searchInput;
-    private PauseTransition debouncer;
-
-    private UIKeyValuePair error;
-    private UISpinner loader;
-
-    private GlobalState globalState;
-    private PhotonClient photonClient;
-
-    public UILocationInput(LayoutElement parent){
-
-        this.globalState = parent.getWindow().getGlobalState();
-=======
 /**
  * A UIComponent to display an autocompleting address input field
  *
@@ -74,18 +55,13 @@ public class UILocationInput extends HBox {
     public UILocationInput(GlobalState globalState){
 
         this.globalState = globalState;
->>>>>>> main
         this.photonClient = globalState.getPhotonClient();
 
         setupPopup();
 
         // Search Images
         UIImage searchIcon = new UIImage("/media/images/search.svg", 16, 16);
-<<<<<<< HEAD
-        loader = new UISpinner(20,20);
-=======
         loader = new UISpinner(20);
->>>>>>> main
         loader.setVisible(false);
 
         // Search text
@@ -111,13 +87,9 @@ public class UILocationInput extends HBox {
         getStyleClass().add("search-bar");
     }
 
-<<<<<<< HEAD
-
-=======
     /**
      * Build the popup, setting up the suggestions container
      */
->>>>>>> main
     private void setupPopup() {
 
         // Style
@@ -135,15 +107,11 @@ public class UILocationInput extends HBox {
         searchPopup.setAutoHide(true);
     }
 
-<<<<<<< HEAD
-
-=======
     /**
      * Search for an address and being the fetch for suggestions
      *
      * @param address The address to query for
      */
->>>>>>> main
     private void search(String address){
 
         // Prevent API error when user clears their input
@@ -171,8 +139,6 @@ public class UILocationInput extends HBox {
         }, error, loader);
     }
 
-<<<<<<< HEAD
-=======
 
     /**
      * Construct a label for a location suggestion
@@ -180,7 +146,6 @@ public class UILocationInput extends HBox {
      * @param location The suggestion
      * @return The formatted location node
      */
->>>>>>> main
     private Label makeLocationLable(Feature location) {
 
         String addressText = StringHelpers.featureToAddress(location);
@@ -194,14 +159,11 @@ public class UILocationInput extends HBox {
         return suggestion;
     }
 
-<<<<<<< HEAD
-=======
     /**
      * Submit the current resolved location as a search and pass off to the global state
      *
      * @param location The found location
      */
->>>>>>> main
     private void submitSearch(Feature location) {
 
         globalState.setMapSearchRequest(location);
@@ -211,25 +173,17 @@ public class UILocationInput extends HBox {
         searchPopup.hide();
     }
 
-<<<<<<< HEAD
-
-=======
     /**
      * Handle the user pressing enter to submit the search, will find the best match to whatever is entered
      *
      * @param actionEvent The submission action
      */
->>>>>>> main
     private void handleSearchSubmitAction(ActionEvent actionEvent) {
 
 
         // Submit the first location found (known to have the highest likelyhood)
         photonClient.searchLocation(searchInput.getText(), locationResponse -> {
 
-<<<<<<< HEAD
-             //@todo err: not a known place
-=======
->>>>>>> main
              if(locationResponse.features().isEmpty())
                  return;
 

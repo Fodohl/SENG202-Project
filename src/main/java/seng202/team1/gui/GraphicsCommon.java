@@ -43,8 +43,6 @@ public class GraphicsCommon {
         return (int) Math.floor(percent * WINDOW_HEIGHT);
     }
 
-<<<<<<< HEAD
-=======
     /**
      * Toggles a CSS class on an element
      *
@@ -52,7 +50,6 @@ public class GraphicsCommon {
      * @param node The element to style
      * @param className The class to toggle
      */
->>>>>>> main
     public static void toggleClass(boolean enable, Node node, String className){
 
           if(enable){

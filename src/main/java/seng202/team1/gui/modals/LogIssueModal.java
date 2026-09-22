@@ -1,26 +1,6 @@
 package seng202.team1.gui.modals;
 
 import javafx.geometry.Pos;
-<<<<<<< HEAD
-import javafx.scene.Parent;
-import javafx.scene.layout.VBox;
-import seng202.team1.data.report.ReportType;
-import seng202.team1.data.bin.BinFullness;
-import seng202.team1.gui.WindowManager;
-import seng202.team1.gui.components.*;
-
-public class LogIssueModal extends Modal{
-
-
-    private UIChipsInput statusInput;
-    private UIChipsInput typeInput;
-    private UIParagraphInput reportInput;
-
-    public LogIssueModal(WindowManager windowManager){
-        super(windowManager, Modals.LOG_ISSUE);
-    }
-
-=======
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -68,7 +48,6 @@ public class LogIssueModal extends Modal {
      *
      * @return The UI for this modal
      */
->>>>>>> main
     @Override
     Parent buildBody() {
 
@@ -78,19 +57,11 @@ public class LogIssueModal extends Modal {
         UIIconText typeLabel = new UIIconText("tag", "Report Type");
         typeInput = new UIChipsInput(ReportType.class);
         UIIconText statusLabel = new UIIconText("bin-full", "Estimated Fullness");
-<<<<<<< HEAD
-        statusInput = new UIChipsInput(BinFullness.class);
-        UISection binInputSection = new UISection(15, reportLabel, reportInput, typeLabel, typeInput, statusLabel, statusInput);
-
-        // Actions
-        UIButton submit = new UIButton("Submit Report");
-=======
         fullnessInput = new UIChipsInput(BinFullness.class);
         UISection binInputSection = new UISection(15, reportLabel, reportInput, typeLabel, typeInput, statusLabel, fullnessInput);
 
         // Actions
         submit = new UIButton("Submit Report");
->>>>>>> main
         UIButton cancel = new UIButton("Cancel", true);
         UISection actionsSection = new UISection(15, submit, cancel);
 
@@ -105,40 +76,13 @@ public class LogIssueModal extends Modal {
         return new VBox(binInputSection, actionsSection);
     }
 
-<<<<<<< HEAD
-=======
     /**
      * Clear the form input for a subsequent report
      */
->>>>>>> main
     @Override
     protected void updateContents() {
 
         // Not ready
-<<<<<<< HEAD
-        if(reportInput == null || statusInput == null)
-            return;
-
-        // Clear previous input
-        reportInput.clear();
-        statusInput.clear();
-
-    }
-
-
-    private void submitReport(){
-
-        // Save
-
-        // Errors
-        reportInput.setError("Not enough chars");
-        typeInput.setError("tag err");
-        statusInput.setError("To much");
-
-//        closeTrashLog();
-    }
-}
-=======
         if (typeInput == null || reportInput == null || fullnessInput == null)
             return;
 
@@ -274,4 +218,3 @@ public class LogIssueModal extends Modal {
         return fullnessInput;
     }
 }
->>>>>>> main

@@ -5,14 +5,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-<<<<<<< HEAD
-public class URLHelpers {
-
-    public static String getPage(URI uri){
-        return Arrays.stream(uri.getPath().split("/")).toList().getLast();
-    }
-
-=======
 /**
  * Utility class to help with URL address manipulation
  */
@@ -39,20 +31,16 @@ public class URLHelpers {
      * @param uri The url to extract from
      * @return The key-value map of parameters or empty if no page
      */
->>>>>>> main
     public static HashMap<String, String> getParams(URI uri){
 
         // Setup
         HashMap<String, String> out = new HashMap<>();
         String query = uri.getQuery();
 
-<<<<<<< HEAD
-=======
         // No params
         if(query == null)
             return out;
 
->>>>>>> main
         // Parse each param
         for (String param : query.split("&")){
             String[] paramParts = param.split("=");

@@ -83,33 +83,11 @@ public class UIImage extends StackPane {
 
         // Allow for the svg to CSS targetable
         img.getStyleClass().add("svg-icon");
-<<<<<<< HEAD
-        if(hasFill(img))
-=======
         if (hasFill(img))
->>>>>>> main
             img.getStyleClass().add("svg-icon-fill");
 
         return img;
 
-    }
-
-    private boolean hasFill(Parent parent) {
-
-        for(Node child : parent.getChildrenUnmodifiable()){
-
-            // libSVG converts to shapes with corresponding tags
-            if(child instanceof Shape)
-                if(((Shape)child).getFill() != null)
-                    return true;
-
-            // Not shape so check children
-            if (child instanceof Parent)
-                if (hasFill((Parent) child))
-                    return true;
-        }
-
-        return false;
     }
 
     /**
@@ -158,22 +136,16 @@ public class UIImage extends StackPane {
         return imageView;
     }
 
-<<<<<<< HEAD
-=======
 
     /**
      * Convert the image to a raw image buffer
      *
      * @see #toRawImage()
      */
->>>>>>> main
     public Image toRawImage() {
         return toRawImage(Color.TRANSPARENT);
     }
 
-<<<<<<< HEAD
-     public Image toRawImage(Color colour) {
-=======
     /**
      * Convert the image to a raw image buffer
      *
@@ -181,7 +153,6 @@ public class UIImage extends StackPane {
      * @return The snapshot of this svg image
      */
     public Image toRawImage(Color colour) {
->>>>>>> main
 
         // Ensure transparency is kept
         SnapshotParameters params = new SnapshotParameters();

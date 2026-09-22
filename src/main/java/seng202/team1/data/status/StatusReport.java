@@ -2,12 +2,7 @@ package seng202.team1.data.status;
 
 import seng202.team1.data.User;
 import seng202.team1.data.bin.Bin;
-<<<<<<< HEAD
-import seng202.team1.data.bin.BinIssue;
-import seng202.team1.data.bin.BinStatus;
-=======
 import seng202.team1.data.bin.BinFullness;
->>>>>>> main
 
 import java.time.LocalDateTime;
 
@@ -26,10 +21,7 @@ public class StatusReport {
 
     /**
      * Constructor for StatusReport class
-<<<<<<< HEAD
-=======
      *
->>>>>>> main
      * @param bin
      * @param submittedBy
      * @param description
@@ -38,13 +30,8 @@ public class StatusReport {
 
     public StatusReport(Bin bin,
                         User submittedBy,
-<<<<<<< HEAD
-                        BinStatus status,
-                        BinIssue issue,
-=======
                         BinFullness fullness,
                         ReportType issue,
->>>>>>> main
                         String description,
                         LocalDateTime submittedAt) {
         this.bin = bin;
@@ -69,9 +56,6 @@ public class StatusReport {
      * Get the bin ID
      * @return binID associated with report
      */
-<<<<<<< HEAD
-    public int getBinID() { return bin.getID(); }
-=======
     public int getBinID() {
 
         if(bin ==null)
@@ -80,7 +64,6 @@ public class StatusReport {
         return bin.getID();
 
     }
->>>>>>> main
 
     /**
      * Get the reporter
@@ -122,11 +105,7 @@ public class StatusReport {
     public boolean equals(StatusReport statusReport) {
         return this.getBinID() == statusReport.getBinID()
                 && this.getSubmittedBy().getUserID() == statusReport.getSubmittedBy().getUserID()
-<<<<<<< HEAD
-                && this.getStatus().equals(statusReport.getStatus())
-=======
                 && this.getFullness().equals(statusReport.getFullness())
->>>>>>> main
                 && this.getIssue().equals(statusReport.getIssue())
                 && this.getDescription().equals(statusReport.getDescription());
     }

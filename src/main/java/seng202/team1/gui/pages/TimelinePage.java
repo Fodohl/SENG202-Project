@@ -1,10 +1,6 @@
 package seng202.team1.gui.pages;
 
 import javafx.scene.Parent;
-<<<<<<< HEAD
-import javafx.scene.control.Label;
-import seng202.team1.gui.WindowManager;
-=======
 import javafx.scene.layout.VBox;
 import seng202.team1.common.DateHelpers;
 import seng202.team1.common.StringHelpers;
@@ -22,7 +18,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
->>>>>>> main
 
 /**
  * Page that displays the history of a users logged trash
@@ -32,8 +27,6 @@ public class TimelinePage extends Page {
     private UITimeline timeline;
     private VBox root;
 
-<<<<<<< HEAD
-=======
     /**
      * Constructs a new TimelinePage
      *
@@ -41,7 +34,6 @@ public class TimelinePage extends Page {
      */
     public TimelinePage(WindowManager windowManager) {
 
->>>>>>> main
         super(windowManager, Pages.TIMELINE);
 
     }
@@ -107,7 +99,7 @@ public class TimelinePage extends Page {
 
                     // Convert log into format expected by timeline entry
                     UIImage icon = new UIImage(String.format("/media/images/%s.svg", bin.getCategory().name().toLowerCase()), 50, 50);
-                    String desciption = String.format("%s (%dg) logged at %s", trashType, log.trashWeight(), bin.getAreaName());
+                    String desciption = String.format("%s (%.2fg) logged at %s", trashType, log.trashWeight(), bin.getAreaName());
 
                     return new UITimelineEntry(DateHelpers.fromLocalTime(LocalDateTime.ofInstant(log.disposedAt(), ZoneId.systemDefault())), icon, "Trash Logged", desciption);
                 })

@@ -4,17 +4,6 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 
-<<<<<<< HEAD
-
-public class UICard extends VBox {
-
-    private String iconPath;
-    private HBox body;
-
-    private Label valueNode;
-    private Label subtitleNode;
-
-=======
 /**
  * A UI Component to handle rendering a card
  */
@@ -37,13 +26,10 @@ public class UICard extends VBox {
      *
      * @see #UICard(String, String, String, String, boolean)
      */
->>>>>>> main
     public UICard(String title, String value, String subtitle, String icon) {
         this(title, value, subtitle, icon, false);
     }
 
-<<<<<<< HEAD
-=======
     /**
      * Construct a new UICard
      *
@@ -53,7 +39,6 @@ public class UICard extends VBox {
      * @param icon The icon relating to the stat
      * @param primary Whether it is a primary (full width) or secondard (third width) card
      */
->>>>>>> main
     public UICard(String title, String value, String subtitle, String icon, boolean primary){
 
         this.iconPath = icon;
@@ -97,16 +82,12 @@ public class UICard extends VBox {
 
     }
 
-<<<<<<< HEAD
-
-=======
     /**
      * Replace the icon in the middle with one of the same contents but different dims
      *
      * @param width The new width value of the icon
      * @param height The new height value of the icon
      */
->>>>>>> main
     public void resizeIcon(double width, double height){
 
         // Recreate the icon
@@ -116,26 +97,20 @@ public class UICard extends VBox {
         body.getChildren().add(icon);
     }
 
-<<<<<<< HEAD
-=======
     /**
      * Set the value of the stat in the card
      *
      * @param s The new value text
      */
->>>>>>> main
     public void setText(String s) {
         valueNode.setText(s);
     }
 
-<<<<<<< HEAD
-=======
     /**
      * Set the subtitle
      *
      * @param s The new subtitle
      */
->>>>>>> main
     public void setSubtitle(String s) {
         subtitleNode.setText(s);
     }

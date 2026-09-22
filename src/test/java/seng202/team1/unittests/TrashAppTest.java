@@ -4,11 +4,6 @@ import javafx.application.Platform;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-<<<<<<< HEAD
-import seng202.team1.data.bin.Bin;
-import seng202.team1.data.bin.BinLoader;
-import seng202.team1.data.table.StringTable;
-=======
 import org.junit.jupiter.api.Test;
 import seng202.team1.common.StringHelpers;
 import seng202.team1.data.bin.*;
@@ -17,7 +12,6 @@ import seng202.team1.data.sqlite.DatabaseManager;
 import seng202.team1.data.table.StringTableBuilder;
 import seng202.team1.data.sqlite.exceptions.InstanceAlreadyExistsException;
 import seng202.team1.data.sqlite.DAO.TrashLogDAO;
->>>>>>> main
 import seng202.team1.gui.WindowManager;
 import seng202.team1.state.GlobalState;
 
@@ -33,9 +27,6 @@ public class TrashAppTest {
     protected GlobalState state;
 
     protected WindowManager windowManager;
-<<<<<<< HEAD
-    protected BinLoader binLoader;
-=======
 
     protected DatabaseManager databaseManager;
 
@@ -43,7 +34,6 @@ public class TrashAppTest {
     protected BinDAO bins;
     protected BinDataset binDataset;
 
->>>>>>> main
 
     @BeforeAll
     public static void initFx() {
@@ -78,10 +68,6 @@ public class TrashAppTest {
         // Extract state for easier access
         binDataset = state.getDataset();
         windowManager = state.getWindowManager();
-<<<<<<< HEAD
-        binLoader = state.getDataLoader();
-=======
->>>>>>> main
     }
 
     protected ArrayList<Bin> testData(){

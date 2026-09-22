@@ -84,6 +84,22 @@
     -fx-border-width: 3px;
 }
 
+.combo-box .text-field,
+.combo-box .text-field:focused {
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.search-dropdown .arrow-button,
+.search-dropdown .arrow-button:hover,
+.search-dropdown .arrow-button:pressed {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent;
+}
+
 .text-area .viewport {
     -fx-background-color: transparent;
 }
@@ -135,14 +151,11 @@
     -fx-padding: 15px 15px;
     -fx-background-radius: 10px;
     -fx-cursor: hand;
-<<<<<<< HEAD
-=======
     -fx-background-color: -bg-primary;
 }
 
 .iconbutton * {
     -fx-background-color: transparent;
->>>>>>> main
 }
 
 .iconbutton:hover {
@@ -150,10 +163,6 @@
 
 }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> main
 .iconbutton.active:hover {
     -fx-background-color: -active-dark;
 }
@@ -640,8 +649,6 @@
 
 .active{
     -fx-background-color: -active-secondary;
-<<<<<<< HEAD
-=======
 }
 
 .timeline {
@@ -708,5 +715,4 @@
     -fx-min-width: 250px;
     -fx-pref-width: 250px;
     -fx-max-width: 250px;
->>>>>>> main
 }

@@ -10,31 +10,18 @@ import seng202.team1.gui.GraphicsCommon;
 
 // @credit https://stackoverflow.com/questions/51343759/how-to-change-fill-color-of-slider-in-javafx
 
-<<<<<<< HEAD
-// @todo explain static setup reasoning for no default contstructors
-
-public class UISlider extends VBox implements UIInputComponent{
-=======
 public class UISlider extends VBox implements UIInputComponent {
->>>>>>> main
 
     private boolean isErroring = false;
     private double percentage;
 
     private Slider slider = new Slider();
-<<<<<<< HEAD
-    private Label percetageDsiplay  = new Label();
-    private Label errorText = new Label();
-
-    public UISlider(){
-=======
     private Label percetageDsiplay = new Label();
 
     /// The label to show invalid input messages in
     private Label errorText = new Label();
 
     public UISlider() {
->>>>>>> main
         super(5);
 
         // Style the fullness of the slider
@@ -44,11 +31,7 @@ public class UISlider extends VBox implements UIInputComponent {
             setError("");
 
             // Show the percentage
-<<<<<<< HEAD
-            percentage = (Double)newVal;
-=======
             percentage = (Double) newVal;
->>>>>>> main
             updateTrackStyle();
 
         });
@@ -62,23 +45,6 @@ public class UISlider extends VBox implements UIInputComponent {
     }
 
     private void updateTrackStyle() {
-<<<<<<< HEAD
-       percetageDsiplay.setText(String.format("%.2f%%", percentage));
-
-       String colour = isErroring ? "-text-error" : "-active";
-
-       // Ensure track has rendered
-       Node track = lookup(".track");
-       if(track == null)
-           return;
-
-       // Custom gradient that is active 0-x and default x-100
-       track.setStyle(
-            String.format("-fx-background-color: linear-gradient(to right, %s 0%%, %s %.1f%%, -text-secondary-half %.1f%%, -text-secondary-half 100%%);", colour, colour, percentage, percentage)
-       );
-    }
-
-=======
         percetageDsiplay.setText(String.format("%.2f%%", percentage));
 
         String colour = isErroring ? "-text-error" : "-active";
@@ -99,21 +65,11 @@ public class UISlider extends VBox implements UIInputComponent {
      *
      * @return The selected value
      */
->>>>>>> main
     @Override
     public Double getInput() {
         return slider.getValue();
     }
 
-<<<<<<< HEAD
-    @Override
-    public void setInput(Object value) {
-
-        if(value instanceof  Double)
-            slider.setValue((Double)value);
-    }
-
-=======
     /**
      * Set the input to a desired value
      *
@@ -133,31 +89,20 @@ public class UISlider extends VBox implements UIInputComponent {
      *
      * @return True if the user has inputted a value
      */
->>>>>>> main
     @Override
     public boolean hasInput() {
         return true;
     }
 
-<<<<<<< HEAD
-=======
     /**
      * Reset the value of the input to default, clearing any errors
      */
->>>>>>> main
     @Override
     public void clear() {
         slider.setValue(0.0);
         setError("");
     }
 
-<<<<<<< HEAD
-    @Override
-    public boolean isErroring(){
-        return isErroringInternal(errorText);
-    }
-
-=======
     /**
      * Check if the current input has resulted in an error
      *
@@ -173,7 +118,6 @@ public class UISlider extends VBox implements UIInputComponent {
      *
      * @param error The error message
      */
->>>>>>> main
     @Override
     public void setError(String error) {
 

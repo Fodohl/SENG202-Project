@@ -3,18 +3,6 @@ package seng202.team1.state;
 import javafx.stage.Stage;
 import seng202.team1.api.photon.Feature;
 import seng202.team1.api.photon.PhotonClient;
-<<<<<<< HEAD
-import seng202.team1.api.trashdb.TrashDBClient;
-import seng202.team1.api.trashdb.TrashDBLeaderboardResponse;
-import seng202.team1.data.bin.BinLoader;
-import seng202.team1.data.status.StatusReportStore;
-import seng202.team1.data.trashlog.TrashLogStore;
-import seng202.team1.gui.WindowManager;
-import seng202.team1.gui.pages.Pages;
-
-import java.util.Locale;
-import java.util.Map;
-=======
 import seng202.team1.data.status.ReportType;
 import seng202.team1.data.status.StatusReport;
 import seng202.team1.data.status.StatusReportStore;
@@ -30,7 +18,6 @@ import seng202.team1.data.bin.Bin;
 import java.time.LocalDate;
 import java.util.List;
 
->>>>>>> main
 
 /**
  * Stores the current state of the app and provides managers to control it
@@ -44,24 +31,6 @@ public class GlobalState {
     /// The manager of the app's window
     private WindowManager windowManager;
 
-<<<<<<< HEAD
-    private Stage stage;
-
-    /// The handler for the static bin data
-    private BinLoader binLoader;
-
-    private TrashLogStore trashLogStore;
-
-    private StatusReportStore statusReportStore;
-
-    private PhotonClient photonClient;
-
-    private TrashDBClient trashDBClient;
-
-    private Feature requestedLocation;
-
-    private TrashDBLeaderboardResponse leaderboard;
-=======
     /// The current window
     private Stage stage;
 
@@ -82,7 +51,6 @@ public class GlobalState {
 
     /// The handler for issue reports
     private StatusReportStore statusReportStore;
->>>>>>> main
 
     /**
      * Construct a new Global state instance
@@ -91,36 +59,6 @@ public class GlobalState {
      */
     public GlobalState(Stage stage, boolean testState) {
 
-<<<<<<< HEAD
-        // Data must be loaded first as UI depends on it
-        binLoader = new BinLoader();
-        binLoader.readGeoJSON();
-
-        trashLogStore = new TrashLogStore(TrashLogStore.defaultDataPath());
-        trashLogStore.load();
-
-        //@todo clean up loaders & paths
-        statusReportStore = new StatusReportStore(binLoader, StatusReportStore.defaultDataPath());
-        statusReportStore.load();
-
-        photonClient = new PhotonClient();
-        trashDBClient = new TrashDBClient();
-
-        this.stage = stage;
-        windowManager = new WindowManager(this, stage);
-
-        fetchData();
-    }
-
-    private void fetchData() {
-
-        trashDBClient.getLeaderboard(leaderboard -> {
-
-            this.leaderboard = leaderboard;
-            windowManager.refreshPage(Pages.LEADERBOARD);
-
-        });
-=======
         this.testState = testState;
         databaseManager = new DatabaseManager(testState ?
                                                 "jdbc:sqlite:./src/test/resources/test_database.db" :
@@ -143,7 +81,6 @@ public class GlobalState {
         photonClient = new PhotonClient();
 
         windowManager = new WindowManager(this, stage);
->>>>>>> main
     }
 
     /**
@@ -155,26 +92,11 @@ public class GlobalState {
         return windowManager;
     }
 
-<<<<<<< HEAD
-    /**
-     * Get the current data loader
-     *
-     * @return The data loader for the app
-     */
-    public BinLoader getDataLoader() {
-        return binLoader;
-    }
-
-    public TrashLogStore getTrashLogStore() {
-        return trashLogStore;
-    }
-=======
     public TrashLogDAO getTrashLogDAO() {
         return trashLogDAO;
     }
 
     public BinDAO getBinDAO() { return binDAO; }
->>>>>>> main
 
     public PhotonClient getPhotonClient() {
         return photonClient;
@@ -194,14 +116,6 @@ public class GlobalState {
         return location;
     }
 
-<<<<<<< HEAD
-    public TrashDBLeaderboardResponse getLeaderboard() {
-        return leaderboard;
-    }
-
-    public void show() {
-        stage.show();
-=======
     /**
      * Get the status log handler
      *
@@ -262,6 +176,5 @@ public class GlobalState {
 
     public BinDataset getDataset() {
         return binDataset;
->>>>>>> main
     }
 }

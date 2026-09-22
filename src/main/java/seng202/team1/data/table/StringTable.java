@@ -103,10 +103,6 @@ public class StringTable extends LinkedHashMap<String, List<String>> {
 
                 // Get the object
                 Object objectValue = fields.get(data).get(object);
-<<<<<<< HEAD
-                Function<Object, String> formatter = formatters.get(data);
-
-=======
 
                 // No formater
                 if(formatters == null){
@@ -116,7 +112,6 @@ public class StringTable extends LinkedHashMap<String, List<String>> {
 
                 Function<Object, String> formatter = formatters.get(data);
 
->>>>>>> main
                 // Format the data
                 String formattedValue = formatter != null ? formatter.apply(objectValue) : (objectValue.toString());
                 get(display).add(formattedValue);
@@ -151,14 +146,11 @@ public class StringTable extends LinkedHashMap<String, List<String>> {
         return get(keySet().stream().toList().getFirst()).size();
     }
 
-<<<<<<< HEAD
-=======
     /**
      * Get the map of header to data key
      *
      * @return The map of headers to feilds
      */
->>>>>>> main
     public Map<String, String> getColMap() {
         return colMap;
     }

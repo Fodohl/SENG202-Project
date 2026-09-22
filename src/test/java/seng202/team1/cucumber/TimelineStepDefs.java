@@ -60,7 +60,7 @@ public class TimelineStepDefs {
         globalState.getBinDAO().add(bin);
 
         Instant now = Instant.now();
-        globalState.getTrashLogDAO().add(new TrashLog(now, now, 1, bin.getID(), TrashType.PLASTIC_BOTTLE, 500));
+        globalState.getTrashLogDAO().add(new TrashLog(now, now, 1, bin.getID(), TrashType.BANANA_PEEL, 500));
 
         globalState.getStatusReportStore().logReport(bin, BinFullness.SEMI_FULL, ReportType.GRAFFITI, "Spray paint");
 

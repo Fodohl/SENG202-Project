@@ -1,8 +1,5 @@
 package seng202.team1.data.bin;
 
-<<<<<<< HEAD
-import java.time.Instant;
-=======
 import seng202.team1.data.bin.BinCategory;
 import seng202.team1.data.sqlite.DAO.BinDAO;
 import seng202.team1.data.bin.BinFullness;
@@ -10,7 +7,6 @@ import seng202.team1.data.status.StatusReport;
 
 import java.time.Instant;
 import java.util.List;
->>>>>>> main
 
 
 /**
@@ -38,40 +34,25 @@ public class Bin {
     /// When the bin's info was last updated
     protected Instant updated;
 
-<<<<<<< HEAD
-    /// Name of the area the bin is located in (@todo resolve to address using api)
-=======
     // The bin's photo url
     protected String photoURL;
 
     /// Name of the area the bin is located in
->>>>>>> main
     protected String areaName;
 
     /**
      * Constructor for Bin class
-<<<<<<< HEAD
-     *
-=======
->>>>>>> main
      * @param binID - unique identifier for the bin
      * @param latitude - latitude of the bin
      * @param longitude - longitude of the bin
      * @param type - type of bin (general waste, recycling, organic)
      */
-<<<<<<< HEAD
-    public Bin(Integer binID, double latitude, double longitude, BinCategory type, Instant updated, String areaName) {
-=======
     public Bin(Integer binID, double latitude, double longitude, BinCategory type, Instant updated, String photoURL, String areaName, BinFullness fullness) {
->>>>>>> main
         this.binID = binID;
         this.latitude = latitude;
         this.longitude = longitude;
         this.type = type;
         this.updated = updated;
-<<<<<<< HEAD
-        this.areaName = areaName;
-=======
         this.photoURL = photoURL;
         this.areaName = areaName;
         this.fullness = fullness;
@@ -79,7 +60,6 @@ public class Bin {
 
     public Bin(Integer binID, double latitude, double longitude, BinCategory type, Instant updated, String areaName) {
         this(binID, latitude, longitude, type, updated, null, areaName, BinFullness.UNKNOWN);
->>>>>>> main
     }
 
     /**
@@ -130,8 +110,6 @@ public class Bin {
         return updated;
     }
 
-<<<<<<< HEAD
-=======
 
     /**
      * Get the bin's photo URL
@@ -142,7 +120,6 @@ public class Bin {
     }
 
 
->>>>>>> main
     /**
      * Get the bin's general area of location
      * @return Bin general area of location
@@ -163,8 +140,6 @@ public class Bin {
                 '}';
     }
 
-<<<<<<< HEAD
-=======
     public void updateFullness(BinDAO db, List<StatusReport> reportsForBin) {
 
 
@@ -191,5 +166,4 @@ public class Bin {
         // Store change
         db.update(this);
     }
->>>>>>> main
 }

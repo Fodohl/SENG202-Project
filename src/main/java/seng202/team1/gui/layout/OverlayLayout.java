@@ -6,12 +6,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import seng202.team1.gui.WindowManager;
 
-<<<<<<< HEAD
-public class OverlayLayout extends LayoutElement {
-
-    StackPane root = new StackPane();
-
-=======
 /**
  * Composite UI component that contains elements that are being shown over the app
  * <p>
@@ -27,7 +21,6 @@ public class OverlayLayout extends LayoutElement {
      *
      * @param windowManager The window manager to handle closing the overlay
      */
->>>>>>> main
     public OverlayLayout(WindowManager windowManager) {
         super(windowManager);
 
@@ -39,30 +32,16 @@ public class OverlayLayout extends LayoutElement {
         root.getChildren().add(background);
     }
 
-<<<<<<< HEAD
-=======
     /**
      * Combine UI elements to build the overlay
      *
      * @return A new root node containing the rendered overlay
      */
->>>>>>> main
     @Override
     protected Parent renderSelf() {
         return root;
     }
 
-<<<<<<< HEAD
-
-    public void setVisible(boolean visible){
-        root.setVisible(visible);
-    }
-
-    public void setContents(Parent contents){
-
-        // Remove old contents
-        while(root.getChildren().size() > 1)
-=======
     /**
      * Set the whetehr the modal can be seen or not
      *
@@ -81,7 +60,6 @@ public class OverlayLayout extends LayoutElement {
 
         // Remove old contents
         while (root.getChildren().size() > 1)
->>>>>>> main
             root.getChildren().removeLast();
 
         // Center the modal content over the overlay

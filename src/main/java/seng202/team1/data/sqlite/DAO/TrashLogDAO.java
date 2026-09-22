@@ -1,16 +1,21 @@
 package seng202.team1.data.sqlite.DAO;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import seng202.team1.data.sqlite.DatabaseManager;
 import seng202.team1.data.sqlite.SqlTimeUtils;
 import seng202.team1.data.trashlog.TrashLog;
 import seng202.team1.data.trashlog.TrashType;
-
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * Database Access Object that handles all trash related actions to the database
@@ -35,13 +40,14 @@ public class TrashLogDAO extends SqlTimeUtils implements DAOInterface<TrashLog> 
      * @return trash type that matches the string
      */
     private TrashType convertStringToType(String type) {
-        return switch(type.toUpperCase(Locale.ROOT)){
-            case "PLASTIC_BOTTLE" -> TrashType.PLASTIC_BOTTLE;
-            case "PAPER" -> TrashType.PAPER;
-            case "CARDBOARD_BOX" -> TrashType.CARDBOARD_BOX;
-            case "COFFEE_CUP" -> TrashType.COFFEE_CUP;
-            default -> TrashType.OTHER;
-        };
+        if (type == null) {
+            return TrashType.OTHER;
+        }
+        try {
+            return TrashType.valueOf(type.toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException exception) {
+            return TrashType.OTHER;
+        }
     }
 
     /**
@@ -64,7 +70,7 @@ public class TrashLogDAO extends SqlTimeUtils implements DAOInterface<TrashLog> 
                         rs.getInt("user_id"),
                         rs.getInt("bin_id"),
                         convertStringToType(rs.getString("type")),
-                        rs.getInt("weight")));
+                        rs.getDouble("weight")));
             }
             return trash;
         } catch (SQLException sqlException) {
@@ -94,7 +100,7 @@ public class TrashLogDAO extends SqlTimeUtils implements DAOInterface<TrashLog> 
                             rs.getInt("user_id"),
                             rs.getInt("bin_id"),
                             convertStringToType(rs.getString("type")),
-                            rs.getInt("weight"));
+                            rs.getDouble("weight"));
                 }
                 return trashLog;
             }
@@ -119,7 +125,7 @@ public class TrashLogDAO extends SqlTimeUtils implements DAOInterface<TrashLog> 
             ps.setInt(3, trashLogToAdd.userID());
             ps.setInt(4, trashLogToAdd.binID());
             ps.setString(5, trashLogToAdd.trashType().toString());
-            ps.setInt(6, trashLogToAdd.trashWeight());
+            ps.setDouble(6, trashLogToAdd.trashWeight());
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
             int insertId = -1;
@@ -158,7 +164,7 @@ public class TrashLogDAO extends SqlTimeUtils implements DAOInterface<TrashLog> 
             ps.setInt(2, trashLogToUpdate.userID());
             ps.setInt(3, trashLogToUpdate.binID());
             ps.setString(4, trashLogToUpdate.trashType().toString());
-            ps.setInt(5, trashLogToUpdate.trashWeight());
+            ps.setDouble(5, trashLogToUpdate.trashWeight());
             ps.setInt(6, trashLogToUpdate.trashLogId());
             int rows = ps.executeUpdate();
             if (rows == 0) {

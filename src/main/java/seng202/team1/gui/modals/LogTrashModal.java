@@ -1,49 +1,29 @@
 package seng202.team1.gui.modals;
 
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
+
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-<<<<<<< HEAD
-=======
 import javafx.scene.control.Button;
->>>>>>> main
 import javafx.scene.layout.VBox;
 import seng202.team1.common.StringHelpers;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.BinFullness;
-import seng202.team1.data.bin.BinCategory;
-<<<<<<< HEAD
-=======
 import seng202.team1.data.status.ReportType;
-import seng202.team1.data.status.StatusReport;
+import seng202.team1.data.trashlog.TrashEmission;
 import seng202.team1.data.trashlog.TrashLog;
->>>>>>> main
 import seng202.team1.data.trashlog.TrashType;
+import seng202.team1.data.treedays.TreeDaysCalculator;
 import seng202.team1.gui.WindowManager;
-import seng202.team1.gui.components.*;
-
-<<<<<<< HEAD
-import java.util.Arrays;
-import java.util.List;
-
-//@todo confimation icon
-//@todo animate components
-
-public class LogTrashModal extends Modal{
-
-    private Bin bin = null;
-
-    private UIDropDown typeInput;
-    private UITextInput weightInput;
-    private UIChipsInput statusInput;
-
-    public LogTrashModal(WindowManager windowManager){
-        super(windowManager, Modals.LOG_TRASH);
-    }
-
-=======
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.List;
+import seng202.team1.gui.components.UIButton;
+import seng202.team1.gui.components.UIChipsInput;
+import seng202.team1.gui.components.UIIconButton;
+import seng202.team1.gui.components.UIIconText;
+import seng202.team1.gui.components.UISearchDropDown;
+import seng202.team1.gui.components.UISection;
+import seng202.team1.gui.components.UITextInput;
 
 
 /**
@@ -55,7 +35,7 @@ public class LogTrashModal extends Modal {
     private Bin bin = null;
 
     /// The input for what type of trash this is
-    private UIDropDown typeInput;
+    private UISearchDropDown typeInput;
 
     /// The input for how heavy this peice of trash is
     private UITextInput weightInput;
@@ -80,7 +60,6 @@ public class LogTrashModal extends Modal {
      *
      * @return The UI for this modal
      */
->>>>>>> main
     @Override
     Parent buildBody() {
 
@@ -89,31 +68,31 @@ public class LogTrashModal extends Modal {
 
         // Log data
         UIIconText typeLabel = new UIIconText("bin", "Trash Type");
-        typeInput = new UIDropDown("Select waste type...", trashTypes);
-<<<<<<< HEAD
-        UIIconText weightLabel = new UIIconText("scales", "Estimated Weight");
-=======
+        typeInput = new UISearchDropDown("Search waste type...", trashTypes);
         UIIconText weightLabel = new UIIconText("scales", "Estimated Weight (grams)");
->>>>>>> main
         weightInput = new UITextInput("Enter waste weight...");
+        List<TrashEmission> emissions = new TreeDaysCalculator().allTrashEmissions();
+        typeInput.setOnSelectionChanged(selectedType -> {
+            for (TrashType trashType : TrashType.values()) {
+                if (!StringHelpers.enumNameToTitle(trashType.name()).equals(selectedType))
+                    continue;
+
+                emissions.stream()
+                    .filter(emission -> emission.id().equals(trashType.name()))
+                    .findFirst()
+                    .ifPresent(emission -> weightInput.setInput(String.valueOf(emission.weightGrams())));
+                break;
+            }
+        });
         UISection logInputSection = new UISection(15, typeLabel, typeInput, weightLabel, weightInput);
 
         // Bin data
-<<<<<<< HEAD
-        UIIconText statusLabel = new UIIconText("bin-full", "Estimated Fullness");
-        statusInput = new UIChipsInput(BinFullness.class);
-        UISection binInputSection = new UISection(15, statusLabel, statusInput);
-
-        // Actions
-        UIButton submit = new UIButton("Submit Log");
-=======
         UIIconText fullnessLabel = new UIIconText("bin-full", "Estimated Fullness");
         fullnessInput = new UIChipsInput(BinFullness.class);
         UISection binInputSection = new UISection(15, fullnessLabel, fullnessInput);
 
         // Actions
         submit = new UIButton("Submit Log");
->>>>>>> main
         UIButton cancel = new UIButton("Cancel", true);
         UISection actionsSection = new UISection(15, submit, cancel);
 
@@ -128,26 +107,15 @@ public class LogTrashModal extends Modal {
         return new VBox(logInputSection, binInputSection, actionsSection);
     }
 
-<<<<<<< HEAD
-=======
     /**
      * Handle data being sent to this modal
      *
      * @param data The bin this modal is referencing
      */
->>>>>>> main
     @Override
     public void recvData(Object data) {
 
         // Not a bin
-<<<<<<< HEAD
-        if(!(data instanceof Bin))
-            return;
-
-        bin = (Bin)data;
-    }
-
-=======
         if (!(data instanceof Bin))
             return;
 
@@ -157,30 +125,16 @@ public class LogTrashModal extends Modal {
     /**
      * Clear the form input for a subsequent report
      */
->>>>>>> main
     @Override
     protected void updateContents() {
 
         // Cant reset yet
-<<<<<<< HEAD
-        if(typeInput == null || weightInput == null || statusInput == null)
-=======
         if (typeInput == null || weightInput == null || fullnessInput == null)
->>>>>>> main
             return;
 
         // Reset input
         typeInput.clear();
         weightInput.clear();
-<<<<<<< HEAD
-        statusInput.clear();
-    }
-
-    private void submitTrashLog(){
-
-        // No bin setup (@todo log error)
-        if(bin == null)
-=======
         fullnessInput.clear();
     }
 
@@ -191,43 +145,22 @@ public class LogTrashModal extends Modal {
 
         // No bin setup
         if (bin == null)
->>>>>>> main
             return;
 
-        BinCategory category = bin.getCategory();
         Integer binID = bin.getID();
 
         TrashType type = null;
-<<<<<<< HEAD
-        Integer weight = null;
-
-        // Get type
-        for(TrashType trashType : TrashType.values())
-            if(StringHelpers.enumNameToTitle(trashType.name()).equals(typeInput.getInput())){
-=======
-        Integer weight = 0;
+        double weight = 0;
         BinFullness fullness = null;
         Integer userID = 1;
 
         // Get type
         for (TrashType trashType : TrashType.values())
             if (StringHelpers.enumNameToTitle(trashType.name()).equals(typeInput.getInput())) {
->>>>>>> main
                 type = trashType;
             }
 
         // Invalid type
-<<<<<<< HEAD
-        if(type == null)
-            typeInput.setError("Not a valid trash type");
-
-        // No Category
-        if(!typeInput.hasInput())
-            typeInput.setError("Must select trash type");
-
-        // Get weight
-        try{
-=======
         if (type == null)
             typeInput.setError("Not a valid trash type");
 
@@ -237,28 +170,13 @@ public class LogTrashModal extends Modal {
 
         // Get weight
         try {
->>>>>>> main
-            weight = Integer.parseInt(weightInput.getInput());
+            weight = Double.parseDouble(weightInput.getInput());
         } catch (NumberFormatException e) {
-            weightInput.setError("Weight must be a whole number");
+            weightInput.setError("Weight must be a number");
         }
 
         // Cant have negative trash
-<<<<<<< HEAD
-        if(weight != null && weight <= 0)
-            weightInput.setError("Weight must be positive");
-
-        //@todo merge in
-        statusInput.setError("not implemented");
-
-        // Invalid
-        if(typeInput.isErroring() ||  weightInput.isErroring())// || statusInput.isErroring())
-            return;
-
-        // Save
-        windowManager.getGlobalState().getTrashLogStore().logTrash(category, type, weight, binID);
-=======
-        if (weight != null && weight <= 0)
+        if (weight <= 0)
             weightInput.setError("Weight must be positive");
 
         UIIconButton fullnessChip = (UIIconButton) fullnessInput.getInput();
@@ -283,13 +201,10 @@ public class LogTrashModal extends Modal {
 
          // Refresh the bins' average status
         getWindow().getGlobalState().refreshBinFullness(bin);
->>>>>>> main
 
         closeModal();
     }
 
-<<<<<<< HEAD
-=======
 
     /**
      * Get the input of the report text
@@ -323,7 +238,7 @@ public class LogTrashModal extends Modal {
      *
      * @return The report type input component
      */
-    public UIDropDown getTypeInput() {
+    public UISearchDropDown getTypeInput() {
         return typeInput;
     }
 
@@ -336,5 +251,4 @@ public class LogTrashModal extends Modal {
         return fullnessInput;
     }
 
->>>>>>> main
 }

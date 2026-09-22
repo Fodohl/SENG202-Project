@@ -1,7 +1,5 @@
 package seng202.team1.api.photon;
 
-<<<<<<< HEAD
-=======
 /**
  * The properties of a geometric location
  *
@@ -18,7 +16,6 @@ package seng202.team1.api.photon;
  * @param countrycode The ISO country ID
  * @param name The name of the area if not street addressable
  */
->>>>>>> main
 public record Properties(
         String type,
         String housenumber,

@@ -3,19 +3,11 @@ package seng202.team1.unittests.data.status;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-<<<<<<< HEAD:src/test/java/seng202/team1/unittests/data/BinReportWriterTest.java
-import seng202.team1.data.bin.BinIssue;
-import seng202.team1.data.status.StatusReport;
-import seng202.team1.data.User;
-import seng202.team1.data.status.StatusReportWriter;
-import seng202.team1.data.bin.BinStatus;
-=======
 import seng202.team1.data.bin.*;
 import seng202.team1.data.status.ReportType;
 import seng202.team1.data.status.StatusReport;
 import seng202.team1.data.User;
 import seng202.team1.data.status.StatusReportWriter;
->>>>>>> main:src/test/java/seng202/team1/unittests/data/status/StatusReportWriterTest.java
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -102,11 +94,7 @@ public class StatusReportWriterTest {
 
     @Test
     public void testEmptyListWritesEmptyJson() throws IOException {
-<<<<<<< HEAD:src/test/java/seng202/team1/unittests/data/BinReportWriterTest.java
-        Path testFile = tempDir.resolve("binreports.json");
-=======
         Path testFile = tempDir.resolve("example_reports.json");
->>>>>>> main:src/test/java/seng202/team1/unittests/data/status/StatusReportWriterTest.java
         statusReportWriter.writeJson(testFile, List.of());
         assertTrue(Files.exists(testFile));
         String contents = Files.readString(testFile);
@@ -121,11 +109,7 @@ public class StatusReportWriterTest {
 
     @Test
     public void testWriteJsonContainsMultipleReports() throws IOException {
-<<<<<<< HEAD:src/test/java/seng202/team1/unittests/data/BinReportWriterTest.java
-        Path testFile = tempDir.resolve("binreports.json");
-=======
         Path testFile = tempDir.resolve("example_reports.json");
->>>>>>> main:src/test/java/seng202/team1/unittests/data/status/StatusReportWriterTest.java
         statusReportWriter.writeJson(testFile, List.of(testStatusReport, testStatusReport2));
 
         String contents = Files.readString(testFile);
@@ -147,11 +131,7 @@ public class StatusReportWriterTest {
 
     @Test
     public void writeJsonOverwritesOldJson() throws IOException {
-<<<<<<< HEAD:src/test/java/seng202/team1/unittests/data/BinReportWriterTest.java
-        Path testFile = tempDir.resolve("binreports.json");
-=======
         Path testFile = tempDir.resolve("example_reports.json");
->>>>>>> main:src/test/java/seng202/team1/unittests/data/status/StatusReportWriterTest.java
         statusReportWriter.writeJson(testFile, List.of(testStatusReport));
         statusReportWriter.writeJson(testFile, List.of(testStatusReport2));
         String contents = Files.readString(testFile);
@@ -171,11 +151,7 @@ public class StatusReportWriterTest {
 
     @Test
     public void writeJsonWritesNull() throws IOException {
-<<<<<<< HEAD:src/test/java/seng202/team1/unittests/data/BinReportWriterTest.java
-        Path testFile = tempDir.resolve("binreports.json");
-=======
         Path testFile = tempDir.resolve("example_reports.json");
->>>>>>> main:src/test/java/seng202/team1/unittests/data/status/StatusReportWriterTest.java
         StatusReport nullReport = new StatusReport(testBin,
                 testUser,
                 null,

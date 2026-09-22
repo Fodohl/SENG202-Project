@@ -9,13 +9,6 @@ import java.util.function.Function;
  */
 public class StringTableBuilder<T> {
 
-<<<<<<< HEAD
-    private List<T> rawData;
-    private final Map<String, String> colMap = new LinkedHashMap<>();
-    private final Map<String, Function<Object, String>> formatters = new HashMap<>();
-    private Comparator<T> comparator;
-
-=======
     /// The data to use to build the table
     private List<T> rawData;
 
@@ -33,25 +26,19 @@ public class StringTableBuilder<T> {
      *
      * @param rawData The data to put in the string table
      */
->>>>>>> main
     public StringTableBuilder(List<T> rawData) {
         this.rawData = new ArrayList<>(rawData);
     }
 
-<<<<<<< HEAD
-=======
     /**
      * Add a new column to the string table
      *
      * @see #addColumn(String, String, Function)
      */
->>>>>>> main
     public StringTableBuilder<T> addColumn(String dataKey, String displayName) {
         return addColumn(dataKey, displayName, obj -> obj == null ? "" : obj.toString());
     }
 
-<<<<<<< HEAD
-=======
     /**
      * Add a new column to the string table
      *
@@ -60,29 +47,23 @@ public class StringTableBuilder<T> {
      * @param formatter The function to use to format the value of the field
      * @return The builder instance
      */
->>>>>>> main
     public StringTableBuilder<T> addColumn(String dataKey, String displayName, Function<Object, String> formatter) {
         colMap.put(dataKey, displayName);
         formatters.put(dataKey, formatter);
         return this;
     }
 
-<<<<<<< HEAD
-=======
     /**
      * Set the function to use to sort the data of the table
      *
      * @param comparator The sorting function
      * @return The builder instance
      */
->>>>>>> main
     public StringTableBuilder<T> sortBy(Comparator<T> comparator) {
         this.comparator = comparator;
         return this;
     }
 
-<<<<<<< HEAD
-=======
     /**
      * Sort by a specific field
      *
@@ -92,7 +73,6 @@ public class StringTableBuilder<T> {
      * @param ascending Whether to sort ascendingly or descendinly
      * @return The builder instance
      */
->>>>>>> main
     public StringTableBuilder<T> sortBy(String dataKey, boolean ascending) {
 
         int lessThan = ascending ? -1 : 1;
@@ -139,36 +119,26 @@ public class StringTableBuilder<T> {
 
             } catch (Exception e) {
 
-<<<<<<< HEAD
-                //@todo warn
-=======
->>>>>>> main
                 return 0;
             }
         };
         return this;
     }
 
-<<<<<<< HEAD
-=======
     /**
      * Refresh the data reference with new data
      *
      * @param newData The new data for the table
      */
->>>>>>> main
     public void updateData(List<T> newData){
         this.rawData = newData;
     }
 
-<<<<<<< HEAD
-=======
     /**
      * Turn the data into a string table following the rules set during builder building
      *
      * @return The built string table, sorted
      */
->>>>>>> main
     public StringTable build() {
 
 

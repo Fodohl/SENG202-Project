@@ -22,13 +22,8 @@ import org.mockito.Mockito;
 
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-<<<<<<< HEAD
-import seng202.team1.data.StringTable;
-import seng202.team1.data.ExportManager;
-=======
 import seng202.team1.data.ExportManager;
 import seng202.team1.data.table.StringTable;
->>>>>>> main
 
 public class ExportManagerTest {
     

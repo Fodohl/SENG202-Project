@@ -7,11 +7,8 @@ import javafx.scene.layout.VBox;
 public class UITextInput extends VBox implements UIInputComponent{
 
     private TextField textField = new TextField();
-<<<<<<< HEAD
-=======
 
     /// The label to show invalid input messages in
->>>>>>> main
     private Label errorText = new Label();
 
     public UITextInput(String placeholder){
@@ -30,27 +27,21 @@ public class UITextInput extends VBox implements UIInputComponent{
         });
     }
 
-<<<<<<< HEAD
-=======
     /**
      * Get the entered text or null if none
      *
      * @return The entered input
      */
->>>>>>> main
     @Override
     public String getInput() {
         return textField.getText();
     }
 
-<<<<<<< HEAD
-=======
         /**
      * Set the input to a desired value
      *
      * @param value The new string input value
      */
->>>>>>> main
     @Override
     public void setInput(Object value) {
 
@@ -58,13 +49,6 @@ public class UITextInput extends VBox implements UIInputComponent{
             textField.setText((String)value);
     }
 
-<<<<<<< HEAD
-    @Override
-    public boolean hasInput() {
-        return !textField.getText().isEmpty();
-    }
-
-=======
        /**
      * Get whether a user has entered input yet
      *
@@ -84,34 +68,27 @@ public class UITextInput extends VBox implements UIInputComponent{
      /**
      * Reset the value of the input to default, clearing any errors
      */
->>>>>>> main
     @Override
     public void clear() {
         textField.setText(null);
         setError("");
     }
 
-<<<<<<< HEAD
-=======
   /**
      * Check if the current input has resulted in an error
      *
      * @return True if there is an error set
      */
->>>>>>> main
     @Override
     public boolean isErroring(){
         return isErroringInternal(errorText);
     }
 
-<<<<<<< HEAD
-=======
        /**
      * Set the error for this input
      *
      * @param error The error message
      */
->>>>>>> main
     @Override
     public void setError(String error) {
         setIsErrorInternal(error, this, errorText);
