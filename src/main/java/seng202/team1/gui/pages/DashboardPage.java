@@ -84,7 +84,6 @@ public class DashboardPage extends Page {
     @Override
     public void updateContents() {
 
-
         // Get usage
         List<TrashLog> uses = windowManager.getGlobalState().getTrashLogDAO()
                 .getAll().stream()

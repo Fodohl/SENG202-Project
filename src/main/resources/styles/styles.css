@@ -11,24 +11,24 @@
 }
 
 .root {
-    -bg-primary: #232c33;
-    -bg-primary-dark: #1a2025;
-    -bg-primary-light: #2c3840;
-    -bg-secondary: #374051;
-    -bg-third: #1c2128;
-    -bg-overlay: rgb(0, 0, 0, 0.60);
+     -bg-primary: #efedea;
+    -bg-primary-dark: #e4e0da;
+    -bg-primary-light: #ffffff;
+    -bg-secondary: #d2cbc2;
+    -bg-third: #ebe9e5;
+    -bg-overlay: rgb(33, 38, 46, 0.55);
 
-    -text-primary: #ffffff;
-    -text-secondary: rgb(104, 112, 119);
-    -text-secondary-half: rgb(104, 112, 119, 0.50);
-    -text-third: rgb(133, 138, 143);
-    -text-error: #ed5261;
+    -text-primary: #21262e;
+    -text-secondary: #6c6d68;
+    -text-secondary-half: rgb(108, 109, 104, 0.45);
+    -text-third: #7d8687;
+    -text-error: #a1503a;
 
-    -active: #41965b;
-    -active-secondary: #316a47;
-    -active-bright: #26c857;
+    -active: #24412e;
+    -active-secondary: #a4b09f;
+    -active-bright: #94a28d;
     -active-grad: linear-gradient(from 0% 0% to 0% 100%, -active 0%, -active-secondary 100%);
-    -active-dark: #284e32;
+    -active-dark: #202e1c;
 
     -fx-font-family: "noto-sans";
     -fx-font-size: 14px;

@@ -21,6 +21,8 @@ import seng202.team1.gui.components.UILocationInput;
 import seng202.team1.gui.components.UINavButton;
 import seng202.team1.gui.pages.Pages;
 
+import java.util.List;
+
 import static seng202.team1.common.StringHelpers.featureToAddress;
 import static seng202.team1.gui.GraphicsCommon.precentWindowX;
 
@@ -64,10 +66,12 @@ public class MainLayout extends LayoutElement {
         logoTitle.getStyleClass().add("logo-h1");
         logo.getChildren().addAll(logoIcon, logoTitle);
 
+        List<Pages> ignore = List.of(Pages.SETTINGS, Pages.LOGIN, Pages.SIGN_UP, Pages.RESET);
+
         // Navigation Menu
         VBox navbar = new VBox(8);
         for (Pages option : Pages.values())
-            if(option != Pages.SETTINGS)
+            if(!ignore.contains(option))
                 navbar.getChildren().add(new UINavButton(windowManager, option));
 
         // Settings at the bottom
