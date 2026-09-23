@@ -11,6 +11,7 @@ import seng202.team1.gui.components.UIButton;
 import seng202.team1.gui.components.UIImage;
 import seng202.team1.gui.components.UITextInput;
 import seng202.team1.gui.components.UITitle;
+import seng202.team1.gui.phases.Phases;
 
 public class SignUpPage extends Page{
 
@@ -27,16 +28,6 @@ public class SignUpPage extends Page{
     @Override
     protected Parent renderSelf() {
 
-        // Logo
-        HBox logo = new HBox(10);
-        logo.getStyleClass().addAll("logo", "auth-logo");
-        StackPane logoIcon = new UIImage("/media/images/logo.svg", 44, 44);
-
-        // Title
-        Label logoTitle = new Label("TrashApp");
-        logoTitle.getStyleClass().add("logo-h1");
-        logo.getChildren().addAll(logoIcon, logoTitle);
-
         UITitle title = new UITitle("Sign Up");
         name = new UITextInput("Enter name...");
         email = new UITextInput("Enter email...");
@@ -48,12 +39,20 @@ public class SignUpPage extends Page{
         Label back = new Label("Go Back");
         back.getStyleClass().add("forgot");
 
+        signUp.setOnAction(e -> handleSignUp());
+        back.setOnMouseClicked(e -> handleBack());
+
         VBox form = new VBox(10, title, name, email, password, passwordConfirm, signUp, back);
         form.getStyleClass().add("auth-form");
+        return form;
+    }
 
-        VBox root = new VBox(logo, form);
-        root.setAlignment(Pos.TOP_CENTER);
-        return root;
 
+     private void handleSignUp(){
+        router.switchPage(Pages.SIGN_UP);
+    }
+
+     private void handleBack(){
+        router.switchPage(Pages.LOGIN);
     }
 }

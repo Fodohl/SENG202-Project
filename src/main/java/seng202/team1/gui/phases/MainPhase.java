@@ -18,6 +18,7 @@ public class MainPhase extends Phase{
         return List.of(
             Pages.HOME,
             Pages.MAP,
+            Pages.COMMUNITY,
             Pages.TIMELINE,
             Pages.DATA,
             Pages.SETTINGS

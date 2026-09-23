@@ -27,16 +27,6 @@ public class ResetPage extends Page{
     @Override
     protected Parent renderSelf() {
 
-        // Logo
-        HBox logo = new HBox(10);
-        logo.getStyleClass().addAll("logo", "auth-logo");
-        StackPane logoIcon = new UIImage("/media/images/logo.svg", 44, 44);
-
-        // Title
-        Label logoTitle = new Label("TrashApp");
-        logoTitle.getStyleClass().add("logo-h1");
-        logo.getChildren().addAll(logoIcon, logoTitle);
-
         UITitle title = new UITitle("Reset Password");
         email = new UITextInput("Enter email...");
         code = new UITextInput("Enter code...");
@@ -48,12 +38,21 @@ public class ResetPage extends Page{
         Label back = new Label("Go Back");
         back.getStyleClass().add("forgot");
 
+
+        signUp.setOnAction(e -> handleReset());
+        back.setOnMouseClicked(e -> handleBack());
+
+
         VBox form = new VBox(10, title, email, code, password, passwordConfirm, signUp, back);
         form.getStyleClass().add("auth-form");
+        return form;
+    }
 
-        VBox root = new VBox(logo, form);
-        root.setAlignment(Pos.TOP_CENTER);
-        return root;
+     private void handleReset(){
+        router.switchPage(Pages.LOGIN);
+    }
 
+     private void handleBack(){
+        router.switchPage(Pages.LOGIN);
     }
 }

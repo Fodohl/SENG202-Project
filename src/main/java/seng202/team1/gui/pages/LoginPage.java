@@ -8,6 +8,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.components.*;
+import seng202.team1.gui.phases.Phases;
 
 public class LoginPage extends Page{
 
@@ -22,15 +23,6 @@ public class LoginPage extends Page{
     @Override
     protected Parent renderSelf() {
 
-        // Logo
-        HBox logo = new HBox(10);
-        logo.getStyleClass().addAll("logo", "auth-logo");
-        StackPane logoIcon = new UIImage("/media/images/logo.svg", 44, 44);
-
-        // Title
-        Label logoTitle = new Label("TrashApp");
-        logoTitle.getStyleClass().add("logo-h1");
-        logo.getChildren().addAll(logoIcon, logoTitle);
 
         UITitle title = new UITitle("Login");
         email = new UITextInput("Enter email...");
@@ -43,12 +35,24 @@ public class LoginPage extends Page{
         forgot.getStyleClass().add("forgot");
         login.getStyleClass().add("action");
 
+        login.setOnAction(e -> handleLogin());
+        signUp.setOnAction(e -> handleSignUp());
+        forgot.setOnMouseClicked(e -> handleForgot());
+
         VBox form = new VBox(10, title, email, password, login, signUp, forgot);
         form.getStyleClass().add("auth-form");
+        return form;
+    }
 
-        VBox root = new VBox(logo, form);
-        root.setAlignment(Pos.TOP_CENTER);
-        return root;
+    private void handleLogin(){
+        router.switchPhase(Phases.MAIN);
+    }
 
+     private void handleSignUp(){
+        router.switchPage(Pages.SIGN_UP);
+    }
+
+     private void handleForgot(){
+        router.switchPage(Pages.RESET);
     }
 }

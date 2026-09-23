@@ -39,7 +39,6 @@
     -fx-max-height: infinity;
     -fx-text-fill: -text-primary;
     -fx-background-color: -bg-primary-dark;
-
 }
 
 .combo-box, .text-field, .text-area {
@@ -773,6 +772,8 @@
 
 .auth-form > *{
     -fx-background-color: transparent;
+    -fx-max-width: infinity;
+    -fx-max-height: infinity;
 }
 
 .auth-form > .button{
@@ -836,4 +837,28 @@
     -fx-border-color: -active;
     -fx-border-radius: 15px;
     -fx-border-width: 2px;
+}
+
+.starting{
+    -fx-padding: 200px 0px 200px 0px;
+    -fx-alignment: top-center;
+}
+
+.starting .logo{
+    -fx-alignment: center;
+    -fx-text-alignment: center;
+}
+
+.starting .label{
+    -fx-text-fill: -text-primary;
+    -fx-text-alignment: center;
+
+}
+
+.starting .load .svg-icon * {
+    -fx-stroke: -text-primary;
+}
+
+.starting .logo-h1 {
+    -fx-font-size: 54px;
 }

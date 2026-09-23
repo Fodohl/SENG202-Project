@@ -38,7 +38,7 @@ public class StartingPage extends Page {
 
         // Preflight startup done
         if(!manager.hasTasksUncompleted()){
-            router.switchPhase(Phases.MAIN);
+            router.switchPhase(Phases.AUTH);
             return;
         }
 

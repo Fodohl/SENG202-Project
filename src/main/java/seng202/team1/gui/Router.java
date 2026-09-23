@@ -132,6 +132,7 @@ public class Router extends StateReferrer {
 
         loadPage(Pages.HOME, new HomePage(this));
         loadPage(Pages.MAP, new MapPage(this));
+        loadPage(Pages.COMMUNITY, new CommunityPage(this));
         loadPage(Pages.TIMELINE, new TimelinePage(this));
         loadPage(Pages.DATA, new DataPage(this));
         loadPage(Pages.SETTINGS, new SettingsPage(this));

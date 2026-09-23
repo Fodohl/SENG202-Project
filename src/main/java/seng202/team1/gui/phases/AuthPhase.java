@@ -1,6 +1,7 @@
 package seng202.team1.gui.phases;
 
 import seng202.team1.gui.Router;
+import seng202.team1.gui.layout.AuthLayout;
 import seng202.team1.gui.layout.Layout;
 import seng202.team1.gui.pages.Pages;
 
@@ -10,7 +11,7 @@ public class AuthPhase extends Phase{
 
 
     public AuthPhase(Router router){
-        super(router, Phases.AUTH, null);
+        super(router, Phases.AUTH, new AuthLayout(router));
     }
 
     @Override
