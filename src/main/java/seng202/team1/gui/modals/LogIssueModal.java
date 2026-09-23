@@ -4,13 +4,19 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
 import seng202.team1.common.StringHelpers;
+import seng202.team1.data.User;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.BinCategory;
+import seng202.team1.data.status.BinTrollService;
 import seng202.team1.data.status.ReportType;
 import seng202.team1.data.bin.BinFullness;
+import seng202.team1.data.status.StatusReport;
+import seng202.team1.data.status.StatusReportStore;
 import seng202.team1.data.trashlog.TrashType;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.components.*;
+
+import java.time.LocalDateTime;
 
 public class LogIssueModal extends Modal{
 
@@ -133,6 +139,19 @@ public class LogIssueModal extends Modal{
 
 
         windowManager.getGlobalState().getStatusReportStore().logReport(bin, fullness, type, report);
+        closeModal();
+
+        StatusReportStore store =
+                windowManager.getGlobalState().getStatusReportStore();
+
+        LocalDateTime lastReport =
+                store.getLastReportTime(bin.getID());
+
+        int trollsSlain =
+                BinTrollService.getTrolls(lastReport, LocalDateTime.now());
+
+        store.logReport(bin, fullness, type, report);
+
         closeModal();
     }
 }

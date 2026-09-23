@@ -58,6 +58,21 @@ public class StatusReportStore {
     }
 
     /**
+     * Gets the last time a bin was reported
+     * @Author Connor
+     */
+
+    public LocalDateTime getLastReportTime(int binID) {
+        loadStatusReport();
+
+        return reports.stream()
+                .filter(report -> report.getBin().getID() == binID)
+                .map(StatusReport::getSubmittedAt)
+                .max(LocalDateTime::compareTo)
+                .orElse(null);
+    }
+
+    /**
      * Adds bin report to JSON file
      * @param newReport {@link StatusReport} to be added
      * @throws IOException if the JSON file cannot be written
