@@ -12,8 +12,9 @@ public enum Pages {
     SIGN_UP,
     RESET,
 
-    DASHBOARD,
+    HOME,
     MAP,
+    COMMUNITY,
     TIMELINE,
     DATA,
     SETTINGS,

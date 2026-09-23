@@ -10,7 +10,7 @@ import seng202.team1.data.bin.BinFullness;
 import seng202.team1.data.sqlite.DAO.BinDAO;
 import seng202.team1.data.trashlog.TrashLog;
 import seng202.team1.data.trashlog.TrashType;
-import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.Router;
 import seng202.team1.gui.components.UITable;
 import seng202.team1.gui.modals.LogTrashModal;
 import seng202.team1.gui.pages.DataPage;

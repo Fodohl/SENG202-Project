@@ -3,6 +3,8 @@ package seng202.team1.state;
 import javafx.stage.Stage;
 import seng202.team1.api.photon.Feature;
 import seng202.team1.api.photon.PhotonClient;
+import seng202.team1.api.tasever.TAServerClient;
+import seng202.team1.api.tasever.TrashDBLeaderboardResponse;
 import seng202.team1.data.status.ReportType;
 import seng202.team1.data.status.StatusReport;
 import seng202.team1.data.status.StatusReportStore;
@@ -47,6 +49,10 @@ public class GlobalState {
 
     private PhotonClient photonClient;
 
+    /// The handler for app API requests
+    private TAServerClient taServer;
+
+
     private Feature requestedLocation;
 
     boolean testState = false;
@@ -58,6 +64,9 @@ public class GlobalState {
 
     public TaskManager backgroundTasks = new TaskManager(this);
 
+    /// The current leaderboard state
+    private TrashDBLeaderboardResponse leaderboard;
+
     /**
      * Construct a new Global state instance
      *
@@ -68,9 +77,9 @@ public class GlobalState {
         // Setup data
         this.testState = testState;
         databaseManager = new DatabaseManager(testState ?
-                                                "jdbc:sqlite:./src/test/resources/test_database.db" :
-                                                "jdbc:sqlite:database.db"
-                                            );
+                "jdbc:sqlite:./src/test/resources/test_database.db" :
+                "jdbc:sqlite:database.db"
+        );
         binDataset = new BinDataset();
 
         binDAO = new BinDAO(databaseManager);
@@ -81,11 +90,28 @@ public class GlobalState {
 
         // Set up API
         photonClient = new PhotonClient();
+        taServer = new TAServerClient();
 
         // Start the app
         preflightManager= new PreflightManager(this);
         router = new Router(this, stage);
+        fetchData();
     }
+
+
+    /**
+     * Fetch the data the app needs in the background
+     */
+    private void fetchData() {
+
+        taServer.getCommunity(leaderboard -> {
+
+            this.leaderboard = leaderboard;
+            router.refreshPage(Pages.COMMUNITY);
+
+        });
+    }
+
 
     /**
      * Get the current window manager
@@ -100,7 +126,9 @@ public class GlobalState {
         return trashLogDAO;
     }
 
-    public BinDAO getBinDAO() { return binDAO; }
+    public BinDAO getBinDAO() {
+        return binDAO;
+    }
 
     public PhotonClient getPhotonClient() {
         return photonClient;
@@ -111,7 +139,7 @@ public class GlobalState {
         router.switchPage(Pages.MAP);
     }
 
-    public Feature consumeMapSearchRequest(){
+    public Feature consumeMapSearchRequest() {
 
         // Clear the request
         Feature location = requestedLocation;
@@ -130,17 +158,17 @@ public class GlobalState {
     }
 
 
-    public void refreshBinFullness(){
+    public void refreshBinFullness() {
 
         // No need to recalc fullness every test
-        if(testState)
+        if (testState)
             return;
 
         // Only want recent reports of fullness
         List<StatusReport> fullnessReports = statusReportStore.getReports().stream()
-                                                    .filter(r -> r.getIssue() == ReportType._FULLNESS_UPDATE)
-                                                    .filter(r -> r.getSubmittedAt().isAfter(LocalDate.now().atStartOfDay()))
-                                                    .toList();
+                .filter(r -> r.getIssue() == ReportType._FULLNESS_UPDATE)
+                .filter(r -> r.getSubmittedAt().isAfter(LocalDate.now().atStartOfDay()))
+                .toList();
 
         // Get each bin's new fullness as an average of this week's reports
         getBinDAO().getAll().stream().forEach(b -> {
@@ -149,14 +177,14 @@ public class GlobalState {
         });
     }
 
-    public void refreshBinFullness(Bin bin){
+    public void refreshBinFullness(Bin bin) {
 
-         // Only want recent reports of fullness
+        // Only want recent reports of fullness
         List<StatusReport> reportsFoBin = statusReportStore.getReports().stream()
-                                                    .filter(r -> r.getIssue() == ReportType._FULLNESS_UPDATE)
-                                                    .filter(r -> r.getSubmittedAt().isAfter(LocalDate.now().atStartOfDay()))
-                                                    .filter(r -> r.getBinID() == bin.getID())
-                                                    .toList();
+                .filter(r -> r.getIssue() == ReportType._FULLNESS_UPDATE)
+                .filter(r -> r.getSubmittedAt().isAfter(LocalDate.now().atStartOfDay()))
+                .filter(r -> r.getBinID() == bin.getID())
+                .toList();
 
         refreshBinFullness(bin, binDAO, reportsFoBin);
     }
@@ -185,4 +213,14 @@ public class GlobalState {
     public boolean isTestState() {
         return testState;
     }
+
+    /**
+     * Get the current leaderboard
+     *
+     * @return The current leaderboard
+     */
+    public TrashDBLeaderboardResponse getCommunity() {
+        return leaderboard;
+    }
+
 }

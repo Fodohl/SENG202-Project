@@ -2,126 +2,138 @@
   {
     "elementType": "labels.icon",
     "stylers": [
-      {
-        "visibility": "off"
-      }
+      { "visibility": "off" }
     ]
   },
   {
-    "featureType": "transit",
     "elementType": "labels.text.fill",
     "stylers": [
-      {
-        "color": "#ffffff"
-      }
+      { "color": "#6c6d68" }
     ]
   },
   {
-    "featureType": "transit",
     "elementType": "labels.text.stroke",
     "stylers": [
-      {
-        "color": "#10141a"
-      }
+      { "color": "#ffffff" }
     ]
   },
   {
     "featureType": "all",
     "elementType": "geometry",
     "stylers": [
-      {
-        "color": "#1e242b"
-      }
+      { "color": "#f9f8f6" }
+    ]
+  },
+  {
+    "featureType": "administrative",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      { "color": "#e4e0da" }
     ]
   },
   {
     "featureType": "building",
     "elementType": "geometry.fill",
     "stylers": [
-      {
-        "color": "#28323e"
-      }
+      { "color": "#ffffff" }
     ]
   },
   {
-    "featureType": "building.medical",
-    "elementType": "geometry.fill",
+    "featureType": "building",
+    "elementType": "geometry.stroke",
     "stylers": [
-      {
-        "color": "#124360"
-      }
+      { "color": "#ebe9e5" }
     ]
   },
   {
-    "featureType": "water",
+    "featureType": "landscape",
     "elementType": "geometry",
     "stylers": [
-      {
-        "color": "#2d6ca3"
-      }
+      { "color": "#efedea" }
     ]
   },
   {
-    "featureType": "road",
+    "featureType": "poi",
     "elementType": "geometry",
     "stylers": [
-      {
-        "color": "#5c6978"
-      }
-    ]
-  },
-  {
-    "featureType": "poi.sports_complex",
-    "elementType": "geometry",
-    "stylers": [
-      {
-        "color": "#1f6b45"
-      }
+      { "color": "#f2f0ec" }
     ]
   },
   {
     "featureType": "poi.park",
-    "elementType": "geometry",
+    "elementType": "geometry.fill",
     "stylers": [
-      {
-        "color": "#1f6b45"
-      }
+      { "color": "#cce3c1" }
+    ]
+  },
+  {
+    "featureType": "poi.sports_complex",
+    "elementType": "geometry.fill",
+    "stylers": [
+      { "color": "#cce3c1" }
     ]
   },
   {
     "featureType": "poi.business",
-    "elementType": "geometry",
+    "elementType": "geometry.fill",
     "stylers": [
-      {
-        "color": "#1f6b45"
-      }
+      { "color": "#cce3c1" }
     ]
   },
   {
     "featureType": "poi.attraction",
-    "elementType": "geometry",
+    "elementType": "geometry.fill",
     "stylers": [
-      {
-        "color": "#1f6b45"
-      }
+      { "color": "#cce3c1" }
     ]
   },
   {
-    "featureType": "poi.medical",
+    "featureType": "road",
+    "elementType": "geometry.fill",
+    "stylers": [
+      { "color": "#ffffff" }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      { "color": "#e4e0da" }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "geometry.fill",
+    "stylers": [
+      { "color": "#f5f4f1" }
+    ]
+  },
+  {
+    "featureType": "road.highway",
+    "elementType": "geometry.stroke",
+    "stylers": [
+      { "color": "#d2cbc2" }
+    ]
+  },
+  {
+    "featureType": "transit",
     "elementType": "geometry",
     "stylers": [
-      {
-        "color": "#364253"
-      }
+      { "color": "#ebe9e5" }
     ]
   },
   {
     "featureType": "transit",
     "elementType": "labels",
     "stylers": [
-      {
-        "visibility": "55"
-      }
+      { "visibility": "off" }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "geometry.fill",
+    "stylers": [
+      { "color": "#aed2f6" }
     ]
   }
 ]

@@ -11,6 +11,8 @@ import seng202.team1.gui.components.UILocationInput;
 import seng202.team1.gui.components.UINavButton;
 import seng202.team1.gui.pages.Pages;
 
+import java.util.List;
+
 import static seng202.team1.gui.GraphicsCommon.precentWindowX;
 
 /**
@@ -133,8 +135,9 @@ public class MainLayout extends Layout {
      */
     public void swap(Parent rendered) {
 
-        // Change the content to the new page
+        // Show the top of the new page
         content.setContent(rendered);
+        content.setVvalue(0);
     }
 
     /**

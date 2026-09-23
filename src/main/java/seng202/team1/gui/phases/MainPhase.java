@@ -16,7 +16,7 @@ public class MainPhase extends Phase{
     @Override
     public List<Pages> allowedPages() {
         return List.of(
-            Pages.DASHBOARD,
+            Pages.HOME,
             Pages.MAP,
             Pages.TIMELINE,
             Pages.DATA,
@@ -26,7 +26,7 @@ public class MainPhase extends Phase{
 
     @Override
     public Pages entryPage() {
-        return Pages.DASHBOARD;
+        return Pages.HOME;
     }
 
 }

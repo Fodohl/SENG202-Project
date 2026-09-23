@@ -13,6 +13,7 @@ import seng202.team1.gui.GraphicsCommon;
 public class UISlider extends VBox implements UIInputComponent {
 
     private boolean isErroring = false;
+    private boolean isSecondary = false;
     private double percentage;
 
     private Slider slider = new Slider();
@@ -21,8 +22,14 @@ public class UISlider extends VBox implements UIInputComponent {
     /// The label to show invalid input messages in
     private Label errorText = new Label();
 
-    public UISlider() {
+    public UISlider(){
+        this(false);
+    }
+
+
+    public UISlider(boolean isSecondary) {
         super(5);
+        this.isSecondary = isSecondary;
 
         // Style the fullness of the slider
         slider.valueProperty().addListener((obs, oldVal, newVal) -> {
@@ -36,8 +43,13 @@ public class UISlider extends VBox implements UIInputComponent {
 
         });
 
+        // Ensure styles apply when slider gets painted
+        slider.skinProperty().addListener((obs, oldSkin, newSkin) -> {
+            updateTrackStyle();
+        });
+
         // Combine
-        HBox sliderComponent = new HBox(10, slider, percetageDsiplay);
+        HBox sliderComponent = new HBox(20, slider, percetageDsiplay);
         getChildren().addAll(sliderComponent, errorText);
 
         slider.setMaxWidth(Double.MAX_VALUE);
@@ -45,9 +57,11 @@ public class UISlider extends VBox implements UIInputComponent {
     }
 
     private void updateTrackStyle() {
-        percetageDsiplay.setText(String.format("%.2f%%", percentage));
+        percetageDsiplay.setText(String.format("%.0f%%", percentage));
 
-        String colour = isErroring ? "-text-error" : "-active";
+        String green = isSecondary ? "-active-dark" : "-active";
+        String colour = isErroring ? "-text-error" : green;
+        String bg = isSecondary ? "-text-primary" : "-text-secondary-half";
 
         // Ensure track has rendered
         Node track = lookup(".track");
@@ -56,7 +70,7 @@ public class UISlider extends VBox implements UIInputComponent {
 
         // Custom gradient that is active 0-x and default x-100
         track.setStyle(
-                String.format("-fx-background-color: linear-gradient(to right, %s 0%%, %s %.1f%%, -text-secondary-half %.1f%%, -text-secondary-half 100%%);", colour, colour, percentage, percentage)
+                String.format("-fx-background-color: linear-gradient(to right, %s 0%%, %s %.1f%%, %s %.1f%%, %s 100%%);", colour, colour, percentage, bg,  percentage, bg)
         );
     }
 
@@ -80,6 +94,8 @@ public class UISlider extends VBox implements UIInputComponent {
 
         if (value instanceof Double)
             slider.setValue((Double) value);
+
+        updateTrackStyle();
     }
 
     /**

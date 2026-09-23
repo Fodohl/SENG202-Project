@@ -126,11 +126,11 @@ public class Router extends StateReferrer {
     private void loadPages() {
         loadPage(Pages.STARTING, new StartingPage(this));
 
-//        loadPage(Pages.LOGIN, new DashboardPage(this));
-//        loadPage(Pages.SIGN_UP, new DashboardPage(this));
-//        loadPage(Pages.RESET, new DashboardPage(this));
+        loadPage(Pages.LOGIN, new LoginPage(this));
+        loadPage(Pages.SIGN_UP, new SignUpPage(this));
+        loadPage(Pages.RESET, new ResetPage(this));
 
-        loadPage(Pages.DASHBOARD, new DashboardPage(this));
+        loadPage(Pages.HOME, new HomePage(this));
         loadPage(Pages.MAP, new MapPage(this));
         loadPage(Pages.TIMELINE, new TimelinePage(this));
         loadPage(Pages.DATA, new DataPage(this));

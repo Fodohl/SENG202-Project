@@ -18,7 +18,7 @@ import seng202.team1.data.sqlite.DatabaseManager;
 import seng202.team1.data.table.StringTableBuilder;
 import seng202.team1.data.sqlite.exceptions.InstanceAlreadyExistsException;
 import seng202.team1.data.sqlite.DAO.TrashLogDAO;
-import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.Router;
 import seng202.team1.exceptions.InstanceAlreadyExistsException;
 import seng202.team1.gui.Router;
 import seng202.team1.state.GlobalState;
@@ -36,7 +36,7 @@ public class TrashAppTest {
 
     protected Router router;
     protected BinLoader binLoader;
-    protected WindowManager windowManager;
+    protected Router router;
 
     protected DatabaseManager databaseManager;
 
@@ -86,7 +86,7 @@ public class TrashAppTest {
     void tearDown() {
         GlobalState.REMOVE_INSTANCE();
         binDataset = state.getDataset();
-        windowManager = state.getRouter()Manager();
+        router = state.getRouter()Manager();
     }
 
     protected ArrayList<Bin> testData(){
