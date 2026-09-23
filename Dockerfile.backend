@@ -1,11 +1,10 @@
 FROM eclipse-temurin:25-jdk AS build
 WORKDIR /app
 COPY . .
-RUN ./gradlew server --no-daemon || true #TODO: use jar rather than gradle
-RUN ./gradlew compileBackendJava --no-daemon
+RUN ./gradlew backendJar --no-daemon
 
 FROM eclipse-temurin:25-jre
 WORKDIR /app
-COPY --from=build /app/build/libs/*.jar app.jar
+COPY --from=build /app/build/libs/taserver.jar taserver.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "taserver.jar"]

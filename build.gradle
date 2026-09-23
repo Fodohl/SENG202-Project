@@ -7,6 +7,7 @@ plugins {
     id "org.openjfx.javafxplugin" version "0.1.0"
     id 'jacoco'
     id "org.openapi.generator" version "7.25.0"
+    id 'org.springframework.boot' version '4.2.0-M1'
 }
 
 base {
@@ -292,4 +293,17 @@ tasks.register('server', JavaExec) {
     group = 'application'
     classpath = sourceSets.backend.runtimeClasspath
     mainClass = 'seng202.team1.TAServer'
+}
+
+// dont let spring package itself into client
+tasks.named('bootJar') {
+    enabled = false
+}
+
+tasks.register('backendJar', org.springframework.boot.gradle.tasks.bundling.BootJar) {
+    group = 'build'
+    mainClass = 'seng202.team1.TAServer'
+    classpath = sourceSets.backend.output + sourceSets.common.output + configurations.backendRuntimeClasspath
+    archiveFileName = 'taserver.jar'
+    targetJavaVersion = "VERSION_${javaVersion}"
 }
