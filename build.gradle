@@ -300,6 +300,11 @@ tasks.named('bootJar') {
     enabled = false
 }
 
+// make sure config replacest he default one
+tasks.withType(ProcessResources).configureEach {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
 tasks.register('backendJar', org.springframework.boot.gradle.tasks.bundling.BootJar) {
     group = 'build'
     mainClass = 'seng202.team1.TAServer'

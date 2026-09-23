@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class TAServer {
 
     static void main(String[] args) {
-          SpringApplication app = new SpringApplication(TAServer.class);
+        SpringApplication app = new SpringApplication(TAServer.class);
         app.setWebApplicationType(WebApplicationType.SERVLET);
         app.run(args);
     }
