@@ -8,6 +8,8 @@ stages:
 
 junit:
   stage: test
+  before_script:
+    - apt-get update && apt-get install -y fontconfig libfreetype6 libgtk-3-0 libgl1 libx11-6 libxext6
   script:
     - ./gradlew test
 
@@ -34,10 +36,9 @@ build_backend_image:
   stage: build
   needs: [generate_backend_artifact]
   script:
-    - docker build --no-cache -t taserver:$CI_COMMIT_SHORT_SHA -f Dockerfile.backend .
-    - docker save taserver:$CI_COMMIT_SHORT_SHA | gzip > taserver-image.tar.gz
+    - tar czf backend-src.tar.gz Dockerfile.backend build/libs/taserver.jar
   artifacts:
-    paths: [taserver-image.tar.gz]
+    paths: [backend-src.tar.gz]
     expire_in: 1 hour
   only:
     - backend
@@ -52,6 +53,8 @@ deploy_backend:
     - chmod +x /usr/local/bin/cloudflared
     - eval $(ssh-agent -s)
     - echo "$DEPLOY_SSH_KEY" | ssh-add -
+    - echo "ID Length - ${#CF_ACCESS_CLIENT_ID}"
+    - echo "Secret Length - ${#CF_ACCESS_CLIENT_SECRET}"
     - mkdir -p ~/.ssh
     - |
       cat > ~/.ssh/config <<EOF
@@ -62,15 +65,17 @@ deploy_backend:
         StrictHostKeyChecking no
       EOF
   script:
-    - scp taserver-image.tar.gz deploy:/opt/trash-app/incoming.tar.gz
+    - scp backend-src.tar.gz deploy:/opt/trash-app/incoming.tar.gz
     - |
       ssh deploy bash -s <<EOF
         cd /opt/trash-app
-        gunzip -f incoming.tar.gz
-        docker load < incoming.tar
-        docker tag taserver:$CI_COMMIT_SHORT_SHA taserver:latest
+        rm -rf build_ctx && mkdir build_ctx
+        tar xzf incoming.tar.gz -C build_ctx
+        cd build_ctx
+        docker build --no-cache -t taserver:latest -f Dockerfile.backend .
+        cd ..
         docker compose up -d taserver
-        rm -f incoming.tar
+        rm -rf build_ctx incoming.tar.gz
       EOF
   only:
     - backend

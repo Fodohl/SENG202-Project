@@ -15,7 +15,7 @@ import seng202.team1.tasks.preflight.PreflightManager;
  */
 public class StartingPage extends Page {
 
-    private Label loadingText;
+    private Label loadingText = new Label("Waiting for 'name o stage' to complete..");;
 
     private PreflightManager manager;
 
@@ -68,8 +68,6 @@ public class StartingPage extends Page {
         UISpinner spinner = new UISpinner(50);
         spinner.getStyleClass().add("load");
         logo.getChildren().addAll(logoIcon, logoTitle, spinner);
-
-        loadingText = new Label("Waiting for 'name o stage' to complete..");
 
         VBox root = new VBox(100, logo, loadingText);
         root.getStyleClass().add("starting");

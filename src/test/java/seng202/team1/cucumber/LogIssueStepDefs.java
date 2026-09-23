@@ -6,7 +6,6 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
-import seng202.team1.common.StringHelpers;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.BinCategory;
 import seng202.team1.data.bin.BinFullness;
@@ -18,6 +17,7 @@ import seng202.team1.data.status.StatusReport;
 import seng202.team1.data.status.StatusReportStore;
 import seng202.team1.gui.modals.LogIssueModal;
 import seng202.team1.gui.modals.LogTrashModal;
+import seng202.team1.helpers.StringHelpers;
 import seng202.team1.state.GlobalState;
 import seng202.team1.unittests.TrashAppTest;
 
@@ -55,7 +55,7 @@ public class LogIssueStepDefs {
 
         globalState.getBinDAO().add(bin);
 
-        modal = new LogIssueModal(globalState.getRouter()Manager());
+        modal = new LogIssueModal(globalState.getRouter());
         modal.getRendered();
         modal.recvData(bin);
     }

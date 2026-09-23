@@ -6,7 +6,6 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
-import seng202.team1.common.StringHelpers;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.BinCategory;
 import seng202.team1.data.bin.BinFullness;
@@ -32,6 +31,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seng202.team1.helpers.StringHelpers.enumNameToTitle;
 
 public class LogTrashStepDefs {
 
@@ -60,7 +60,7 @@ public class LogTrashStepDefs {
 
         globalState.getBinDAO().add(bin);
 
-        modal = new LogTrashModal(globalState.getRouter()Manager());
+        modal = new LogTrashModal(globalState.getRouter());
         modal.getRendered();
         modal.recvData(bin);
     }
@@ -72,9 +72,9 @@ public class LogTrashStepDefs {
 
     @When("they correctly log their usage")
     public void theyCorrectlyLogTheirUsage() {
-        modal.getTypeInput().setInput(StringHelpers.enumNameToTitle(TrashType.CARDBOARD_BOX.name()));
+        modal.getTypeInput().setInput(enumNameToTitle(TrashType.CARDBOARD_BOX.name()));
         modal.getWeightInput().setInput("500");
-        modal.getFullnessInput().setInput(StringHelpers.enumNameToTitle(BinFullness.SEMI_FULL.name()));
+        modal.getFullnessInput().setInput(enumNameToTitle(BinFullness.SEMI_FULL.name()));
         modal.getSubmitButton().getOnMouseClicked().handle(null);
     }
 

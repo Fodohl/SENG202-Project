@@ -48,7 +48,7 @@ public class TimelineStepDefs {
 
     public void openPage() {
 
-        TimelinePage dataPage = new TimelinePage(globalState.getRouter()Manager());
+        TimelinePage dataPage = new TimelinePage(globalState.getRouter());
         dataPage.rerender();
 
         timlineEntries = dataPage.getTimeline().getEntries();

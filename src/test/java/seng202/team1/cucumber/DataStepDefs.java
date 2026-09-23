@@ -48,7 +48,7 @@ public class DataStepDefs {
 
     public void openPage() {
 
-        DataPage dataPage = new DataPage(globalState.getRouter()Manager());
+        DataPage dataPage = new DataPage(globalState.getRouter());
         dataPage.rerender();
 
         dataTable = dataPage.getTable();

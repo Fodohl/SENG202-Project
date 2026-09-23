@@ -32,6 +32,13 @@ public class TaskManager extends StateReferrer {
 
         log.info("Starting task {} : {}", task.getID(), task.getTaskName());
 
+        // During testing, the UI isnt preventing from waiting for tasks to complete in the backgroud, thus race conditions can occur,
+        // so muist run in sequental
+        if(GlobalState.IS_HEADLESS_MODE){
+            task.run();
+            return;
+        }
+
         Thread thread = new Thread(() -> task.run());
         thread.start();
     }

@@ -206,6 +206,8 @@ tasks.named("check") {
 jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 
+    from sourceSets.common.output
+
     manifest {
         attributes 'Main-Class': mainClassName
     }
@@ -245,7 +247,11 @@ tasks.withType(JavaExec).configureEach {
         '--enable-native-access=javafx.graphics',
     ]
 }
-
+tasks.withType(Test).configureEach {
+    jvmArgs += [
+        '--enable-native-access=ALL-UNNAMED'
+    ]
+}
 
 def spec = layout.projectDirectory.file('src/common/resources/openapi.json')
 

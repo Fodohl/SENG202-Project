@@ -1,10 +1,5 @@
-FROM eclipse-temurin:25-jdk AS build
-WORKDIR /app
-COPY . .
-RUN ./gradlew backendJar --no-daemon
-
 FROM eclipse-temurin:25-jre
 WORKDIR /app
-COPY --from=build /app/build/libs/taserver.jar taserver.jar
+COPY build/libs/taserver.jar taserver.jar
 EXPOSE 4372
 ENTRYPOINT ["java", "-jar", "taserver.jar"]

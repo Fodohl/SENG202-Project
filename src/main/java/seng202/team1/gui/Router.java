@@ -246,7 +246,7 @@ public class Router extends StateReferrer {
 
         // Page not allowed
         if(!phases.get(currentPhase).allowsPage(pageType)){
-            log.warn("Page invalid for phase: {}", pageType.name());
+            log.warn("Page '{}' invalid for phase: {}", pageType.name(), currentPhase.name());
             return;
         }
 

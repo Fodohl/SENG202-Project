@@ -9,9 +9,6 @@ import seng202.team1.helpers.StringHelpers;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.BinCategory;
 import seng202.team1.data.bin.BinFullness;
-import seng202.team1.data.bin.BinLoader;
-import seng202.team1.data.repository.DatabaseManager;
-import seng202.team1.common.StringHelpers;
 import seng202.team1.data.bin.*;
 import seng202.team1.data.sqlite.DAO.BinDAO;
 import seng202.team1.data.sqlite.DatabaseManager;
@@ -19,7 +16,6 @@ import seng202.team1.data.table.StringTableBuilder;
 import seng202.team1.data.sqlite.exceptions.InstanceAlreadyExistsException;
 import seng202.team1.data.sqlite.DAO.TrashLogDAO;
 import seng202.team1.gui.Router;
-import seng202.team1.exceptions.InstanceAlreadyExistsException;
 import seng202.team1.gui.Router;
 import seng202.team1.state.GlobalState;
 
@@ -34,8 +30,6 @@ public class TrashAppTest {
 
     protected GlobalState state;
 
-    protected Router router;
-    protected BinLoader binLoader;
     protected Router router;
 
     protected DatabaseManager databaseManager;
@@ -77,16 +71,13 @@ public class TrashAppTest {
 
         // Extract state for easier access
         router = state.getRouter();
-        binLoader = state.getBinLoader();
-
-        binLoader.readGeoJSON();
+        binDataset = state.getDataset();
     }
 
     @AfterEach
     void tearDown() {
-        GlobalState.REMOVE_INSTANCE();
         binDataset = state.getDataset();
-        router = state.getRouter()Manager();
+        router = state.getRouter();
     }
 
     protected ArrayList<Bin> testData(){
