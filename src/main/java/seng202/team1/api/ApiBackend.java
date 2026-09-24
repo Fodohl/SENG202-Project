@@ -4,8 +4,6 @@ import javafx.application.Platform;
 import javafx.scene.Node;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import seng202.team1.gui.components.UIIconText;
-import seng202.team1.gui.components.UIInputComponent;
 import seng202.team1.gui.components.UIKeyValuePair;
 import seng202.team1.gui.components.UISpinner;
 
@@ -15,10 +13,11 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.time.Duration;
 import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -26,13 +25,13 @@ import java.util.stream.Collectors;
  *
  * @credit referenced exampled code https://openjdk.org/groups/net/httpclient/recipes.html
  */
-public class ApiClient {
+public class ApiBackend {
 
     /// ApiClient specific logger
-    protected static final Logger log = LogManager.getLogger(ApiClient.class);
+    protected static final Logger log = LogManager.getLogger(ApiBackend.class);
 
     /// The url that the API is served on
-    private final String hostUrl;
+    protected final String hostUrl;
 
     /// The HTTP worker to processes requests
     private final HttpClient backend;
@@ -40,9 +39,9 @@ public class ApiClient {
     /**
      * Constructs a new API client
      *
-     * @see #ApiClient(String, String)
+     * @see #ApiBackend(String, String)
      */
-    public ApiClient(String hostUrl) {
+    public ApiBackend(String hostUrl) {
         this(hostUrl, null);
     }
 
@@ -52,7 +51,7 @@ public class ApiClient {
      * @param hostUrl The url that the API is served on
      * @param auth Authentication bearer token if API is private
      */
-    public ApiClient(String hostUrl, String auth) {
+    public ApiBackend(String hostUrl, String auth) {
 
         this.hostUrl = hostUrl;
         this.backend = HttpClient.newHttpClient();
@@ -80,16 +79,49 @@ public class ApiClient {
      * @param loader The loader to stop loading
      * @param message The human-readable error message
      */
-    private void requestFailed(HttpRequest request, UIKeyValuePair error, UISpinner loader, String message){
+    private void requestFailed(UIKeyValuePair error, UISpinner loader, String message){
 
         // No longer loading
         trySetLoader(loader, false);
 
-        String errorMessage = String.format("API call to %s failed: %s", request.uri().toString(), message);
+        String errorMessage = String.format("API call failed: %s", message);
         log.warn(errorMessage);
 
         error.setVisible(true);
         error.setText(message);
+    }
+
+
+    protected <T> CompletableFuture<T> sendAsync(Callable<T> request, Consumer<T> handler, UIKeyValuePair error, UISpinner loader) {
+
+        // Begin request
+        trySetLoader(loader, true);
+        return CompletableFuture.supplyAsync(() -> {
+
+            // Allow calling the API and handling its errors here rather than in client
+            try {
+                return request.call();
+            } catch (Exception e) {
+                throw new RuntimeException(e.getMessage(), e);
+            }
+
+
+        }).thenApply(response -> {
+
+                // No longer loading
+                trySetLoader(loader, false);
+
+                // Run frontend handler on UI thread
+                Platform.runLater(() -> {
+                    handler.accept(response);
+                });
+
+                return response;
+
+        }).exceptionally(e -> {
+            requestFailed(error, loader, e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+            return null;
+        });
     }
 
     /**
@@ -102,31 +134,19 @@ public class ApiClient {
      */
     private void send(HttpRequest request, Consumer<String> handler, UIKeyValuePair error, UISpinner loader){
 
+        sendAsync(() -> {
+            try {
+                HttpResponse<String> response = backend.send(request, HttpResponse.BodyHandlers.ofString());
 
-        // Begin request
-        trySetLoader(loader, true);
-        backend.sendAsync(request, HttpResponse.BodyHandlers.ofString()).thenAccept(response -> {
+                // Failed
+                if(response.statusCode() >= 300)
+                    throw new RuntimeException(String.format("%s - %s", response.statusCode(), response.body()));
 
-            // No longer loading
-            trySetLoader(loader, false);
-
-            // Failed
-            if(response.statusCode() >= 300){
-                requestFailed(request, error, loader, String.format("%s - %s", response.statusCode(), response.body()));
-                return;
+                return response.body();
+            } catch (Exception ex) {
+                throw new RuntimeException(ex.getMessage(), ex);
             }
-
-            // Run frontend handler on UI thread
-            Platform.runLater(() -> {
-                handler.accept(response.body());
-            });
-
-
-        }).exceptionally(e -> {
-            requestFailed(request, error, loader, e.getMessage());
-            return null;
-        });
-
+        }, handler, error, loader);
     }
 
     /**

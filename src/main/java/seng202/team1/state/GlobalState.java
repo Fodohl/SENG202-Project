@@ -223,4 +223,7 @@ public class GlobalState {
         return leaderboard;
     }
 
+    public TAServerClient getTaServer() {
+        return taServer;
+    }
 }

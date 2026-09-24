@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "servers": [
     {
-      "url": "https://trashapp.maxtyson.net/api/v1/",
+      "url": "http://trashapp.maxtyson.net/api/v1/",
       "variables": {},
       "description": "Demo server for the trash app. Unrealiable"
     }

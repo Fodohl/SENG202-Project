@@ -49,7 +49,7 @@ public class SignUpPage extends Page{
 
 
      private void handleSignUp(){
-        router.switchPage(Pages.SIGN_UP);
+        router.switchPhase(Phases.MAIN);
     }
 
      private void handleBack(){

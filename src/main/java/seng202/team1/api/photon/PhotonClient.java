@@ -1,9 +1,6 @@
 package seng202.team1.api.photon;
 
-import javafx.scene.shape.ClosePath;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import seng202.team1.api.ApiClient;
+import seng202.team1.api.ApiBackend;
 import seng202.team1.gui.components.UIKeyValuePair;
 import seng202.team1.gui.components.UISpinner;
 
@@ -15,7 +12,7 @@ import static seng202.team1.TrashApp.GSON;
 /**
  * API Handler for calls to the Photon geocoding service
  */
-public class PhotonClient extends ApiClient {
+public class PhotonClient extends ApiBackend {
 
     /// Maximum number of locations to fetch
     private final Integer LIMIT_LOCATIONS = 3;

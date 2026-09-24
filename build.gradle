@@ -252,6 +252,7 @@ tasks.withType(JavaExec).configureEach {
         '--enable-native-access=javafx.web',
         '--enable-native-access=javafx.graphics',
     ]
+    systemProperties System.getProperties()
 }
 tasks.withType(Test).configureEach {
     jvmArgs += [

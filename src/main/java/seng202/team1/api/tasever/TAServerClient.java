@@ -1,23 +1,41 @@
 package seng202.team1.api.tasever;
 
-import seng202.team1.api.ApiClient;
-import seng202.team1.api.photon.PhotonLocationResponse;
-import seng202.team1.api.tasever.TrashDBLeaderboardResponse;
+import seng202.team1.api.ApiBackend;
+import seng202.team1.taserver.api.DefaultApi;
+import seng202.team1.taserver.client.ApiClient;
+import seng202.team1.taserver.model.Heartbeat200Response;
 
-import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import static seng202.team1.TrashApp.GSON;
 
-public class TAServerClient extends ApiClient {
+public class TAServerClient extends ApiBackend {
 
     private final Integer LIMIT_LEADERBOARD_ENTRIES = 3;
 
+    private ApiClient client = new ApiClient();
+
+    private DefaultApi defaultApiClient;
 
     public TAServerClient(){
-        super("https://trashapp.com/api/v1/");
+        super("null");
+
+        // If running with a dev server use that
+        String url = System.getProperty("trashapp.api.url");
+        if(url != null)
+            client.updateBaseUri(url);
+
+        log.info("Connecting to API base path: {}", client.getBaseUri());
+
+        // Init the handlers
+        defaultApiClient = new DefaultApi(client);
+
     }
 
+    public CompletableFuture<Heartbeat200Response> getHeartbeat(Consumer<Heartbeat200Response> callback){
+        return sendAsync(() -> defaultApiClient.heartbeat(), callback, null, null);
+    }
 
     public void getCommunity(Consumer<TrashDBLeaderboardResponse> callback){
 
