@@ -13,7 +13,7 @@ public class Default implements DefaultApi {
 
         Heartbeat200Response response = new Heartbeat200Response();
         response.health("UP");
-        response.env("dev");
+        response.env("prod");
         response.motd("\"You dont have a backend server\" - Morgan");
 
         return ResponseEntity.ok(response);
