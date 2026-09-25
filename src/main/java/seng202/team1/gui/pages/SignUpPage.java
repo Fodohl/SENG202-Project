@@ -6,14 +6,18 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import seng202.team1.data.User;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.components.UIButton;
 import seng202.team1.gui.components.UIImage;
 import seng202.team1.gui.components.UITextInput;
 import seng202.team1.gui.components.UITitle;
 import seng202.team1.gui.phases.Phases;
+import seng202.team1.state.AuthState;
 
-public class SignUpPage extends Page{
+import java.security.InvalidParameterException;
+
+public class SignUpPage extends Page {
 
     private UITextInput name;
     private UITextInput email;
@@ -34,6 +38,10 @@ public class SignUpPage extends Page{
         password = new UITextInput("Enter password...");
         passwordConfirm = new UITextInput("Enter password again...");
 
+        // Hide input
+        password.setPrivate();
+        passwordConfirm.setPrivate();
+
         UIButton signUp = new UIButton("Sign Up", true);
 
         Label back = new Label("Go Back");
@@ -48,11 +56,59 @@ public class SignUpPage extends Page{
     }
 
 
-     private void handleSignUp(){
-        router.switchPhase(Phases.MAIN);
+    private void handleSignUp() {
+
+        AuthState auth = router.getGlobalState().getAuth();
+
+        String enteredName = name.getInput();
+        String enteredEmail = email.getInput();
+        String enteredPassword = password.getInput();
+        String enteredPasswordConfirmed = passwordConfirm.getInput();
+
+        // Clear previous errors
+        name.setError("");
+        email.setError("");
+        password.setError("");
+        passwordConfirm.setError("");
+
+        // Validate
+        try {
+            auth.validateName(enteredName);
+        } catch (InvalidParameterException e) {
+            name.setError(e.getMessage());
+        }
+
+        try {
+            auth.validateEmail(enteredEmail);
+        } catch (InvalidParameterException e) {
+            email.setError(e.getMessage());
+        }
+
+        try {
+            auth.validatePassword(enteredPassword);
+        } catch (InvalidParameterException e) {
+            password.setError(e.getMessage());
+        }
+
+        try {
+            auth.validatePassword(enteredPasswordConfirmed);
+        } catch (InvalidParameterException e) {
+            passwordConfirm.setError(e.getMessage());
+        }
+
+        if (!enteredPassword.equals(enteredPasswordConfirmed))
+            passwordConfirm.setError("passwords do not match");
+
+        // Cant login with these credentials
+        if (name.isErroring() || email.isErroring() || password.isErroring() || passwordConfirm.isErroring())
+            return;
+
+        // Signup
+        User newUser = new User(0, enteredName, enteredEmail);
+        auth.signUp(newUser, enteredPassword);
     }
 
-     private void handleBack(){
+    private void handleBack() {
         router.switchPage(Pages.LOGIN);
     }
 }

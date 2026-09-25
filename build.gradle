@@ -155,6 +155,9 @@ dependencies {
 
     // https://mvnrepository.com/artifact/io.micrometer/micrometer-registry-prometheus
     implementation 'io.micrometer:micrometer-registry-prometheus:1.18.0-M1'
+
+    // https://mvnrepository.com/artifact/commons-validator/commons-validator
+    implementation 'commons-validator:commons-validator:1.11.0'
 }
 
 application {

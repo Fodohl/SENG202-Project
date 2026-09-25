@@ -67,6 +67,8 @@ public class GlobalState {
     /// The current leaderboard state
     private TrashDBLeaderboardResponse leaderboard;
 
+    private AuthState auth;
+
     /**
      * Construct a new Global state instance
      *
@@ -91,6 +93,7 @@ public class GlobalState {
         // Set up API
         photonClient = new PhotonClient();
         taServer = new TAServerClient();
+        auth = new AuthState(this);
 
         // Start the app
         preflightManager= new PreflightManager(this);
@@ -225,5 +228,9 @@ public class GlobalState {
 
     public TAServerClient getTaServer() {
         return taServer;
+    }
+
+    public AuthState getAuth() {
+        return auth;
     }
 }

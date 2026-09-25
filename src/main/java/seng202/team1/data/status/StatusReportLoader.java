@@ -115,7 +115,7 @@ public class StatusReportLoader {
         int reportUserID = ((Number) jsonObject.get("userID")).intValue();
         String reportIssue = (String) jsonObject.get("issue");
         String reportDescription = (String) jsonObject.get("description");
-        User user = new User(reportUserID, reportUser);
+        User user = new User(reportUserID, reportUser, "");
         LocalDateTime time = LocalDateTime.parse(jsonObject.get("createdAt").toString());
 
         BinFullness status;

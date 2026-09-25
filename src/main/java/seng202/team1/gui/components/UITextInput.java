@@ -1,18 +1,25 @@
 package seng202.team1.gui.components;
 
 import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.VBox;
 
 public class UITextInput extends VBox implements UIInputComponent{
 
-    private TextField textField = new TextField();
+    private TextInputControl textField = new TextField();
 
     /// The label to show invalid input messages in
     private Label errorText = new Label();
 
+    private boolean isPrivate = false;
+
+    private String prompt;
+
     public UITextInput(String placeholder){
         super(5);
+        prompt = placeholder;
 
         // Set values
         textField.setPromptText(placeholder);
@@ -92,5 +99,23 @@ public class UITextInput extends VBox implements UIInputComponent{
     @Override
     public void setError(String error) {
         setIsErrorInternal(error, this, errorText);
+    }
+
+
+    public void setPrivate(){
+
+        // Already privated
+        if(isPrivate)
+            return;
+
+        // Replace old input with password
+        getChildren().remove(textField);
+        textField = new PasswordField();
+        textField.setPromptText(prompt);
+
+        // Add to the ui
+        getChildren().add(0, textField);
+
+        isPrivate = true;
     }
 }

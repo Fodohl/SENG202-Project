@@ -9,15 +9,17 @@ public class User {
 
     private final int userID;
     private final String name;
+    private final String email;
 
     /**
      * Constructor for class User
      * @param userID
      * @param name
      */
-    public User(int userID, String name) {
+    public User(int userID, String name, String email) {
         this.userID = userID;
         this.name = name;
+        this.email = email;
     }
 
     /**
@@ -35,6 +37,11 @@ public class User {
     public String getName() {
         return name;
     }
+
+    public String getEmail() {
+        return email;
+    }
+
 
     /**
      * String toString

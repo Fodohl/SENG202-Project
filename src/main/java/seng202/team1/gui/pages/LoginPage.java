@@ -9,6 +9,9 @@ import javafx.scene.layout.VBox;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.components.*;
 import seng202.team1.gui.phases.Phases;
+import seng202.team1.state.AuthState;
+
+import java.security.InvalidParameterException;
 
 public class LoginPage extends Page{
 
@@ -28,6 +31,9 @@ public class LoginPage extends Page{
         email = new UITextInput("Enter email...");
         password = new UITextInput("Enter password...");
 
+        // Hide input
+        password.setPrivate();
+
         UIButton login = new UIButton("Login", true);
         UIButton signUp = new UIButton("Sign Up", true);
 
@@ -45,7 +51,35 @@ public class LoginPage extends Page{
     }
 
     private void handleLogin(){
-        router.switchPhase(Phases.MAIN);
+
+        AuthState auth = router.getGlobalState().getAuth();;
+
+        String enteredEmail = email.getInput();
+        String enteredPassword = password.getInput();
+
+        // Clear previous errors
+        email.setError("");
+        password.setError("");
+
+        // Validate
+        try{
+            auth.validateEmail(enteredEmail);
+        } catch (InvalidParameterException e) {
+            email.setError(e.getMessage());
+        }
+
+        try{
+            auth.validatePassword(enteredPassword);
+        } catch (InvalidParameterException e) {
+            password.setError(e.getMessage());
+        }
+
+        // Cant login with these credentials
+        if(email.isErroring() || password.isErroring())
+            return;
+
+        // Login
+        auth.login(enteredEmail, enteredPassword);
     }
 
      private void handleSignUp(){

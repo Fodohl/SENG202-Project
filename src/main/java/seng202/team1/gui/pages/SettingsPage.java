@@ -4,8 +4,11 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.components.*;
+import seng202.team1.gui.phases.Phases;
 
 /**
  * Page that displays the configuration menu of the app
@@ -13,6 +16,7 @@ import seng202.team1.gui.components.*;
 public class SettingsPage extends Page {
 
 
+    private static final Logger log = LoggerFactory.getLogger(SettingsPage.class);
     private UITextInput userName;
     private UITextInput userEmail;
 
@@ -58,6 +62,14 @@ public class SettingsPage extends Page {
        UIButton deleteAccount = new UIButton("Delete Account");
        UISection manageButtons = new UISection(15, logOut, deleteAccount);
 
+       save.setOnAction(e -> saveChanges());
+       logOut.setOnAction(e -> logOut());
+
+       // Hide input
+       userPasswordOld.setPrivate();
+       userPasswordNew.setPrivate();
+       userPasswordNewConfirm.setPrivate();
+
        // Ensure button spacing
        saveSection.getStyleClass().add("buttons");
        manageButtons.getStyleClass().add("buttons");
@@ -66,5 +78,13 @@ public class SettingsPage extends Page {
        VBox root = new VBox(20, userDetails, passwordChange, saveSection, manageButtons);
        root.setAlignment(Pos.CENTER);
        return root;
+    }
+
+    private void saveChanges() {
+
+    }
+
+    private void logOut() {
+       router.switchPhase(Phases.AUTH);
     }
 }

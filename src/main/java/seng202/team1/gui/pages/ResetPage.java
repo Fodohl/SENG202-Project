@@ -6,11 +6,15 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import seng202.team1.data.User;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.components.UIButton;
 import seng202.team1.gui.components.UIImage;
 import seng202.team1.gui.components.UITextInput;
 import seng202.team1.gui.components.UITitle;
+import seng202.team1.state.AuthState;
+
+import java.security.InvalidParameterException;
 
 public class ResetPage extends Page{
 
@@ -49,7 +53,56 @@ public class ResetPage extends Page{
     }
 
      private void handleReset(){
-        router.switchPage(Pages.LOGIN);
+
+        AuthState auth = router.getGlobalState().getAuth();;
+
+        String enteredEmail = email.getInput();
+        String enteredCode = code.getInput();
+        String enteredPassword = password.getInput();
+        String enteredPasswordConfirmed = passwordConfirm.getInput();
+
+        // Clear previous errors
+        code.setError("");
+        email.setError("");
+        password.setError("");
+        passwordConfirm.setError("");
+
+        Integer parsedCode = null;
+
+        // Validate
+        try {
+            parsedCode = auth.validateCode(enteredCode);
+        } catch (InvalidParameterException e) {
+            code.setError(e.getMessage());
+        }
+
+        try {
+            auth.validateEmail(enteredEmail);
+        } catch (InvalidParameterException e) {
+            email.setError(e.getMessage());
+        }
+
+        try {
+            auth.validatePassword(enteredPassword);
+        } catch (InvalidParameterException e) {
+            password.setError(e.getMessage());
+        }
+
+        try {
+            auth.validatePassword(enteredPasswordConfirmed);
+        } catch (InvalidParameterException e) {
+            passwordConfirm.setError(e.getMessage());
+        }
+
+        if (password != passwordConfirm)
+            passwordConfirm.setError("passwords do not match");
+
+        // Cant login with these credentials
+        if (code.isErroring() || email.isErroring() || password.isErroring() || passwordConfirm.isErroring())
+            return;
+
+        // Signup
+        auth.resetPassword(enteredEmail, enteredCode, enteredPassword);
     }
 
      private void handleBack(){
