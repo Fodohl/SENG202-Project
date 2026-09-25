@@ -98,14 +98,9 @@ public class DashboardPage extends Page {
         TrashLog newestLog = uses.isEmpty() ? null : uses.getLast();
         Bin newestBin = bins.isEmpty() ? null : bins.getLast();
 
-        TreeDaysCalculator calculator = new TreeDaysCalculator();
+        double treeDays = TreeDaysCalculator.getTreeDays(uses);
 
-        double treeDays = calculator.getTreeDays(
-            windowManager.getGlobalState().getTrashLogDAO()
-        );
-
-        double roundedTreeDays = Math.round(treeDays * 100.0) / 100.0;
-        trees.setText(String.format("%s", roundedTreeDays));
+        trees.setText(String.format("%.1f", treeDays));
         dataset.setText(String.format("%s", bins.size()));
 
         trashLogged.setText(String.format("%d", newestBin == null ? 0 : bins.stream().filter(b -> b.getCategory() == BinCategory.GENERAL_WASTE).toList().size()));

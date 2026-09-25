@@ -130,6 +130,5 @@ public enum TrashType {
     GENERAL_WASTE_BAG,
     MIXED_ORGANICS_LOAD,
 
-    // Not in trash_types.json: logged, but no CO2e figure is shown
     OTHER;
 }

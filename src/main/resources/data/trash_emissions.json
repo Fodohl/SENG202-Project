@@ -446,5 +446,12 @@
     "weightGrams": 20000,
     "treatedFactor": -0.1433,
     "litteredFactor": 0.1984
+  },
+  {
+    "id": "OTHER",
+    "displayName": "Other",
+    "weightGrams": 0,
+    "treatedFactor": 0,
+    "litteredFactor": 0
   }
 ]

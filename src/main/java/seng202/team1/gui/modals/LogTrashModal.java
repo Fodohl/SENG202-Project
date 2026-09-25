@@ -71,15 +71,12 @@ public class LogTrashModal extends Modal {
         typeInput = new UISearchDropDown("Search waste type...", trashTypes);
         UIIconText weightLabel = new UIIconText("scales", "Estimated Weight (grams)");
         weightInput = new UITextInput("Enter waste weight...");
-        List<TrashEmission> emissions = new TreeDaysCalculator().allTrashEmissions();
         typeInput.setOnSelectionChanged(selectedType -> {
             for (TrashType trashType : TrashType.values()) {
                 if (!StringHelpers.enumNameToTitle(trashType.name()).equals(selectedType))
                     continue;
 
-                emissions.stream()
-                    .filter(emission -> emission.id().equals(trashType.name()))
-                    .findFirst()
+                TreeDaysCalculator.getEmission(trashType)
                     .ifPresent(emission -> weightInput.setInput(String.valueOf(emission.weightGrams())));
                 break;
             }
