@@ -14,6 +14,8 @@ import seng202.team1.gui.GraphicsCommon;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.components.UICard;
 import seng202.team1.gui.components.UIGraphLine;
+import seng202.team1.data.User;
+
 
 import java.util.Comparator;
 import java.util.List;
@@ -25,11 +27,13 @@ public class DashboardPage extends Page {
 
     private UICard leaderBoard;
     private UICard trees;
+    private UICard trollsSlain;
     private UICard dataset;
     private UICard lastLog;
     private UICard organicLogged;
     private UICard trashLogged;
     private UICard recycLogged;
+
 
     /**
      * Constructs a new DashboardPage
@@ -54,8 +58,10 @@ public class DashboardPage extends Page {
         leaderBoard = new UICard("Leaderboard Position:", "#4",  "(Top 10%)", "/media/images/dir-continue.svg", true);
         trees = new UICard("Trees Saved:", "1.1",  "Trees", "/media/images/tree.svg", true);
         dataset = new UICard("Trash Logged:", "184",  "Items", "/media/images/throw.svg", true);
+        trollsSlain = new UICard("Trolls Slain:", "0", "Trolls", "/media/images/bin.png", true
+        );
 
-        HBox topCards = new HBox(20, leaderBoard, trees, dataset);
+        HBox topCards = new HBox(20, leaderBoard, trees, trollsSlain, dataset);
         topCards.setAlignment(Pos.TOP_LEFT);
 
         // Graph
@@ -97,6 +103,15 @@ public class DashboardPage extends Page {
         List<Bin> bins = uses.stream()
                               .map(b -> windowManager.getGlobalState().getDataLoader().getBinById(b.binLogId()))
                               .toList();
+
+        User currentUser = new User(10, "null-user");
+
+        int trolls = windowManager
+                .getGlobalState()
+                .getStatusReportStore()
+                .getTrollsSlain(currentUser);
+
+        trollsSlain.setText(String.valueOf(trolls));
 
         TrashLog newestLog = uses.isEmpty() ? null : uses.getLast();
         Bin newestBin = bins.isEmpty() ? null : bins.getLast();

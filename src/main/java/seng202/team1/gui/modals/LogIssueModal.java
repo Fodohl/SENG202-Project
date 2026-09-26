@@ -15,6 +15,7 @@ import seng202.team1.data.status.StatusReportStore;
 import seng202.team1.data.trashlog.TrashType;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.components.*;
+import seng202.team1.gui.pages.Pages;
 
 import java.time.LocalDateTime;
 
@@ -151,6 +152,8 @@ public class LogIssueModal extends Modal{
                 BinTrollService.getTrolls(lastReport, LocalDateTime.now());
 
         store.logReport(bin, fullness, type, report);
+
+        windowManager.refreshPage(Pages.DASHBOARD);
 
         closeModal();
     }

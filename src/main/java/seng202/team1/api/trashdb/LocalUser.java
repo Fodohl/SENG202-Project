@@ -2,7 +2,7 @@ package seng202.team1.api.trashdb;
 
 import java.time.Instant;
 
-public record User(
+public record LocalUser(
 
         Integer _id,
         Instant created,

@@ -139,4 +139,11 @@ public class StatusReportStore {
 
     }
 
+    public int getTrollsSlain(User user) {
+        return BinTrollService.getTrollsSlain(
+                user,
+                getReports()
+        );
+    }
+
 }
