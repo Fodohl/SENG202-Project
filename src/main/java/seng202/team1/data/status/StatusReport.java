@@ -4,6 +4,7 @@ import seng202.team1.data.User;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.BinFullness;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 /**
@@ -12,29 +13,29 @@ import java.time.LocalDateTime;
  */
 
 public class StatusReport {
-    private final Bin bin;
+    private final int binId;
     private final User submittedBy;
     private final BinFullness fullness;
     private final ReportType issue;
-    private final LocalDateTime submittedAt;
+    private final Instant submittedAt;
     private final String description;
 
     /**
      * Constructor for StatusReport class
      *
-     * @param bin
+     * @param binId
      * @param submittedBy
      * @param description
      * @param submittedAt
      */
 
-    public StatusReport(Bin bin,
+    public StatusReport(int binId,
                         User submittedBy,
                         BinFullness fullness,
                         ReportType issue,
                         String description,
-                        LocalDateTime submittedAt) {
-        this.bin = bin;
+                        Instant submittedAt) {
+        this.binId = binId;
         this.submittedBy = submittedBy;
         this.fullness = fullness;
         this.issue = issue;
@@ -48,21 +49,8 @@ public class StatusReport {
      * @return bin
      */
 
-    public Bin getBin() {
-        return bin;
-    }
-
-    /**
-     * Get the bin ID
-     * @return binID associated with report
-     */
-    public int getBinID() {
-
-        if(bin ==null)
-            return -1;
-
-        return bin.getID();
-
+    public int getBinId() {
+        return binId;
     }
 
     /**
@@ -81,7 +69,7 @@ public class StatusReport {
      * @return submittedAt
      */
 
-    public LocalDateTime getSubmittedAt() {return submittedAt;}
+    public Instant getSubmittedAt() {return submittedAt;}
 
     /**
      * Get report description
@@ -103,7 +91,7 @@ public class StatusReport {
      * @return a boolean for whether the two StatusReports are equal
      */
     public boolean equals(StatusReport statusReport) {
-        return this.getBinID() == statusReport.getBinID()
+        return this.getBinId() == statusReport.getBinId()
                 && this.getSubmittedBy().getUserID() == statusReport.getSubmittedBy().getUserID()
                 && this.getFullness().equals(statusReport.getFullness())
                 && this.getIssue().equals(statusReport.getIssue())
@@ -119,7 +107,7 @@ public class StatusReport {
     @Override
     public String toString() {
         return "StatusReport{" +
-                "binID=" + getBinID() +
+                "binID=" + getBinId() +
                 ", submittedBy=" + getSubmittedBy() +
                 ", fullness=" + getFullness() +
                 ", issue=" + getIssue() +
