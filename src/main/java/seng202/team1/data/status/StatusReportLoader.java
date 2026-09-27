@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -58,8 +59,7 @@ public class StatusReportLoader {
      */
     public List<StatusReport> getStatusReportsById(int id) {
         return statusReports.stream()
-                .filter(r -> r.getBin() != null)
-                .filter(r -> r.getBinID() == id)
+                .filter(r -> r.getId() == id)
                 .toList();
     }
 
@@ -149,7 +149,7 @@ public class StatusReportLoader {
         } else {
             issue = null;
         }
-
-        return new StatusReport(bin, user, status, issue, reportDescription, time);
+        Instant now = Instant.now();
+        return new StatusReport(1, 1, user, status, issue, reportDescription, now);
     }
 }

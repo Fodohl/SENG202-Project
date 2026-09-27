@@ -3,6 +3,7 @@ package seng202.team1.state;
 import javafx.stage.Stage;
 import seng202.team1.api.photon.Feature;
 import seng202.team1.api.photon.PhotonClient;
+import seng202.team1.data.sqlite.DAO.StatusReportDAO;
 import seng202.team1.data.status.ReportType;
 import seng202.team1.data.status.StatusReport;
 import seng202.team1.data.status.StatusReportStore;
@@ -41,6 +42,8 @@ public class GlobalState {
 
     private BinDAO binDAO;
 
+    private StatusReportDAO statusReportDAO;
+
     private DatabaseManager databaseManager;
 
     private PhotonClient photonClient;
@@ -69,6 +72,7 @@ public class GlobalState {
 
         binDAO = new BinDAO(databaseManager);
         trashLogDAO = new TrashLogDAO(databaseManager);
+        statusReportDAO = new StatusReportDAO(databaseManager);
 
         statusReportStore = new StatusReportStore(binDAO, testState ? StatusReportStore.testDataPath()
                                                                     : StatusReportStore.defaultDataPath());
@@ -97,6 +101,8 @@ public class GlobalState {
     }
 
     public BinDAO getBinDAO() { return binDAO; }
+
+    public StatusReportDAO getStatusReportDAO() { return statusReportDAO; }
 
     public PhotonClient getPhotonClient() {
         return photonClient;

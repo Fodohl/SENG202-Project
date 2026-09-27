@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -131,8 +132,8 @@ public class StatusReportStore {
 
         User dummy = new User(10, "null-user");
 
-        LocalDateTime timestamp = LocalDateTime.now();
-        StatusReport entry = new StatusReport(bin, dummy, fullness, reportType, description, timestamp);
+        Instant now = Instant.now();
+        StatusReport entry = new StatusReport(1, 1, dummy, fullness, reportType, description, now);
 
         try {
             add(entry);

@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
  */
 
 public class StatusReport {
+    private final int id;
     private final int binId;
     private final User submittedBy;
     private final BinFullness fullness;
@@ -29,12 +30,14 @@ public class StatusReport {
      * @param submittedAt
      */
 
-    public StatusReport(int binId,
+    public StatusReport(int reportId,
+                        int binId,
                         User submittedBy,
                         BinFullness fullness,
                         ReportType issue,
                         String description,
                         Instant submittedAt) {
+        this.id = reportId;
         this.binId = binId;
         this.submittedBy = submittedBy;
         this.fullness = fullness;
@@ -42,6 +45,8 @@ public class StatusReport {
         this.description = description;
         this.submittedAt = submittedAt;
     }
+
+    public int getId() { return id; }
 
     /**
      * Get the bin

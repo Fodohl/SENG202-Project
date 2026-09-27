@@ -8,7 +8,6 @@ import seng202.team1.data.sqlite.DatabaseManager;
 import seng202.team1.data.sqlite.SqlTimeUtils;
 import seng202.team1.data.status.ReportType;
 import seng202.team1.data.status.StatusReport;
-import seng202.team1.data.trashlog.TrashLog;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -61,6 +60,7 @@ public class StatusReportDAO extends SqlTimeUtils implements DAOInterface<Status
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 reports.add(new StatusReport(
+                        rs.getInt("id"),
                         rs.getInt("bin_id"),
                         new User(rs.getInt("user_id"),
                                 rs.getString("user")),
@@ -80,20 +80,21 @@ public class StatusReportDAO extends SqlTimeUtils implements DAOInterface<Status
     @Override
     public StatusReport getOne(int id) {
         StatusReport report = null;
-        String sql = "SELECT * FROM status_report WHERE id = ?";
+        String sql = "SELECT * FROM status_reports WHERE id = ?";
         try (Connection conn = databaseManager.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     report = new StatusReport(
+                            rs.getInt("id"),
                             rs.getInt("bin_id"),
                             new User(rs.getInt("user_id"),
                                     rs.getString("user")),
                             convertStringToBinFullness(rs.getString("fullness")),
                             convertStringToIssue(rs.getString("issue")),
                             rs.getString("description"),
-                            getInstant(rs, "created_at")));
+                            getInstant(rs, "created_at"));
                 }
                 return report;
             }
@@ -107,10 +108,12 @@ public class StatusReportDAO extends SqlTimeUtils implements DAOInterface<Status
         List<StatusReport> reports = new ArrayList<>();
         String sql = "SELECT * FROM status_reports WHERE bin_id = ?";
         try (Connection conn = databaseManager.connect();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, binId);
+            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 reports.add(new StatusReport(
+                        rs.getInt("id"),
                         rs.getInt("bin_id"),
                         new User(rs.getInt("user_id"),
                                 rs.getString("user")),
@@ -126,14 +129,16 @@ public class StatusReportDAO extends SqlTimeUtils implements DAOInterface<Status
         }
     }
 
-    public List<StatusReport> getReportsByUserId(int UserId) {
+    public List<StatusReport> getReportsByUserId(int userId) {
         List<StatusReport> reports = new ArrayList<>();
         String sql = "SELECT * FROM status_reports WHERE user_id = ?";
         try (Connection conn = databaseManager.connect();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 reports.add(new StatusReport(
+                        rs.getInt("id"),
                         rs.getInt("bin_id"),
                         new User(rs.getInt("user_id"),
                                 rs.getString("user")),
@@ -149,8 +154,9 @@ public class StatusReportDAO extends SqlTimeUtils implements DAOInterface<Status
         }
     }
 
+    @Override
     public int add(StatusReport statusReportToAdd) {
-        String sql = "INSERT INTO status_report (bin_id, user, user_id, fullness, issue, description, created_at) VALUES (?, ?, ?, ?, ?, ?);";
+        String sql = "INSERT INTO status_reports (bin_id, user, user_id, fullness, issue, description, created_at) VALUES (?, ?, ?, ?, ?, ?, ?);";
         try (Connection conn = databaseManager.connect();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1,  statusReportToAdd.getBinId());
@@ -170,6 +176,40 @@ public class StatusReportDAO extends SqlTimeUtils implements DAOInterface<Status
         } catch (SQLException sqlException) {
             log.error(sqlException);
             return -1;
+        }
+    }
+
+    @Override
+    public void delete(int id) {
+        String sql = "DELETE FROM status_reports WHERE id = ?";
+        try (Connection conn = databaseManager.connect();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (SQLException sqlException) {
+            log.error(sqlException);
+        }
+    }
+
+    @Override
+    public void update(StatusReport statusReportToUpdate) {
+        String sql = "UPDATE status_reports SET bin_id = ?, user = ?, user_id = ?, fullness = ?, issue = ?, description = ?, created_at = ? WHERE id = ?";
+        try (Connection conn = databaseManager.connect();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1,  statusReportToUpdate.getBinId());
+            ps.setString(2, statusReportToUpdate.getSubmittedBy().getName());
+            ps.setInt(3, statusReportToUpdate.getSubmittedBy().getUserID());
+            ps.setString(4, statusReportToUpdate.getFullness().toString());
+            ps.setString(5, statusReportToUpdate.getIssue().toString());
+            ps.setString(6, statusReportToUpdate.getDescription());
+            setInstant(ps, 7, statusReportToUpdate.getSubmittedAt());
+            ps.setInt(8, statusReportToUpdate.getId());
+            int rows = ps.executeUpdate();
+            if (rows == 0) {
+                log.warn("Update affected 0 rows for status report id {}", statusReportToUpdate.getId());
+            }
+        } catch (SQLException sqlException) {
+            log.error(sqlException);
         }
     }
 }
