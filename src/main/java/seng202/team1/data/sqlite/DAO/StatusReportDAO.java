@@ -75,4 +75,101 @@ public class StatusReportDAO extends SqlTimeUtils implements DAOInterface<Status
             return new ArrayList<>();
         }
     }
+
+
+    @Override
+    public StatusReport getOne(int id) {
+        StatusReport report = null;
+        String sql = "SELECT * FROM status_report WHERE id = ?";
+        try (Connection conn = databaseManager.connect();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    report = new StatusReport(
+                            rs.getInt("bin_id"),
+                            new User(rs.getInt("user_id"),
+                                    rs.getString("user")),
+                            convertStringToBinFullness(rs.getString("fullness")),
+                            convertStringToIssue(rs.getString("issue")),
+                            rs.getString("description"),
+                            getInstant(rs, "created_at")));
+                }
+                return report;
+            }
+        } catch (SQLException sqlException) {
+            log.error(sqlException);
+            return null;
+        }
+    }
+
+    public List<StatusReport> getReportsByBinId(int binId) {
+        List<StatusReport> reports = new ArrayList<>();
+        String sql = "SELECT * FROM status_reports WHERE bin_id = ?";
+        try (Connection conn = databaseManager.connect();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                reports.add(new StatusReport(
+                        rs.getInt("bin_id"),
+                        new User(rs.getInt("user_id"),
+                                rs.getString("user")),
+                        convertStringToBinFullness(rs.getString("fullness")),
+                        convertStringToIssue(rs.getString("issue")),
+                        rs.getString("description"),
+                        getInstant(rs, "created_at")));
+            }
+            return reports;
+        } catch (SQLException sqlException) {
+            log.error(sqlException);
+            return new ArrayList<>();
+        }
+    }
+
+    public List<StatusReport> getReportsByUserId(int UserId) {
+        List<StatusReport> reports = new ArrayList<>();
+        String sql = "SELECT * FROM status_reports WHERE user_id = ?";
+        try (Connection conn = databaseManager.connect();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                reports.add(new StatusReport(
+                        rs.getInt("bin_id"),
+                        new User(rs.getInt("user_id"),
+                                rs.getString("user")),
+                        convertStringToBinFullness(rs.getString("fullness")),
+                        convertStringToIssue(rs.getString("issue")),
+                        rs.getString("description"),
+                        getInstant(rs, "created_at")));
+            }
+            return reports;
+        } catch (SQLException sqlException) {
+            log.error(sqlException);
+            return new ArrayList<>();
+        }
+    }
+
+    public int add(StatusReport statusReportToAdd) {
+        String sql = "INSERT INTO status_report (bin_id, user, user_id, fullness, issue, description, created_at) VALUES (?, ?, ?, ?, ?, ?);";
+        try (Connection conn = databaseManager.connect();
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setInt(1,  statusReportToAdd.getBinId());
+            ps.setString(2, statusReportToAdd.getSubmittedBy().getName());
+            ps.setInt(3, statusReportToAdd.getSubmittedBy().getUserID());
+            ps.setString(4, statusReportToAdd.getFullness().toString());
+            ps.setString(5, statusReportToAdd.getIssue().toString());
+            ps.setString(6, statusReportToAdd.getDescription());
+            setInstant(ps, 7, statusReportToAdd.getSubmittedAt());
+            ps.executeUpdate();
+            ResultSet rs = ps.getGeneratedKeys();
+            int insertId = -1;
+            if (rs.next()) {
+                insertId = rs.getInt(1);
+            }
+            return insertId;
+        } catch (SQLException sqlException) {
+            log.error(sqlException);
+            return -1;
+        }
+    }
 }
