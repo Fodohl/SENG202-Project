@@ -2,6 +2,8 @@ DROP TABLE IF EXISTS trash_logs;
 --SPLIT
 DROP TABLE IF EXISTS bins;
 --SPLIT
+DROP TABLE IF EXISTS users;
+--SPLIT
 CREATE TABLE bins (
     id INTEGER PRIMARY KEY,
     lat DECIMAL(5, 20) NOT NULL,
@@ -26,3 +28,13 @@ CREATE TABLE trash_logs (
        FOREIGN KEY (bin_id)
            REFERENCES bins(id)
            ON DELETE CASCADE);
+
+--SPLIT
+CREATE TABLE users (
+                       id INTEGER PRIMARY KEY AUTOINCREMENT,
+                       created_at INTEGER NOT NULL,
+                       updated_at INTEGER,
+                       name VARCHAR(255) NOT NULL,
+                       email VARCHAR(255) NOT NULL UNIQUE,
+                       password_hash VARCHAR(255) NOT NULL,
+                       reset_code INTEGER);
