@@ -487,11 +487,11 @@
         "requestBody": {
           "required": true,
           "content": {
-            "*/*": {
+            "application/json": {
               "schema": {}
             }
           },
-          "description": "The users credintials"
+          "description": "The users credentials"
         }
       }
     },
