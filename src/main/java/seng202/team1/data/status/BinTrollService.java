@@ -9,6 +9,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Sets the number of trolls in a bin and gets how many slain over a users use of the app
+ * @author Connor Rocket
+ */
+
 public class BinTrollService {
     public static int getTrolls(
             LocalDateTime lastReport,
