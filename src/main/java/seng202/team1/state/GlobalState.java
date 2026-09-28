@@ -167,9 +167,13 @@ public class GlobalState {
     }
 
     public void refreshBinFullness(Bin bin){
-
+        Instant startOfDay = LocalDate.now()
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant();
          // Only want recent reports of fullness
-        List<StatusReport> reportsFoBin = statusReportDAO.getFullnessReportsByBinId(bin.getID());
+        List<StatusReport> reportsFoBin = statusReportDAO.getFullnessReportsByBinId(bin.getID()).stream()
+                .filter(r -> r.getSubmittedAt().isAfter(startOfDay))
+                .toList();;
         refreshBinFullness(bin, binDAO, reportsFoBin);
     }
 

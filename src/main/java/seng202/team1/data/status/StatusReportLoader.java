@@ -142,7 +142,7 @@ public class StatusReportLoader {
                 case "MISSING" -> ReportType.MISSING;
                 case "FIRE_HAZARD" -> ReportType.FIRE_HAZARD;
                 case "ILLEGAL_DUMPING" -> ReportType.ILLEGAL_DUMPING;
-                case "BLOCKED" -> ReportType.BLOCKED;
+                case "BLOCKED" -> ReportType.BLOCKED_ACCESS;
                 case "OTHER" -> ReportType.OTHER;
                 default -> throw new IllegalStateException("Unexpected value: " + reportIssue.toUpperCase(Locale.ROOT));
             };

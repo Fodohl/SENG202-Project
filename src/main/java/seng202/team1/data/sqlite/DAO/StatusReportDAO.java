@@ -34,7 +34,7 @@ public class StatusReportDAO extends SqlTimeUtils implements DAOInterface<Status
             case "MISSING" -> ReportType.MISSING;
             case "FIRE_HAZARD" -> ReportType.FIRE_HAZARD;
             case "ILLEGAL_DUMPING" -> ReportType.ILLEGAL_DUMPING;
-            case "BLOCKED" -> ReportType.BLOCKED;
+            case "BLOCKED_ACCESS" -> ReportType.BLOCKED_ACCESS;
             case "OTHER" -> ReportType.OTHER;
             default -> throw new IllegalStateException("Unexpected value: " + issueString.toUpperCase(Locale.ROOT));
         };
