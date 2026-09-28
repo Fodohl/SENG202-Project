@@ -3,7 +3,7 @@ package seng202.team1.gui.pages;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
-import seng202.team1.types.User;
+import seng202.team1.types.user.User;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.components.UIButton;
 import seng202.team1.gui.components.UITextInput;

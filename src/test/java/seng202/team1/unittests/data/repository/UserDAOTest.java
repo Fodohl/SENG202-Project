@@ -3,7 +3,7 @@ package seng202.team1.unittests.data.repository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import seng202.team1.types.User;
+import seng202.team1.types.user.User;
 import seng202.team1.database.DAO.UserDAO;
 import seng202.team1.database.exceptions.DuplicateEntryException;
 import seng202.team1.unittests.TrashAppTest;

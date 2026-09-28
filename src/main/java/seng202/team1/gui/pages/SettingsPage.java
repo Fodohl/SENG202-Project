@@ -85,6 +85,6 @@ public class SettingsPage extends Page {
     }
 
     private void logOut() {
-       router.switchPhase(Phases.AUTH);
+       getState().getAuth().logOut();
     }
 }

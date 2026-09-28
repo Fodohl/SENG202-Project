@@ -89,4 +89,13 @@ public class LoginPage extends Page{
      private void handleForgot(){
         router.switchPage(Pages.RESET);
     }
+
+    @Override
+    public void updateContents() {
+
+        // Already logged
+        if(getState().getAuth().getSession() != null)
+            router.switchPhase(Phases.MAIN);
+
+    }
 }

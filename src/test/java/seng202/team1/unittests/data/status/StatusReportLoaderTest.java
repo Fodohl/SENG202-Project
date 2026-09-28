@@ -9,7 +9,7 @@ import seng202.team1.types.bin.BinFullness;
 import seng202.team1.types.status.ReportType;
 import seng202.team1.types.status.StatusReport;
 
-import seng202.team1.types.User;
+import seng202.team1.types.user.User;
 import seng202.team1.data.status.StatusReportLoader;
 import seng202.team1.unittests.TrashAppTest;
 

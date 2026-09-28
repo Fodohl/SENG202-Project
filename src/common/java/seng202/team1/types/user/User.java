@@ -1,6 +1,4 @@
-package seng202.team1.types;
-
-import seng202.team1.taserver.model.UserResponse;
+package seng202.team1.types.user;
 
 import java.time.Instant;
 

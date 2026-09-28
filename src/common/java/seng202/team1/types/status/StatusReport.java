@@ -1,6 +1,6 @@
 package seng202.team1.types.status;
 
-import seng202.team1.types.User;
+import seng202.team1.types.user.User;
 import seng202.team1.types.bin.Bin;
 import seng202.team1.types.bin.BinFullness;
 

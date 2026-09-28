@@ -10,7 +10,7 @@ import seng202.team1.auth.PasswordHasher;
 import seng202.team1.auth.TokenService;
 import seng202.team1.taserver.model.LogUserInRequest;
 import seng202.team1.taserver.model.TokenResponse;
-import seng202.team1.types.User;
+import seng202.team1.types.user.User;
 
 import java.time.OffsetDateTime;
 

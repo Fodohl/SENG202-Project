@@ -2,7 +2,7 @@ package seng202.team1.database.DAO;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import seng202.team1.types.User;
+import seng202.team1.types.user.User;
 import seng202.team1.database.DatabaseManager;
 import seng202.team1.database.SqlTimeUtils;
 import seng202.team1.database.exceptions.DuplicateEntryException;

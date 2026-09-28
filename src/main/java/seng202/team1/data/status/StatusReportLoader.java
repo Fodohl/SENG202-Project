@@ -13,11 +13,10 @@ import java.time.LocalDateTime;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.jooq.impl.QOM;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import seng202.team1.types.User;
+import seng202.team1.types.user.User;
 import seng202.team1.types.bin.Bin;
 import seng202.team1.types.bin.BinFullness;
 import seng202.team1.database.DAO.BinDAO;

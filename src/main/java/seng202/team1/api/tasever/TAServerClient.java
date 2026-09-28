@@ -9,6 +9,7 @@ import seng202.team1.taserver.model.Heartbeat200Response;
 import seng202.team1.taserver.model.LogUserInRequest;
 import seng202.team1.taserver.model.TokenResponse;
 import seng202.team1.taserver.model.UserResponse;
+import seng202.team1.types.user.Session;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -20,6 +21,8 @@ public class TAServerClient extends ApiBackend {
     private final Integer LIMIT_LEADERBOARD_ENTRIES = 3;
 
     private ApiClient client = new ApiClient();
+
+    private Session session = null;
 
     private DefaultApi defaultApiClient;
     private UserApi userApiClient;
@@ -149,5 +152,9 @@ public class TAServerClient extends ApiBackend {
 //            }
 //
 //        });
+    }
+
+    public void setSession(Session session) {
+        this.session = session;
     }
 }

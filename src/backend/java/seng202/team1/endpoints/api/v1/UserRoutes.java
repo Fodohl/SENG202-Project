@@ -4,15 +4,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
-import seng202.team1.TAServer;
 import seng202.team1.api.UserApi;
 import seng202.team1.auth.PasswordHasher;
 import seng202.team1.database.exceptions.DuplicateEntryException;
 import seng202.team1.taserver.model.UserResponse;
-import seng202.team1.types.User;
-
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import seng202.team1.types.user.User;
 
 import static seng202.team1.TAServer.userTable;
 
