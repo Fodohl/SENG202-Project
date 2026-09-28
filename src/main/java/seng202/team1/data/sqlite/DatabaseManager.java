@@ -172,9 +172,4 @@ public class DatabaseManager {
         return url;
     }
 
-    public static void main(String[] args) {
-        DatabaseManager databaseManager = new DatabaseManager("jdbc:sqlite:test.db");
-        databaseManager.connect();
-        databaseManager.resetDB();
-    }
 }

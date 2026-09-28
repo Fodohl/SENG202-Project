@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class StatusReport {
     private final int id;
     private final int binId;
-    private final User submittedBy;
+    private final int userId;
     private final BinFullness fullness;
     private final ReportType issue;
     private final Instant submittedAt;
@@ -32,14 +32,29 @@ public class StatusReport {
 
     public StatusReport(int reportId,
                         int binId,
-                        User submittedBy,
+                        int userId,
                         BinFullness fullness,
                         ReportType issue,
                         String description,
                         Instant submittedAt) {
         this.id = reportId;
         this.binId = binId;
-        this.submittedBy = submittedBy;
+        this.userId = userId;
+        this.fullness = fullness;
+        this.issue = issue;
+        this.description = description;
+        this.submittedAt = submittedAt;
+    }
+
+    public StatusReport(int binId,
+                        int userId,
+                        BinFullness fullness,
+                        ReportType issue,
+                        String description,
+                        Instant submittedAt) {
+        this.id = -1;
+        this.binId = binId;
+        this.userId = userId;
         this.fullness = fullness;
         this.issue = issue;
         this.description = description;
@@ -59,13 +74,13 @@ public class StatusReport {
     }
 
     /**
-     * Get the reporter
+     * Get the user id of the reporter
      * Return the reporter
-     * @return submittedBy
+     * @return userId
      */
 
-    public User getSubmittedBy() {
-        return submittedBy;
+    public int getUserId() {
+        return userId;
     }
 
     /**
@@ -97,7 +112,7 @@ public class StatusReport {
      */
     public boolean equals(StatusReport statusReport) {
         return this.getBinId() == statusReport.getBinId()
-                && this.getSubmittedBy().getUserID() == statusReport.getSubmittedBy().getUserID()
+                && this.getUserId() == statusReport.getUserId()
                 && this.getFullness().equals(statusReport.getFullness())
                 && this.getIssue().equals(statusReport.getIssue())
                 && this.getDescription().equals(statusReport.getDescription());
@@ -113,7 +128,7 @@ public class StatusReport {
     public String toString() {
         return "StatusReport{" +
                 "binID=" + getBinId() +
-                ", submittedBy=" + getSubmittedBy() +
+                ", submittedBy=" + getUserId() +
                 ", fullness=" + getFullness() +
                 ", issue=" + getIssue() +
                 ", description="+ description +

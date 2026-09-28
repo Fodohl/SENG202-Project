@@ -150,6 +150,6 @@ public class StatusReportLoader {
             issue = null;
         }
         Instant now = Instant.now();
-        return new StatusReport(1, 1, user, status, issue, reportDescription, now);
+        return new StatusReport(1, 1, 1, status, issue, reportDescription, now);
     }
 }

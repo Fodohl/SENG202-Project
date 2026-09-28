@@ -16,7 +16,10 @@ import seng202.team1.data.sqlite.exceptions.InstanceAlreadyExistsException;
 import seng202.team1.data.bin.BinDataset;
 import seng202.team1.data.bin.Bin;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 
@@ -74,10 +77,10 @@ public class GlobalState {
         trashLogDAO = new TrashLogDAO(databaseManager);
         statusReportDAO = new StatusReportDAO(databaseManager);
 
-        statusReportStore = new StatusReportStore(binDAO, testState ? StatusReportStore.testDataPath()
-                                                                    : StatusReportStore.defaultDataPath());
-        if(!testState)
-            statusReportStore.load();
+        //statusReportStore = new StatusReportStore(binDAO, testState ? StatusReportStore.testDataPath()
+        //                                                            : StatusReportStore.defaultDataPath());
+        //if(!testState)
+        //    statusReportStore.load();
 
         loadBins();
         refreshBinFullness();
@@ -148,14 +151,17 @@ public class GlobalState {
             return;
 
         // Only want recent reports of fullness
-        List<StatusReport> fullnessReports = statusReportStore.getReports().stream()
+        Instant startOfDay = LocalDate.now()
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant();
+        List<StatusReport> fullnessReports = statusReportDAO.getAll().stream()
                                                     .filter(r -> r.getIssue() == ReportType._FULLNESS_UPDATE)
-                                                    .filter(r -> r.getSubmittedAt().isAfter(LocalDate.now().atStartOfDay()))
+                                                    .filter(r -> r.getSubmittedAt().isAfter(startOfDay))
                                                     .toList();
 
         // Get each bin's new fullness as an average of this week's reports
         getBinDAO().getAll().stream().forEach(b -> {
-            List<StatusReport> reportsFoBin = fullnessReports.stream().filter(r -> r.getBinID() == b.getID()).toList();
+            List<StatusReport> reportsFoBin = fullnessReports.stream().filter(r -> r.getBinId() == b.getID()).toList();
             refreshBinFullness(b, binDAO, reportsFoBin);
         });
     }
@@ -163,12 +169,7 @@ public class GlobalState {
     public void refreshBinFullness(Bin bin){
 
          // Only want recent reports of fullness
-        List<StatusReport> reportsFoBin = statusReportStore.getReports().stream()
-                                                    .filter(r -> r.getIssue() == ReportType._FULLNESS_UPDATE)
-                                                    .filter(r -> r.getSubmittedAt().isAfter(LocalDate.now().atStartOfDay()))
-                                                    .filter(r -> r.getBinID() == bin.getID())
-                                                    .toList();
-
+        List<StatusReport> reportsFoBin = statusReportDAO.getFullnessReportsByBinId(bin.getID());
         refreshBinFullness(bin, binDAO, reportsFoBin);
     }
 

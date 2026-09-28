@@ -33,7 +33,6 @@ CREATE TABLE trash_logs (
 CREATE TABLE status_reports (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     bin_id INTEGER,
-    user VARCHAR(255),
     user_id INTEGER,
     fullness VARCHAR(255),
     issue VARCHAR(255),

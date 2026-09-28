@@ -59,7 +59,7 @@ public class TimelinePage extends Page {
 
     void renderTimelineEntries() {
 
-        List<StatusReport> reports = windowManager.getGlobalState().getStatusReportStore().getReports();
+        List<StatusReport> reports = windowManager.getGlobalState().getStatusReportDAO().getAll();
         List<TrashLog> trash = windowManager.getGlobalState().getTrashLogDAO().getAll();
 
         // Combine trash logs and status reports
@@ -80,7 +80,7 @@ public class TimelinePage extends Page {
 
                     // Convert report into format expected by timeline entry
                     UIImage icon = new UIImage(String.format("/media/images/%s.svg", report.getIssue().name().toLowerCase()), 50, 50);
-                    Instant time = DateHelpers.fromLocalTime(report.getSubmittedAt());
+                    Instant time = report.getSubmittedAt();
 
                     return new UITimelineEntry(time, icon, "Status Report", report.getDescription());
                 })

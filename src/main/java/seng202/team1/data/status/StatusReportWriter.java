@@ -61,9 +61,8 @@ public class StatusReportWriter {
     private JSONObject statusReportToJson(StatusReport report) {
         JSONObject json = new JSONObject();
 
-        //json.put("binID", report.getBinID());
-        json.put("user",  report.getSubmittedBy().getName());
-        json.put("userID", report.getSubmittedBy().getUserID());
+        json.put("binID", report.getBinId());
+        json.put("userID", report.getUserId());
         json.put("fullness", report.getFullness() == null ? null : report.getFullness().toString());
         json.put("issue", report.getIssue() == null ? null : report.getIssue().toString());
         json.put("description", report.getDescription());

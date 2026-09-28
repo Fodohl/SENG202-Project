@@ -133,7 +133,7 @@ public class StatusReportStore {
         User dummy = new User(10, "null-user");
 
         Instant now = Instant.now();
-        StatusReport entry = new StatusReport(1, 1, dummy, fullness, reportType, description, now);
+        StatusReport entry = new StatusReport(1, 1, 1, fullness, reportType, description, now);
 
         try {
             add(entry);

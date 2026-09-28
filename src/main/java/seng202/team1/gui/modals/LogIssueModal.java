@@ -10,9 +10,12 @@ import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.BinCategory;
 import seng202.team1.data.status.ReportType;
 import seng202.team1.data.bin.BinFullness;
+import seng202.team1.data.status.StatusReport;
 import seng202.team1.data.trashlog.TrashType;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.components.*;
+
+import java.time.Instant;
 
 /**
  * A Modal (overlay) to display a bin issue report
@@ -168,8 +171,8 @@ public class LogIssueModal extends Modal {
 
          // Refresh the bins' average status
         getWindow().getGlobalState().refreshBinFullness(bin);
-
-        windowManager.getGlobalState().getStatusReportStore().logReport(bin, fullness, type, report);
+        StatusReport reportToAdd = new StatusReport(bin.getID(), 1, fullness, type, report, Instant.now());
+        windowManager.getGlobalState().getStatusReportDAO().add(reportToAdd);
         closeModal();
     }
 
