@@ -1,9 +1,14 @@
 package seng202.team1.api.tasever;
 
 import seng202.team1.api.ApiBackend;
+import seng202.team1.taserver.api.AuthApi;
 import seng202.team1.taserver.api.DefaultApi;
+import seng202.team1.taserver.api.UserApi;
 import seng202.team1.taserver.client.ApiClient;
 import seng202.team1.taserver.model.Heartbeat200Response;
+import seng202.team1.taserver.model.LogUserInRequest;
+import seng202.team1.taserver.model.TokenResponse;
+import seng202.team1.taserver.model.UserResponse;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
@@ -17,6 +22,8 @@ public class TAServerClient extends ApiBackend {
     private ApiClient client = new ApiClient();
 
     private DefaultApi defaultApiClient;
+    private UserApi userApiClient;
+    private AuthApi authApiClient;
 
     public TAServerClient(){
         super("null");
@@ -30,11 +37,33 @@ public class TAServerClient extends ApiBackend {
 
         // Init the handlers
         defaultApiClient = new DefaultApi(client);
+        userApiClient = new UserApi(client);
+        authApiClient = new AuthApi(client);
 
     }
 
     public CompletableFuture<Heartbeat200Response> getHeartbeat(Consumer<Heartbeat200Response> callback){
         return sendAsync(() -> defaultApiClient.heartbeat(), callback, null, null);
+    }
+
+    public CompletableFuture<UserResponse> postUser(String email, String name, String passwordRaw, Consumer<UserResponse> callback){
+
+        UserResponse request = new UserResponse();
+        request.email(email);
+        request.name(name);
+        request.passwordHash(passwordRaw);
+
+        return sendAsync(() -> userApiClient.addNewUser(request), callback, null, null);
+    }
+
+
+    public CompletableFuture<TokenResponse> postLogin(String email, String passwordRaw, Consumer<TokenResponse> callback){
+
+        LogUserInRequest request = new LogUserInRequest();
+        request.email(email);
+        request.password(passwordRaw);
+
+        return sendAsync(() -> authApiClient.logUserIn(request), callback, null, null);
     }
 
     public void getCommunity(Consumer<TrashDBLeaderboardResponse> callback){

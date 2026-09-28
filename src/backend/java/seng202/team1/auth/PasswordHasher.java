@@ -12,7 +12,7 @@ public class PasswordHasher {
 
     private PasswordHasher() {}
 
-    /** @return "salt:hash", both Base64 */
+
     public static String hash(String password) {
         byte[] salt = new byte[16];
         new SecureRandom().nextBytes(salt);

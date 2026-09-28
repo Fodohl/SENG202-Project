@@ -1,5 +1,7 @@
 package seng202.team1.types;
 
+import seng202.team1.taserver.model.UserResponse;
+
 import java.time.Instant;
 
 public record User(

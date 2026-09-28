@@ -2,6 +2,7 @@ package seng202.team1.auth;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -14,9 +15,11 @@ public class SecurityChecker {
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http, TokenChecker tokenChecker) throws Exception {
         return http
+            .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/v1/heartbeat", "/api/v1/auth/**", "/actuator/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/v1/user").permitAll()
                 .anyRequest().authenticated()
             )
             .addFilterBefore(tokenChecker, UsernamePasswordAuthenticationFilter.class)

@@ -6,7 +6,7 @@ import seng202.team1.api.DefaultApi;
 import seng202.team1.taserver.model.Heartbeat200Response;
 
 @RestController
-public class Default implements DefaultApi {
+public class DefaultRoutes implements DefaultApi {
 
     @Override
     public ResponseEntity<Heartbeat200Response> heartbeat() {

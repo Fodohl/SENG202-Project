@@ -3,6 +3,8 @@ package seng202.team1.state;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import seng202.team1.api.tasever.TAServerClient;
+import seng202.team1.taserver.api.UserApi;
 import seng202.team1.types.User;
 import seng202.team1.gui.pages.Pages;
 import seng202.team1.gui.phases.Phases;
@@ -12,13 +14,17 @@ import java.security.InvalidParameterException;
 public class AuthState {
 
     private static final Logger log = LoggerFactory.getLogger(AuthState.class);
+
     private User userDetails;
     private String authToken;
 
     private GlobalState state;
 
+    private TAServerClient server;
+
     public AuthState(GlobalState state){
         this.state = state;
+        this.server = state.getTaServer();
     }
 
     public User getUserDetails() {
@@ -39,6 +45,9 @@ public class AuthState {
 
     public void login(String email, String password){
 
+        server.postLogin(email, password, r -> {
+            System.out.println(r);
+        }).join();
 
         // Successful login
         state.getRouter().switchPhase(Phases.MAIN);
@@ -46,6 +55,10 @@ public class AuthState {
 
     public void signUp(User userDetails, String password){
 
+        // Create a new user
+        server.postUser(userDetails.email(), userDetails.name(), password, r -> {
+            System.out.println(r);
+        }).join();
 
 
         // Log into the account

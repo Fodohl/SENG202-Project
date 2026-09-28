@@ -6,10 +6,10 @@ DROP TABLE IF EXISTS users;
 --SPLIT
 CREATE TABLE bins (
     id INTEGER PRIMARY KEY,
-    lat DECIMAL(5, 20) NOT NULL,
-    lng DECIMAL(5, 20) NOT NULL,
+    lat DECIMAL(11, 8) NOT NULL,
+    lng DECIMAL(11, 8) NOT NULL,
     waste_type VARCHAR(255),
-    updated_at INTEGER,
+    updated_at BIGINT,
     photo_url VARCHAR(255),
     area VARCHAR(255),
     fullness VARCHAR(255) NOT NULL DEFAULT 'UNKNOWN',
@@ -17,9 +17,9 @@ CREATE TABLE bins (
 
 --SPLIT
 CREATE TABLE trash_logs (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    created_at INTEGER NOT NULL,
-    disposed_at INTEGER NOT NULL,
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    created_at BIGINT NOT NULL,
+    disposed_at BIGINT NOT NULL,
     user_id INTEGER,
     bin_id INTEGER,
     type VARCHAR(255),
@@ -31,9 +31,9 @@ CREATE TABLE trash_logs (
 
 --SPLIT
 CREATE TABLE users (
-                       id INTEGER PRIMARY KEY AUTOINCREMENT,
-                       created_at INTEGER NOT NULL,
-                       updated_at INTEGER,
+                       id INTEGER PRIMARY KEY AUTO_INCREMENT,
+                       created_at BIGINT NOT NULL,
+                       updated_at BIGINT,
                        name VARCHAR(255) NOT NULL,
                        email VARCHAR(255) NOT NULL UNIQUE,
                        password_hash VARCHAR(255) NOT NULL,

@@ -10,7 +10,7 @@ import seng202.team1.taserver.model.GetBinsFullness200ResponseBinsInner;
 import java.math.BigDecimal;
 
 @RestController
-public class Bins implements BinApi{
+public class BinsRoutes implements BinApi{
 
 
     @Override
