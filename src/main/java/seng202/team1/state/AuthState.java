@@ -4,6 +4,7 @@ import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.propertyeditors.CustomNumberEditor;
+import org.w3c.dom.stylesheets.LinkStyle;
 import seng202.team1.api.tasever.TAServerClient;
 import seng202.team1.taserver.model.TokenResponse;
 import seng202.team1.taserver.model.UserResponse;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.InvalidParameterException;
+import java.time.Instant;
 
 import static seng202.team1.TrashApp.GSON;
 
@@ -223,5 +225,13 @@ public class AuthState {
         } finally {
             setSession(null);
         }
+    }
+
+    private void onSessionLoaded(){
+
+        // fetch app data
+
+        // begin processing queued uploads
+
     }
 }

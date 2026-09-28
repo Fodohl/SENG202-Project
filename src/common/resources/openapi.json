@@ -146,6 +146,18 @@
           "bin"
         ],
         "operationId": "getBinsFullness",
+        "parameters": [
+          {
+            "name": "lastUpdated",
+            "in": "query",
+            "required": false,
+            "description": "Get bins updated since last known time, if null will fetch all",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "ok",

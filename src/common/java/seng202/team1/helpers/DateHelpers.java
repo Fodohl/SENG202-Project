@@ -1,4 +1,4 @@
-package seng202.team1.common;
+package seng202.team1.helpers;
 
 import org.jooq.impl.QOM;
 
@@ -30,6 +30,9 @@ public class DateHelpers {
      * @return The converted instant
      */
     public static OffsetDateTime toOffsetTime(Instant time){
+
+        if(time == null)
+            return null;
 
         ZoneId timezone = ZoneOffset.systemDefault();
 

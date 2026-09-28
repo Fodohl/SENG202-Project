@@ -1,16 +1,17 @@
 package seng202.team1.api.tasever;
 
 import seng202.team1.api.ApiBackend;
+import seng202.team1.helpers.DateHelpers;
 import seng202.team1.taserver.api.AuthApi;
+import seng202.team1.taserver.api.BinApi;
 import seng202.team1.taserver.api.DefaultApi;
 import seng202.team1.taserver.api.UserApi;
 import seng202.team1.taserver.client.ApiClient;
-import seng202.team1.taserver.model.Heartbeat200Response;
-import seng202.team1.taserver.model.LogUserInRequest;
-import seng202.team1.taserver.model.TokenResponse;
-import seng202.team1.taserver.model.UserResponse;
+import seng202.team1.taserver.model.*;
 import seng202.team1.types.user.Session;
 
+import java.time.Instant;
+import java.time.OffsetDateTime;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -27,6 +28,7 @@ public class TAServerClient extends ApiBackend {
     private DefaultApi defaultApiClient;
     private UserApi userApiClient;
     private AuthApi authApiClient;
+    private BinApi binApiClient;
 
     public TAServerClient(){
         super("null");
@@ -68,6 +70,12 @@ public class TAServerClient extends ApiBackend {
     public CompletableFuture<UserResponse> getUser(Consumer<UserResponse> callback){
 
         return sendAsync(() -> userApiClient.getUserDetails(), callback, null, null);
+    }
+
+    public CompletableFuture<GetBinsFullness200Response> getBinFullness(Consumer<GetBinsFullness200Response> callback){
+
+        OffsetDateTime updated = session == null ? null : DateHelpers.toOffsetTime(session.lastLogin());
+        return sendAsync(() -> binApiClient.getBinsFullness(updated), callback, null, null);
     }
 
     public void getCommunity(Consumer<TrashDBLeaderboardResponse> callback){
@@ -159,7 +167,7 @@ public class TAServerClient extends ApiBackend {
 
         this.session = session;
 
-        client.setRequestInterceptor(builder -> builder.header("Authorization", "Bearer " + session.token()));
+        client.setRequestInterceptor(builder -> builder.header("Authorization", "Bearer " + (session != null ? session.token() : "")));
         initApis();
     }
 
@@ -167,5 +175,6 @@ public class TAServerClient extends ApiBackend {
         defaultApiClient = new DefaultApi(client);
         userApiClient = new UserApi(client);
         authApiClient = new AuthApi(client);
+        binApiClient = new BinApi(client);
     }
 }

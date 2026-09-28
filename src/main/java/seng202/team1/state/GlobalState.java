@@ -51,7 +51,6 @@ public class GlobalState {
     /// The handler for app API requests
     private TAServerClient taServer;
 
-
     private Feature requestedLocation;
 
     boolean testState = false;

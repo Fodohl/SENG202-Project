@@ -1,6 +1,6 @@
 package seng202.team1.helpers;
 
-import seng202.team1.common.DateHelpers;
+import seng202.team1.helpers.DateHelpers;
 
 import java.time.Instant;
 import java.time.LocalDateTime;

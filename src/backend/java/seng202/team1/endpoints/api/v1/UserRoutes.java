@@ -11,12 +11,11 @@ import seng202.team1.auth.PasswordHasher;
 import seng202.team1.database.exceptions.DuplicateEntryException;
 import seng202.team1.taserver.model.UserResponse;
 import seng202.team1.types.user.User;
-import seng202.team1.common.DateHelpers.*;
 
 import java.time.OffsetDateTime;
 
 import static seng202.team1.TAServer.userTable;
-import static seng202.team1.common.DateHelpers.toOffsetTime;
+import static seng202.team1.helpers.DateHelpers.toOffsetTime;
 
 @RestController
 public class UserRoutes implements UserApi {

@@ -5,7 +5,7 @@ import javafx.scene.Parent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
-import seng202.team1.common.DateHelpers;
+import seng202.team1.helpers.DateHelpers;
 import seng202.team1.types.bin.Bin;
 import seng202.team1.types.bin.BinCategory;
 import seng202.team1.types.status.ReportType;

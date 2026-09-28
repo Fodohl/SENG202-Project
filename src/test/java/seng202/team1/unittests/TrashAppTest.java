@@ -9,7 +9,6 @@ import seng202.team1.helpers.StringHelpers;
 import seng202.team1.types.bin.Bin;
 import seng202.team1.types.bin.BinCategory;
 import seng202.team1.types.bin.BinFullness;
-import seng202.team1.data.bin.*;
 import seng202.team1.database.DAO.BinDAO;
 import seng202.team1.database.DatabaseManager;
 import seng202.team1.data.table.StringTableBuilder;
@@ -17,6 +16,7 @@ import seng202.team1.database.exceptions.InstanceAlreadyExistsException;
 import seng202.team1.database.DAO.TrashLogDAO;
 import seng202.team1.gui.Router;
 import seng202.team1.state.GlobalState;
+import seng202.team1.data.bin.BinDataset;
 
 import java.time.Instant;
 import java.util.*;

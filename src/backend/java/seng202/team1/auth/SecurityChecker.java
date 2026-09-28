@@ -18,7 +18,7 @@ public class SecurityChecker {
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/v1/heartbeat", "/api/v1/auth/**", "/actuator/**").permitAll()
+                .requestMatchers("/api/v1/heartbeat", "/api/v1/auth/**", "/actuator/**", "/api/v1/bins/fullness").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/user").permitAll()
                 .anyRequest().authenticated()
             )

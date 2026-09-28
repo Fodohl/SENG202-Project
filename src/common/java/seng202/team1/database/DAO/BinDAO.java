@@ -12,9 +12,8 @@ import seng202.team1.database.SqlTimeUtils;
 
 
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.time.Instant;
+import java.util.*;
 
 /**
  * Handles all bin related actions to the database
@@ -230,5 +229,63 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
         } catch (IllegalArgumentException e) {
             return BinFullness.UNKNOWN;
         }
+    }
+
+   public List<Bin> getBinsAfter(Instant instant) {
+
+        // No known update time
+        if (instant == null)
+            return getAll();
+
+        List<Bin> bins = new ArrayList<>();
+        String sql = "SELECT * FROM bins WHERE updated_at > ?";
+        try (Connection conn = databaseManager.connect();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            setInstant(ps, 1, instant);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    bins.add(new Bin(
+                            rs.getInt("id"),
+                            rs.getDouble("lat"),
+                            rs.getDouble("lng"),
+                            convertStringToCategory(rs.getString("waste_type")),
+                            getInstant(rs, "updated_at"),
+                            rs.getString("photo_url"),
+                            rs.getString("area"),
+                            convertStringToFullness(rs.getString("fullness"))
+                    ));
+                }
+            }
+            return bins;
+        } catch (SQLException sqlException) {
+            log.error(sqlException);
+            return new ArrayList<>();
+        }
+    }
+
+    public void updateFullness(HashMap<Integer, BinFullness> fullness) {
+
+        // Fullness hasnt changed since last check
+        if (fullness == null || fullness.isEmpty())
+            return;
+
+        long nowMillis = Instant.now().toEpochMilli();
+
+        try (Connection conn = databaseManager.connect()) {
+            DSLContext context = databaseManager.getDSLContext(conn);
+            context.transaction(configuration -> {
+                DSLContext ctx = DSL.using(configuration);
+                for (Map.Entry<Integer, BinFullness> entry : fullness.entrySet()) {
+                    ctx.update(DSL.table("bins"))
+                            .set(DSL.field("fullness"), entry.getValue().toString())
+                            .set(DSL.field("updated_at"), nowMillis)
+                            .where(DSL.field("id").eq(entry.getKey()))
+                            .execute();
+                }
+            });
+        } catch (Exception e) {
+            log.error(e);
+        }
+
     }
 }
