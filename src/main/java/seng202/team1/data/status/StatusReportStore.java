@@ -3,9 +3,6 @@ package seng202.team1.data.status;
 
 import seng202.team1.data.User;
 import seng202.team1.data.bin.*;
-import seng202.team1.data.trashlog.Trash;
-import seng202.team1.data.trashlog.TrashLog;
-import seng202.team1.data.trashlog.TrashType;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -59,7 +56,7 @@ public class StatusReportStore {
 
     /**
      * Gets the last time a bin was reported
-     * @Author Connor
+     * @author Connor
      */
 
     public LocalDateTime getLastReportTime(int binID) {
@@ -73,16 +70,24 @@ public class StatusReportStore {
     }
 
     /**
-     * Adds bin report to JSON file
-     * @param newReport {@link StatusReport} to be added
+     * Saves a new status report without removing existing reports.
+     *
+     * @param newReport report to save
      * @throws IOException if the JSON file cannot be written
+     * @throws NullPointerException if newReport is null
+     * @author Connor Rocket
      */
     public void addReportToJson(StatusReport newReport) throws IOException {
-        loadStatusReport();
         Objects.requireNonNull(newReport);
+
         List<StatusReport> updatedReports = new ArrayList<>(reports);
         updatedReports.add(newReport);
-        writeToJSON(updatedReports);
+
+        writer.writeJson(filePath, updatedReports);
+
+        // Only update memory after successful write
+        reports.clear();
+        reports.addAll(updatedReports);
     }
 
 
