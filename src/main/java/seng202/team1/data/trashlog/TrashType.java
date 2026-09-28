@@ -1,8 +1,8 @@
 package seng202.team1.data.trashlog;
 
 /**
- * Specific item being thrown away. Each constant (except {@link #OTHER}) matches an
- * {@code id} in trash_types.json, which holds its emission factors.
+ * Specific item being thrown away. Each constant matches an
+ * {@code id} in trash_emissions.json, which holds its emission factors.
  *
  * <h2>Emission factors (kg CO2e per kg of material)</h2>
  *

@@ -60,16 +60,9 @@ IntelliJ has built-in support for Gradle. To import your project:
 - Map: https://leafletjs.com (BSD)
 - Map Tiles: https://snazzymaps.com (CC0)
 - Map Tiles Style Conversion: https://github.com/julienben/gmaps-apistyle-encoder
-<<<<<<< HEAD
-- Map Location Server: 
-- Map Location Sample Code: https://eng-git.canterbury.ac.nz/public-seng-resources/seng202/seng202-advanced-fx-public/-/tree/master?ref_type=heads
-
-# Thirdparty
-=======
 - Location Search: https://photon.komoot.io/
 - Public Bin Data: https://opendata-christchurchcity.hub.arcgis.com/datasets/ChristchurchCity::bin-opendata/explore?location=-43.591737%2C172.824069%2C11.00
 - Map Location Sample Code: https://eng-git.canterbury.ac.nz/public-seng-resources/seng202/seng202-advanced-fx-public/-/tree/master?ref_type=heads
 
 ## Thirdparty
->>>>>>> main
 - unpkg

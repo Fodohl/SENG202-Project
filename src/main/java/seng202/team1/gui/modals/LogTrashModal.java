@@ -12,7 +12,6 @@ import seng202.team1.common.StringHelpers;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.BinFullness;
 import seng202.team1.data.status.ReportType;
-import seng202.team1.data.trashlog.TrashEmission;
 import seng202.team1.data.trashlog.TrashLog;
 import seng202.team1.data.trashlog.TrashType;
 import seng202.team1.data.treedays.TreeDaysCalculator;
@@ -231,9 +230,9 @@ public class LogTrashModal extends Modal {
     }
 
      /**
-     * Get the input of the report type
+     * Get the input of the trash type
      *
-     * @return The report type input component
+     * @return The trash type input component
      */
     public UISearchDropDown getTypeInput() {
         return typeInput;

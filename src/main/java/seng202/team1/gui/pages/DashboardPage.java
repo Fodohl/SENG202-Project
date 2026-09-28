@@ -51,7 +51,7 @@ public class DashboardPage extends Page {
 
         // Top cards
         leaderBoard = new UICard("Leaderboard Position:", "#4",  "(Top 10%)", "/media/images/dir-continue.svg", true);
-        trees = new UICard("Tree Days:", "1.1",  "Tree Days", "/media/images/tree.svg", true);
+        trees = new UICard("Tree Days:", "0",  "tree-days", "/media/images/tree.svg", true);
         dataset = new UICard("Trash Logged:", "184",  "Items", "/media/images/throw.svg", true);
 
         HBox topCards = new HBox(20, leaderBoard, trees, dataset);

@@ -3,18 +3,17 @@ package seng202.team1.gui.components;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Consumer;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
-
-import java.util.function.Consumer;
+import javafx.scene.input.MouseEvent;
 
 /**
- * A UI Component to handle dropdown input
+ * A dropdown the user can type into and filters the options
  */
 public class UISearchDropDown extends UIDropDown {
 
@@ -94,6 +93,11 @@ public class UISearchDropDown extends UIDropDown {
             dropwDown.setValue((String)value);
     }
 
+    /**
+     * Run a listener whenever the value changes
+     *
+     * @param listener Called with the new value
+     */
     public void setOnSelectionChanged(Consumer<String> listener) {
         dropwDown.valueProperty().addListener((obs, oldValue, newValue) -> listener.accept(newValue));
     }
