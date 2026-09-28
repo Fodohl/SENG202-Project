@@ -36,6 +36,8 @@ public class ApiBackend {
     /// The HTTP worker to processes requests
     private final HttpClient backend;
 
+    private String bearerToken;
+
     /**
      * Constructs a new API client
      *
@@ -188,5 +190,9 @@ public class ApiBackend {
 
         // Send req
         send(request, handler, error, loader);
+    }
+
+    public void setBearerToken(String bearerToken) {
+        this.bearerToken = bearerToken;
     }
 }

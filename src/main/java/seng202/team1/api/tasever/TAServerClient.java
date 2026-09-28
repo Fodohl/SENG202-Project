@@ -37,11 +37,7 @@ public class TAServerClient extends ApiBackend {
             client.updateBaseUri(url);
 
         log.info("Connecting to API base path: {}", client.getBaseUri());
-
-        // Init the handlers
-        defaultApiClient = new DefaultApi(client);
-        userApiClient = new UserApi(client);
-        authApiClient = new AuthApi(client);
+        initApis();
 
     }
 
@@ -67,6 +63,11 @@ public class TAServerClient extends ApiBackend {
         request.password(passwordRaw);
 
         return sendAsync(() -> authApiClient.logUserIn(request), callback, null, null);
+    }
+
+    public CompletableFuture<UserResponse> getUser(Consumer<UserResponse> callback){
+
+        return sendAsync(() -> userApiClient.getUserDetails(), callback, null, null);
     }
 
     public void getCommunity(Consumer<TrashDBLeaderboardResponse> callback){
@@ -155,6 +156,16 @@ public class TAServerClient extends ApiBackend {
     }
 
     public void setSession(Session session) {
+
         this.session = session;
+
+        client.setRequestInterceptor(builder -> builder.header("Authorization", "Bearer " + session.token()));
+        initApis();
+    }
+
+    private void initApis() {
+        defaultApiClient = new DefaultApi(client);
+        userApiClient = new UserApi(client);
+        authApiClient = new AuthApi(client);
     }
 }

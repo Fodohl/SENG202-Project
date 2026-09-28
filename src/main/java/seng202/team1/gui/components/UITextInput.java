@@ -52,7 +52,7 @@ public class UITextInput extends VBox implements UIInputComponent{
     @Override
     public void setInput(Object value) {
 
-        if(value instanceof  String)
+        if(value instanceof String)
             textField.setText((String)value);
     }
 

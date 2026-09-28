@@ -1,5 +1,7 @@
 package seng202.team1.common;
 
+import org.jooq.impl.QOM;
+
 import java.time.*;
 
 /**
@@ -19,6 +21,19 @@ public class DateHelpers {
         ZoneId timezone = ZoneOffset.systemDefault();
 
         return time.atZone(timezone).toInstant();
+    }
+
+    /**
+     * Convert  a unix timestamp instant int an offset time
+     *
+     * @param time The local time
+     * @return The converted instant
+     */
+    public static OffsetDateTime toOffsetTime(Instant time){
+
+        ZoneId timezone = ZoneOffset.systemDefault();
+
+        return time.atZone(timezone).toOffsetDateTime();
     }
 
 }

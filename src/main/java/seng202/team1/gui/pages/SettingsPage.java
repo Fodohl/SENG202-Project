@@ -9,6 +9,8 @@ import org.slf4j.LoggerFactory;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.components.*;
 import seng202.team1.gui.phases.Phases;
+import seng202.team1.types.user.Session;
+import seng202.team1.types.user.User;
 
 /**
  * Page that displays the configuration menu of the app
@@ -29,55 +31,55 @@ public class SettingsPage extends Page {
      *
      * @param router the window this page is on
      */
-   public SettingsPage(Router router){
+    public SettingsPage(Router router) {
 
         super(router, Pages.SETTINGS);
 
     }
 
-   /**
-    * Constructs the UI for the settings page
-    *
-    * @return the UI layout for the page
-    */
-   @Override
-   protected Parent renderSelf() {
+    /**
+     * Constructs the UI for the settings page
+     *
+     * @return the UI layout for the page
+     */
+    @Override
+    protected Parent renderSelf() {
 
-       UITitle detailsTitle = new UITitle("User Details");
-       userName = new UITextInput("Enter your name...");
-       userEmail = new UITextInput("Enter your email...");
-       UISection userDetails = new UISection(detailsTitle, userName, userEmail);
+        UITitle detailsTitle = new UITitle("User Details");
+        userName = new UITextInput("Enter your name...");
+        userEmail = new UITextInput("Enter your email...");
+        UISection userDetails = new UISection(detailsTitle, userName, userEmail);
 
-       UITitle changePasswordTitle = new UITitle("Change Password");
-       userPasswordOld = new UITextInput("Enter your current password...");
-       userPasswordNew = new UITextInput("Enter your new password...");
-       userPasswordNewConfirm = new UITextInput("Enter your new password again...");
-       UISection passwordChange = new UISection(changePasswordTitle, userPasswordOld, userPasswordNew, userPasswordNewConfirm);
+        UITitle changePasswordTitle = new UITitle("Change Password");
+        userPasswordOld = new UITextInput("Enter your current password...");
+        userPasswordNew = new UITextInput("Enter your new password...");
+        userPasswordNewConfirm = new UITextInput("Enter your new password again...");
+        UISection passwordChange = new UISection(changePasswordTitle, userPasswordOld, userPasswordNew, userPasswordNewConfirm);
 
-       UIButton save = new UIButton("Save Changes");
-       UIButton cancel = new UIButton("Cancel");
-       UISection saveSection = new UISection(15, save, cancel);
+        UIButton save = new UIButton("Save Changes");
+        UIButton cancel = new UIButton("Cancel");
+        UISection saveSection = new UISection(15, save, cancel);
 
-       UIButton logOut = new UIButton("Log Out");
-       UIButton deleteAccount = new UIButton("Delete Account");
-       UISection manageButtons = new UISection(15, logOut, deleteAccount);
+        UIButton logOut = new UIButton("Log Out");
+        UIButton deleteAccount = new UIButton("Delete Account");
+        UISection manageButtons = new UISection(15, logOut, deleteAccount);
 
-       save.setOnAction(e -> saveChanges());
-       logOut.setOnAction(e -> logOut());
+        save.setOnAction(e -> saveChanges());
+        logOut.setOnAction(e -> logOut());
 
-       // Hide input
-       userPasswordOld.setPrivate();
-       userPasswordNew.setPrivate();
-       userPasswordNewConfirm.setPrivate();
+        // Hide input
+        userPasswordOld.setPrivate();
+        userPasswordNew.setPrivate();
+        userPasswordNewConfirm.setPrivate();
 
-       // Ensure button spacing
-       saveSection.getStyleClass().add("buttons");
-       manageButtons.getStyleClass().add("buttons");
-       deleteAccount.getStyleClass().add("error");
+        // Ensure button spacing
+        saveSection.getStyleClass().add("buttons");
+        manageButtons.getStyleClass().add("buttons");
+        deleteAccount.getStyleClass().add("error");
 
-       VBox root = new VBox(20, userDetails, passwordChange, saveSection, manageButtons);
-       root.setAlignment(Pos.CENTER);
-       return root;
+        VBox root = new VBox(20, userDetails, passwordChange, saveSection, manageButtons);
+        root.setAlignment(Pos.CENTER);
+        return root;
     }
 
     private void saveChanges() {
@@ -85,6 +87,21 @@ public class SettingsPage extends Page {
     }
 
     private void logOut() {
-       getState().getAuth().logOut();
+        getState().getAuth().logOut();
+    }
+
+    @Override
+    public void updateContents() {
+
+        Session session = getState().getAuth().getSession();
+
+        // Not logged in
+        if (session == null)
+            return;
+
+        User user = session.userDetails();
+        userName.setInput(user.name());
+        userEmail.setInput(user.email());
+
     }
 }

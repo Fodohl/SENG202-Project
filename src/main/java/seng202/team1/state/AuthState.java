@@ -3,8 +3,10 @@ package seng202.team1.state;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.propertyeditors.CustomNumberEditor;
 import seng202.team1.api.tasever.TAServerClient;
 import seng202.team1.taserver.model.TokenResponse;
+import seng202.team1.taserver.model.UserResponse;
 import seng202.team1.types.user.Session;
 import seng202.team1.types.user.User;
 import seng202.team1.gui.pages.Pages;
@@ -46,11 +48,14 @@ public class AuthState {
 
     public void login(String email, String password) {
 
+        // Authenticate the user
         TokenResponse token = server.postLogin(email, password, r -> {}).join();
+        setSession(new Session(null, token.getToken()));
 
-        // Update session
-        User user = new User(null, null, null, null, email, null, null);
-        session = new Session(user, token.getToken());
+        // Updated the user details
+        UserResponse userDetails = server.getUser(r -> {}).join();
+        User user = new User(userDetails.getId(), userDetails.getCreated().toInstant(), userDetails.getUpdated().toInstant(), userDetails.getName(), userDetails.getEmail(), null, null);
+        setSession(new Session(user, token.getToken()));
 
         // Successful login
         state.getRouter().switchPhase(Phases.MAIN);
@@ -193,8 +198,7 @@ public class AuthState {
         try (var reader = Files.newBufferedReader(defaultDataPath())) {
 
             // Read the session, forcing propagation to backend
-            this.session = GSON.fromJson(reader, Session.class);
-            setSession(session);
+            setSession(GSON.fromJson(reader, Session.class));
 
             if (this.session != null && this.session.token() != null)
                 log.info("Restored session for user: {}", session.userDetails() != null ? session.userDetails().email() : "Unknown");

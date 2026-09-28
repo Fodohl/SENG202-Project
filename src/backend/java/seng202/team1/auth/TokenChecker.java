@@ -28,6 +28,8 @@ public class TokenChecker extends OncePerRequestFilter {
         try{
 
             // Must have a token
+            logger.info(String.format("Headers: %s", request.getHeaderNames()));
+
             String header = request.getHeader("Authorization");
             if (header == null || !header.startsWith("Bearer "))
                 throw new InvalidParameterException("Request must have bearer token");
@@ -39,7 +41,7 @@ public class TokenChecker extends OncePerRequestFilter {
 
             // Invalid token
             if(user == -1L)
-                throw  new InvalidParameterException("Token malformed or not signed");
+                throw new InvalidParameterException("Token malformed or not signed");
 
             // Store the auth so routes can use it
             var auth = new UsernamePasswordAuthenticationToken(user, null, List.of());
@@ -47,7 +49,7 @@ public class TokenChecker extends OncePerRequestFilter {
 
         } catch (Exception e) {
 
-            logger.info(String.format("Token auth failed: %s", e.getMessage()));
+            logger.info(String.format("Token auth failed (%s): %s", request.getRequestURI(), e.getMessage()));
             return;
 
         } finally {

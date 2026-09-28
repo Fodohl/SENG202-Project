@@ -34,7 +34,7 @@ public class AuthRoutes implements AuthApi {
            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
 
         if(!PasswordHasher.verify(logUserInRequest.getPassword(), user.passwordHash()))
-               throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
+           throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
 
         // Authenticate the user
         TokenResponse response = new TokenResponse();
