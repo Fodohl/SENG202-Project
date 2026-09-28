@@ -1,4 +1,4 @@
-package seng202.team1.data.sqlite;
+package seng202.team1.database;
 
 
 import io.github.cdimascio.dotenv.Dotenv;
@@ -7,7 +7,6 @@ import org.apache.logging.log4j.Logger;
 import org.jooq.DSLContext;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DSL;
-import seng202.team1.data.sqlite.exceptions.InstanceAlreadyExistsException;
 
 import java.io.*;
 import java.net.URLDecoder;

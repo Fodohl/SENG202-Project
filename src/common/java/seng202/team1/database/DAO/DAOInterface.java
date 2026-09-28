@@ -1,6 +1,6 @@
-package seng202.team1.data.sqlite.DAO;
+package seng202.team1.database.DAO;
 
-import seng202.team1.data.sqlite.exceptions.DuplicateEntryException;
+import seng202.team1.database.exceptions.DuplicateEntryException;
 
 import java.util.List;
 

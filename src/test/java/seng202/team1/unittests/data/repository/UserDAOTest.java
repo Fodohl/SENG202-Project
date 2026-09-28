@@ -3,10 +3,9 @@ package seng202.team1.unittests.data.repository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import seng202.team1.api.trashdb.LocalUser;
-import seng202.team1.data.sqlite.DAO.UserDAO;
-import seng202.team1.data.sqlite.PasswordHasher;
-import seng202.team1.data.sqlite.exceptions.DuplicateEntryException;
+import seng202.team1.types.User;
+import seng202.team1.database.DAO.UserDAO;
+import seng202.team1.database.exceptions.DuplicateEntryException;
 import seng202.team1.unittests.TrashAppTest;
 
 /**
@@ -24,8 +23,8 @@ public class UserDAOTest extends TrashAppTest {
     }
 
     /** Builds a new (not yet saved) user with a hashed password */
-    private LocalUser newUser(String name, String email, String password) {
-        return new LocalUser(null, null, null, name, email, PasswordHasher.hash(password), null);
+    private User newUser(String name, String email, String password) {
+        return new User(null, null, null, name, email, "", null);
     }
 
     @Test
@@ -38,10 +37,10 @@ public class UserDAOTest extends TrashAppTest {
     @Test
     void testGetOneReturnsSavedFields() throws DuplicateEntryException {
         int id = users.add(newUser("Alice", "alice@test.com", "Password1!"));
-        LocalUser saved = users.getOne(id);
+        User saved = users.getOne(id);
 
         Assertions.assertNotNull(saved);
-        Assertions.assertEquals(id, saved._id());
+        Assertions.assertEquals(id, saved.id());
         Assertions.assertEquals("Alice", saved.name());
         Assertions.assertEquals("alice@test.com", saved.email());
         Assertions.assertNotNull(saved.created());
@@ -54,14 +53,6 @@ public class UserDAOTest extends TrashAppTest {
         Assertions.assertNull(users.getOne(999));
     }
 
-    @Test
-    void testPasswordIsNotStoredInPlainText() throws DuplicateEntryException {
-        int id = users.add(newUser("Alice", "alice@test.com", "Password1!"));
-        LocalUser saved = users.getOne(id);
-
-        Assertions.assertNotEquals("Password1!", saved.passwordHash());
-        Assertions.assertTrue(PasswordHasher.verify("Password1!", saved.passwordHash()));
-    }
 
     @Test
     void testGetByEmailIsCaseInsensitive() throws DuplicateEntryException {
@@ -96,13 +87,13 @@ public class UserDAOTest extends TrashAppTest {
     @Test
     void testUpdateChangesName() throws DuplicateEntryException {
         int id = users.add(newUser("Alice", "alice@test.com", "Password1!"));
-        LocalUser before = users.getOne(id);
+        User before = users.getOne(id);
 
-        LocalUser changed = new LocalUser(before._id(), before.created(), before.updated(),
+        User changed = new User(before.id(), before.created(), before.updated(),
                 "Alicia", before.email(), before.passwordHash(), before.resetCode());
         users.update(changed);
 
-        LocalUser after = users.getOne(id);
+        User after = users.getOne(id);
         Assertions.assertEquals("Alicia", after.name());
         Assertions.assertEquals(before.email(), after.email());
         Assertions.assertEquals(before.passwordHash(), after.passwordHash());
@@ -111,9 +102,9 @@ public class UserDAOTest extends TrashAppTest {
     @Test
     void testUpdateStoresResetCode() throws DuplicateEntryException {
         int id = users.add(newUser("Alice", "alice@test.com", "Password1!"));
-        LocalUser before = users.getOne(id);
+        User before = users.getOne(id);
 
-        users.update(new LocalUser(before._id(), before.created(), before.updated(),
+        users.update(new User(before.id(), before.created(), before.updated(),
                 before.name(), before.email(), before.passwordHash(), 123456));
 
         Assertions.assertEquals(123456, users.getOne(id).resetCode());

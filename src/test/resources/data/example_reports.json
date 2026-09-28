@@ -3,7 +3,7 @@
     {
       "binID": 1,
       "user": "Test1",
-      "userID": 123,
+      "id": 123,
       "fullness": null,
       "issue": null,
       "description": null,
@@ -12,7 +12,7 @@
     {
       "binID": 1,
       "user": "Test2",
-      "userID": 321,
+      "id": 321,
       "fullness": "EMPTY",
       "issue": "MISSING",
       "description": "Test description",
@@ -21,7 +21,7 @@
     {
       "binID": 2,
       "user": "Test3",
-      "userID": 231,
+      "id": 231,
       "fullness": "OVERFLOWING",
       "issue": "GRAFFITI",
       "description": "Test description",

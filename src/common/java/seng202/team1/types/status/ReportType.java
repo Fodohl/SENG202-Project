@@ -1,4 +1,4 @@
-package seng202.team1.data.status;
+package seng202.team1.types.status;
 
 /**
  * Represents the caetgory this report falls into

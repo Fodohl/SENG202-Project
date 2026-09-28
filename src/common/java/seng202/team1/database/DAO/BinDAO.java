@@ -1,14 +1,14 @@
-package seng202.team1.data.sqlite.DAO;
+package seng202.team1.database.DAO;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
-import seng202.team1.data.bin.Bin;
-import seng202.team1.data.bin.BinCategory;
-import seng202.team1.data.bin.BinFullness;
-import seng202.team1.data.sqlite.DatabaseManager;
-import seng202.team1.data.sqlite.SqlTimeUtils;
+import seng202.team1.types.bin.Bin;
+import seng202.team1.types.bin.BinCategory;
+import seng202.team1.types.bin.BinFullness;
+import seng202.team1.database.DatabaseManager;
+import seng202.team1.database.SqlTimeUtils;
 
 
 import java.sql.*;

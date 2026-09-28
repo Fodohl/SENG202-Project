@@ -1,8 +1,8 @@
-package seng202.team1.data.status;
+package seng202.team1.types.status;
 
-import seng202.team1.data.User;
-import seng202.team1.data.bin.Bin;
-import seng202.team1.data.bin.BinFullness;
+import seng202.team1.types.User;
+import seng202.team1.types.bin.Bin;
+import seng202.team1.types.bin.BinFullness;
 
 import java.time.LocalDateTime;
 
@@ -104,7 +104,7 @@ public class StatusReport {
      */
     public boolean equals(StatusReport statusReport) {
         return this.getBinID() == statusReport.getBinID()
-                && this.getSubmittedBy().getUserID() == statusReport.getSubmittedBy().getUserID()
+                && this.getSubmittedBy().id() == statusReport.getSubmittedBy().id()
                 && this.getFullness().equals(statusReport.getFullness())
                 && this.getIssue().equals(statusReport.getIssue())
                 && this.getDescription().equals(statusReport.getDescription());

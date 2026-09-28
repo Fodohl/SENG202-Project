@@ -1,10 +1,10 @@
-package seng202.team1.api.trashdb;
+package seng202.team1.types;
 
 import java.time.Instant;
 
-public record LocalUser(
+public record User(
 
-        Integer _id,
+        Integer id,
         Instant created,
         Instant updated,
 

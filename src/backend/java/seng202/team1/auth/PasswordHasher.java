@@ -1,4 +1,4 @@
-package seng202.team1.data.sqlite;
+package seng202.team1.auth;
 
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;

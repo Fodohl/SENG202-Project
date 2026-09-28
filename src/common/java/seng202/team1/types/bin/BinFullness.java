@@ -1,4 +1,4 @@
-package seng202.team1.data.bin;
+package seng202.team1.types.bin;
 
 /**
  * Represents how full a bin is

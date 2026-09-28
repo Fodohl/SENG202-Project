@@ -1,11 +1,11 @@
-package seng202.team1.data.sqlite.DAO;
+package seng202.team1.database.DAO;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import seng202.team1.api.trashdb.LocalUser;
-import seng202.team1.data.sqlite.DatabaseManager;
-import seng202.team1.data.sqlite.SqlTimeUtils;
-import seng202.team1.data.sqlite.exceptions.DuplicateEntryException;
+import seng202.team1.types.User;
+import seng202.team1.database.DatabaseManager;
+import seng202.team1.database.SqlTimeUtils;
+import seng202.team1.database.exceptions.DuplicateEntryException;
 
 import java.sql.*;
 import java.time.Instant;
@@ -17,7 +17,7 @@ import java.util.Locale;
  * Database Access Object for user accounts
  * @author abdallaweza
  */
-public class UserDAO extends SqlTimeUtils implements DAOInterface<LocalUser> {
+public class UserDAO extends SqlTimeUtils implements DAOInterface<User> {
     private static final Logger log = LogManager.getLogger(UserDAO.class);
     private final DatabaseManager databaseManager;
 
@@ -25,11 +25,11 @@ public class UserDAO extends SqlTimeUtils implements DAOInterface<LocalUser> {
         this.databaseManager = databaseManager;
     }
 
-    /** Converts the current row of a ResultSet into a LocalUser */
-    private LocalUser fromRow(ResultSet rs) throws SQLException {
+    /** Converts the current row of a ResultSet into a User */
+    private User fromRow(ResultSet rs) throws SQLException {
         int resetCode = rs.getInt("reset_code");
         Integer resetCodeOrNull = rs.wasNull() ? null : resetCode;
-        return new LocalUser(
+        return new User(
                 rs.getInt("id"),
                 getInstant(rs, "created_at"),
                 getInstant(rs, "updated_at"),
@@ -49,8 +49,8 @@ public class UserDAO extends SqlTimeUtils implements DAOInterface<LocalUser> {
     }
 
     @Override
-    public List<LocalUser> getAll() {
-        List<LocalUser> users = new ArrayList<>();
+    public List<User> getAll() {
+        List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM users";
         try (Connection conn = databaseManager.connect();
              Statement stmt = conn.createStatement();
@@ -65,7 +65,7 @@ public class UserDAO extends SqlTimeUtils implements DAOInterface<LocalUser> {
     }
 
     @Override
-    public LocalUser getOne(int id) {
+    public User getOne(int id) {
         String sql = "SELECT * FROM users WHERE id = ?";
         try (Connection conn = databaseManager.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -83,7 +83,7 @@ public class UserDAO extends SqlTimeUtils implements DAOInterface<LocalUser> {
      * Finds a user by email (case-insensitive)
      * @return the user, or null if none
      */
-    public LocalUser getByEmail(String email) {
+    public User getByEmail(String email) {
         String sql = "SELECT * FROM users WHERE email = ?";
         try (Connection conn = databaseManager.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -103,7 +103,7 @@ public class UserDAO extends SqlTimeUtils implements DAOInterface<LocalUser> {
      * @throws DuplicateEntryException if the email is already registered
      */
     @Override
-    public int add(LocalUser user) throws DuplicateEntryException {
+    public int add(User user) throws DuplicateEntryException {
         if (getByEmail(user.email()) != null) {
             throw new DuplicateEntryException("Email already registered: " + user.email());
         }
@@ -141,7 +141,7 @@ public class UserDAO extends SqlTimeUtils implements DAOInterface<LocalUser> {
     }
 
     @Override
-    public void update(LocalUser user) {
+    public void update(User user) {
         String sql = "UPDATE users SET updated_at = ?, name = ?, email = ?, password_hash = ?, reset_code = ? "
                 + "WHERE id = ?";
         try (Connection conn = databaseManager.connect();
@@ -151,9 +151,9 @@ public class UserDAO extends SqlTimeUtils implements DAOInterface<LocalUser> {
             ps.setString(3, user.email().toLowerCase(Locale.ROOT));
             ps.setString(4, user.passwordHash());
             setNullableInt(ps, 5, user.resetCode());
-            ps.setInt(6, user._id());
+            ps.setInt(6, user.id());
             if (ps.executeUpdate() == 0) {
-                log.warn("Update affected 0 rows for user id {}", user._id());
+                log.warn("Update affected 0 rows for user id {}", user.id());
             }
         } catch (SQLException e) {
             log.error(e);

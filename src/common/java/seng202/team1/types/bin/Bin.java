@@ -1,9 +1,7 @@
-package seng202.team1.data.bin;
+package seng202.team1.types.bin;
 
-import seng202.team1.data.bin.BinCategory;
-import seng202.team1.data.sqlite.DAO.BinDAO;
-import seng202.team1.data.bin.BinFullness;
-import seng202.team1.data.status.StatusReport;
+import seng202.team1.database.DAO.BinDAO;
+import seng202.team1.types.status.StatusReport;
 
 import java.time.Instant;
 import java.util.List;
@@ -140,6 +138,7 @@ public class Bin {
                 '}';
     }
 
+    //@todo should NOT be here
     public void updateFullness(BinDAO db, List<StatusReport> reportsForBin) {
 
 

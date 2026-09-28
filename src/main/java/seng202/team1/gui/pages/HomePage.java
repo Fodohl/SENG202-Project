@@ -6,10 +6,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import org.jspecify.annotations.NonNull;
-import seng202.team1.data.bin.Bin;
-import seng202.team1.data.bin.BinCategory;
-import seng202.team1.data.trashlog.TrashLog;
+import seng202.team1.types.bin.Bin;
+import seng202.team1.types.trashlog.TrashLog;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.components.*;
 

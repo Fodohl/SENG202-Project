@@ -1,4 +1,4 @@
-package seng202.team1.data.sqlite.exceptions;
+package seng202.team1.database.exceptions;
 
 /**
  * Custom exception to be thrown when illegal access of a singleton instance is requested

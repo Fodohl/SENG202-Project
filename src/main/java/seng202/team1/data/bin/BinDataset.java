@@ -4,7 +4,6 @@ package seng202.team1.data.bin;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.*;
 
 import org.apache.logging.log4j.LogManager;
@@ -12,9 +11,9 @@ import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import seng202.team1.data.status.ReportType;
-import seng202.team1.data.status.StatusReport;
-import seng202.team1.data.status.StatusReportStore;
+import seng202.team1.types.bin.Bin;
+import seng202.team1.types.bin.BinCategory;
+import seng202.team1.types.bin.BinFullness;
 
 /**
  * DataLoader
@@ -31,14 +30,14 @@ public class BinDataset {
     private static final String BIN_DATA = "data/cc_bins_dataset.geojson";
 
     /// The list of bins loaded
-    private List<Bin> binObjects = new ArrayList<>();
+    private List<seng202.team1.types.bin.Bin> binObjects = new ArrayList<>();
 
     /**
      * Get loaded bins list
      *
      * @return List of Bin instances
      */
-    public List<Bin> getBinDataset() {
+    public List<seng202.team1.types.bin.Bin> getBinDataset() {
         return Collections.unmodifiableList(binObjects);
     }
 
@@ -48,7 +47,7 @@ public class BinDataset {
      * @param binID ID of the bin
      * @return The BinObject or Null if not found
      */
-    public Bin getBinById(int binID) {
+    public seng202.team1.types.bin.Bin getBinById(int binID) {
         return binObjects.stream()
                 .filter(bin -> bin.getID() == binID)
                 .findFirst()
@@ -97,7 +96,7 @@ public class BinDataset {
      * @param feature - JSONObject representing a feature
      * @return Bin instance
      */
-    private Bin parseFeature(JSONObject feature) {
+    private seng202.team1.types.bin.Bin parseFeature(JSONObject feature) {
 
         // Get the location data of the in
         JSONObject geometry = (JSONObject) feature.get("geometry");

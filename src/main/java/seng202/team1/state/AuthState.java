@@ -3,7 +3,7 @@ package seng202.team1.state;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import seng202.team1.data.User;
+import seng202.team1.types.User;
 import seng202.team1.gui.pages.Pages;
 import seng202.team1.gui.phases.Phases;
 
@@ -49,7 +49,7 @@ public class AuthState {
 
 
         // Log into the account
-        login(userDetails.getEmail(), password);
+        login(userDetails.email(), password);
 
     }
 

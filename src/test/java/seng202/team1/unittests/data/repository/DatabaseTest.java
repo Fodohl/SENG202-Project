@@ -2,8 +2,6 @@ package seng202.team1.unittests.data.repository;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import seng202.team1.data.sqlite.DatabaseManager;
-import seng202.team1.state.GlobalState;
 import seng202.team1.unittests.TrashAppTest;
 
 import java.sql.Connection;

@@ -3,6 +3,8 @@ package seng202.team1.data.status;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import seng202.team1.types.status.StatusReport;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -62,8 +64,8 @@ public class StatusReportWriter {
         JSONObject json = new JSONObject();
 
         json.put("binID", report.getBinID());
-        json.put("user",  report.getSubmittedBy().getName());
-        json.put("userID", report.getSubmittedBy().getUserID());
+        json.put("user",  report.getSubmittedBy().name());
+        json.put("id", report.getSubmittedBy().id());
         json.put("fullness", report.getFullness() == null ? null : report.getFullness().toString());
         json.put("issue", report.getIssue() == null ? null : report.getIssue().toString());
         json.put("description", report.getDescription());

@@ -3,12 +3,13 @@ package seng202.team1.unittests.data.status;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import seng202.team1.data.bin.Bin;
-import seng202.team1.data.bin.BinCategory;
-import seng202.team1.data.bin.BinFullness;
-import seng202.team1.data.status.ReportType;
-import seng202.team1.data.status.StatusReport;
-import seng202.team1.data.User;
+import seng202.team1.types.bin.Bin;
+import seng202.team1.types.bin.BinCategory;
+import seng202.team1.types.bin.BinFullness;
+import seng202.team1.types.status.ReportType;
+import seng202.team1.types.status.StatusReport;
+
+import seng202.team1.types.User;
 import seng202.team1.data.status.StatusReportLoader;
 import seng202.team1.unittests.TrashAppTest;
 
@@ -38,7 +39,7 @@ public class StatusReportLoaderTest extends TrashAppTest {
         statusReportLoader = new StatusReportLoader(bins);
         statusReportLoader.readJson();
         testBin = new Bin(1, 1.0, 1.0, BinCategory.GENERAL_WASTE, Instant.now(), "testPark");
-        testUser = new User(1, "Test");
+        testUser = new User(1, Instant.now(), Instant.now(), "Test", "", "", 0);
         testStatusReport = new StatusReport(
                 testBin,
                 testUser,
@@ -64,8 +65,8 @@ public class StatusReportLoaderTest extends TrashAppTest {
     public void reportMapsCorrectly() {
         List<StatusReport> statusReports = statusReportLoader.getStatusReportsById(1);
         assertEquals(1, statusReports.get(1).getBinID());
-        assertEquals("Test2", statusReports.get(1).getSubmittedBy().getName());
-        assertEquals(321, statusReports.get(1).getSubmittedBy().getUserID());
+        assertEquals("Test2", statusReports.get(1).getSubmittedBy().name());
+        assertEquals(321, statusReports.get(1).getSubmittedBy().id());
         assertEquals(BinFullness.EMPTY, statusReports.get(1).getFullness());
         assertEquals(ReportType.MISSING, statusReports.get(1).getIssue());
         assertEquals("Test description", statusReports.get(1).getDescription());
@@ -75,8 +76,8 @@ public class StatusReportLoaderTest extends TrashAppTest {
     public void nullMapsCorrectly() {
         List<StatusReport> statusReports = statusReportLoader.getStatusReportsById(1);
         assertEquals(1, statusReports.get(0).getBinID());
-        assertEquals("Test1", statusReports.get(0).getSubmittedBy().getName());
-        assertEquals(123, statusReports.get(0).getSubmittedBy().getUserID());
+        assertEquals("Test1", statusReports.get(0).getSubmittedBy().name());
+        assertEquals(123, statusReports.get(0).getSubmittedBy().id());
         assertNull(statusReports.get(0).getFullness());
         assertNull(statusReports.get(0).getIssue());
         assertNull(statusReports.get(0).getDescription());
@@ -86,8 +87,8 @@ public class StatusReportLoaderTest extends TrashAppTest {
     public void getStatusReportsByIdReturnsCorrectBinSubset() {
         List<StatusReport> statusReports = statusReportLoader.getStatusReportsById(1);
         assertEquals(2, statusReports.size());
-        assertEquals(123, statusReports.get(0).getSubmittedBy().getUserID());
-        assertEquals(321, statusReports.get(1).getSubmittedBy().getUserID());
+        assertEquals(123, statusReports.get(0).getSubmittedBy().id());
+        assertEquals(321, statusReports.get(1).getSubmittedBy().id());
     }
 
     @Test

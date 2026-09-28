@@ -5,12 +5,12 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import seng202.team1.helpers.StringHelpers;
-import seng202.team1.data.bin.Bin;
-import seng202.team1.data.bin.BinFullness;
-import seng202.team1.data.bin.BinCategory;
-import seng202.team1.data.status.ReportType;
-import seng202.team1.data.trashlog.TrashLog;
-import seng202.team1.data.trashlog.TrashType;
+import seng202.team1.types.bin.Bin;
+import seng202.team1.types.bin.BinFullness;
+import seng202.team1.types.bin.BinCategory;
+import seng202.team1.types.status.ReportType;
+import seng202.team1.types.trashlog.TrashLog;
+import seng202.team1.types.trashlog.TrashType;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.components.*;
 

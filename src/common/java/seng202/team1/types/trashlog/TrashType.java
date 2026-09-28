@@ -1,4 +1,4 @@
-package seng202.team1.data.trashlog;
+package seng202.team1.types.trashlog;
 
 /**
  * Specific item being thrown away

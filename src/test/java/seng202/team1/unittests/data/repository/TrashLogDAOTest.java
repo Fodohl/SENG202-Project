@@ -3,9 +3,8 @@ package seng202.team1.unittests.data.repository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import seng202.team1.data.bin.Bin;
-import seng202.team1.data.trashlog.TrashLog;
-import seng202.team1.data.trashlog.TrashType;
+import seng202.team1.types.trashlog.TrashLog;
+import seng202.team1.types.trashlog.TrashType;
 import seng202.team1.unittests.TrashAppTest;
 
 import java.time.Instant;

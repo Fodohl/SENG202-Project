@@ -1,7 +1,7 @@
 package seng202.team1.tasks.preflight;
 
 import seng202.team1.data.bin.BinDataset;
-import seng202.team1.data.sqlite.DAO.BinDAO;
+import seng202.team1.database.DAO.BinDAO;
 import seng202.team1.tasks.Task;
 import seng202.team1.tasks.TaskManager;
 

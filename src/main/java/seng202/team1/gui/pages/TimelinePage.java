@@ -6,11 +6,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import seng202.team1.common.DateHelpers;
-import seng202.team1.data.bin.Bin;
-import seng202.team1.data.bin.BinCategory;
-import seng202.team1.data.status.ReportType;
-import seng202.team1.data.status.StatusReport;
-import seng202.team1.data.trashlog.TrashLog;
+import seng202.team1.types.bin.Bin;
+import seng202.team1.types.bin.BinCategory;
+import seng202.team1.types.status.ReportType;
+import seng202.team1.types.status.StatusReport;
+import seng202.team1.types.trashlog.TrashLog;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.components.*;
 

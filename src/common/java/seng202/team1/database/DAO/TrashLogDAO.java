@@ -1,11 +1,11 @@
-package seng202.team1.data.sqlite.DAO;
+package seng202.team1.database.DAO;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import seng202.team1.data.sqlite.DatabaseManager;
-import seng202.team1.data.sqlite.SqlTimeUtils;
-import seng202.team1.data.trashlog.TrashLog;
-import seng202.team1.data.trashlog.TrashType;
+import seng202.team1.database.DatabaseManager;
+import seng202.team1.database.SqlTimeUtils;
+import seng202.team1.types.trashlog.TrashLog;
+import seng202.team1.types.trashlog.TrashType;
 
 import java.sql.*;
 import java.util.ArrayList;

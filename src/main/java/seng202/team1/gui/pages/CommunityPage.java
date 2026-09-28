@@ -1,16 +1,9 @@
 package seng202.team1.gui.pages;
 
-import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import seng202.team1.api.tasever.LeaderBoardEntry;
-import seng202.team1.data.bin.Bin;
-import seng202.team1.data.bin.BinCategory;
-import seng202.team1.data.bin.BinFullness;
 import seng202.team1.data.table.StringTableBuilder;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.components.*;

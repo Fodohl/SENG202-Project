@@ -1,15 +1,10 @@
 package seng202.team1.gui.pages;
 
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import seng202.team1.data.User;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.components.UIButton;
-import seng202.team1.gui.components.UIImage;
 import seng202.team1.gui.components.UITextInput;
 import seng202.team1.gui.components.UITitle;
 import seng202.team1.state.AuthState;

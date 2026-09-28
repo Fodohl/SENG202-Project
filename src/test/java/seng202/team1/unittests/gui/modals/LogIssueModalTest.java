@@ -2,7 +2,7 @@ package seng202.team1.unittests.gui.modals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import seng202.team1.data.bin.Bin;
+import seng202.team1.types.bin.Bin;
 import seng202.team1.gui.components.UIChipsInput;
 import seng202.team1.gui.components.UIParagraphInput;
 import seng202.team1.gui.modals.LogIssueModal;

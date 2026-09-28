@@ -1,4 +1,4 @@
-package seng202.team1.data.sqlite;
+package seng202.team1.database;
 
 import java.sql.*;
 import java.time.Instant;
