@@ -3,11 +3,8 @@ package seng202.team1.data.status;
 
 import seng202.team1.data.User;
 import seng202.team1.data.bin.*;
-import seng202.team1.data.sqlite.DAO.BinDAO;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,10 +25,9 @@ public class StatusReportStore {
 
     /**
      * Instantiates StatusReportStore for use in app
-     *
      * @param filePath of JSON for bin reports
      */
-    public StatusReportStore(BinDAO bins, Path filePath) {
+    public StatusReportStore(BinLoader bins, Path filePath) {
         this.filePath = Objects.requireNonNull(filePath);
         this.loader = new StatusReportLoader(bins, filePath);
         this.writer = new StatusReportWriter();
@@ -60,7 +56,6 @@ public class StatusReportStore {
 
     /**
      * Adds bin report to JSON file
-     *
      * @param newReport {@link StatusReport} to be added
      * @throws IOException if the JSON file cannot be written
      */
@@ -75,7 +70,6 @@ public class StatusReportStore {
 
     /**
      * Removes a report from JSON file and from report array
-     *
      * @param report {@link StatusReport} to be removed
      * @throws IOException if the JSON file cannot be written
      */
@@ -86,7 +80,6 @@ public class StatusReportStore {
 
     /**
      * Writes to JSON file updated reports
-     *
      * @param updatedReports list of {@link StatusReport} to be written to JSON
      * @throws IOException if the JSON file cannot be written
      */
@@ -101,6 +94,7 @@ public class StatusReportStore {
      *
      * @return default JSON file location
      *
+     * @todo subclass this
      */
     public static Path defaultDataPath() {
         return Path.of(
@@ -111,33 +105,18 @@ public class StatusReportStore {
     }
 
 
-    public static Path testDataPath() {
-        try {
-
-            // Get a temp file on this system
-            Path path = Files.createTempFile("trashapp_test_reports", ".json");
-
-            // Empty fails to parse so instead delete the file and let the store recreated it
-            Files.delete(path);
-
-            return path;
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
-    }
-
-
-    public void logReport(Bin bin, BinFullness fullness, ReportType reportType, String description) {
+    public void logReport(Bin bin, BinFullness fullness, ReportType reportType, String description){
 
         User dummy = new User(10, "null-user");
 
         LocalDateTime timestamp = LocalDateTime.now();
         StatusReport entry = new StatusReport(bin, dummy, fullness, reportType, description, timestamp);
 
-        try {
+        try{
             add(entry);
         } catch (IOException e) {
             // check fails
+            //@Todo log err
         }
 
     }

@@ -13,3 +13,18 @@ public record PhotonLocationResponse (
 ){}
 
 
+// "type": "house",
+//        "housenumber": "29",
+//        "street": "Mt Pleasant Road",
+//        "locality": "Saint Andrews Hill",
+//        "district": "Mount Pleasant",
+//        "city": "Christchurch",
+//        "county": "Christchurch City",
+//        "state": "Canterbury",
+//        "country": "New Zealand / Aotearoa",
+//        "postcode": "8241",
+//        "countrycode": "NZ"
+//@todo need extent?
+
+
+

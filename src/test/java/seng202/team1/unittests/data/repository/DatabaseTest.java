@@ -2,18 +2,23 @@ package seng202.team1.unittests.data.repository;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import seng202.team1.data.sqlite.DatabaseManager;
-import seng202.team1.state.GlobalState;
-import seng202.team1.unittests.TrashAppTest;
+import seng202.team1.data.repository.DatabaseManager;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-class DatabaseTest extends TrashAppTest {
+class DatabaseTest {
+
+    @Test
+    void testDatabaseManagerInstance() {
+        DatabaseManager databaseManager = DatabaseManager.getInstance();
+        Assertions.assertNotNull(databaseManager);
+        Assertions.assertEquals(databaseManager, DatabaseManager.getInstance());
+    }
 
     @Test
     void testDatabaseConnection() throws SQLException {
-        Connection connection = databaseManager.connect();
+        Connection connection = DatabaseManager.getInstance().connect();
         Assertions.assertNotNull(connection);
         Assertions.assertNotNull(connection.getMetaData());
         connection.close();

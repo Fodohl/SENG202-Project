@@ -18,7 +18,7 @@ import seng202.team1.unittests.TrashAppTest;
  * Test binLoader
  * @author Stanley Easthope
  */
-public class BinDatasetTest extends TrashAppTest {
+public class BinLoaderTest extends TrashAppTest {
 
 
 
@@ -27,7 +27,7 @@ public class BinDatasetTest extends TrashAppTest {
      */
     @Test
     public void testReadGeoJSONPopulatesBins() {
-        assertFalse(binDataset.getBinDataset().isEmpty());
+        assertFalse(binLoader.getBinObjects().isEmpty());
     }
 
     /**
@@ -35,9 +35,9 @@ public class BinDatasetTest extends TrashAppTest {
      */
     @Test
     public void testGetBinObjectsIsNotChangable() {
-        List<Bin> bins = binDataset.getBinDataset();
+        List<Bin> bins = binLoader.getBinObjects();
         assertThrows(UnsupportedOperationException.class, () ->
-                bins.add(new Bin(0, 0, 0, BinCategory.GENERAL_WASTE, Instant.now(),null, null, BinFullness.UNKNOWN)));
+                bins.add(new Bin(0, 0, 0, BinCategory.GENERAL_WASTE, Instant.now(),null, null)));
     }
 
     /**
@@ -45,7 +45,7 @@ public class BinDatasetTest extends TrashAppTest {
      */
     @Test
     public void testRecyclingBin() {
-        Bin bin = binDataset.getBinById(2463);
+        Bin bin = binLoader.getBinById(2463);
         assertEquals(BinCategory.RECYCLABLE, bin.getCategory());
     }
 
@@ -54,7 +54,7 @@ public class BinDatasetTest extends TrashAppTest {
      */
     @Test
     public void testCompostBinMappedCorrectly() {
-        Bin bin = binDataset.getBinById(2537);
+        Bin bin = binLoader.getBinById(2537);
         assertEquals(BinCategory.ORGANIC, bin.getCategory());
     }
 
@@ -63,7 +63,7 @@ public class BinDatasetTest extends TrashAppTest {
      */
     @Test
     public void testGeneralWasteBinMappedCorrectly() {
-        Bin bin = binDataset.getBinById(197);
+        Bin bin = binLoader.getBinById(197);
         assertEquals(BinCategory.GENERAL_WASTE, bin.getCategory());
     }
 
@@ -72,7 +72,7 @@ public class BinDatasetTest extends TrashAppTest {
      */
     @Test
     public void testCanineLittlerBinMappedToGeneralWaste() {
-        Bin bin = binDataset.getBinById(63534);
+        Bin bin = binLoader.getBinById(63534);
         assertEquals(BinCategory.GENERAL_WASTE, bin.getCategory());
     }
 
@@ -81,7 +81,7 @@ public class BinDatasetTest extends TrashAppTest {
      */
     @Test
     public void testLitterAndRecyclingBinMappedToGeneralWaste() {
-        Bin bin = binDataset.getBinById(311361);
+        Bin bin = binLoader.getBinById(311361);
         assertEquals(BinCategory.GENERAL_WASTE, bin.getCategory());
     }
 }

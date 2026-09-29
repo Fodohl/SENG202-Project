@@ -6,12 +6,13 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import seng202.team1.common.StringHelpers;
-import seng202.team1.data.bin.*;
-import seng202.team1.data.sqlite.DAO.BinDAO;
-import seng202.team1.data.sqlite.DatabaseManager;
+import seng202.team1.data.bin.Bin;
+import seng202.team1.data.bin.BinCategory;
+import seng202.team1.data.bin.BinFullness;
+import seng202.team1.data.bin.BinLoader;
+import seng202.team1.data.repository.DatabaseManager;
 import seng202.team1.data.table.StringTableBuilder;
-import seng202.team1.data.sqlite.exceptions.InstanceAlreadyExistsException;
-import seng202.team1.data.sqlite.DAO.TrashLogDAO;
+import seng202.team1.exceptions.InstanceAlreadyExistsException;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.state.GlobalState;
 
@@ -27,16 +28,13 @@ public class TrashAppTest {
     protected GlobalState state;
 
     protected WindowManager windowManager;
+    protected BinLoader binLoader;
 
-    protected DatabaseManager databaseManager;
-
-    protected TrashLogDAO trashLogs;
-    protected BinDAO bins;
-    protected BinDataset binDataset;
+    static DatabaseManager databaseManager;
 
 
     @BeforeAll
-    public static void initFx() {
+    static void initFx() {
 
         // Make sure javafx has started
         try {
@@ -52,22 +50,28 @@ public class TrashAppTest {
 
     }
 
+    @BeforeAll
+    static void initDB() throws InstanceAlreadyExistsException {
+        DatabaseManager.REMOVE_INSTANCE();
+        databaseManager = DatabaseManager.initialiseInstanceWithUrl("jdbc:sqlite:./src/test/resources/test_database.db");
+    }
+
 
     @BeforeEach
     void initState() throws InstanceAlreadyExistsException {
-        state = new GlobalState(null, true);
-        databaseManager = state.getDatabaseManager();
         databaseManager.resetDB();
-
-        trashLogs = state.getTrashLogDAO();
-        bins = state.getBinDAO();
-
-        Bin testBin = new Bin(1, 0, 0, BinCategory.GENERAL_WASTE, Instant.now(), null, null, BinFullness.EMPTY);
-        bins.add(testBin);
+        state = GlobalState.create(null);
 
         // Extract state for easier access
-        binDataset = state.getDataset();
         windowManager = state.getWindowManager();
+        binLoader = state.getBinLoader();
+
+        binLoader.readGeoJSON();
+    }
+
+    @AfterEach
+    void tearDown() {
+        GlobalState.REMOVE_INSTANCE();
     }
 
     protected ArrayList<Bin> testData(){

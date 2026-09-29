@@ -184,6 +184,7 @@ public class UILocationInput extends HBox {
         // Submit the first location found (known to have the highest likelyhood)
         photonClient.searchLocation(searchInput.getText(), locationResponse -> {
 
+             //@todo err: not a known place
              if(locationResponse.features().isEmpty())
                  return;
 
