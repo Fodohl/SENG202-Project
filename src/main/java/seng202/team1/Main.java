@@ -4,10 +4,9 @@ import fr.brouillard.oss.cssfx.CSSFX;
 import javafx.application.Application;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import seng202.team1.data.repository.DatabaseManager;
-import seng202.team1.exceptions.InstanceAlreadyExistsException;
+import seng202.team1.data.sqlite.DatabaseManager;
+import seng202.team1.data.sqlite.exceptions.InstanceAlreadyExistsException;
 import seng202.team1.gui.components.UIImage;
 import seng202.team1.state.GlobalState;
 
@@ -68,8 +67,7 @@ public class Main extends Application {
         stage.setTitle("TrashApp v1");
 
         // Setup app state
-        DatabaseManager.initialiseInstanceWithUrl("jdbc:sqlite:database.db");
-        GlobalState.create(stage);
+        GlobalState state = new GlobalState(stage, false);
         stage.show();
     }
 

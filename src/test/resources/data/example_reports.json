@@ -1,7 +1,7 @@
 {
   "statusReports": [
     {
-      "binID": 197,
+      "binID": 1,
       "user": "Test1",
       "userID": 123,
       "fullness": null,
@@ -10,7 +10,7 @@
       "createdAt": "2026-08-06T00:00:00"
     },
     {
-      "binID": 197,
+      "binID": 1,
       "user": "Test2",
       "userID": 321,
       "fullness": "EMPTY",
@@ -19,7 +19,7 @@
       "createdAt": "2026-08-06T00:00:00"
     },
     {
-      "binID": 483,
+      "binID": 2,
       "user": "Test3",
       "userID": 231,
       "fullness": "OVERFLOWING",

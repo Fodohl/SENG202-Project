@@ -35,7 +35,7 @@ public class StatusReportLoaderTest extends TrashAppTest {
 
     @BeforeEach
     public void setUp() {
-        statusReportLoader = new StatusReportLoader(binLoader);
+        statusReportLoader = new StatusReportLoader(bins);
         statusReportLoader.readJson();
         testBin = new Bin(1, 1.0, 1.0, BinCategory.GENERAL_WASTE, Instant.now(), "testPark");
         testUser = new User(1, "Test");
@@ -62,8 +62,8 @@ public class StatusReportLoaderTest extends TrashAppTest {
 
     @Test
     public void reportMapsCorrectly() {
-        List<StatusReport> statusReports = statusReportLoader.getStatusReportsById(197);
-        assertEquals(197, statusReports.get(1).getBinID());
+        List<StatusReport> statusReports = statusReportLoader.getStatusReportsById(1);
+        assertEquals(1, statusReports.get(1).getBinID());
         assertEquals("Test2", statusReports.get(1).getSubmittedBy().getName());
         assertEquals(321, statusReports.get(1).getSubmittedBy().getUserID());
         assertEquals(BinFullness.EMPTY, statusReports.get(1).getFullness());
@@ -73,8 +73,8 @@ public class StatusReportLoaderTest extends TrashAppTest {
 
     @Test
     public void nullMapsCorrectly() {
-        List<StatusReport> statusReports = statusReportLoader.getStatusReportsById(197);
-        assertEquals(197, statusReports.get(0).getBinID());
+        List<StatusReport> statusReports = statusReportLoader.getStatusReportsById(1);
+        assertEquals(1, statusReports.get(0).getBinID());
         assertEquals("Test1", statusReports.get(0).getSubmittedBy().getName());
         assertEquals(123, statusReports.get(0).getSubmittedBy().getUserID());
         assertNull(statusReports.get(0).getFullness());
@@ -84,7 +84,7 @@ public class StatusReportLoaderTest extends TrashAppTest {
 
     @Test
     public void getStatusReportsByIdReturnsCorrectBinSubset() {
-        List<StatusReport> statusReports = statusReportLoader.getStatusReportsById(197);
+        List<StatusReport> statusReports = statusReportLoader.getStatusReportsById(1);
         assertEquals(2, statusReports.size());
         assertEquals(123, statusReports.get(0).getSubmittedBy().getUserID());
         assertEquals(321, statusReports.get(1).getSubmittedBy().getUserID());
@@ -92,14 +92,14 @@ public class StatusReportLoaderTest extends TrashAppTest {
 
     @Test
     public void getStatusReportsByIdReturnsEmptyForNoMatchingId() {
-        List<StatusReport> statusReports = statusReportLoader.getStatusReportsById(1);
+        List<StatusReport> statusReports = statusReportLoader.getStatusReportsById(234);
         assertEquals(0, statusReports.size());
     }
 
     @Test
     public void readJsonNonExistentFileReturnsEmpty() {
         Path missingPath = temporaryDirectory.resolve("does-not-exist.json");
-        statusReportLoader = new StatusReportLoader(binLoader, missingPath);
+        statusReportLoader = new StatusReportLoader(bins, missingPath);
         assertTrue(statusReportLoader.getStatusReports().isEmpty());
     }
 

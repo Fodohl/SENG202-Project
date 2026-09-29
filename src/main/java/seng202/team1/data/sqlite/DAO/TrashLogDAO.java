@@ -29,7 +29,9 @@ public class TrashLogDAO extends SqlTimeUtils implements DAOInterface<TrashLog> 
     /**
      * Creates a new TrashLogDAO object and gets a reference to the database singleton
      */
-    public TrashLogDAO(){databaseManager = DatabaseManager.getInstance(); }
+    public TrashLogDAO(DatabaseManager databaseManager){
+        this.databaseManager = databaseManager;
+    }
 
 
     /**

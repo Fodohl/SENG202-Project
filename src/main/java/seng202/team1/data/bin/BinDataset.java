@@ -1,16 +1,11 @@
 package seng202.team1.data.bin;
 
 
-import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.temporal.TemporalAdjusters;
 import java.util.*;
-import java.util.stream.Stream;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,7 +15,6 @@ import org.json.simple.parser.JSONParser;
 import seng202.team1.data.status.ReportType;
 import seng202.team1.data.status.StatusReport;
 import seng202.team1.data.status.StatusReportStore;
-import seng202.team1.data.table.StringTable;
 
 /**
  * DataLoader
@@ -28,10 +22,10 @@ import seng202.team1.data.table.StringTable;
  *
  * @author Stanley Easthope
  */
-public class BinLoader {
+public class BinDataset {
 
     /// DataLoader specific logger
-    private static final Logger log = LogManager.getLogger(BinLoader.class);
+    private static final Logger log = LogManager.getLogger(BinDataset.class);
 
     /// Where to load the bins from
     private static final String BIN_DATA = "data/cc_bins_dataset.geojson";
@@ -44,7 +38,7 @@ public class BinLoader {
      *
      * @return List of Bin instances
      */
-    public List<Bin> getBinObjects() {
+    public List<Bin> getBinDataset() {
         return Collections.unmodifiableList(binObjects);
     }
 
@@ -90,7 +84,7 @@ public class BinLoader {
      * @throws Exception if an error occurs while reading or parsing JSON file
      */
     private JSONObject parseGeoJson(JSONParser parser) throws Exception {
-        InputStream is = BinLoader.class.getResourceAsStream("/" + BIN_DATA);
+        InputStream is = BinDataset.class.getResourceAsStream("/" + BIN_DATA);
         if (is == null) {
             throw new IllegalArgumentException("Could not find resource: /" + BIN_DATA);
         }
@@ -134,64 +128,6 @@ public class BinLoader {
         // Parse the date
         Instant updated = lastEditDateObj != null ? Instant.parse(lastEditDateObj.toString()) : null;
 
-        return new Bin(binID, latitude, longitude, binType, updated, photoURL, area);
-    }
-
-    /**
-     * Calculate the estimated fullness of a bin based on recent status reports
-     *
-     * @param reports The reports to calculate from
-     */
-    public void loadBinFullness(StatusReportStore reports){
-
-        //@todo D3 maybe learn contracted day for emptying and use here rather than just this week
-        LocalDate startOfWeek = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-
-        // Only want recent reports of fullness
-        List<StatusReport> fullnessReports = reports.getReports().stream()
-                                                    .filter(r -> r.getIssue() == ReportType._FULLNESS_UPDATE)
-                                                    .filter(r -> r.getSubmittedAt().isAfter(startOfWeek.atStartOfDay()))
-                                                    .toList();
-
-        // Get each bin's new fullness as an average of this week's reports
-        binObjects = new ArrayList<>(binObjects.stream().map(b -> {
-
-            List<StatusReport> reportsFoBin = fullnessReports.stream().filter(r -> r.getBinID() == b.getID()).toList();
-            return calcAverageFullness(b, reportsFoBin);
-        }).toList());
-
-
-    }
-
-    /**
-     * Calculate and update the fullness for a give bin
-     *
-     * @param b The bin to calculate fullness for
-     * @param statusReportStream The list of reports to average for calculation
-     * @return The bin (updated in place)
-     */
-    private Bin calcAverageFullness(Bin b, List<StatusReport> statusReportStream) {
-
-        // Average with no values will fault with div by 0
-        if(statusReportStream.isEmpty()){
-            b.fullness = BinFullness.UNKNOWN;
-            return b;
-        }
-
-        // Floor the average report value
-        int avg = (int)statusReportStream.stream()
-                                    .map(r -> r.getFullness().ordinal())
-                                    .mapToInt(Integer::intValue)
-                                    .average()
-                                    .getAsDouble();
-
-        // Map the average back to its enum value
-        BinFullness fullness = BinFullness.EMPTY;
-        for(BinFullness fullnessType : BinFullness.values())
-            if(fullnessType.ordinal() == avg)
-                fullness = fullnessType;
-
-        b.fullness = fullness;
-        return b;
+        return new Bin(binID, latitude, longitude, binType, updated, photoURL, area, BinFullness.UNKNOWN);
     }
 }
