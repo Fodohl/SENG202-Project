@@ -105,6 +105,7 @@ public class WindowManager extends StateReferrer {
     private void loadPages() {
         loadPage(Pages.DASHBOARD, new DashboardPage(this));
         loadPage(Pages.MAP, new MapPage(this));
+        loadPage(Pages.LEADERBOARD, new LeaderboardPage(this));
         loadPage(Pages.TIMELINE, new TimelinePage(this));
         loadPage(Pages.SETTINGS, new SettingsPage(this));
         loadPage(Pages.DATA, new DataPage(this));
@@ -312,6 +313,7 @@ public class WindowManager extends StateReferrer {
     public void closeModal(){
 
         // Run close handlers
+        //@TODO
 
         // Special modal that represents closed state, allows for modals to update self when closed via a change callback
         openModal(Modals._CLOSED);
@@ -361,7 +363,7 @@ public class WindowManager extends StateReferrer {
         Scene scene = new Scene(modalRoot);
         stage.setScene(scene);
 
-        // Style the window
+        // Style the window @todo func
         String cssPath = Objects.requireNonNull(getClass().getResource("/styles/styles.css")).toExternalForm();
         scene.getStylesheets().add(cssPath);
 

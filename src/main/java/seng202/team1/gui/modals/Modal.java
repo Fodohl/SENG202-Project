@@ -13,6 +13,7 @@ import seng202.team1.gui.components.UITitle;
 import seng202.team1.gui.layout.LayoutElement;
 import seng202.team1.gui.pages.Pages;
 
+//@todo abstract away the simaliries between this and page?
 
 /**
  * A Modal to display overlay contents

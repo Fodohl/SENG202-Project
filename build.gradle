@@ -133,9 +133,6 @@ test {
 tasks.register("cucumber", Test)  {
     group = "verification"
 
-     testClassesDirs = sourceSets.test.output.classesDirs
-    classpath = sourceSets.test.runtimeClasspath
-
     useJUnitPlatform()
 
     filter {

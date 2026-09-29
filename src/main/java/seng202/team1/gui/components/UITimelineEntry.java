@@ -19,8 +19,6 @@ public class UITimelineEntry extends HBox {
     /// When in the timeline this entry should go
     private Instant timestamp;
 
-    private String text;
-
     /**
      * Constructs a new chunk node for the timeline that represents this entry
      *
@@ -33,7 +31,6 @@ public class UITimelineEntry extends HBox {
 
         super();
         this.timestamp = timestamp;
-        this.text = text;
 
         setAlignment(Pos.CENTER);
         getStyleClass().add("timeline");
@@ -89,14 +86,4 @@ public class UITimelineEntry extends HBox {
     public Instant getTime(){
         return timestamp;
     }
-
-    /**
-     * Get the information this entry displays
-     *
-     * @return The subtile text
-     */
-    public String getText() {
-        return text;
-    }
-
 }

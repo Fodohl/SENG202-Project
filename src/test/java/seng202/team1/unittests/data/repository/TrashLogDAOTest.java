@@ -4,13 +4,43 @@ import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import seng202.team1.data.bin.Bin;
+import seng202.team1.data.bin.BinCategory;
+import seng202.team1.data.bin.BinFullness;
 import seng202.team1.data.trashlog.TrashLog;
 import seng202.team1.data.trashlog.TrashType;
-import seng202.team1.unittests.TrashAppTest;
+import seng202.team1.exceptions.InstanceAlreadyExistsException;
+import seng202.team1.data.repository.BinDAO;
+import seng202.team1.data.repository.DatabaseManager;
+import seng202.team1.data.repository.TrashLogDAO;
 
-public class TrashLogDAOTest extends TrashAppTest {
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+
+public class TrashLogDAOTest {
+
+    static TrashLogDAO trashLogDAO;
+    static DatabaseManager databaseManager;
+    static BinDAO binDAO;
+
+    @BeforeAll
+    static void setup() throws InstanceAlreadyExistsException {
+        DatabaseManager.REMOVE_INSTANCE();
+        databaseManager = DatabaseManager.initialiseInstanceWithUrl("jdbc:sqlite:./src/test/resources/test_database.db");
+        trashLogDAO = new TrashLogDAO();
+        binDAO = new BinDAO();
+        Bin testBin = new Bin(1, 0, 0, BinCategory.GENERAL_WASTE, Instant.now(), null, null);
+        binDAO.add(testBin);
+    }
+
+    @BeforeEach
+    void resetDB() {
+        databaseManager.resetDB();
+    }
 
     @Test
     void testAddTrashLog() {

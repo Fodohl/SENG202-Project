@@ -113,7 +113,7 @@ public class LogIssueModal extends Modal {
      */
     private void submitReport() {
 
-        // No bin setup
+        // No bin setup (@todo log error)
         if (bin == null)
             return;
 
@@ -166,8 +166,6 @@ public class LogIssueModal extends Modal {
         if (typeInput.isErroring() || reportInput.isErroring() || fullnessInput.isErroring())
             return;
 
-         // Refresh the bins' average status
-        getWindow().getGlobalState().refreshBinFullness(bin);
 
         windowManager.getGlobalState().getStatusReportStore().logReport(bin, fullness, type, report);
         closeModal();

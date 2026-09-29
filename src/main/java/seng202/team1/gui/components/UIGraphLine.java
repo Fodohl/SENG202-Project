@@ -47,6 +47,7 @@ public class UIGraphLine extends UIWebRenderer {
         });
 
         // Define the data
+        call("data = [{\"name\":\"Jan\",\"value\":280.0},{\"name\":\"Feb\",\"value\":190.0},{\"name\":\"Mar\",\"value\":280.0},{\"name\":\"Apr\",\"value\":300.0},{\"name\":\"May\",\"value\":205.0},{\"name\":\"Jun\",\"value\":430.0}]");
     }
 
     /**

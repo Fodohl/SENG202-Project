@@ -21,8 +21,7 @@ import java.util.Comparator;
  */
 public class DataPage extends Page {
 
-    private VBox root;
-    private UITable table;
+    VBox root;
 
     /**
      * Constructs a new DataPage
@@ -81,13 +80,8 @@ public class DataPage extends Page {
         });
 
         // Combine
-        table = new UITable(tableData, false);
-        root.getChildren().clear();
+        UITable table = new UITable(tableData, false);
         root.getChildren().addAll(pageTitle, exportButton, table);
 
-    }
-
-    public UITable getTable() {
-        return table;
     }
 }

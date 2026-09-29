@@ -56,14 +56,7 @@ public class StatusReport {
      * Get the bin ID
      * @return binID associated with report
      */
-    public int getBinID() {
-
-        if(bin ==null)
-            return -1;
-
-        return bin.getID();
-
-    }
+    public int getBinID() { return bin.getID(); }
 
     /**
      * Get the reporter

@@ -24,7 +24,6 @@ import java.util.List;
  */
 public class TimelinePage extends Page {
 
-    private UITimeline timeline;
     private VBox root;
 
     /**
@@ -67,7 +66,7 @@ public class TimelinePage extends Page {
         entries.addAll(buildReportsEntries(reports));
         entries.addAll(buildTrashEntries(trash));
 
-        timeline = new UITimeline(entries);
+        UITimeline timeline = new UITimeline(entries);
         root.getChildren().setAll(timeline);
 
     }
@@ -105,15 +104,5 @@ public class TimelinePage extends Page {
                 })
                 .toList();
 
-    }
-
-
-    /**
-     * Get the timeline this page displays
-     *
-     * @return The timeline
-     */
-    public UITimeline getTimeline() {
-        return timeline;
     }
 }

@@ -366,13 +366,4 @@ public class UITable extends GridPane {
 
         return null;
     }
-
-    /**
-     * Get the data this table is displaying
-     *
-     * @return The dataset
-     */
-    public StringTable getData(){
-        return outData;
-    }
 }

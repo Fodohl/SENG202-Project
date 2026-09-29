@@ -7,23 +7,36 @@ import org.junit.jupiter.api.Test;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.BinCategory;
 import seng202.team1.data.bin.BinFullness;
-import seng202.team1.data.sqlite.exceptions.InstanceAlreadyExistsException;
-import seng202.team1.data.sqlite.DatabaseManager;
-import seng202.team1.unittests.TrashAppTest;
+import seng202.team1.exceptions.InstanceAlreadyExistsException;
+import seng202.team1.data.repository.BinDAO;
+import seng202.team1.data.repository.DatabaseManager;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class BinDAOTest extends TrashAppTest {
-    
+public class BinDAOTest {
+    static BinDAO binDAO;
+    static DatabaseManager databaseManager;
+
+
+    @BeforeAll
+    static void setup() throws InstanceAlreadyExistsException {
+        DatabaseManager.REMOVE_INSTANCE();
+        databaseManager = DatabaseManager.initialiseInstanceWithUrl("jdbc:sqlite:./src/test/resources/test_database.db");
+        binDAO = new BinDAO();
+    }
+
+    @BeforeEach
+    void resetDB() { databaseManager.resetDB(); }
+
     @Test
     void testAddBin() {
-        Bin toAdd = new Bin(2, 1, 1, BinCategory.RECYCLABLE, Instant.now(),null, null, BinFullness.UNKNOWN);
-        bins.add(toAdd);
-        Assertions.assertEquals(2, bins.getAll().size());
-        Bin bin = bins.getAll().getLast();
+        Bin toAdd = new Bin(1, 1, 1, BinCategory.RECYCLABLE, Instant.now(),null, null);
+        binDAO.add(toAdd);
+        Assertions.assertEquals(1, binDAO.getAll().size());
+        Bin bin = binDAO.getAll().getFirst();
         Assertions.assertEquals(toAdd.getID(), bin.getID());
         Assertions.assertEquals(toAdd.getLatitude(), bin.getLatitude());
         Assertions.assertEquals(toAdd.getLongitude(), bin.getLongitude());
@@ -37,17 +50,17 @@ public class BinDAOTest extends TrashAppTest {
 
     @Test
     void testAddBatchBin() {
-        Bin b1 = new Bin(2, 1, 1, BinCategory.RECYCLABLE, Instant.now(), null, null, BinFullness.UNKNOWN);
-        Bin b2 = new Bin(3, 2, 2, BinCategory.ORGANIC, Instant.now(), null, null, BinFullness.UNKNOWN);
-        bins.addBatch(new ArrayList<>(Arrays.asList(b1, b2)));
-        Assertions.assertEquals(3, bins.getAll().size());
+        Bin b1 = new Bin(1, 1, 1, BinCategory.RECYCLABLE, Instant.now(), null, null);
+        Bin b2 = new Bin(2, 2, 2, BinCategory.ORGANIC, Instant.now(), null, null);
+        binDAO.addBatch(new ArrayList<>(Arrays.asList(b1, b2)));
+        Assertions.assertEquals(2, binDAO.getAll().size());
     }
 
     @Test
     void testGetBinById() {
-        Bin toAdd = new Bin(2, 1, 1, BinCategory.RECYCLABLE, Instant.now(), null, null, BinFullness.UNKNOWN);
-        int id = bins.add(toAdd);
-        Bin returnedBin = bins.getOne(id);
+        Bin toAdd = new Bin(1, 1, 1, BinCategory.RECYCLABLE, Instant.now(), null, null);
+        int id = binDAO.add(toAdd);
+        Bin returnedBin = binDAO.getOne(id);
         Assertions.assertEquals(toAdd.getID(), returnedBin.getID());
         Assertions.assertEquals(toAdd.getLatitude(), returnedBin.getLatitude());
         Assertions.assertEquals(toAdd.getLongitude(), returnedBin.getLongitude());
@@ -61,19 +74,19 @@ public class BinDAOTest extends TrashAppTest {
 
     @Test
     void testDeleteBin() {
-        int id = bins.add(new Bin(2, 1, 1, BinCategory.RECYCLABLE, Instant.now(), null, null, BinFullness.UNKNOWN));
-        int total = bins.getAll().size();
-        bins.delete(id);
-        Assertions.assertEquals(total - 1, bins.getAll().size());
+        int id = binDAO.add(new Bin(1, 1, 1, BinCategory.RECYCLABLE, Instant.now(), null, null));
+        int total = binDAO.getAll().size();
+        binDAO.delete(id);
+        Assertions.assertEquals(total - 1, binDAO.getAll().size());
     }
 
     @Test
     void testUpdateBin() {
-        Bin bin = new Bin(2, 1, 1, BinCategory.RECYCLABLE, Instant.now(),null, null, BinFullness.UNKNOWN);
-        int id = bins.add(bin);
-        Bin updatedBin = new Bin(id, 2, 2, BinCategory.ORGANIC, Instant.now(),null, null, BinFullness.UNKNOWN);
-        bins.update(updatedBin);
-        Bin result = bins.getOne(id);
+        Bin bin = new Bin(1, 1, 1, BinCategory.RECYCLABLE, Instant.now(),null, null);
+        int id = binDAO.add(bin);
+        Bin updatedBin = new Bin(id, 2, 2, BinCategory.ORGANIC, Instant.now(),null, null);
+        binDAO.update(updatedBin);
+        Bin result = binDAO.getOne(id);
         Assertions.assertEquals(updatedBin.getID(), result.getID());
         Assertions.assertEquals(updatedBin.getLatitude(), result.getLatitude());
         Assertions.assertEquals(updatedBin.getLongitude(), result.getLongitude());

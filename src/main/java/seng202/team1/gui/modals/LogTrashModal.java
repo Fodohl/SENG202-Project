@@ -24,6 +24,8 @@ import seng202.team1.gui.components.UISearchDropDown;
 import seng202.team1.gui.components.UISection;
 import seng202.team1.gui.components.UITextInput;
 
+//@todo confimation icon
+//@todo animate components
 
 /**
  * A Modal (overlay) to display trash log controls
@@ -139,7 +141,7 @@ public class LogTrashModal extends Modal {
      */
     private void submitTrashLog() {
 
-        // No bin setup
+        // No bin setup (@todo log error)
         if (bin == null)
             return;
 
@@ -194,9 +196,6 @@ public class LogTrashModal extends Modal {
         // Save
         windowManager.getGlobalState().getTrashLogDAO().add(new TrashLog(Instant.now(), Instant.now(), userID, binID, type, weight));
         windowManager.getGlobalState().getStatusReportStore().logReport(bin, fullness, ReportType._FULLNESS_UPDATE, "");
-
-         // Refresh the bins' average status
-        getWindow().getGlobalState().refreshBinFullness(bin);
 
         closeModal();
     }
