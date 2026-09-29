@@ -70,6 +70,18 @@ public class StatusReportStore {
     }
 
     /**
+     * Adds a status report to the store.
+     *
+     * @param newReport report to add
+     * @throws IOException if the report cannot be written
+     * @author Connor Rocket
+     */
+
+    public void add(StatusReport newReport) throws IOException {
+        addReportToJson(newReport);
+    }
+
+    /**
      * Saves a new status report without removing existing reports.
      *
      * @param newReport report to save
