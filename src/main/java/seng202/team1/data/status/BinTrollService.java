@@ -52,7 +52,7 @@ public class BinTrollService {
 
         for (StatusReport report : sortedReports) {
 
-            int binID = report.getBinID();
+            int binID = report.getBin().getID();
 
             LocalDateTime previousReport =
                     lastReportTimes.get(binID);
