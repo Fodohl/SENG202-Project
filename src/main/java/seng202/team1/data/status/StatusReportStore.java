@@ -140,12 +140,17 @@ public class StatusReportStore {
     }
 
 
-    public void logReport(Bin bin, BinFullness fullness, ReportType reportType, String description){
+    public void logReport(Bin bin,
+                          User user,
+                          BinFullness fullness,
+                          ReportType reportType,
+                          String description) {
 
-        User dummy = new User(10, "null-user");
+        Objects.requireNonNull(user);
 
         LocalDateTime timestamp = LocalDateTime.now();
-        StatusReport entry = new StatusReport(bin, dummy, fullness, reportType, description, timestamp);
+
+        StatusReport entry = new StatusReport(bin, user, fullness, reportType, description, timestamp);
 
         try{
             addReportToJson(entry);

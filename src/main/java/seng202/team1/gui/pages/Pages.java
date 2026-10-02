@@ -12,5 +12,6 @@ public enum Pages {
     TIMELINE,
     SETTINGS,
     DATA,
+    LOGIN
 
 }

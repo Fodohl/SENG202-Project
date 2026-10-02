@@ -4,6 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
 import seng202.team1.common.StringHelpers;
+import seng202.team1.data.User;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.BinFullness;
 import seng202.team1.data.bin.BinCategory;
@@ -144,8 +145,18 @@ public class LogTrashModal extends Modal{
 
         // Save
         windowManager.getGlobalState().getTrashLogStore().logTrash(category, type, weight, binID);
-        windowManager.getGlobalState().getStatusReportStore().logReport(bin, fullness, ReportType._FULLNESS_UPDATE, "");
 
+        User user = windowManager.getGlobalState().getCurrentUser();
+
+        windowManager.getGlobalState()
+                .getStatusReportStore()
+                .logReport(
+                        bin,
+                        user,
+                        fullness,
+                        ReportType._FULLNESS_UPDATE,
+                        ""
+                );
         closeModal();
     }
 

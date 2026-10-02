@@ -5,6 +5,7 @@ import seng202.team1.api.photon.Feature;
 import seng202.team1.api.photon.PhotonClient;
 import seng202.team1.api.trashdb.TrashDBClient;
 import seng202.team1.api.trashdb.TrashDBLeaderboardResponse;
+import seng202.team1.data.User;
 import seng202.team1.data.bin.BinLoader;
 import seng202.team1.data.status.StatusReportStore;
 import seng202.team1.data.trashlog.TrashLogStore;
@@ -110,6 +111,8 @@ public class GlobalState {
         return photonClient;
     }
 
+    private User currentUser;
+
     public void setMapSearchRequest(Feature location) {
         requestedLocation = location;
         windowManager.switchPage(Pages.MAP);
@@ -130,5 +133,13 @@ public class GlobalState {
 
     public void show() {
         stage.show();
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
+    }
+
+    public  void setCurrentUser(User currentUser) {
+        this.currentUser = currentUser;
     }
 }

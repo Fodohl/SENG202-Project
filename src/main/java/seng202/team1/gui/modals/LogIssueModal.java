@@ -138,8 +138,9 @@ public class LogIssueModal extends Modal{
         if(typeInput.isErroring() ||  reportInput.isErroring() || fullnessInput.isErroring())
             return;
 
+        User user = windowManager.getGlobalState().getCurrentUser();
 
-        windowManager.getGlobalState().getStatusReportStore().logReport(bin, fullness, type, report);
+        windowManager.getGlobalState().getStatusReportStore().logReport(bin, user, fullness, type, report);
         closeModal();
 
         StatusReportStore store =
@@ -148,10 +149,10 @@ public class LogIssueModal extends Modal{
         LocalDateTime lastReport =
                 store.getLastReportTime(bin.getID());
 
-        int trollsSlain =
-                BinTrollService.getTrolls(lastReport, LocalDateTime.now());
+        User currentUser =
+                windowManager.getGlobalState().getCurrentUser();
 
-        store.logReport(bin, fullness, type, report);
+        store.logReport(bin, currentUser, fullness, type, report);
 
         windowManager.refreshPage(Pages.DASHBOARD);
 

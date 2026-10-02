@@ -36,7 +36,7 @@ public class WindowManager extends StateReferrer {
     private Stage currentStage;
 
     /// What page to show on start up
-    public static Pages START_PAGE = Pages.DASHBOARD;
+    public static Pages START_PAGE = Pages.LOGIN;
 
     /// The page that is currently shown
     private Pages currentPage;
@@ -106,6 +106,7 @@ public class WindowManager extends StateReferrer {
         loadPage(Pages.TIMELINE, new TimelinePage(this));
         loadPage(Pages.SETTINGS, new SettingsPage(this));
         loadPage(Pages.DATA, new DataPage(this));
+        loadPage(Pages.LOGIN, new LoginPage(this));
     }
 
     /**
