@@ -12,4 +12,12 @@ public record Session(
     public Session(User userDetails, String token) {
         this(userDetails, token, Instant.now());
     }
+
+    public Session withUser(User newUserDetails) {
+        return new Session(
+                newUserDetails,
+                token,
+                lastLogin
+        );
+    }
 }

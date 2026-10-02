@@ -99,16 +99,13 @@ public class GlobalState {
         preflightManager= new PreflightManager(this);
         router = new Router(this, stage);
 
-        // Sync state with db
-        fetchData();
-        sync();
     }
 
 
     /**
      * Fetch the data the app needs in the background
      */
-    private void fetchData() {
+    public void fetchData() {
 
         taServer.getCommunity(leaderboard -> {
 

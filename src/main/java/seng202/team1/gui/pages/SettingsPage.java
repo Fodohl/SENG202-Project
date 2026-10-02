@@ -10,6 +10,11 @@ import seng202.team1.gui.components.*;
 import seng202.team1.types.user.Session;
 import seng202.team1.types.user.User;
 
+import java.security.InvalidParameterException;
+
+import static seng202.team1.state.AuthState.validateEmail;
+import static seng202.team1.state.AuthState.validateName;
+
 /**
  * Page that displays the configuration menu of the app
  */
@@ -23,6 +28,8 @@ public class SettingsPage extends Page {
     private UITextInput userPasswordOld;
     private UITextInput userPasswordNew;
     private UITextInput userPasswordNewConfirm;
+
+    private User user;
 
     /**
      * Constructs a new SettingsPage
@@ -82,6 +89,50 @@ public class SettingsPage extends Page {
 
     private void saveChanges() {
 
+        if(user == null)
+            return;
+
+        String enteredName = userName.getInput();
+        String enteredEmail = userEmail.getInput();
+        String enteredPassword = userPasswordOld.getInput();
+        String enteredPasswordNew = userPasswordNew.getInput();
+        String enteredPasswordNewConfirmed = userPasswordNewConfirm.getInput();
+
+        // Only saved if changed
+        if(!enteredName.equals(user.name()) || !enteredEmail.equals(user.email()))
+            updateDeatils(enteredName, enteredEmail);
+
+        if(!enteredPassword.isEmpty())
+            changePassword(enteredPassword, enteredPasswordNew, enteredPasswordNewConfirmed);
+
+
+    }
+
+    private void updateDeatils(String enteredName, String enteredEmail) {
+
+       // Validate
+        try {
+            validateName(enteredName);
+        } catch (InvalidParameterException e) {
+            userName.setError(e.getMessage());
+        }
+
+        try {
+            validateEmail(enteredEmail);
+        } catch (InvalidParameterException e) {
+            userEmail.setError(e.getMessage());
+        }
+
+        // Cant update with these credentials
+        if (userName.isErroring() || userEmail.isErroring())
+            return;
+
+        getState().getTaServer().updateUser(enteredName, enteredEmail, s -> {}).join();
+        getState().getAuth().updateUser(enteredName, enteredEmail);
+        updateContents();
+    }
+
+    private void changePassword(String enteredPassword, String enteredPasswordNew, String enteredPasswordNewConfirmed) {
     }
 
     private void logOut() {
@@ -97,7 +148,7 @@ public class SettingsPage extends Page {
         if (session == null)
             return;
 
-        User user = session.userDetails();
+        user = session.userDetails();
         userName.setInput(user.name());
         userEmail.setInput(user.email());
 

@@ -13,6 +13,8 @@ import seng202.team1.state.AuthState;
 import java.security.InvalidParameterException;
 import java.time.Instant;
 
+import static seng202.team1.state.AuthState.*;
+
 public class SignUpPage extends Page {
 
     private UITextInput name;
@@ -69,25 +71,25 @@ public class SignUpPage extends Page {
 
         // Validate
         try {
-            auth.validateName(enteredName);
+            validateName(enteredName);
         } catch (InvalidParameterException e) {
             name.setError(e.getMessage());
         }
 
         try {
-            auth.validateEmail(enteredEmail);
+            validateEmail(enteredEmail);
         } catch (InvalidParameterException e) {
             email.setError(e.getMessage());
         }
 
         try {
-            auth.validatePassword(enteredPassword);
+            validatePassword(enteredPassword);
         } catch (InvalidParameterException e) {
             password.setError(e.getMessage());
         }
 
         try {
-            auth.validatePassword(enteredPasswordConfirmed);
+            validatePassword(enteredPasswordConfirmed);
         } catch (InvalidParameterException e) {
             passwordConfirm.setError(e.getMessage());
         }

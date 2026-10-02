@@ -15,6 +15,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.InvalidParameterException;
+import java.time.Instant;
 
 import static seng202.team1.TrashApp.GSON;
 
@@ -85,14 +86,14 @@ public class AuthState {
 
     }
 
-    public void validateEmail(String enteredEmail) {
+    public static void validateEmail(String enteredEmail) {
 
         if (!EmailValidator.getInstance().isValid(enteredEmail))
             throw new InvalidParameterException("Email is invalid");
 
     }
 
-    public void validatePassword(String enteredPassword) {
+    public static void validatePassword(String enteredPassword) {
 
         if (enteredPassword.length() <= 7)
             throw new InvalidParameterException("Password must be at least 8 characters");
@@ -124,7 +125,7 @@ public class AuthState {
             throw new InvalidParameterException("Password must contain at least one number");
     }
 
-    public void validateName(String enteredName) {
+    public static void validateName(String enteredName) {
 
         if (enteredName.length() < 3)
             throw new InvalidParameterException("Name must be 3 or more characters");
@@ -222,11 +223,34 @@ public class AuthState {
         }
     }
 
-    private void onSessionLoaded(){
+    private void onSessionLoaded() {
 
         // fetch app data
+        state.fetchData();
 
         // begin processing queued uploads
+        state.sync();
+
+    }
+
+    public void updateUser(String enteredName, String enteredEmail) {
+
+        User oldUser = session.userDetails();
+        User newUserDetails = new User(
+                oldUser.id(),
+
+                oldUser.created(),
+                Instant.now(),
+
+                enteredName,
+                enteredEmail,
+
+                null,
+                null
+        );
+
+        setSession(session.withUser(newUserDetails));
+        save();
 
     }
 }

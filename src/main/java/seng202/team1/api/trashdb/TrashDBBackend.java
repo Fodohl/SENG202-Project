@@ -198,4 +198,35 @@ public class TrashDBBackend {
     private User getUser() {
         return user;
     }
+
+    public ResponseMessage updateUserDetails(String name, String email) {
+
+
+        // Get the user making the request
+        User user = getUser();
+
+        // Cant update to this email its taken
+        boolean newEmail = !user.email().equals(email);
+        if(newEmail && userTable.getByEmail(email) != null)
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "User with email already exists");
+
+        // Update the user (assumed logged in so clear reset code)
+        User cleanedUser = new User(
+                user.id(),
+
+                user.created(),
+                Instant.now(),
+
+                name,
+                email,
+
+                user.passwordHash(),
+                null
+        );
+        userTable.update(cleanedUser);
+
+        ResponseMessage success = new ResponseMessage("User updated successfully");
+        return success;
+
+    }
 }

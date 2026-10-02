@@ -31,6 +31,13 @@ public class TrashDBClient extends ApiBackend {
         super("null");
     }
 
+     public void setSession(Session session) {
+
+        this.session = session;
+
+        backend.setToken(session != null ? session.token() : "");
+    }
+
     public CompletableFuture<User> postUser(String email, String name, String passwordRaw, Consumer<User> callback){
 
         return sendAsync(() -> backend.addNewUser(email, name, passwordRaw), callback, null, null);
@@ -138,15 +145,14 @@ public class TrashDBClient extends ApiBackend {
 //        });
     }
 
-    public void setSession(Session session) {
-
-        this.session = session;
-
-        backend.setToken(session != null ? session.token() : "");
-    }
-
     public CompletableFuture<ResponseMessage> postLog(TrashLog log, Consumer<ResponseMessage> callback){
 
         return sendAsync(() -> backend.addUserTrashLog(log), callback, null, null);
     }
+
+     public CompletableFuture<ResponseMessage> updateUser(String name, String email, Consumer<ResponseMessage> callback) {
+
+            return sendAsync(() -> backend.updateUserDetails(name, email), callback, null, null);
+
+        }
 }
