@@ -2,13 +2,11 @@ package seng202.team1.gui.pages;
 
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.components.*;
-import seng202.team1.gui.phases.Phases;
 import seng202.team1.types.user.Session;
 import seng202.team1.types.user.User;
 

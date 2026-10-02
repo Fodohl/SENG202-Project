@@ -1,7 +1,7 @@
 package seng202.team1.unittests.common;
 
 import org.junit.jupiter.api.Test;
-import seng202.team1.common.URLHelpers;
+import seng202.team1.helpers.URLHelpers;
 import seng202.team1.unittests.TrashAppTest;
 
 import java.net.URI;

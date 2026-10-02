@@ -3,12 +3,7 @@ package seng202.team1.gui.components;
 import javafx.scene.layout.HBox;
 
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
-import seng202.team1.helpers.StringHelpers;
-import seng202.team1.gui.GraphicsCommon;
-import seng202.team1.gui.Router;
-import seng202.team1.gui.pages.Pages;
 
 /**
  * A UI Component to handle rendering buttons with icons

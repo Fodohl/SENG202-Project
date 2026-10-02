@@ -3,6 +3,9 @@ package seng202.team1.api.photon;
 import seng202.team1.api.ApiBackend;
 import seng202.team1.gui.components.UIKeyValuePair;
 import seng202.team1.gui.components.UISpinner;
+import seng202.team1.types.photon.Feature;
+import seng202.team1.types.photon.PhotonLocationResponse;
+import seng202.team1.types.photon.Properties;
 
 import java.util.Map;
 import java.util.function.Consumer;

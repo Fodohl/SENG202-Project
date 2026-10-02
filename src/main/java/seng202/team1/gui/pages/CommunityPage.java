@@ -3,7 +3,7 @@ package seng202.team1.gui.pages;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
-import seng202.team1.api.tasever.LeaderBoardEntry;
+import seng202.team1.types.trashdb.LeaderBoardEntry;
 import seng202.team1.data.table.StringTableBuilder;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.components.*;

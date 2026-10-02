@@ -2,10 +2,10 @@ package seng202.team1.tasks.preflight;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import seng202.team1.taserver.model.GetBinsFullness200Response;
 import seng202.team1.tasks.Task;
 import seng202.team1.tasks.TaskManager;
 import seng202.team1.types.bin.BinFullness;
+import seng202.team1.types.trashdb.TrashDBFullnessResponse;
 
 import java.util.HashMap;
 
@@ -21,14 +21,14 @@ public class RefreshBinFullnessTask extends Task {
     @Override
     public void task(TaskManager manager) {
 
-        GetBinsFullness200Response bins = manager.getGlobalState().getTaServer().getBinFullness(r -> {}).join();
+        TrashDBFullnessResponse bins = manager.getGlobalState().getTaServer().getBinFullness(r -> {}).join();
         HashMap<Integer, BinFullness> fullness = new HashMap<>();
 
-        log.info("Refreshed {} bins", bins.getBins().size());
+        log.info("Refreshed {} bins", bins.bins().size());
 
         // Convert to known format
-        bins.getBins().forEach(bin -> {
-            fullness.put(bin.getId().intValue(), BinFullness.values()[bin.getFullness().intValue()]);
+        bins.bins().entrySet().forEach(bin -> {
+            fullness.put(bin.getKey(), BinFullness.values()[bin.getValue()]);
         });
 
         manager.getGlobalState().getBinDAO().updateFullness(fullness);

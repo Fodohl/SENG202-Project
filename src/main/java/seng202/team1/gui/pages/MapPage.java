@@ -5,7 +5,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.layout.*;
 import javafx.scene.control.Label;
-import seng202.team1.api.photon.Feature;
+import seng202.team1.types.photon.Feature;
 import seng202.team1.helpers.StringHelpers;
 import seng202.team1.types.bin.Bin;
 import seng202.team1.data.route.RouteInstruction;

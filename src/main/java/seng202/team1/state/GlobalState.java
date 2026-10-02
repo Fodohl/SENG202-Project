@@ -1,10 +1,11 @@
 package seng202.team1.state;
 
 import javafx.stage.Stage;
-import seng202.team1.api.photon.Feature;
+import seng202.team1.database.DAO.UserDAO;
+import seng202.team1.types.photon.Feature;
 import seng202.team1.api.photon.PhotonClient;
-import seng202.team1.api.tasever.TAServerClient;
-import seng202.team1.api.tasever.TrashDBLeaderboardResponse;
+import seng202.team1.api.trashdb.TrashDBClient;
+import seng202.team1.types.trashdb.TrashDBLeaderboardResponse;
 import seng202.team1.types.status.ReportType;
 import seng202.team1.data.status.StatusReportStore;
 import seng202.team1.database.DAO.TrashLogDAO;
@@ -49,7 +50,7 @@ public class GlobalState {
     private PhotonClient photonClient;
 
     /// The handler for app API requests
-    private TAServerClient taServer;
+    private TrashDBClient taServer;
 
     private Feature requestedLocation;
 
@@ -90,7 +91,7 @@ public class GlobalState {
 
         // Set up API
         photonClient = new PhotonClient();
-        taServer = new TAServerClient();
+        taServer = new TrashDBClient();
         auth = new AuthState(this);
 
         // Start the app
@@ -224,7 +225,7 @@ public class GlobalState {
         return leaderboard;
     }
 
-    public TAServerClient getTaServer() {
+    public TrashDBClient getTaServer() {
         return taServer;
     }
 

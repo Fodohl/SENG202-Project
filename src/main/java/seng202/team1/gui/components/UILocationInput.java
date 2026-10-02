@@ -10,10 +10,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.util.Duration;
-import seng202.team1.api.photon.Feature;
+import seng202.team1.types.photon.Feature;
 import seng202.team1.api.photon.PhotonClient;
-import seng202.team1.helpers.StringHelpers;
-import seng202.team1.gui.layout.LayoutElement;
 import seng202.team1.state.GlobalState;
 
 /**

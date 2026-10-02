@@ -3,12 +3,9 @@ package seng202.team1.state;
 import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.propertyeditors.CustomNumberEditor;
-import org.w3c.dom.stylesheets.LinkStyle;
-import seng202.team1.api.tasever.TAServerClient;
-import seng202.team1.taserver.model.TokenResponse;
-import seng202.team1.taserver.model.UserResponse;
+import seng202.team1.api.trashdb.TrashDBClient;
 import seng202.team1.types.user.Session;
+import seng202.team1.types.user.Token;
 import seng202.team1.types.user.User;
 import seng202.team1.gui.pages.Pages;
 import seng202.team1.gui.phases.Phases;
@@ -18,7 +15,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.security.InvalidParameterException;
-import java.time.Instant;
 
 import static seng202.team1.TrashApp.GSON;
 
@@ -30,7 +26,7 @@ public class AuthState {
 
     private GlobalState state;
 
-    private TAServerClient server;
+    private TrashDBClient server;
 
     public AuthState(GlobalState state) {
         this.state = state;
@@ -51,13 +47,12 @@ public class AuthState {
     public void login(String email, String password) {
 
         // Authenticate the user
-        TokenResponse token = server.postLogin(email, password, r -> {}).join();
-        setSession(new Session(null, token.getToken()));
+        Token token = server.postLogin(email, password, r -> {}).join();
+        setSession(new Session(null, token.token()));
 
         // Updated the user details
-        UserResponse userDetails = server.getUser(r -> {}).join();
-        User user = new User(userDetails.getId(), userDetails.getCreated().toInstant(), userDetails.getUpdated().toInstant(), userDetails.getName(), userDetails.getEmail(), null, null);
-        setSession(new Session(user, token.getToken()));
+        User user = server.getUser(r -> {}).join();
+        setSession(new Session(user, token.token()));
 
         // Successful login
         state.getRouter().switchPhase(Phases.MAIN);

@@ -1,81 +1,12 @@
-default:
-  image: eclipse-temurin:25-jdk
-
-stages:
-  - test
-  - build
-  - deploy
-
 junit:
   stage: test
-  before_script:
-    - apt-get update && apt-get install -y fontconfig libfreetype6 libgtk-3-0 libgl1 libx11-6 libxext6
   script:
     - ./gradlew test
 
 generate_artifacts:
-  stage: build
+  stage: deploy
   script:
     - ./gradlew clean jar
   artifacts:
     paths:
       - build/libs/seng202_team1-*.jar
-
-generate_backend_artifact:
-  stage: build
-  script:
-    - ./gradlew backendJar
-  artifacts:
-    paths:
-      - build/libs/taserver.jar
-    expire_in: 1 hour
-  only:
-    - backend
-
-build_backend_image:
-  stage: build
-  needs: [generate_backend_artifact]
-  script:
-    - tar czf backend-src.tar.gz Dockerfile.backend build/libs/taserver.jar
-  artifacts:
-    paths: [backend-src.tar.gz]
-    expire_in: 1 hour
-  only:
-    - backend
-
-deploy_backend:
-  stage: deploy
-  image: alpine:latest
-  needs: [build_backend_image]
-  before_script:
-    - apk add --no-cache openssh-client curl bash
-    - curl -L -o /usr/local/bin/cloudflared https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64
-    - chmod +x /usr/local/bin/cloudflared
-    - eval $(ssh-agent -s)
-    - echo "$DEPLOY_SSH_KEY" | ssh-add -
-    - echo "ID Length - ${#CF_ACCESS_CLIENT_ID}"
-    - echo "Secret Length - ${#CF_ACCESS_CLIENT_SECRET}"
-    - mkdir -p ~/.ssh
-    - |
-      cat > ~/.ssh/config <<EOF
-      Host deploy
-        HostName deploy.maxtyson.net
-        User $DEPLOY_USER
-        ProxyCommand cloudflared access ssh --hostname %h --service-token-id $CF_ACCESS_CLIENT_ID --service-token-secret $CF_ACCESS_CLIENT_SECRET
-        StrictHostKeyChecking no
-      EOF
-  script:
-    - scp backend-src.tar.gz deploy:/opt/trash-app/incoming.tar.gz
-    - |
-      ssh deploy bash -s <<EOF
-        cd /opt/trash-app
-        rm -rf build_ctx && mkdir build_ctx
-        tar xzf incoming.tar.gz -C build_ctx
-        cd build_ctx
-        docker build --no-cache -t taserver:latest -f Dockerfile.backend .
-        cd ..
-        docker compose up -d taserver
-        rm -rf build_ctx incoming.tar.gz
-      EOF
-  only:
-    - backend

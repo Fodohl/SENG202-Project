@@ -89,6 +89,9 @@ public class ApiBackend {
         String errorMessage = String.format("API call failed: %s", message);
         log.warn(errorMessage);
 
+        if(error == null)
+            return;
+
         error.setVisible(true);
         error.setText(message);
     }
