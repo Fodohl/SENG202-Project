@@ -17,6 +17,9 @@ public class LoginPage extends Page{
 
     private UITextInput email;
     private UITextInput password;
+    private UIButton login;
+
+    private BlockableUISet frontend;
 
     public LoginPage(Router router) {
 
@@ -34,7 +37,7 @@ public class LoginPage extends Page{
         // Hide input
         password.setPrivate();
 
-        UIButton login = new UIButton("Login", true);
+        login = new UIButton("Login", true);
         UIButton signUp = new UIButton("Sign Up", true);
 
         Label forgot = new Label("Forgot password?");
@@ -45,7 +48,12 @@ public class LoginPage extends Page{
         signUp.setOnAction(e -> handleSignUp());
         forgot.setOnMouseClicked(e -> handleForgot());
 
-        VBox form = new VBox(10, title, email, password, login, signUp, forgot);
+        // Error handling
+        UIKeyValuePair error = new UIKeyValuePair("Error", "");
+        error.setVisible(false);
+        frontend = new BlockableUISet(error, null, login);
+
+        VBox form = new VBox(10, title, error, email, password, login, signUp, forgot);
         form.getStyleClass().add("auth-form");
         return form;
     }
@@ -79,7 +87,7 @@ public class LoginPage extends Page{
             return;
 
         // Login
-        auth.login(enteredEmail, enteredPassword);
+        auth.login(enteredEmail, enteredPassword, frontend);
     }
 
      private void handleSignUp(){

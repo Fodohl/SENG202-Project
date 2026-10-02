@@ -45,6 +45,8 @@ public class UILocationInput extends HBox {
     /// A reference to the client connection with the geocoding service
     private PhotonClient photonClient;
 
+    private BlockableUISet frontend;
+
     /**
      * Constructs a new UILocationInput
      *
@@ -79,6 +81,7 @@ public class UILocationInput extends HBox {
         );
 
         error = new UIKeyValuePair("Error", "none");
+        frontend = new BlockableUISet(error, loader, null);
 
         // Build Search Bar
         getChildren().addAll(searchIcon, searchInput, loader);
@@ -134,7 +137,7 @@ public class UILocationInput extends HBox {
             // Force the popup to be below the search bar
             Bounds bounds = this.localToScreen(this.getBoundsInLocal());
             searchPopup.show(this.getScene().getWindow(), bounds.getMinX() + 20, bounds.getMaxY());
-        }, error, loader);
+        }, frontend);
     }
 
 

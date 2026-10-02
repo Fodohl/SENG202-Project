@@ -4,6 +4,7 @@ import org.apache.commons.validator.routines.EmailValidator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import seng202.team1.api.trashdb.TrashDBClient;
+import seng202.team1.gui.components.BlockableUISet;
 import seng202.team1.types.user.Session;
 import seng202.team1.types.user.Token;
 import seng202.team1.types.user.User;
@@ -45,30 +46,36 @@ public class AuthState {
         server.setSession(session);
     }
 
-    public void login(String email, String password) {
+    public void login(String email, String password, BlockableUISet frontend) {
 
         // Authenticate the user
-        Token token = server.postLogin(email, password, r -> {}).join();
-        setSession(new Session(null, token.token()));
+        server.postLogin(email, password, token -> {
+            setSession(new Session(null, token.token()));
 
-        // Updated the user details
-        User user = server.getUser(r -> {}).join();
-        setSession(new Session(user, token.token()));
+            // Update the latest user details
+            server.getUser(userDetails -> {
 
-        // Successful login
-        state.getRouter().switchPhase(Phases.MAIN);
-        save();
+                User user = new User(userDetails.id(), userDetails.created(), userDetails.updated(), userDetails.name(), userDetails.email(), null, null);
+                setSession(new Session(user, token.token()));
+
+                // Successful login
+                state.getRouter().switchPhase(Phases.MAIN);
+                save();
+
+            }, frontend);
+
+        }, frontend);
     }
 
-    public void signUp(User userDetails, String password) {
+    public void signUp(User userDetails, String password, BlockableUISet frontend) {
 
         // Create a new user
         server.postUser(userDetails.email(), userDetails.name(), password, r -> {
-            System.out.println(r);
-        }).join();
 
-        // Log into the account
-        login(userDetails.email(), password);
+            // Log into the account
+            login(userDetails.email(), password, frontend);
+
+        }, frontend);
 
     }
 
@@ -198,9 +205,10 @@ public class AuthState {
             // Read the session, forcing propagation to backend
             setSession(GSON.fromJson(reader, Session.class));
 
-            if (this.session != null && this.session.token() != null)
+            if (this.session != null && this.session.token() != null){
                 log.info("Restored session for user: {}", session.userDetails() != null ? session.userDetails().email() : "Unknown");
-
+                tryTriggerLoadSession();
+            }
 
         } catch (Exception e) {
 
@@ -252,5 +260,18 @@ public class AuthState {
         setSession(session.withUser(newUserDetails));
         save();
 
+    }
+
+    public void tryTriggerLoadSession() {
+
+        // No session
+        if(session == null || session.token() == null)
+            return;
+
+        // UI not ready
+        if(state.getRouter() == null)
+            return;
+
+        onSessionLoaded();
     }
 }

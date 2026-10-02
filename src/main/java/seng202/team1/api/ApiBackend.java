@@ -1,11 +1,13 @@
 package seng202.team1.api;
 
+import com.google.gson.JsonSyntaxException;
 import javafx.application.Platform;
 import javafx.scene.Node;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import seng202.team1.gui.components.UIKeyValuePair;
-import seng202.team1.gui.components.UISpinner;
+import seng202.team1.api.tasever.ResponseError;
+import seng202.team1.api.trashdb.ResponseStatusException;
+import seng202.team1.gui.components.BlockableUISet;
 
 import java.net.URI;
 import java.net.URLEncoder;
@@ -17,8 +19,10 @@ import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import static seng202.team1.TrashApp.GSON;
+import static seng202.team1.gui.GraphicsCommon.NO_LOADING_UI;
 
 /**
  * A generic client for querying APIs
@@ -73,34 +77,46 @@ public class ApiBackend {
             loader.setVisible(isVisible);
     }
 
+    private static String friendlyMessage(Throwable error) {
+
+        // Wrapped in a runtime excpetion so pop the stack
+        error = error.getCause();
+
+        // Not an api error
+        if(!(error.getCause() instanceof ResponseStatusException))
+            return error.getMessage();
+
+        ResponseStatusException apiError = (ResponseStatusException)error.getCause();
+
+        try{
+            ResponseError message = GSON.fromJson(apiError.getResponseBody(), ResponseError.class);
+            return  message.error();
+
+        } catch (JsonSyntaxException ignored) {
+
+            // Wansn't an expected error
+            return "Request failed (" + apiError.getCode() + ")";
+        }
+    }
+
     /**
      * Handle failed API requests and write the error to UI if provided
      *
-     * @param request The failing request
-     * @param error The error element to show
-     * @param loader The loader to stop loading
      * @param message The human-readable error message
      */
-    private void requestFailed(UIKeyValuePair error, UISpinner loader, String message){
-
-        // No longer loading
-        trySetLoader(loader, false);
+    private void requestFailed(BlockableUISet frontend, String message){
 
         String errorMessage = String.format("API call failed: %s", message);
         log.warn(errorMessage);
 
-        if(error == null)
-            return;
-
-        error.setVisible(true);
-        error.setText(message);
+        Platform.runLater(() -> frontend.showError(message));
     }
 
 
-    protected <T> CompletableFuture<T> sendAsync(Callable<T> request, Consumer<T> handler, UIKeyValuePair error, UISpinner loader) {
+    protected <T> CompletableFuture<T> sendAsync(Callable<T> request, Consumer<T> handler, BlockableUISet frontend) {
 
         // Begin request
-        trySetLoader(loader, true);
+        Platform.runLater(() ->  frontend.startLoading());
         return CompletableFuture.supplyAsync(() -> {
 
             // Allow calling the API and handling its errors here rather than in client
@@ -114,7 +130,7 @@ public class ApiBackend {
         }).thenApply(response -> {
 
                 // No longer loading
-                trySetLoader(loader, false);
+                Platform.runLater(() ->  frontend.stopLoading());
 
                 // Run frontend handler on UI thread
                 Platform.runLater(() -> {
@@ -124,7 +140,7 @@ public class ApiBackend {
                 return response;
 
         }).exceptionally(e -> {
-            requestFailed(error, loader, e.getCause() != null ? e.getCause().getMessage() : e.getMessage());
+            requestFailed(frontend, friendlyMessage(e));
             return null;
         });
     }
@@ -134,10 +150,9 @@ public class ApiBackend {
      *
      * @param request The request to send
      * @param handler The async callback to consume the response when received
-     * @param error The optional error element to write errors to
-     * @param loader The optional element to show whilst loading
+     * @param frontend The UI group to show during and after requests
      */
-    private void send(HttpRequest request, Consumer<String> handler, UIKeyValuePair error, UISpinner loader){
+    private void send(HttpRequest request, Consumer<String> handler, BlockableUISet frontend){
 
         sendAsync(() -> {
             try {
@@ -151,16 +166,16 @@ public class ApiBackend {
             } catch (Exception ex) {
                 throw new RuntimeException(ex.getMessage(), ex);
             }
-        }, handler, error, loader);
+        }, handler, frontend);
     }
 
     /**
      * Perform a HTTP GET request on the endpoint
      *
-     * @see #httpGET(String, Map, Consumer, UIKeyValuePair, UISpinner)
+     * @see #httpGET(String, Map, Consumer, BlockableUISet)
      */
     protected void httpGET(String path, Map<String, String> queryParams, Consumer<String> handler) {
-        httpGET(path, queryParams, handler, null, null);
+        httpGET(path, queryParams, handler, NO_LOADING_UI);
     }
 
     /**
@@ -172,7 +187,7 @@ public class ApiBackend {
      * @param error The optional error element to write errors to
      * @param loader The optional element to show whilst loading
      */
-    protected void httpGET(String path, Map<String, String> queryParams, Consumer<String> handler, UIKeyValuePair error, UISpinner loader) {
+    protected void httpGET(String path, Map<String, String> queryParams, Consumer<String> handler, BlockableUISet frontend) {
 
 
         // Build the full url
@@ -192,7 +207,7 @@ public class ApiBackend {
             .build();
 
         // Send req
-        send(request, handler, error, loader);
+        send(request, handler, frontend);
     }
 
     public void setBearerToken(String bearerToken) {

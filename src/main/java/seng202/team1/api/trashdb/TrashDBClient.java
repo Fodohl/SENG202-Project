@@ -2,6 +2,7 @@ package seng202.team1.api.trashdb;
 
 import com.steadystate.css.util.LangUtils;
 import seng202.team1.api.ApiBackend;
+import seng202.team1.gui.components.BlockableUISet;
 import seng202.team1.helpers.DateHelpers;
 import seng202.team1.state.GlobalState;
 import seng202.team1.types.trashdb.ResponseMessage;
@@ -17,6 +18,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import static seng202.team1.TrashApp.GSON;
+import static seng202.team1.gui.GraphicsCommon.NO_LOADING_UI;
 import static seng202.team1.helpers.DateHelpers.toOffsetTime;
 
 public class TrashDBClient extends ApiBackend {
@@ -38,26 +40,26 @@ public class TrashDBClient extends ApiBackend {
         backend.setToken(session != null ? session.token() : "");
     }
 
-    public CompletableFuture<User> postUser(String email, String name, String passwordRaw, Consumer<User> callback) {
+    public void postUser(String email, String name, String passwordRaw, Consumer<User> callback, BlockableUISet frontend) {
 
-        return sendAsync(() -> backend.addNewUser(email, name, passwordRaw), callback, null, null);
+        sendAsync(() -> backend.addNewUser(email, name, passwordRaw), callback, frontend);
     }
 
 
-    public CompletableFuture<Token> postLogin(String email, String passwordRaw, Consumer<Token> callback) {
+    public void postLogin(String email, String passwordRaw, Consumer<Token> callback, BlockableUISet frontend) {
 
-        return sendAsync(() -> backend.logUserIn(email, passwordRaw), callback, null, null);
+        sendAsync(() -> backend.logUserIn(email, passwordRaw), callback, frontend);
     }
 
-    public CompletableFuture<User> getUser(Consumer<User> callback) {
+    public void getUser(Consumer<User> callback, BlockableUISet frontend) {
 
-        return sendAsync(() -> backend.getUserDetails(), callback, null, null);
+        sendAsync(() -> backend.getUserDetails(), callback, frontend);
     }
 
     public CompletableFuture<TrashDBFullnessResponse> getBinFullness(Consumer<TrashDBFullnessResponse> callback) {
 
         OffsetDateTime updated = session == null ? null : DateHelpers.toOffsetTime(session.lastLogin());
-        return sendAsync(() -> backend.getBinsFullness(updated), callback, null, null);
+        return sendAsync(() -> backend.getBinsFullness(updated), callback, NO_LOADING_UI);
     }
 
     public void getCommunity(Consumer<TrashDBLeaderboardResponse> callback) {
@@ -147,22 +149,22 @@ public class TrashDBClient extends ApiBackend {
 
     public CompletableFuture<ResponseMessage> postLog(TrashLog log, Consumer<ResponseMessage> callback) {
 
-        return sendAsync(() -> backend.addUserTrashLog(log), callback, null, null);
+        return sendAsync(() -> backend.addUserTrashLog(log), callback, NO_LOADING_UI);
     }
 
-    public CompletableFuture<ResponseMessage> updateUser(String name, String email, Consumer<ResponseMessage> callback) {
+    public void updateUser(String name, String email, Consumer<ResponseMessage> callback, BlockableUISet frontend) {
 
-        return sendAsync(() -> backend.updateUserDetails(name, email), callback, null, null);
-
-    }
-
-    public CompletableFuture<ResponseMessage> updatePassword(String enteredPassword, String enteredPasswordNew, Consumer<ResponseMessage> callback) {
-
-        return sendAsync(() -> backend.updateUserPassword(enteredPassword, enteredPasswordNew), callback, null, null);
+        sendAsync(() -> backend.updateUserDetails(name, email), callback, frontend);
 
     }
 
-    public CompletableFuture<ResponseMessage> deleteUser(Consumer<ResponseMessage> callback) {
-        return sendAsync(() -> backend.removeUser(), callback, null, null);
+    public void updatePassword(String enteredPassword, String enteredPasswordNew, Consumer<ResponseMessage> callback, BlockableUISet frontend) {
+
+        sendAsync(() -> backend.updateUserPassword(enteredPassword, enteredPasswordNew), callback, frontend);
+
+    }
+
+    public void deleteUser(Consumer<ResponseMessage> callback, BlockableUISet frontend) {
+        sendAsync(() -> backend.removeUser(), callback, frontend);
     }
 }

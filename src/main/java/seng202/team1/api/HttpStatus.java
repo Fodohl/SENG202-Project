@@ -23,4 +23,8 @@ public enum HttpStatus {
         return String.format("%s (%s)", StringHelpers.enumNameToTitle(name()), code);
 
     }
+
+    public Integer getCode() {
+        return code;
+    }
 }

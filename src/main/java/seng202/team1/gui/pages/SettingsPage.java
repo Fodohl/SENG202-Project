@@ -29,6 +29,9 @@ public class SettingsPage extends Page {
     private UITextInput userPasswordNew;
     private UITextInput userPasswordNewConfirm;
 
+    private BlockableUISet updateFrontendUI;
+    private BlockableUISet deleteFrontendUI;
+
     private User user;
 
     /**
@@ -51,15 +54,17 @@ public class SettingsPage extends Page {
     protected Parent renderSelf() {
 
         UITitle detailsTitle = new UITitle("User Details");
+        UIKeyValuePair updateErrors = new UIKeyValuePair("Error", "");
         userName = new UITextInput("Enter your name...");
         userEmail = new UITextInput("Enter your email...");
-        UISection userDetails = new UISection(detailsTitle, userName, userEmail);
+        UISection userDetails = new UISection(detailsTitle, updateErrors, userName, userEmail);
 
         UITitle changePasswordTitle = new UITitle("Change Password");
+        UIKeyValuePair passwordErrors = new UIKeyValuePair("Error", "");
         userPasswordOld = new UITextInput("Enter your current password...");
         userPasswordNew = new UITextInput("Enter your new password...");
         userPasswordNewConfirm = new UITextInput("Enter your new password again...");
-        UISection passwordChange = new UISection(changePasswordTitle, userPasswordOld, userPasswordNew, userPasswordNewConfirm);
+        UISection passwordChange = new UISection(changePasswordTitle, passwordErrors, userPasswordOld, userPasswordNew, userPasswordNewConfirm);
 
         UIButton save = new UIButton("Save Changes");
         UIButton cancel = new UIButton("Cancel");
@@ -70,6 +75,7 @@ public class SettingsPage extends Page {
         UISection manageButtons = new UISection(15, logOut, deleteAccount);
 
         save.setOnAction(e -> saveChanges());
+        cancel.setOnAction(e -> updateContents());
         deleteAccount.setOnAction(e -> delete());
         logOut.setOnAction(e -> logOut());
 
@@ -77,6 +83,13 @@ public class SettingsPage extends Page {
         userPasswordOld.setPrivate();
         userPasswordNew.setPrivate();
         userPasswordNewConfirm.setPrivate();
+
+        updateFrontendUI = new BlockableUISet(updateErrors, null, save);
+        deleteFrontendUI = new BlockableUISet(passwordErrors, null, save);
+
+        // Hide errors until needed
+        updateErrors.setVisible(false);
+        passwordErrors.setVisible(false);
 
         // Ensure button spacing
         saveSection.getStyleClass().add("buttons");
@@ -90,9 +103,12 @@ public class SettingsPage extends Page {
 
     private void delete() {
 
-        getState().getTaServer().deleteUser(s -> {}).join();
-        logOut();
+        getState().getTaServer().deleteUser(s -> {
 
+            // Session now invalid
+            logOut();
+
+        }, deleteFrontendUI);
     }
 
     private void saveChanges() {
@@ -136,9 +152,12 @@ public class SettingsPage extends Page {
             return;
 
         getState().getTaServer().updateUser(enteredName, enteredEmail, s -> {
-        }).join();
-        getState().getAuth().updateUser(enteredName, enteredEmail);
-        updateContents();
+
+            // Refresh app with new details
+            getState().getAuth().updateUser(enteredName, enteredEmail);
+            updateContents();
+
+        }, updateFrontendUI);
     }
 
     private void changePassword(String enteredPassword, String enteredPasswordNew, String enteredPasswordNewConfirmed) {
@@ -165,15 +184,19 @@ public class SettingsPage extends Page {
         if (!enteredPasswordNew.equals(enteredPasswordNewConfirmed))
             userPasswordNewConfirm.setError("passwords do not match");
 
-       // Cant update with these credentials
+        // Cant update with these credentials
         if (userPasswordOld.isErroring() || userPasswordNew.isErroring() || userPasswordNewConfirm.isErroring())
             return;
 
-        getState().getTaServer().updatePassword(enteredPassword, enteredPasswordNew, s -> {}).join();
-        userPasswordOld.clear();
-        userPasswordNew.clear();
-        userPasswordNewConfirm.clear();
+        getState().getTaServer().updatePassword(enteredPassword, enteredPasswordNew, s -> {
 
+            // Clear form
+            userPasswordOld.clear();
+            userPasswordNew.clear();
+            userPasswordNewConfirm.clear();
+
+
+        }, deleteFrontendUI);
     }
 
     private void logOut() {

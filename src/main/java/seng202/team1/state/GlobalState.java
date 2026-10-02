@@ -99,6 +99,9 @@ public class GlobalState {
         preflightManager= new PreflightManager(this);
         router = new Router(this, stage);
 
+        // Fetch data etc for cached sessions
+        auth.tryTriggerLoadSession();
+
     }
 
 

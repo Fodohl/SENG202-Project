@@ -3,11 +3,9 @@ package seng202.team1.gui.pages;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import seng202.team1.gui.components.*;
 import seng202.team1.types.user.User;
 import seng202.team1.gui.Router;
-import seng202.team1.gui.components.UIButton;
-import seng202.team1.gui.components.UITextInput;
-import seng202.team1.gui.components.UITitle;
 import seng202.team1.state.AuthState;
 
 import java.security.InvalidParameterException;
@@ -21,6 +19,8 @@ public class SignUpPage extends Page {
     private UITextInput email;
     private UITextInput password;
     private UITextInput passwordConfirm;
+
+    private BlockableUISet frontend;
 
     public SignUpPage(Router router) {
 
@@ -48,7 +48,12 @@ public class SignUpPage extends Page {
         signUp.setOnAction(e -> handleSignUp());
         back.setOnMouseClicked(e -> handleBack());
 
-        VBox form = new VBox(10, title, name, email, password, passwordConfirm, signUp, back);
+        // Error handling
+        UIKeyValuePair error = new UIKeyValuePair("Error", "");
+        error.setVisible(false);
+        frontend = new BlockableUISet(error, null, signUp);
+
+        VBox form = new VBox(10, title, error, name, email, password, passwordConfirm, signUp, back);
         form.getStyleClass().add("auth-form");
         return form;
     }
@@ -103,7 +108,7 @@ public class SignUpPage extends Page {
 
         // Signup
         User newUser = new User(0, Instant.now(), Instant.now(), enteredName, enteredEmail, "", 0);
-        auth.signUp(newUser, enteredPassword);
+        auth.signUp(newUser, enteredPassword, frontend);
     }
 
     private void handleBack() {

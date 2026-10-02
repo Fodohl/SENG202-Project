@@ -590,7 +590,7 @@
     -fx-fill: -text-secondary;
 }
 
-.error{
+.error, .error *{
     -fx-text-fill: -text-error;
     -fx-font-weight: bold;
 }
@@ -790,6 +790,10 @@
     -fx-alignment: center;
     -fx-text-alignment: center;
     -fx-text-fill: -text-primary;
+}
+
+.auth-form .error *{
+    -fx-text-fill: -text-error;
 }
 
 .auth-logo {

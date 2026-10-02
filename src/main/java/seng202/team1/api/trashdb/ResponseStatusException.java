@@ -4,7 +4,18 @@ import seng202.team1.api.HttpStatus;
 
 public class ResponseStatusException extends RuntimeException {
 
+    private HttpStatus status;
+    private String message;
+
     public ResponseStatusException(HttpStatus status, String message) {
         super(String.format("%s - %s", status.toString(), message));
+    }
+
+    public String getResponseBody() {
+        return message;
+    }
+
+    public Integer getCode() {
+        return status.getCode();
     }
 }
