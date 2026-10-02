@@ -30,8 +30,6 @@ public class StartingPage extends Page {
 
         manager = getState().getPreflightManager();
         manager.registerTaskCompletionCallback(e -> onTaskCompleted(e));
-
-
     }
 
     private void onTaskCompleted(Task e) {

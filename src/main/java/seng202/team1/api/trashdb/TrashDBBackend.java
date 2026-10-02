@@ -3,16 +3,21 @@ package seng202.team1.api.trashdb;
 import seng202.team1.api.HttpStatus;
 import seng202.team1.data.bin.BinDataset;
 import seng202.team1.database.DAO.BinDAO;
+import seng202.team1.database.DAO.TrashLogDAO;
 import seng202.team1.database.DAO.UserDAO;
 import seng202.team1.database.DatabaseManager;
 import seng202.team1.database.exceptions.DuplicateEntryException;
 import seng202.team1.state.GlobalState;
 import seng202.team1.types.bin.Bin;
+import seng202.team1.types.trashdb.ResponseMessage;
 import seng202.team1.types.trashdb.TrashDBFullnessResponse;
+import seng202.team1.types.trashlog.TrashLog;
+import seng202.team1.types.trashlog.TrashType;
 import seng202.team1.types.user.Token;
 import seng202.team1.types.user.User;
 
 import java.security.InvalidParameterException;
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -27,7 +32,6 @@ import static seng202.team1.helpers.DateHelpers.toOffsetTime;
  */
 public class TrashDBBackend {
 
-    //@TODO: c queue upload trash
     //@TODO: c queue upload status
     //@TODO: s worked calculate fullness
     //@TODO: s worker calculate leaderboard
@@ -38,10 +42,11 @@ public class TrashDBBackend {
     private DatabaseManager db;
     private BinDAO binTable;
     private UserDAO userTable;
+    private TrashLogDAO trashTable;
 
     private final TokenService tokenService = new TokenService();
 
-    private Integer userID;
+    private User user;
 
     public TrashDBBackend() {
 
@@ -50,7 +55,21 @@ public class TrashDBBackend {
 
         binTable = new BinDAO(db);
         userTable = new UserDAO(db);
+        trashTable = new TrashLogDAO(db);
 
+    }
+
+
+    static void main(String[] args) {
+
+        // Init backend
+        TrashDBBackend backend = new TrashDBBackend();
+        backend.db.resetDB();
+
+        // Propagate bins
+        BinDataset bins = new BinDataset();
+        bins.readGeoJSON();
+        backend.binTable.addBatch(bins.getBinDataset());
     }
 
     public User addNewUser(String email, String name, String passwordRaw) {
@@ -95,7 +114,7 @@ public class TrashDBBackend {
 
 
         // Get the user
-        User user = userTable.getOne(userID);
+        User user = getUser();
 
         if (user == null)
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User no longer exists");
@@ -135,16 +154,48 @@ public class TrashDBBackend {
 
         // Log out request
         if(token == null) {
-            userID = null;
+            user = null;
             return;
         }
 
         // Parse the token
-        userID = Math.toIntExact(tokenService.parseToken(token));
+        Integer userID = Math.toIntExact(tokenService.parseToken(token));
 
         // Invalid token
         if (userID == -1)
             throw new InvalidParameterException("Token malformed or not signed");
 
+        user = userTable.getOne(userID);
+
+    }
+
+    public ResponseMessage addUserTrashLog(TrashLog log) {
+
+        // Enforce the user id
+        User user = getUser();
+        TrashLog cleanedLog = new TrashLog(
+                -1,
+                log.createdAt(),
+                log.disposedAt(),
+                Instant.now(),
+                user.id(),
+                log.binID(),
+                log.trashType(),
+                log.trashWeight()
+        );
+
+
+        // Store
+        int id = trashTable.add(cleanedLog);
+
+        if(id == -1)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to save log to database");
+
+        ResponseMessage response = new ResponseMessage("Trash logged successfully");
+        return response;
+    }
+
+    private User getUser() {
+        return user;
     }
 }

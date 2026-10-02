@@ -200,6 +200,7 @@ jacocoTestReport {
 tasks.withType(JavaExec).configureEach {
     jvmArgs += [
         '--enable-native-access=ALL-UNNAMED',
-        '--enable-native-access=javafx.web'
+        '--enable-native-access=javafx.web',
+        '--enable-native-access=javafx.graphics'
     ]
 }

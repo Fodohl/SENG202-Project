@@ -164,10 +164,11 @@ public class LogIssueModal extends Modal {
         if (typeInput.isErroring() || reportInput.isErroring() || fullnessInput.isErroring())
             return;
 
-         // Refresh the bins' average status
-        getRouter().getGlobalState().refreshBinFullness(bin);
-
+        // Refresh the bins' average status
         getState().getStatusReportStore().logReport(bin, fullness, type, report);
+        getState().refreshBinFullness(bin);
+        getState().sync();
+
         closeModal();
     }
 

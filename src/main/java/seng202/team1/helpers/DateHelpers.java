@@ -10,6 +10,8 @@ import java.time.*;
 public class DateHelpers {
 
 
+    private  static final ZoneId NZT = ZoneId.of("Pacific/Auckland");
+
     /**
      * Convert a local datetime into a unix timestamp instant
      *
@@ -18,9 +20,8 @@ public class DateHelpers {
      */
     public static Instant fromLocalTime(LocalDateTime time){
 
-        ZoneId timezone = ZoneOffset.systemDefault();
 
-        return time.atZone(timezone).toInstant();
+        return time.atZone(NZT).toInstant();
     }
 
     /**
@@ -34,9 +35,7 @@ public class DateHelpers {
         if(time == null)
             return null;
 
-        ZoneId timezone = ZoneOffset.systemDefault();
-
-        return time.atZone(timezone).toOffsetDateTime();
+        return time.atZone(NZT).toOffsetDateTime();
     }
 
 }

@@ -2,6 +2,7 @@ package seng202.team1.state;
 
 import javafx.stage.Stage;
 import seng202.team1.database.DAO.UserDAO;
+import seng202.team1.tasks.background.SyncToBackendTask;
 import seng202.team1.types.photon.Feature;
 import seng202.team1.api.photon.PhotonClient;
 import seng202.team1.api.trashdb.TrashDBClient;
@@ -97,7 +98,10 @@ public class GlobalState {
         // Start the app
         preflightManager= new PreflightManager(this);
         router = new Router(this, stage);
+
+        // Sync state with db
         fetchData();
+        sync();
     }
 
 
@@ -231,5 +235,11 @@ public class GlobalState {
 
     public AuthState getAuth() {
         return auth;
+    }
+
+    public void sync(){
+
+        backgroundTasks.runTask(new SyncToBackendTask(backgroundTasks));
+
     }
 }

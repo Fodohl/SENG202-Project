@@ -1,10 +1,13 @@
 package seng202.team1.api.trashdb;
 
+import com.steadystate.css.util.LangUtils;
 import seng202.team1.api.ApiBackend;
 import seng202.team1.helpers.DateHelpers;
 import seng202.team1.state.GlobalState;
+import seng202.team1.types.trashdb.ResponseMessage;
 import seng202.team1.types.trashdb.TrashDBFullnessResponse;
 import seng202.team1.types.trashdb.TrashDBLeaderboardResponse;
+import seng202.team1.types.trashlog.TrashLog;
 import seng202.team1.types.user.Session;
 import seng202.team1.types.user.Token;
 import seng202.team1.types.user.User;
@@ -14,6 +17,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import static seng202.team1.TrashApp.GSON;
+import static seng202.team1.helpers.DateHelpers.toOffsetTime;
 
 public class TrashDBClient extends ApiBackend {
 
@@ -139,5 +143,10 @@ public class TrashDBClient extends ApiBackend {
         this.session = session;
 
         backend.setToken(session != null ? session.token() : "");
+    }
+
+    public CompletableFuture<ResponseMessage> postLog(TrashLog log, Consumer<ResponseMessage> callback){
+
+        return sendAsync(() -> backend.addUserTrashLog(log), callback, null, null);
     }
 }

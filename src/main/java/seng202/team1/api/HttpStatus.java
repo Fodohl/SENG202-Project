@@ -4,6 +4,7 @@ import seng202.team1.helpers.StringHelpers;
 
 public enum HttpStatus {
 
+    BAD_REQUEST(400),
     UNAUTHORIZED(401),
     NOT_FOUNT(404),
     CONFLICT(409),

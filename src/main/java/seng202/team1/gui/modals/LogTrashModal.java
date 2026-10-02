@@ -179,10 +179,9 @@ public class LogTrashModal extends Modal {
         // Save
         getState().getTrashLogDAO().add(new TrashLog(Instant.now(), Instant.now(), userID, binID, type, weight));
         getState().getStatusReportStore().logReport(bin, fullness, ReportType._FULLNESS_UPDATE, "");
+        getState().refreshBinFullness(bin);
 
-         // Refresh the bins' average status
-        getRouter().getGlobalState().refreshBinFullness(bin);
-
+        getState().sync();
         closeModal();
     }
 
