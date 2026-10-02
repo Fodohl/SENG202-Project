@@ -153,7 +153,7 @@ public class TrashDBBackend {
     public void setToken(String token) {
 
         // Log out request
-        if(token == null) {
+        if (token == null) {
             user = null;
             return;
         }
@@ -188,7 +188,7 @@ public class TrashDBBackend {
         // Store
         int id = trashTable.add(cleanedLog);
 
-        if(id == -1)
+        if (id == -1)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to save log to database");
 
         ResponseMessage response = new ResponseMessage("Trash logged successfully");
@@ -207,7 +207,7 @@ public class TrashDBBackend {
 
         // Cant update to this email its taken
         boolean newEmail = !user.email().equals(email);
-        if(newEmail && userTable.getByEmail(email) != null)
+        if (newEmail && userTable.getByEmail(email) != null)
             throw new ResponseStatusException(HttpStatus.CONFLICT, "User with email already exists");
 
         // Update the user (assumed logged in so clear reset code)
@@ -227,6 +227,37 @@ public class TrashDBBackend {
 
         ResponseMessage success = new ResponseMessage("User updated successfully");
         return success;
+
+    }
+
+    public ResponseMessage updateUserPassword(String enteredPassword, String enteredPasswordNew) {
+
+        // Get the user making the request
+        User user = getUser();
+
+        // Password wrong
+        if (!PasswordHasher.verify(enteredPassword, user.passwordHash()))
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid password");
+
+        // Update the user (assumed logged in so clear reset code)
+        User cleanedUser = new User(
+                user.id(),
+
+                user.created(),
+                Instant.now(),
+
+                user.name(),
+                user.email(),
+
+                PasswordHasher.hash(enteredPasswordNew),
+                null
+        );
+        userTable.update(cleanedUser);
+
+
+        ResponseMessage success = new ResponseMessage("User updated successfully");
+        return success;
+
 
     }
 }

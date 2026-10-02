@@ -12,8 +12,8 @@ import seng202.team1.types.user.User;
 
 import java.security.InvalidParameterException;
 
-import static seng202.team1.state.AuthState.validateEmail;
-import static seng202.team1.state.AuthState.validateName;
+import static seng202.team1.state.AuthState.*;
+import static seng202.team1.state.AuthState.validatePassword;
 
 /**
  * Page that displays the configuration menu of the app
@@ -89,7 +89,7 @@ public class SettingsPage extends Page {
 
     private void saveChanges() {
 
-        if(user == null)
+        if (user == null)
             return;
 
         String enteredName = userName.getInput();
@@ -99,10 +99,10 @@ public class SettingsPage extends Page {
         String enteredPasswordNewConfirmed = userPasswordNewConfirm.getInput();
 
         // Only saved if changed
-        if(!enteredName.equals(user.name()) || !enteredEmail.equals(user.email()))
+        if (!enteredName.equals(user.name()) || !enteredEmail.equals(user.email()))
             updateDeatils(enteredName, enteredEmail);
 
-        if(!enteredPassword.isEmpty())
+        if (!enteredPassword.isEmpty())
             changePassword(enteredPassword, enteredPasswordNew, enteredPasswordNewConfirmed);
 
 
@@ -110,7 +110,7 @@ public class SettingsPage extends Page {
 
     private void updateDeatils(String enteredName, String enteredEmail) {
 
-       // Validate
+        // Validate
         try {
             validateName(enteredName);
         } catch (InvalidParameterException e) {
@@ -133,6 +133,38 @@ public class SettingsPage extends Page {
     }
 
     private void changePassword(String enteredPassword, String enteredPasswordNew, String enteredPasswordNewConfirmed) {
+
+        // Validate
+        try {
+            validatePassword(enteredPassword);
+        } catch (InvalidParameterException e) {
+            userPasswordOld.setError(e.getMessage());
+        }
+
+        try {
+            validatePassword(enteredPasswordNew);
+        } catch (InvalidParameterException e) {
+            userPasswordNew.setError(e.getMessage());
+        }
+
+        try {
+            validatePassword(enteredPasswordNewConfirmed);
+        } catch (InvalidParameterException e) {
+            userPasswordNewConfirm.setError(e.getMessage());
+        }
+
+        if (!enteredPasswordNew.equals(enteredPasswordNewConfirmed))
+            userPasswordNewConfirm.setError("passwords do not match");
+
+       // Cant update with these credentials
+        if (userPasswordOld.isErroring() || userPasswordNew.isErroring() || userPasswordNewConfirm.isErroring())
+            return;
+
+        getState().getTaServer().updatePassword(enteredPassword, enteredPasswordNew, s -> {}).join();
+        userPasswordOld.clear();
+        userPasswordNew.clear();
+        userPasswordNewConfirm.clear();
+
     }
 
     private void logOut() {
