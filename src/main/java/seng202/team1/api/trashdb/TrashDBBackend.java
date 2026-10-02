@@ -153,7 +153,7 @@ public class TrashDBBackend {
     public void setToken(String token) {
 
         // Log out request
-        if (token == null) {
+        if (token.isEmpty()) {
             user = null;
             return;
         }
@@ -258,6 +258,17 @@ public class TrashDBBackend {
         ResponseMessage success = new ResponseMessage("User updated successfully");
         return success;
 
+
+    }
+
+    public ResponseMessage removeUser() {
+
+        // Get the user making the request
+        User user = getUser();
+        userTable.delete(user.id());
+
+        ResponseMessage success = new ResponseMessage("User deleted successfully");
+        return success;
 
     }
 }

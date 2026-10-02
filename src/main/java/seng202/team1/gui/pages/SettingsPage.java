@@ -70,6 +70,7 @@ public class SettingsPage extends Page {
         UISection manageButtons = new UISection(15, logOut, deleteAccount);
 
         save.setOnAction(e -> saveChanges());
+        deleteAccount.setOnAction(e -> delete());
         logOut.setOnAction(e -> logOut());
 
         // Hide input
@@ -85,6 +86,13 @@ public class SettingsPage extends Page {
         VBox root = new VBox(20, userDetails, passwordChange, saveSection, manageButtons);
         root.setAlignment(Pos.CENTER);
         return root;
+    }
+
+    private void delete() {
+
+        getState().getTaServer().deleteUser(s -> {}).join();
+        logOut();
+
     }
 
     private void saveChanges() {
@@ -127,7 +135,8 @@ public class SettingsPage extends Page {
         if (userName.isErroring() || userEmail.isErroring())
             return;
 
-        getState().getTaServer().updateUser(enteredName, enteredEmail, s -> {}).join();
+        getState().getTaServer().updateUser(enteredName, enteredEmail, s -> {
+        }).join();
         getState().getAuth().updateUser(enteredName, enteredEmail);
         updateContents();
     }

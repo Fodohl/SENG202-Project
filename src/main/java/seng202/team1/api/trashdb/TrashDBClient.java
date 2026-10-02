@@ -161,4 +161,8 @@ public class TrashDBClient extends ApiBackend {
         return sendAsync(() -> backend.updateUserPassword(enteredPassword, enteredPasswordNew), callback, null, null);
 
     }
+
+    public CompletableFuture<ResponseMessage> deleteUser(Consumer<ResponseMessage> callback) {
+        return sendAsync(() -> backend.removeUser(), callback, null, null);
+    }
 }
