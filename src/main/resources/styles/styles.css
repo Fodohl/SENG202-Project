@@ -434,6 +434,8 @@
     -fx-border-color: transparent transparent transparent transparent;
     -fx-text-fill: -bg-primary-light;
     -fx-alignment: center-left;
+    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.1;
 }
 
 .table-cell-header-hover{
@@ -443,6 +445,9 @@
 .table-cell-highlight-first{
     -fx-background-color: -active;
     -fx-font-weight: bold;
+    -fx-scale-x: 1.1;
+    -fx-border-color: transparent transparent transparent transparent;
+
 }
 
 .table-cell-highlight{
@@ -865,4 +870,8 @@
 
 .starting .logo-h1 {
     -fx-font-size: 54px;
+}
+
+.data-table {
+    -fx-max-width: 1200px;
 }

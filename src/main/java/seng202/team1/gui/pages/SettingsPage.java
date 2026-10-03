@@ -77,6 +77,9 @@ public class SettingsPage extends Page {
         UIButton deleteAccount = new UIButton("Delete Account");
         UISection manageButtons = new UISection(15, logOut, deleteAccount);
 
+        // Assume enter keypress in a password is same as login press
+        userPasswordNewConfirm.setOnAction(e -> saveChanges());
+
         save.setOnAction(e -> saveChanges());
         cancel.setOnAction(e -> updateContents());
         deleteAccount.setOnAction(e -> delete());

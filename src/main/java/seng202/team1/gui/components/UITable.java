@@ -315,8 +315,10 @@ public class UITable extends GridPane {
         cell.getStyleClass().add("table-cell");
 
         // Highlight the header row
-        if (isHeader)
+        if (isHeader){
             cell.getStyleClass().add("table-cell-header");
+            cell.setViewOrder(-1);
+        }
 
         // Make the cell fill its full grid column/row so its background shows the whole
         GridPane.setHgrow(cell, Priority.ALWAYS);
@@ -353,6 +355,7 @@ public class UITable extends GridPane {
         // First row gets special highlighting
         if (highlightFirst && currentRow == 1) {
             cell.getStyleClass().add("table-cell-highlight-first");
+            cell.setViewOrder(-1);
             return;
         }
 

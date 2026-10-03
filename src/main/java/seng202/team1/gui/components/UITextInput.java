@@ -1,14 +1,16 @@
 package seng202.team1.gui.components;
 
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputControl;
 import javafx.scene.layout.VBox;
 
-public class UITextInput extends VBox implements UIInputComponent{
+public class UITextInput extends VBox implements UIInputComponent {
 
-    private TextInputControl textField = new TextField();
+    private TextField textField = new TextField();
 
     /// The label to show invalid input messages in
     private Label errorText = new Label();
@@ -17,7 +19,7 @@ public class UITextInput extends VBox implements UIInputComponent{
 
     private String prompt;
 
-    public UITextInput(String placeholder){
+    public UITextInput(String placeholder) {
         super(5);
         prompt = placeholder;
 
@@ -44,7 +46,7 @@ public class UITextInput extends VBox implements UIInputComponent{
         return textField.getText();
     }
 
-        /**
+    /**
      * Set the input to a desired value
      *
      * @param value The new string input value
@@ -52,13 +54,13 @@ public class UITextInput extends VBox implements UIInputComponent{
     @Override
     public void setInput(Object value) {
 
-        if(value instanceof String)
-            textField.setText((String)value);
+        if (value instanceof String)
+            textField.setText((String) value);
     }
 
-       /**
+    /**
      * Get whether a user has entered input yet
-     *
+     * <p>
      * Note: if true then getInput() will not be null
      *
      * @return True if the user has inputted a value
@@ -66,13 +68,13 @@ public class UITextInput extends VBox implements UIInputComponent{
     @Override
     public boolean hasInput() {
 
-        if(textField.getText() == null)
+        if (textField.getText() == null)
             return false;
 
         return !textField.getText().isEmpty();
     }
 
-     /**
+    /**
      * Reset the value of the input to default, clearing any errors
      */
     @Override
@@ -81,17 +83,17 @@ public class UITextInput extends VBox implements UIInputComponent{
         setError("");
     }
 
-  /**
+    /**
      * Check if the current input has resulted in an error
      *
      * @return True if there is an error set
      */
     @Override
-    public boolean isErroring(){
+    public boolean isErroring() {
         return isErroringInternal(errorText);
     }
 
-       /**
+    /**
      * Set the error for this input
      *
      * @param error The error message
@@ -101,11 +103,13 @@ public class UITextInput extends VBox implements UIInputComponent{
         setIsErrorInternal(error, this, errorText);
     }
 
-
-    public void setPrivate(){
+    /**
+     * Change the input type to a password input to hide what is entered
+     */
+    public void setPrivate() {
 
         // Already privated
-        if(isPrivate)
+        if (isPrivate)
             return;
 
         // Replace old input with password
@@ -117,5 +121,14 @@ public class UITextInput extends VBox implements UIInputComponent{
         getChildren().add(0, textField);
 
         isPrivate = true;
+    }
+
+    /**
+     * Set the action for the text field
+     *
+     * @param function The function to run on the text field action event
+     */
+    public void setOnAction(EventHandler<ActionEvent> function) {
+        textField.setOnAction(function);
     }
 }
