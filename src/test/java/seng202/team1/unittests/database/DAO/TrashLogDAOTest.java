@@ -1,5 +1,6 @@
-package seng202.team1.unittests.data.repository;
+package seng202.team1.unittests.database.DAO;
 
+import org.jooq.impl.QOM;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -55,7 +56,7 @@ public class TrashLogDAOTest extends TrashAppTest {
     void testUpdateTrash() {
         TrashLog trashLog = new TrashLog(Instant.now(), Instant.now(), 1, 1, TrashType.COFFEE_CUP, 0);
         int id = trashLogs.add(trashLog);
-        TrashLog updatedTrashLog = new TrashLog(id, Instant.now(), Instant.now(), 1, 1, TrashType.PLASTIC_BOTTLE, 50);
+        TrashLog updatedTrashLog = new TrashLog(id, Instant.now(), Instant.now(), Instant.now(), 1, 1, TrashType.PLASTIC_BOTTLE, 50);
         trashLogs.update(updatedTrashLog);
         TrashLog result = trashLogs.getOne(id);
 

@@ -1,15 +1,14 @@
-package seng202.team1.unittests.common;
+package seng202.team1.unittests.helpers;
 
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
-import seng202.team1.helpers.common.DateHelpers;
+import seng202.team1.helpers.DateHelpers;
 import seng202.team1.unittests.TrashAppTest;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.TimeZone;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -1,4 +1,4 @@
-package seng202.team1.unittests.common;
+package seng202.team1.unittests.helpers;
 
 import org.junit.jupiter.api.Test;
 import seng202.team1.helpers.URLHelpers;

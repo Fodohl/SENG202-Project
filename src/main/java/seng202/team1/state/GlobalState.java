@@ -109,7 +109,8 @@ public class GlobalState {
         router = new Router(this, stage);
 
         // Fetch data etc for cached sessions
-        auth.tryTriggerLoadSession();
+        if(!testState)
+            auth.tryTriggerLoadSession();
 
     }
 
@@ -277,4 +278,42 @@ public class GlobalState {
     public AuthState getAuth() {
         return auth;
     }
+
+
+       public void refreshBinFullness() {
+
+        // No need to recalc fullness every test
+        if (testState)
+            return;
+
+        // Only want recent reports of fullness
+        List<StatusReport> fullnessReports = statusReportStore.getReports().stream()
+                .filter(r -> r.getIssue() == ReportType._FULLNESS_UPDATE)
+                .filter(r -> r.getSubmittedAt().isAfter(LocalDate.now().atStartOfDay()))
+                .toList();
+
+        // Get each bin's new fullness as an average of this week's reports
+        getBinDAO().getAll().stream().forEach(b -> {
+            List<StatusReport> reportsFoBin = fullnessReports.stream().filter(r -> r.getBinID() == b.getID()).toList();
+            refreshBinFullness(b, binDAO, reportsFoBin);
+        });
+    }
+
+    public void refreshBinFullness(Bin bin) {
+
+        // Only want recent reports of fullness
+        List<StatusReport> reportsFoBin = statusReportStore.getReports().stream()
+                .filter(r -> r.getIssue() == ReportType._FULLNESS_UPDATE)
+                .filter(r -> r.getSubmittedAt().isAfter(LocalDate.now().atStartOfDay()))
+                .filter(r -> r.getBinID() == bin.getID())
+                .toList();
+
+        refreshBinFullness(bin, binDAO, reportsFoBin);
+    }
+
+    private void refreshBinFullness(Bin bin, BinDAO binDAO, List<StatusReport> reportsFoBin) {
+        bin.updateFullness(binDAO, reportsFoBin);
+    }
+
+
 }
