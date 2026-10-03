@@ -19,19 +19,34 @@ public class UITimelineEntry extends HBox {
 
     private String text;
 
- /**
+    /**
      * Constructs a new start chunk node for the top of the timeline
+     *
+     * @see #UITimelineEntry(Instant, UIImage, String, String, boolean)
      */
-    public UITimelineEntry(boolean isFirst) {
-        this(Instant.now(), new UIImage("", 0,0), "", "", true);
+    public UITimelineEntry() {
+        this(Instant.now(), new UIImage("", 0, 0), "", "", true);
 
     }
 
-
+    /**
+     * Constructs a new normal chunk node for the timeline
+     *
+     * @see #UITimelineEntry(Instant, UIImage, String, String, boolean)
+     */
     public UITimelineEntry(Instant timestamp, UIImage icon, String title, String text) {
         this(timestamp, icon, title, text, false);
     }
 
+    /**
+     * Constructs a new timeline chunk
+     *
+     * @param timestamp When in the timelien this occurrs
+     * @param icon The icon to show relative to this chunk
+     * @param title What this chunk is about
+     * @param text Extra info about this chunk
+     * @param isFirst Whether this is the first chunk in the timelier or not
+     */
     public UITimelineEntry(Instant timestamp, UIImage icon, String title, String text, boolean isFirst) {
 
         super();
@@ -41,7 +56,7 @@ public class UITimelineEntry extends HBox {
         setAlignment(Pos.CENTER);
         getStyleClass().add("timeline");
 
-        if(isFirst)
+        if (isFirst)
             getStyleClass().add("timeline-first");
 
         Label titleLabel = new Label(title);
@@ -84,13 +99,13 @@ public class UITimelineEntry extends HBox {
         verticalAxis.setPrefWidth(30);
         verticalAxis.getStyleClass().add("timeline-axis");
 
-        if(isFirst){
+        if (isFirst) {
             StackPane.setAlignment(dot, Pos.BASELINE_CENTER);
             verticalAxis.getChildren().add(new Label("Today"));
         }
 
         // Combine
-        this.getChildren().addAll(detailsContainer,  dateContainer, connector, verticalAxis);
+        this.getChildren().addAll(detailsContainer, dateContainer, connector, verticalAxis);
     }
 
     /**
@@ -98,7 +113,7 @@ public class UITimelineEntry extends HBox {
      *
      * @return The instant this entry represents
      */
-    public Instant getTime(){
+    public Instant getTime() {
         return timestamp;
     }
 

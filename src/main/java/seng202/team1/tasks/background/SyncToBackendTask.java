@@ -13,15 +13,28 @@ import seng202.team1.types.trashlog.TrashLog;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
 
+/**
+ * A task to upload trash logs and issue reports to the database
+ */
 public class SyncToBackendTask extends Task {
 
+    /// Task specific logger
     private static final Logger log = LoggerFactory.getLogger(SyncToBackendTask.class);
+
+    /// Lock to prevent concurrent uploads of the same items
     ReentrantLock lock = new ReentrantLock();
 
+    /// The reference to the local trash logs
     TrashLogDAO logDAO;
+
+    /// The server to upload the trash logs onto
     TrashDBClient server;
 
-
+    /**
+     * Create a new SyncToBackendTask
+     *
+     * @param taskManager The task manage responsible for this task
+     */
     public SyncToBackendTask(TaskManager taskManager){
         super(taskManager, "data syncing");
 
@@ -30,13 +43,17 @@ public class SyncToBackendTask extends Task {
 
     }
 
+    /**
+     * The job this task carries out
+     *
+     * @param manager The task manager that triggered the task
+     */
     @Override
     public void task(TaskManager manager) {
 
         // Wait for any other sync tasks to complete as may pick up what this one is doing
         lock.lock();
         try{
-
 
             // Get items needing to be synced
             List<TrashLog> logs = logDAO.getUnsynced();

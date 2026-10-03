@@ -9,15 +9,29 @@ import seng202.team1.types.trashdb.TrashDBFullnessResponse;
 
 import java.util.HashMap;
 
+/**
+ * A task to update the bins with their reported fullness
+ */
 public class RefreshBinFullnessTask extends Task {
 
     /// RefreshBinFullnessTask specific logger
     private static final Logger log = LoggerFactory.getLogger(RefreshBinFullnessTask.class);
 
+
+    /**
+     * Create a new RefreshBinFullnessTask
+     *
+     * @param taskManager The task manager responsible for this task
+     */
     public RefreshBinFullnessTask(TaskManager taskManager){
         super(taskManager, "bin fullness calculations");
     }
 
+        /**
+     * The job this task carries out
+     *
+     * @param manager The task manager that triggered the task
+     */
     @Override
     public void task(TaskManager manager) {
 

@@ -21,7 +21,10 @@ import java.util.Comparator;
  */
 public class DataPage extends Page {
 
+    /// The container for the whole page
     private VBox root;
+
+    /// The table that contains the app's data
     private UITable table;
 
     /**
@@ -51,6 +54,9 @@ public class DataPage extends Page {
         return root;
     }
 
+    /**
+     * Rerender the table with the latest data
+     */
     @Override
     public void updateContents() {
         refreshData();
@@ -87,6 +93,11 @@ public class DataPage extends Page {
 
     }
 
+    /**
+     * Get the table that contains the data
+     *
+     * @return The data table
+     */
     public UITable getTable() {
         return table;
     }

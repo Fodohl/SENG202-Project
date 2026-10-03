@@ -5,7 +5,6 @@ import seng202.team1.gui.Router;
 
 /**
  * Composite UI component that contains elements for a modal
- *
  */
 public class ModalLayout extends Layout{
 

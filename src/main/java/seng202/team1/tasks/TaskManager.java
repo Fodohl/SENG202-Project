@@ -10,6 +10,9 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 
+/**
+ * Manages state and threading of tasks
+ */
 public class TaskManager extends StateReferrer {
 
     /// The event handlers triggered when switching pages
@@ -18,16 +21,29 @@ public class TaskManager extends StateReferrer {
     /// TaskManager specific logger
     private static final Logger log = LogManager.getLogger(TaskManager.class);
 
+    /// A list of tasks, and their ids, that are yet to be completed (including tasks that are waiting to be started)
     private ConcurrentHashMap<Long, Task> remainingTasks = new ConcurrentHashMap<>();
 
+    /// A list of waiting tasks and the tasks they are waiting on
     private ConcurrentHashMap<Task, Set<Long>> waitingTasks = new ConcurrentHashMap<>();
 
+    /// The next available ID that can be assigned to a task
     private static Long nextTaskID = 0L;
 
+    /**
+     * Constructs a new TaskManager
+     *
+     * @param state The global app state
+     */
     public TaskManager(GlobalState state){
         super(state);
     }
 
+    /**
+     * Run a tasks' job function in a thread
+     *
+     * @param task The task to thread
+     */
     private void startTask(Task task) {
 
         log.info("Starting task {} : {}", task.getID(), task.getTaskName());
@@ -43,6 +59,14 @@ public class TaskManager extends StateReferrer {
         thread.start();
     }
 
+    /**
+     * Queue a task to be run once its dependencies have finished runnings.
+     * Warning: Dependencies must be acyclic
+     *
+     * @param task The task to queue
+     * @param deps The id's of tasks that must be ran before this one can
+     * @return The id assigned to this task
+     */
     public long runTask(Task task, Long... deps){
 
         // Store the task
@@ -64,18 +88,38 @@ public class TaskManager extends StateReferrer {
         return taskID;
     }
 
+    /**
+     * Run a function as a task
+     *
+     * @see #runTask(Task, Long...)
+     */
     public void runTask(String name, Consumer<TaskManager> task, Long... deps){
         runTask(new GenericTask(this, name, task), deps);
     }
 
+    /**
+     * Get whether this manager is still waiting for tasks to complete
+     *
+     * @return True if tasks are still running, false otherwise
+     */
     public boolean hasTasksUncompleted(){
         return !remainingTasks.isEmpty();
     }
 
+    /**
+     * Get a list of tasks that are still executing
+     *
+     * @return The list of tasks
+     */
     public List<Task> getTasksUncompleted(){
         return remainingTasks.values().stream().toList();
     }
 
+    /**
+     * Mark a given task as completed
+     *
+     * @param task The task that was completed
+     */
     public void taskFinished(Task task) {
 
         remainingTasks.remove(task.getID());
@@ -86,6 +130,11 @@ public class TaskManager extends StateReferrer {
             callback.accept(task);
     }
 
+    /**
+     * Remove a completed task from the queue of dependencies
+     *
+     * @param taskID The task that was completed
+     */
     private void updateWaitingQueue(Long taskID) {
 
         for(Task task : waitingTasks.keySet()){

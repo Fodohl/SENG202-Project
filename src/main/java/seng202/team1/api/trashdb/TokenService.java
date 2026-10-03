@@ -7,21 +7,39 @@ import javax.crypto.spec.SecretKeySpec;
 import java.time.Instant;
 import java.util.HexFormat;
 
+/**
+ * A backend utility to securely authenticate user requests.
+ * Token is in form  <id>::<expires>::<s_hash>
+ *
+ * Note: Kept as a way to be pseudo-secure, given set limitations of assignment
+ */
 public class TokenService {
 
+    /// The secret key to use when signing the token
     private String secret = "";
 
-    private final int EXPIRY_DAYS = 30;
+    /// How many days a token is valid for
+    public static final int EXPIRY_DAYS = 30;
+
+    /// Token valid lifetime in seconds
     private final int EXPIREY_SEC = EXPIRY_DAYS * 24 * 60 * 60;
 
-    // kc token form: <id>::<expires>::<s_hash>
-
+    /**
+     * Constructs a new TokenService
+     */
     public TokenService() {
 
+        // Read the app secret from the environment
         Dotenv dotenv = Dotenv.configure().ignoreIfMissing().load();
         this.secret = dotenv.get("APP_TOKEN_SECRET");
     }
 
+    /**
+     * Create a new token for a user and secure it
+     *
+     * @param userId The user the token authenticates
+     * @return The signed token
+     */
     public String signToken(long userId) {
 
         // Build the token contents
@@ -35,7 +53,12 @@ public class TokenService {
         return token;
     }
 
-
+    /**
+     * Secure a payload by creating a signed message authentication code
+     *
+     * @param payload The payload to sign
+     * @return The signed payload
+     */
     private String sign(String payload) {
         try {
 
@@ -52,6 +75,12 @@ public class TokenService {
         }
     }
 
+    /**
+     * Check if a token is in a valid form, and that it was created from this app
+     *
+     * @param token
+     * @return -1 If the token is invalid or tampered with, otherwise the ID of the user that the token belongs to
+     */
     public Long parseToken(String token) {
 
         try{

@@ -34,6 +34,11 @@ public class UIButton extends Button {
             getStyleClass().add("secondary");
     }
 
+    /**
+     * Enable the loading state of the button, disabling it
+     *
+     * @param isLoading Whether the button is in loading state or not
+     */
     public void setSpinner(boolean isLoading) {
 
         if(isLoading){

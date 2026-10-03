@@ -8,8 +8,6 @@ import seng202.team1.gui.Router;
 
 /**
  * Composite UI component that contains elements that are being shown over the app
- * <p>
- * Note: there should be only one per window
  */
 public class OverlayLayout extends Layout {
 

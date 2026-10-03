@@ -11,18 +11,39 @@ import seng202.team1.state.AuthState;
 
 import java.security.InvalidParameterException;
 
-public class ResetPage extends Page{
+/**
+ * Page that displays a password reset form
+ */
+public class ResetPage extends Page {
 
+    /// Where the user enters their email
     private UITextInput email;
+
+    /// Where the user enters their reset code
     private UITextInput code;
+
+    /// Where the user enters their new password
     private UITextInput password;
+
+    /// Where the user re-enters their new password
     private UITextInput passwordConfirm;
 
+    /**
+     * Constructs a new ResetPage
+     *
+     * @param router the router that handles this page
+     */
     public ResetPage(Router router) {
 
-        super(router, Pages.LOGIN);
+        super(router, Pages.RESET);
     }
 
+
+    /**
+     * Constructs the UI for the reset page
+     *
+     * @return the UI layout for the page
+     */
     @Override
     protected Parent renderSelf() {
 
@@ -47,9 +68,13 @@ public class ResetPage extends Page{
         return form;
     }
 
-     private void handleReset(){
+    /**
+     * Verifies the user's input and sends a reset request, erroring if invalid
+     */
+    private void handleReset() {
 
-        AuthState auth = router.getGlobalState().getAuth();;
+        AuthState auth = router.getGlobalState().getAuth();
+        ;
 
         String enteredEmail = email.getInput();
         String enteredCode = code.getInput();
@@ -100,7 +125,10 @@ public class ResetPage extends Page{
         auth.resetPassword(enteredEmail, enteredCode, enteredPassword);
     }
 
-     private void handleBack(){
+    /**
+     * Go back to the login page
+     */
+    private void handleBack() {
         router.switchPage(Pages.LOGIN);
     }
 }

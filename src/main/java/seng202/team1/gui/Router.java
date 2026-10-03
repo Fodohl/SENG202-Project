@@ -54,6 +54,7 @@ public class Router extends StateReferrer {
     /// The event handlers triggered when switching pages
     private final List<Consumer<Pages>> pageSwitchCallbacks = new ArrayList<>();
 
+    /// The event handlers triggered when switching modals
     private final List<Consumer<Modals>> modalSwitchCallbacks = new ArrayList<>();
 
     /// The phases this app can switch between
@@ -505,11 +506,21 @@ public class Router extends StateReferrer {
         return currentStage;
     }
 
+    /**
+     * Change the currently shown layout in the scene to be a different one
+     *
+     * @param layout The new layout
+     */
     private void updateLayout(Layout layout){
         this.layout = layout;
         root.getChildren().set(0, this.layout.getRendered());
     }
 
+    /**
+     * The list of pages this phase expects to show
+     *
+     * @return The pages that can be shown
+     */
     public List<Pages> getPagesInPhase() {
         return phases.get(currentPhase).allowedPages();
     }

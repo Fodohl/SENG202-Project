@@ -16,9 +16,7 @@ import java.util.List;
 import static seng202.team1.gui.GraphicsCommon.precentWindowX;
 
 /**
- * Composite UI component that contains elements consistent across the whole app
- *
- * Note: there should be only one per window
+ * Composite UI component that contains elements consistent across the MAIN phase of the app
  */
 public class MainLayout extends Layout {
 
@@ -102,9 +100,9 @@ public class MainLayout extends Layout {
     }
 
     /**
-     * Combine UI elements to build the CoreUI
+     * Combine UI elements to build the layout
      *
-     * @return A new root node containing the rendered CoreUI
+     * @return A new root node containing the rendered layout
      */
     @Override
     protected Parent renderSelf() {

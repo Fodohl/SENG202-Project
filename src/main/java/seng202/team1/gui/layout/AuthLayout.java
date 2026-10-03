@@ -10,16 +10,31 @@ import javafx.scene.layout.VBox;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.components.UIImage;
 
+/**
+ * Composite UI component that contains elements consistent across the AUTH phase of the app
+ */
 public class AuthLayout extends Layout {
 
-
+    /// The contents of the current shown form
     private VBox form = new VBox();
+
+    /// The top level element fo the layout
     private VBox root;
 
-    public AuthLayout(Router router){
+    /**
+     * Constructs a new AuthLayout
+     *
+     * @param router The router responsible for this layout
+     */
+    public AuthLayout(Router router) {
         super(router);
     }
 
+    /**
+     * Combine UI elements to build the layout
+     *
+     * @return A new root node containing the rendered layout
+     */
     @Override
     protected Parent renderSelf() {
 
@@ -40,6 +55,11 @@ public class AuthLayout extends Layout {
     }
 
 
+    /**
+     * Update the contents section to show a new form
+     *
+     * @param rendered The form page to show
+     */
     @Override
     public void swap(Parent rendered) {
         form = (VBox) rendered;

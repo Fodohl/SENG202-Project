@@ -13,19 +13,38 @@ import seng202.team1.state.AuthState;
 
 import java.security.InvalidParameterException;
 
+/**
+ * Page that displays a login form
+ */
 public class LoginPage extends Page{
 
+    /// Where the user enters their email
     private UITextInput email;
+
+    /// Where the user enters their emailZ
     private UITextInput password;
+
+    /// The button to trigger a login
     private UIButton login;
 
+    /// The UI component set to manage whilst waiting for requests to complete
     private BlockableUISet frontend;
 
+    /**
+     * Constructs a new LoginPage
+     *
+     * @param router the router that handles this page
+     */
     public LoginPage(Router router) {
 
         super(router, Pages.LOGIN);
     }
 
+    /**
+     * Constructs the UI for the login page
+     *
+     * @return the UI layout for the page
+     */
     @Override
     protected Parent renderSelf() {
 
@@ -58,6 +77,9 @@ public class LoginPage extends Page{
         return form;
     }
 
+    /**
+     * Verifies the user's input and sends a login request, erroring if invalid
+     */
     private void handleLogin(){
 
         AuthState auth = router.getGlobalState().getAuth();;
@@ -90,14 +112,23 @@ public class LoginPage extends Page{
         auth.login(enteredEmail, enteredPassword, frontend);
     }
 
+    /**
+     * Switch to the sign up page
+     */
      private void handleSignUp(){
         router.switchPage(Pages.SIGN_UP);
     }
 
+    /**
+     * Switch to the forgot password page
+     */
      private void handleForgot(){
         router.switchPage(Pages.RESET);
     }
 
+    /**
+     * Checks if the user already has a saved sesssion and skips login if so
+     */
     @Override
     public void updateContents() {
 

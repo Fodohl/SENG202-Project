@@ -19,14 +19,19 @@ import java.util.List;
  */
 public class HomePage extends Page {
 
+    /// The user's leaderboard position
     private UICard leaderBoard;
+
+    /// The user's trees saved days
     private UICard trees;
+
+    /// Te user's total logged items
     private UICard total;
 
     /**
      * Constructs a new HomePage
      *
-     * @param router the window this page is on
+     * @param router the router that handles this page
      */
     public HomePage(Router router){
 
@@ -61,6 +66,11 @@ public class HomePage extends Page {
         return root;
     }
 
+    /**
+     * Render a preview image of the map
+     *
+     * @return The rendered map preview component
+     */
     private StackPane mapPreview() {
 
         UIIconButton goToMap = new UIIconButton("/media/images/semi_full.svg", "Find Bin");
@@ -78,6 +88,9 @@ public class HomePage extends Page {
         return mapView;
     }
 
+    /**
+     * Refresh the stats card to show the latest data
+     */
     @Override
     public void updateContents() {
 

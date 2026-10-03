@@ -20,16 +20,28 @@ import java.time.Instant;
 
 import static seng202.team1.TrashApp.GSON;
 
+/**
+ * Persistently stores the current authentication state, and provides helpers for ensuring correct state values
+ */
 public class AuthState {
 
+    /// AuthState specific logger
     private static final Logger log = LoggerFactory.getLogger(AuthState.class);
 
+    /// The current logged in session or null if none
     private Session session = null;
 
+    /// The reference to the global state of the app
     private GlobalState state;
 
+    /// The trash app API client to sync the authentication state with
     private TrashDBClient server;
 
+    /**
+     * Constructs a new AuthSate
+     *
+     * @param state The global app state
+     */
     public AuthState(GlobalState state) {
         this.state = state;
         this.server = state.getTaServer();
@@ -37,15 +49,32 @@ public class AuthState {
         load();
     }
 
+    /**
+     * Get the current auth details and user details
+     *
+     * @return The auth details or null if none
+     */
     public Session getSession() {
         return session;
     }
 
+    /**
+     * Update the auth session, propagating it to the backend client
+     *
+     * @param session The new session
+     */
     public void setSession(Session session) {
         this.session = session;
         server.setSession(session);
     }
 
+    /**
+     * Log the user into the app, fetching the latest user data and caching it for faster future logins
+     *
+     * @param email    The email of the account to log in to
+     * @param password The accounts password
+     * @param frontend The UI to manipulate whilst waiting for the request to complete
+     */
     public void login(String email, String password, BlockableUISet frontend) {
 
         // Authenticate the user
@@ -67,6 +96,13 @@ public class AuthState {
         }, frontend);
     }
 
+    /**
+     * Create a new user account if that email is not already in use
+     *
+     * @param userDetails The user's details
+     * @param password    The user's password
+     * @param frontend    The UI to manipulate whilst waiting for the request to complete
+     */
     public void signUp(User userDetails, String password, BlockableUISet frontend) {
 
         // Create a new user
@@ -79,6 +115,11 @@ public class AuthState {
 
     }
 
+    /**
+     * Reset the users' password
+     *
+     * @implNote Not implemented due to not having email server
+     */
     public void resetPassword(String enteredEmail, String enteredCode, String enteredPassword) {
 
         // User can now login
@@ -86,6 +127,9 @@ public class AuthState {
 
     }
 
+    /**
+     * Clear the current auth session and prepare for next login
+     */
     public void logOut() {
 
         clear();
@@ -93,6 +137,11 @@ public class AuthState {
 
     }
 
+    /**
+     * Check whether the email is valid, throws error with reason otherwise
+     *
+     * @param enteredEmail The email to check
+     */
     public static void validateEmail(String enteredEmail) {
 
         if (!EmailValidator.getInstance().isValid(enteredEmail))
@@ -100,6 +149,11 @@ public class AuthState {
 
     }
 
+    /**
+     * Check whether the password is valid, throws error with reason otherwise
+     *
+     * @param enteredPassword The password to check
+     */
     public static void validatePassword(String enteredPassword) {
 
         if (enteredPassword.length() <= 7)
@@ -132,6 +186,11 @@ public class AuthState {
             throw new InvalidParameterException("Password must contain at least one number");
     }
 
+    /**
+     * Check whether the name is valid, throws error with reason otherwise
+     *
+     * @param enteredName The name to check
+     */
     public static void validateName(String enteredName) {
 
         if (enteredName.length() < 3)
@@ -142,10 +201,15 @@ public class AuthState {
 
     }
 
+    /**
+     * Check whether the code is valid, throws error with reason otherwise
+     *
+     * @param enteredCode The code to check
+     */
     public Integer validateCode(String enteredCode) {
 
         if (enteredCode.length() != 6)
-            throw new InvalidParameterException("Code must e 6 digits");
+            throw new InvalidParameterException("Code must be 6 digits");
 
         try {
             Integer code = Integer.parseInt(enteredCode);
@@ -157,7 +221,7 @@ public class AuthState {
     }
 
     /**
-     * Returns the default location for the user's saved trash history.
+     * Returns the default location for the user's saved session.
      *
      * @return default JSON file location
      *
@@ -170,7 +234,9 @@ public class AuthState {
         );
     }
 
-
+    /**
+     * Persist the current auth session to disk
+     */
     private void save() {
 
         // No saved session
@@ -194,6 +260,9 @@ public class AuthState {
         }
     }
 
+    /**
+     * Load a saved session from disk
+     */
     private void load() {
 
         // No saved session
@@ -205,7 +274,7 @@ public class AuthState {
             // Read the session, forcing propagation to backend
             setSession(GSON.fromJson(reader, Session.class));
 
-            if (this.session != null && this.session.token() != null){
+            if (this.session != null && this.session.token() != null) {
                 log.info("Restored session for user: {}", session.userDetails() != null ? session.userDetails().email() : "Unknown");
                 tryTriggerLoadSession();
             }
@@ -218,6 +287,9 @@ public class AuthState {
 
     }
 
+    /**
+     * Delete a saved session if it exists (fails safely)
+     */
     private void clear() {
 
         try {
@@ -231,6 +303,9 @@ public class AuthState {
         }
     }
 
+    /**
+     * Trigger run tasks that require user auth
+     */
     private void onSessionLoaded() {
 
         // fetch app data
@@ -241,6 +316,12 @@ public class AuthState {
 
     }
 
+    /**
+     * Update user details and save it to session
+     *
+     * @param enteredName       The user's email
+     * @param enteredEmail        The user's full name
+     */
     public void updateUser(String enteredName, String enteredEmail) {
 
         User oldUser = session.userDetails();
@@ -262,14 +343,17 @@ public class AuthState {
 
     }
 
+    /**
+     * Try trigger a session load event, if there is a session to trigger it on
+     */
     public void tryTriggerLoadSession() {
 
         // No session
-        if(session == null || session.token() == null)
+        if (session == null || session.token() == null)
             return;
 
         // UI not ready
-        if(state.getRouter() == null)
+        if (state.getRouter() == null)
             return;
 
         onSessionLoaded();

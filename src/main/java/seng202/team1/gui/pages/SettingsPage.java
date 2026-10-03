@@ -29,7 +29,10 @@ public class SettingsPage extends Page {
     private UITextInput userPasswordNew;
     private UITextInput userPasswordNewConfirm;
 
+    /// The UI component set to manage whilst waiting for update requests to complete
     private BlockableUISet updateFrontendUI;
+
+    /// The UI component set to manage whilst waiting for delete requests to complete
     private BlockableUISet deleteFrontendUI;
 
     private User user;

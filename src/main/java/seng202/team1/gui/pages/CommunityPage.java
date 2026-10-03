@@ -15,8 +15,10 @@ import java.util.Comparator;
  */
 public class CommunityPage extends Page {
 
+    /// The leaderboard data
     private StringTableBuilder<LeaderBoardEntry> tableData = null;
 
+    /// The table that displays the leaderboard
     private UITable table;
 
     /**
@@ -37,7 +39,6 @@ public class CommunityPage extends Page {
      */
     @Override
     protected Parent renderSelf() {
-
 
         // Title
         UITitle pageTitle = new UITitle("Leaderboard");
@@ -69,6 +70,9 @@ public class CommunityPage extends Page {
 
     }
 
+    /**
+     * Refresh the leaderboard with the latest info from the global state
+     */
     @Override
     public void updateContents() {
 

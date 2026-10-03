@@ -9,8 +9,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+/**
+ * A task manager that runs all the app start up tasks
+ */
 public class PreflightManager extends TaskManager {
 
+    /**
+     * Constructs a new PreflightManager and runs the start up tasks
+     *
+     * @param state The global app state
+     */
     public PreflightManager(GlobalState state){
         super(state);
 

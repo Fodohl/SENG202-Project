@@ -21,8 +21,8 @@ public class UITimeline extends VBox {
     public UITimeline(List<UITimelineEntry> nodes) {
         super(0);
 
-
-        getChildren().add(new UITimelineEntry(true));
+        // Add the 'today' node
+        getChildren().add(new UITimelineEntry());
 
         // Timeline should be guaranteed in chronological order
         List<UITimelineEntry> entries = nodes.stream()

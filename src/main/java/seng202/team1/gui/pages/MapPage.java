@@ -26,27 +26,49 @@ public class MapPage extends Page {
     /// The shown bin, null if no bin is being shown right now
     private Bin selectedBin = null;
 
+    /// Whether the map is waiting for the user to click to set their location
     private boolean isWaitingForLocation = false;
 
     /// The map the page uses
     private UIMap map;
 
+    /// The sidebar that contains bin details
     private VBox sidebar;
 
+    /// The dialog box prompting the user to perform an action
     private HBox mapDialog;
 
+    /// The sidebar field for the bin's id
     private UIKeyValuePair sidebarBinID;
+
+    /// The sidebar field for the bin's type
     private UIKeyValuePair sidebarBinType;
+
+    /// The sidebar field for the bin's fullness
     private UIKeyValuePair sidebarBinStatus;
+
+    /// The sidebar field for the bin's last upadte time
     private UIKeyValuePair sidebarBinUpdated;
+
+    /// The sidebar field for the bin's location
     private UIKeyValuePair sidebarBinAddress;
+
+    /// The sidebar field for the bin's usage count for this user
     private UIKeyValuePair sidebarBinTimesUsed;
+
+    /// The sidebar field for the bin's last use time for this user
     private UIKeyValuePair sidebarBinLastUsed;
 
+    /// Latitude location of the user
     private Double userPosLat = null;
+
+    /// Longitude location of the user
     private Double userPosLong = null;
 
+    /// ID for the marker of the users location
     private int userPosMarkerID = 0xFFFFFFFF;
+
+    /// The id of the modal that is currently showing the directions to a bin, -1 if none opened yet
     private long directionsModalID = -1;
 
     /**
@@ -60,6 +82,11 @@ public class MapPage extends Page {
 
     }
 
+    /**
+     * Build the bin image part of the sidebar
+     *
+     * @return The bin image part of the sidebar
+     */
     public VBox binImage(){
 
         // Load the image
@@ -72,6 +99,11 @@ public class MapPage extends Page {
         return container;
     }
 
+    /**
+     * Build the bin info sidebar
+     *
+     * @return The bin info sidebar
+     */
     private VBox sidebar() {
 
         // Title
@@ -155,6 +187,9 @@ public class MapPage extends Page {
         return new StackPane(map, mapDialog, sidebar);
     }
 
+    /**
+     * Refresh the sidebar
+     */
     @Override
     public void updateContents() {
 
@@ -163,6 +198,9 @@ public class MapPage extends Page {
         handleLocationRequest();
     }
 
+    /**
+     * Convert a location search event into user map position
+     */
     private void handleLocationRequest() {
 
         // No requested location
@@ -179,20 +217,31 @@ public class MapPage extends Page {
         setUserLocation(coords.getLast(), coords.getFirst());
     }
 
+    /**
+     * Record the location of the user
+     *
+     * @param lat The latitude position of the user
+     * @param lng The longitude position of the user
+     */
     private void setUserLocation(Double lat, Double lng) {
 
         userPosLat = lat;
         userPosLong = lng;
 
-        // Remove old point
+        // Hide outdated user position
         map.removePoint(userPosMarkerID);
 
-        // Display user location on map
+        // Center on user's new position
         map.addPoint(userPosLat, userPosLong, userPosMarkerID, "default");
         map.centreOnPoint(userPosMarkerID);
 
     }
 
+    /**
+     * Show a bin in the sidebar when it is clicked on the map
+     *
+     * @param binID The ID of the bin that was clicked
+     */
     private void onMarkerClick(Integer binID) {
 
         // Clicking on the user marker does nothing
@@ -210,10 +259,11 @@ public class MapPage extends Page {
     }
 
     /**
-     * when map clickec but no point
+     * Handle when map clicked but not on a marked. If waiting for location interprets as the users location, otherwise
+     * interprets as clicking off a previously clicked bin
      *
-     * @param lat
-     * @param lng
+     * @param lat The click position in the world latitudinally
+     * @param lng The click position in the world longitudinally
      */
     private void onPosClick(Double lat, Double lng) {
 
@@ -233,6 +283,11 @@ public class MapPage extends Page {
         tryDrawDirections();
     }
 
+    /**
+     * Show a popup of directions to a given bin
+     *
+     * @param instructions The direction steps to the bin
+     */
     private void onMapRouted(List<RouteInstruction> instructions){
         directionsModalID = router.spawnModal(Modals.DIRECTIONS, instructions);
     }
@@ -270,6 +325,9 @@ public class MapPage extends Page {
         sidebarBinLastUsed.setText(newest == null ? "N/A " : StringHelpers.toLocaleString(newest.disposedAt()));
     }
 
+    /**
+     * Clear the UI state of the last shown bin
+     */
     private void clearPreviousBin(){
 
         router.hideOverlay();
@@ -277,6 +335,11 @@ public class MapPage extends Page {
 
     }
 
+    /**
+     * Prompt the user to click a location on the map and prepare to interpret that click
+     *
+     * @return True if have to wait for the location, false if already have it
+     */
     private boolean waitForLocation(){
 
         // Already have location
@@ -289,11 +352,17 @@ public class MapPage extends Page {
         return true;
     }
 
+    /**
+     * Stop waiting for the user to click a place on the map as their location
+     */
     private void stopWaitingForLocation(){
         isWaitingForLocation = false;
         mapDialog.setVisible(false);
     }
 
+    /**
+     * Attempt to render the route to a bin
+     */
     private void tryDrawDirections(){
 
         // Dont have a dest point
@@ -307,6 +376,9 @@ public class MapPage extends Page {
         map.setRoute(userPosLat, userPosLong, selectedBin.getLatitude(), selectedBin.getLongitude());
     }
 
+    /**
+     * Clear directions from the map and close the instructions popup
+     */
     private void removeDirections(){
         router.killModal(directionsModalID);
         map.clearRoute();

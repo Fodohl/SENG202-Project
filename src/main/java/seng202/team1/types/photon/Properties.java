@@ -1,7 +1,7 @@
 package seng202.team1.types.photon;
 
 /**
- * The properties of a geometric location
+ * Photon Type: The properties of a geometric location
  *
  * @param type The type of properties
  * @param housenumber The street number

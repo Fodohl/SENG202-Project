@@ -2,6 +2,9 @@ package seng202.team1.api;
 
 import seng202.team1.helpers.StringHelpers;
 
+/**
+ * Represents a HTTP repsonse status code
+ */
 public enum HttpStatus {
 
     BAD_REQUEST(400),
@@ -11,12 +14,22 @@ public enum HttpStatus {
 
     INTERNAL_SERVER_ERROR(500);
 
+    /// The response code
     private Integer code;
 
+    /**
+     * Constructs a new HttpStatus
+     * @param code The error code
+     */
     private HttpStatus(Integer code){
         this.code = code;
     }
 
+    /**
+     * Convert the enum to a string
+     *
+     * @return The value in the format 'message (code)'
+     */
     @Override
     public String toString() {
 
@@ -24,6 +37,11 @@ public enum HttpStatus {
 
     }
 
+    /**
+     * Get the code of this status
+     *
+     * @return The status code
+     */
     public Integer getCode() {
         return code;
     }

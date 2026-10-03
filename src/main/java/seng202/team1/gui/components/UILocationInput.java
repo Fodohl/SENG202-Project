@@ -45,6 +45,7 @@ public class UILocationInput extends HBox {
     /// A reference to the client connection with the geocoding service
     private PhotonClient photonClient;
 
+    /// The UI component set to manage whilst waiting for requests to complete
     private BlockableUISet frontend;
 
     /**

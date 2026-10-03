@@ -2,10 +2,9 @@ package seng202.team1.api;
 
 import com.google.gson.JsonSyntaxException;
 import javafx.application.Platform;
-import javafx.scene.Node;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import seng202.team1.api.tasever.ResponseError;
+import seng202.team1.types.trashdb.ResponseError;
 import seng202.team1.api.trashdb.ResponseStatusException;
 import seng202.team1.gui.components.BlockableUISet;
 
@@ -55,7 +54,7 @@ public class ApiBackend {
      * Constructs a new API client
      *
      * @param hostUrl The url that the API is served on
-     * @param auth Authentication bearer token if API is private
+     * @param auth    Authentication bearer token if API is private
      */
     public ApiBackend(String hostUrl, String auth) {
 
@@ -65,32 +64,25 @@ public class ApiBackend {
     }
 
     /**
-     * Safely update the visibility of a loader element
+     * Extract the API error message from an exception
      *
-     * @param loader The loader element
-     * @param isVisible Whether the element should be shown or not
+     * @param error The error exception
+     * @return The extracted message or the error code if cant extract message, if not a API exception will just get the cause
      */
-    private void trySetLoader(Node loader, boolean isVisible){
-
-        // Some UI may do background requests only
-        if(loader != null)
-            loader.setVisible(isVisible);
-    }
-
-    private static String friendlyMessage(Throwable error) {
+    private static String parseMessage(Throwable error) {
 
         // Wrapped in a runtime excpetion so pop the stack
         error = error.getCause();
 
         // Not an api error
-        if(!(error.getCause() instanceof ResponseStatusException))
+        if (!(error.getCause() instanceof ResponseStatusException))
             return error.getMessage();
 
-        ResponseStatusException apiError = (ResponseStatusException)error.getCause();
+        ResponseStatusException apiError = (ResponseStatusException) error.getCause();
 
-        try{
+        try {
             ResponseError message = GSON.fromJson(apiError.getResponseBody(), ResponseError.class);
-            return  message.error();
+            return message.error();
 
         } catch (JsonSyntaxException ignored) {
 
@@ -104,7 +96,7 @@ public class ApiBackend {
      *
      * @param message The human-readable error message
      */
-    private void requestFailed(BlockableUISet frontend, String message){
+    private void requestFailed(BlockableUISet frontend, String message) {
 
         String errorMessage = String.format("API call failed: %s", message);
         log.warn(errorMessage);
@@ -112,11 +104,19 @@ public class ApiBackend {
         Platform.runLater(() -> frontend.showError(message));
     }
 
-
+    /**
+     * Run an synchronous API request asynchronously
+     *
+     * @param request  The request to run that would usually block
+     * @param handler  The handler to run when the request completes
+     * @param frontend The UI to manipulate whilst waiting for the request to complete
+     * @param <T>      The response type
+     * @return The thread running the request
+     */
     protected <T> CompletableFuture<T> sendAsync(Callable<T> request, Consumer<T> handler, BlockableUISet frontend) {
 
         // Begin request
-        Platform.runLater(() ->  frontend.startLoading());
+        Platform.runLater(() -> frontend.startLoading());
         return CompletableFuture.supplyAsync(() -> {
 
             // Allow calling the API and handling its errors here rather than in client
@@ -129,18 +129,18 @@ public class ApiBackend {
 
         }).thenApply(response -> {
 
-                // No longer loading
-                Platform.runLater(() ->  frontend.stopLoading());
+            // No longer loading
+            Platform.runLater(() -> frontend.stopLoading());
 
-                // Run frontend handler on UI thread
-                Platform.runLater(() -> {
-                    handler.accept(response);
-                });
+            // Run frontend handler on UI thread
+            Platform.runLater(() -> {
+                handler.accept(response);
+            });
 
-                return response;
+            return response;
 
         }).exceptionally(e -> {
-            requestFailed(frontend, friendlyMessage(e));
+            requestFailed(frontend, parseMessage(e));
             return null;
         });
     }
@@ -148,18 +148,18 @@ public class ApiBackend {
     /**
      * Send an API request to the endpoint
      *
-     * @param request The request to send
-     * @param handler The async callback to consume the response when received
+     * @param request  The request to send
+     * @param handler  The async callback to consume the response when received
      * @param frontend The UI group to show during and after requests
      */
-    private void send(HttpRequest request, Consumer<String> handler, BlockableUISet frontend){
+    private void send(HttpRequest request, Consumer<String> handler, BlockableUISet frontend) {
 
         sendAsync(() -> {
             try {
                 HttpResponse<String> response = backend.send(request, HttpResponse.BodyHandlers.ofString());
 
                 // Failed
-                if(response.statusCode() >= 300)
+                if (response.statusCode() >= 300)
                     throw new RuntimeException(String.format("%s - %s", response.statusCode(), response.body()));
 
                 return response.body();
@@ -181,11 +181,10 @@ public class ApiBackend {
     /**
      * Perform a HTTP GET request on the endpoint
      *
-     * @param path The subpath of the api to query
+     * @param path        The subpath of the api to query
      * @param queryParams Parameters to pass to the endpoint
-     * @param handler The async callback to consume the response when received
-     * @param error The optional error element to write errors to
-     * @param loader The optional element to show whilst loading
+     * @param handler     The async callback to consume the response when received
+     * @param frontend    The UI to manipulate whilst waiting for the request to complete
      */
     protected void httpGET(String path, Map<String, String> queryParams, Consumer<String> handler, BlockableUISet frontend) {
 
@@ -193,18 +192,18 @@ public class ApiBackend {
         // Build the full url
         String queryString = queryParams.entrySet().stream()
                 .map(entry -> URLEncoder.encode(entry.getKey(), StandardCharsets.UTF_8) + "=" +
-                                                URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8))
+                        URLEncoder.encode(entry.getValue(), StandardCharsets.UTF_8))
                 .collect(Collectors.joining("&"));
 
         String fullURL = String.format("%s/%s?%s", hostUrl, path, queryString);
 
         // Build the query
         HttpRequest request = HttpRequest.newBuilder()
-            .uri(URI.create(fullURL))
-            .header("Accept", "application/json")
-            .header("User-Agent", "TrashApp/1.0")
-            .GET()
-            .build();
+                .uri(URI.create(fullURL))
+                .header("Accept", "application/json")
+                .header("User-Agent", "TrashApp/1.0")
+                .GET()
+                .build();
 
         // Send req
         send(request, handler, frontend);

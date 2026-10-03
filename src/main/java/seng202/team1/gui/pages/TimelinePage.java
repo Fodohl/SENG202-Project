@@ -28,11 +28,19 @@ import static seng202.team1.helpers.StringHelpers.enumNameToTitle;
  */
 public class TimelinePage extends Page {
 
+    /// The timeline of the user's logged entries
     private UITimeline timeline;
+
+    /// The container for the timeline
     private VBox timelineSection = new VBox();
 
+    /// The stats card for how many organic items of trash logged
     private UICard organicLogged;
+
+    /// The stats card for how many general waste items of trash logged
     private UICard trashLogged;
+
+    /// The stats card for how many recyclable items of trash logged
     private UICard recycLogged;
 
     /**
@@ -76,6 +84,9 @@ public class TimelinePage extends Page {
         return root;
     }
 
+    /**
+     * Refreshes the page to show the latest stats and timeline entries
+     */
     @Override
     public void updateContents() {
 
@@ -99,6 +110,9 @@ public class TimelinePage extends Page {
         renderTimelineEntries();
     }
 
+    /**
+     * Convert all status reports and trash logs to timeline entries and add them to the timeline
+     */
     void renderTimelineEntries() {
 
         List<StatusReport> reports = router.getGlobalState().getStatusReportStore().getReports();
@@ -114,6 +128,12 @@ public class TimelinePage extends Page {
 
     }
 
+    /**
+     * Map each status report to a timeline entry
+     *
+     * @param reports The list of reports the user has made
+     * @return The list of converted timeline entries
+     */
     private List<UITimelineEntry> buildReportsEntries(List<StatusReport> reports) {
 
         return reports.stream()
@@ -129,6 +149,13 @@ public class TimelinePage extends Page {
                 .toList();
     }
 
+
+    /**
+     * Map each trash log to a timeline entry
+     *
+     * @param trash The list of trash logs the user has made
+     * @return The list of converted timeline entries
+     */
     private List<UITimelineEntry> buildTrashEntries(List<TrashLog> trash) {
         return trash.stream()
                 .map(log -> {

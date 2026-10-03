@@ -1,7 +1,6 @@
 package seng202.team1.state;
 
 import javafx.stage.Stage;
-import seng202.team1.database.DAO.UserDAO;
 import seng202.team1.tasks.background.SyncToBackendTask;
 import seng202.team1.types.photon.Feature;
 import seng202.team1.api.photon.PhotonClient;
@@ -26,9 +25,10 @@ import java.util.List;
 
 /**
  * Stores the current state of the app and provides managers to control it
+ *
+ * @todo bin dataset doesnt need to be loaded each open? move to task
  */
 public class GlobalState {
-
 
     /// Whether there is a screen to draw to or now
     public static boolean IS_HEADLESS_MODE = false;
@@ -42,31 +42,40 @@ public class GlobalState {
     /// The handler for the static bin data
     private BinDataset binDataset;
 
+    /// The DAO responsible for trash
     private TrashLogDAO trashLogDAO;
 
+    /// The DAO responsible for bins
     private BinDAO binDAO;
 
+    /// The database connection to the local sqlite DB
     private DatabaseManager databaseManager;
 
+    /// The handler for geocoding requests
     private PhotonClient photonClient;
 
     /// The handler for app API requests
     private TrashDBClient taServer;
 
+    /// Current user location or null if none is requested
     private Feature requestedLocation;
 
+    /// Whether this state is to be used for unitesting or not
     boolean testState = false;
 
     /// The handler for issue reports
     private StatusReportStore statusReportStore;
 
+    /// The handler for app start up tasks
     private PreflightManager preflightManager;
 
+    /// The handler for app background tasks
     public TaskManager backgroundTasks = new TaskManager(this);
 
     /// The current leaderboard state
     private TrashDBLeaderboardResponse leaderboard;
 
+    /// The current user and credentials
     private AuthState auth;
 
     /**
@@ -88,7 +97,7 @@ public class GlobalState {
         trashLogDAO = new TrashLogDAO(databaseManager);
 
         statusReportStore = new StatusReportStore(binDAO, testState ? StatusReportStore.testDataPath()
-                                                                    : StatusReportStore.defaultDataPath());
+                : StatusReportStore.defaultDataPath());
 
         // Set up API
         photonClient = new PhotonClient();
@@ -96,7 +105,7 @@ public class GlobalState {
         auth = new AuthState(this);
 
         // Start the app
-        preflightManager= new PreflightManager(this);
+        preflightManager = new PreflightManager(this);
         router = new Router(this, stage);
 
         // Fetch data etc for cached sessions
@@ -110,7 +119,7 @@ public class GlobalState {
      */
     public void fetchData() {
 
-        taServer.getCommunity(leaderboard -> {
+        taServer.getLeaderboard(leaderboard -> {
 
             this.leaderboard = leaderboard;
             router.refreshPage(Pages.COMMUNITY);
@@ -118,33 +127,21 @@ public class GlobalState {
         });
     }
 
-
     /**
-     * Get the current window manager
+     * Set a new map search request for the map to handle
      *
-     * @return The window manager for the app
+     * @param location The search request
      */
-    public Router getRouter() {
-        return router;
-    }
-
-    public TrashLogDAO getTrashLogDAO() {
-        return trashLogDAO;
-    }
-
-    public BinDAO getBinDAO() {
-        return binDAO;
-    }
-
-    public PhotonClient getPhotonClient() {
-        return photonClient;
-    }
-
     public void setMapSearchRequest(Feature location) {
         requestedLocation = location;
         router.switchPage(Pages.MAP);
     }
 
+    /**
+     * Get the current map search request and clear it
+     *
+     * @return The search request or null if none
+     */
     public Feature consumeMapSearchRequest() {
 
         // Clear the request
@@ -155,6 +152,43 @@ public class GlobalState {
     }
 
     /**
+     * Start a background task to sync data with the backend DB
+     */
+    public void sync() {
+
+        backgroundTasks.runTask(new SyncToBackendTask(backgroundTasks));
+
+    }
+
+    /**
+     * Get the current window manager
+     *
+     * @return The window manager for the app
+     */
+    public Router getRouter() {
+        return router;
+    }
+
+    /**
+     * Get the trash log DAO
+     *
+     * @return The trash log DAO
+     */
+    public TrashLogDAO getTrashLogDAO() {
+        return trashLogDAO;
+    }
+
+    /**
+     * Get the bin DAO
+     *
+     * @return The trash log DAO
+     */
+    public BinDAO getBinDAO() {
+        return binDAO;
+    }
+
+
+    /**
      * Get the status log handler
      *
      * @return The status log handler
@@ -163,59 +197,65 @@ public class GlobalState {
         return statusReportStore;
     }
 
-
-    public void refreshBinFullness() {
-
-        // No need to recalc fullness every test
-        if (testState)
-            return;
-
-        // Only want recent reports of fullness
-        List<StatusReport> fullnessReports = statusReportStore.getReports().stream()
-                .filter(r -> r.getIssue() == ReportType._FULLNESS_UPDATE)
-                .filter(r -> r.getSubmittedAt().isAfter(LocalDate.now().atStartOfDay()))
-                .toList();
-
-        // Get each bin's new fullness as an average of this week's reports
-        getBinDAO().getAll().stream().forEach(b -> {
-            List<StatusReport> reportsFoBin = fullnessReports.stream().filter(r -> r.getBinID() == b.getID()).toList();
-            refreshBinFullness(b, binDAO, reportsFoBin);
-        });
+    /**
+     * Get the geocoding API client
+     *
+     * @return The geocoding API client
+     */
+    public PhotonClient getPhotonClient() {
+        return photonClient;
     }
 
-    public void refreshBinFullness(Bin bin) {
-
-        // Only want recent reports of fullness
-        List<StatusReport> reportsFoBin = statusReportStore.getReports().stream()
-                .filter(r -> r.getIssue() == ReportType._FULLNESS_UPDATE)
-                .filter(r -> r.getSubmittedAt().isAfter(LocalDate.now().atStartOfDay()))
-                .filter(r -> r.getBinID() == bin.getID())
-                .toList();
-
-        refreshBinFullness(bin, binDAO, reportsFoBin);
+    /**
+     * Get the backend API client
+     *
+     * @return The backend API client
+     */
+    public TrashDBClient getTaServer() {
+        return taServer;
     }
 
-    private void refreshBinFullness(Bin bin, BinDAO binDAO, List<StatusReport> reportsFoBin) {
-        bin.updateFullness(binDAO, reportsFoBin);
-    }
-
+    /**
+     * Get the connection to the local database
+     *
+     * @return The local database client
+     */
     public DatabaseManager getDatabaseManager() {
         return databaseManager;
     }
 
+    /**
+     * Get the CCC bin dataset
+     *
+     * @return The bin dataset
+     */
     public BinDataset getDataset() {
         return binDataset;
     }
 
+    /**
+     * Get the task manager for startup tasks
+     *
+     * @return The start up tasks manager
+     */
     public PreflightManager getPreflightManager() {
         return preflightManager;
     }
 
-
+    /**
+     * Get the task manager for background tasks
+     *
+     * @return The background tasks manager
+     */
     public TaskManager getBackgroundTasks() {
         return backgroundTasks;
     }
 
+    /**
+     * Get whether this state is for testing or not
+     *
+     * @return True if this is for testing false, otherwise
+     */
     public boolean isTestState() {
         return testState;
     }
@@ -229,17 +269,12 @@ public class GlobalState {
         return leaderboard;
     }
 
-    public TrashDBClient getTaServer() {
-        return taServer;
-    }
-
+    /**
+     * Get the current auth state
+     *
+     * @return The auth state
+     */
     public AuthState getAuth() {
         return auth;
-    }
-
-    public void sync(){
-
-        backgroundTasks.runTask(new SyncToBackendTask(backgroundTasks));
-
     }
 }

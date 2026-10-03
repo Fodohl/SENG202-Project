@@ -13,20 +13,41 @@ import java.time.Instant;
 
 import static seng202.team1.state.AuthState.*;
 
+/**
+ * Page that displays a sign up form
+ */
 public class SignUpPage extends Page {
 
+    /// Where the user enters their name
     private UITextInput name;
+
+    /// Where the user enters their email
     private UITextInput email;
+
+    /// Where the user enters their password
     private UITextInput password;
+
+    /// Where the user re-enters their password
     private UITextInput passwordConfirm;
 
+    /// The UI component set to manage whilst waiting for requests to complete
     private BlockableUISet frontend;
 
+    /**
+     * Constructs a new SignUpPage
+     *
+     * @param router the router that handles this page
+     */
     public SignUpPage(Router router) {
 
-        super(router, Pages.LOGIN);
+        super(router, Pages.SIGN_UP);
     }
 
+    /**
+     * Constructs the UI for the sign up page
+     *
+     * @return the UI layout for the page
+     */
     @Override
     protected Parent renderSelf() {
 
@@ -58,7 +79,9 @@ public class SignUpPage extends Page {
         return form;
     }
 
-
+    /**
+     * Verifies the user's input and sends a sign up request, erroring if invalid
+     */
     private void handleSignUp() {
 
         AuthState auth = router.getGlobalState().getAuth();
@@ -111,6 +134,9 @@ public class SignUpPage extends Page {
         auth.signUp(newUser, enteredPassword, frontend);
     }
 
+    /**
+     * Go back to the login page
+     */
     private void handleBack() {
         router.switchPage(Pages.LOGIN);
     }

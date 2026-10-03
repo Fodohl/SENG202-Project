@@ -8,8 +8,6 @@ import seng202.team1.state.GlobalState;
  * A composite UI component
  *
  * Handles management of when to render and update
- *
- * @todo dont allow prerender for main page
  */
 public abstract class LayoutElement implements Cloneable{
 

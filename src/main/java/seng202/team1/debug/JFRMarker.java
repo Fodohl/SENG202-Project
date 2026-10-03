@@ -3,6 +3,9 @@ package seng202.team1.debug;
 import jdk.jfr.Event;
 import jdk.jfr.Label;
 
+/**
+ * Trash App Debug marker
+ */
 public class JFRMarker extends Event {
 
     @Label("Marker Name")

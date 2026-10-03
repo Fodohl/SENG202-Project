@@ -15,8 +15,11 @@ import seng202.team1.tasks.preflight.PreflightManager;
  */
 public class StartingPage extends Page {
 
-    private Label loadingText = new Label("Waiting for 'name o stage' to complete..");;
+    /// The text to show whilst the app is starting up
+    private Label loadingText = new Label("Waiting for 'name o stage' to complete..");
+    ;
 
+    /// The manage of the start up tasks
     private PreflightManager manager;
 
     /**
@@ -32,10 +35,15 @@ public class StartingPage extends Page {
         manager.registerTaskCompletionCallback(e -> onTaskCompleted(e));
     }
 
-    private void onTaskCompleted(Task e) {
+    /**
+     * When a task is completed, update the loader to show what the app is now waiting on
+     *
+     * @param task The task completed
+     */
+    private void onTaskCompleted(Task task) {
 
         // Preflight startup done
-        if(!manager.hasTasksUncompleted()){
+        if (!manager.hasTasksUncompleted()) {
             router.switchPhase(Phases.AUTH);
             return;
         }
@@ -72,13 +80,16 @@ public class StartingPage extends Page {
         return root;
     }
 
+    /**
+     * Show the text of the latest uncompleted task
+     */
     @Override
     public void updateContents() {
 
         loadingText.setText(String.format("Waiting for '%s' to complete..", manager.hasTasksUncompleted() ?
-                                                                                   manager.getTasksUncompleted().getFirst().getTaskName()
-                                                                                 : "N/A"
-                        ));
+                manager.getTasksUncompleted().getFirst().getTaskName()
+                : "N/A"
+        ));
 
     }
 }

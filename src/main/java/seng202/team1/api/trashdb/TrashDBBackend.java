@@ -7,12 +7,10 @@ import seng202.team1.database.DAO.TrashLogDAO;
 import seng202.team1.database.DAO.UserDAO;
 import seng202.team1.database.DatabaseManager;
 import seng202.team1.database.exceptions.DuplicateEntryException;
-import seng202.team1.state.GlobalState;
 import seng202.team1.types.bin.Bin;
-import seng202.team1.types.trashdb.ResponseMessage;
+import seng202.team1.types.trashdb.ResponseSuccess;
 import seng202.team1.types.trashdb.TrashDBFullnessResponse;
 import seng202.team1.types.trashlog.TrashLog;
-import seng202.team1.types.trashlog.TrashType;
 import seng202.team1.types.user.Token;
 import seng202.team1.types.user.User;
 
@@ -22,35 +20,41 @@ import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.List;
 
-import static seng202.team1.helpers.DateHelpers.toOffsetTime;
+import static seng202.team1.api.trashdb.TokenService.EXPIRY_DAYS;
 
 /**
- * Simulates API
+ * Simulates what would be the trashapp API
  * <p>
  * Notes:
  * - Token would be sent and parsed each call to verify and see which user is request, rather than just once here
+ * - Any db cals must not be made to state.db as that is local only
  */
 public class TrashDBBackend {
 
-    //@TODO: c queue upload status
-    //@TODO: s worked calculate fullness
-    //@TODO: s worker calculate leaderboard
-    //@TODO: change password / details
-    //@TODO: delete account
-    //@TODO: download my stuff from db
-
+    /// The database connection to the online DB
     private DatabaseManager db;
+
+    /// The DAO responsible for bins
     private BinDAO binTable;
+
+    /// The DAO responsible for users
     private UserDAO userTable;
+
+    /// The DAO responsible for trash
     private TrashLogDAO trashTable;
 
+    /// The handler for securing user tokens
     private final TokenService tokenService = new TokenService();
 
+    /// The authenticated user making the request
     private User user;
 
+    /**
+     * Constructs a new database backend
+     */
     public TrashDBBackend() {
 
-        // Will connect to the db without a sqlite file
+        // Will connect to the online db without a sqlite file
         db = new DatabaseManager(null);
 
         binTable = new BinDAO(db);
@@ -59,7 +63,11 @@ public class TrashDBBackend {
 
     }
 
-
+    /**
+     * Entry point that sets up the database on the server
+     *
+     * @param args N/A
+     */
     static void main(String[] args) {
 
         // Init backend
@@ -72,6 +80,47 @@ public class TrashDBBackend {
         backend.binTable.addBatch(bins.getBinDataset());
     }
 
+    /**
+     * Parse the token give to get a user, clears user if token is null
+     *
+     * @param token
+     */
+    public void setToken(String token) {
+
+        // Log out request
+        if (token.isEmpty()) {
+            user = null;
+            return;
+        }
+
+        // Parse the token
+        Integer userID = Math.toIntExact(tokenService.parseToken(token));
+
+        // Invalid token
+        if (userID == -1)
+            throw new InvalidParameterException("Token malformed or not signed");
+
+        user = userTable.getOne(userID);
+
+    }
+
+    /**
+     * Get the currently authenticated user
+     *
+     * @return The user or null if none
+     */
+    private User getUser() {
+        return user;
+    }
+
+    /**
+     * Create a new user account if that email is not already in use
+     *
+     * @param email       The user's email
+     * @param name        The user's full name
+     * @param passwordRaw The user's password
+     * @return The created user
+     */
     public User addNewUser(String email, String name, String passwordRaw) {
 
 
@@ -90,6 +139,13 @@ public class TrashDBBackend {
         }
     }
 
+    /**
+     * Try log a user in with the given email,password combo
+     *
+     * @param email       The email of the account to log in to
+     * @param passwordRaw The accounts password
+     * @return The token to authenticate this user if password is correct, error thrown otherwise
+     */
     public Token logUserIn(String email, String passwordRaw) {
 
         // User with that email must exist
@@ -103,13 +159,18 @@ public class TrashDBBackend {
         // Authenticate the user
         Token response = new Token(
                 tokenService.signToken(user.id()),
-                OffsetDateTime.now().plusDays(30).toInstant()
+                OffsetDateTime.now().plusDays(EXPIRY_DAYS).toInstant()
         );
 
         return response;
 
     }
 
+    /**
+     * Get the email and name this account has stored on the database
+     *
+     * @return The user's details if they exist
+     */
     public User getUserDetails() {
 
 
@@ -134,6 +195,12 @@ public class TrashDBBackend {
         return response;
     }
 
+    /**
+     * Get the fullness of the bins in the database
+     *
+     * @param lastUpdated The last time the client checked the fullness, will return the delta dataset since then
+     * @return A map of bin-ids to fullness ordinal
+     */
     public TrashDBFullnessResponse getBinsFullness(OffsetDateTime lastUpdated) {
 
 
@@ -149,27 +216,13 @@ public class TrashDBBackend {
         return response;
     }
 
-
-    public void setToken(String token) {
-
-        // Log out request
-        if (token.isEmpty()) {
-            user = null;
-            return;
-        }
-
-        // Parse the token
-        Integer userID = Math.toIntExact(tokenService.parseToken(token));
-
-        // Invalid token
-        if (userID == -1)
-            throw new InvalidParameterException("Token malformed or not signed");
-
-        user = userTable.getOne(userID);
-
-    }
-
-    public ResponseMessage addUserTrashLog(TrashLog log) {
+    /**
+     * Save a user's trash log to the db
+     *
+     * @param log The log to upload
+     * @return Success message if the log was uploaded fine, error otherwise
+     */
+    public ResponseSuccess addUserTrashLog(TrashLog log) {
 
         // Enforce the user id
         User user = getUser();
@@ -191,15 +244,18 @@ public class TrashDBBackend {
         if (id == -1)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to save log to database");
 
-        ResponseMessage response = new ResponseMessage("Trash logged successfully");
+        ResponseSuccess response = new ResponseSuccess("Trash logged successfully");
         return response;
     }
 
-    private User getUser() {
-        return user;
-    }
-
-    public ResponseMessage updateUserDetails(String name, String email) {
+    /**
+     * Update the user's information in the database
+     *
+     * @param name The new name of the user
+     * @param email The new email of the user
+     * @return Success message if the user was uploaded fine, error otherwise
+     */
+    public ResponseSuccess updateUserDetails(String name, String email) {
 
 
         // Get the user making the request
@@ -225,12 +281,19 @@ public class TrashDBBackend {
         );
         userTable.update(cleanedUser);
 
-        ResponseMessage success = new ResponseMessage("User updated successfully");
+        ResponseSuccess success = new ResponseSuccess("User updated successfully");
         return success;
 
     }
 
-    public ResponseMessage updateUserPassword(String enteredPassword, String enteredPasswordNew) {
+    /**
+     * Change the pasword of the user
+     *
+     * @param enteredPassword The user's current password to verify
+     * @param enteredPasswordNew The user's new password
+     * @return Success message if the user password was changed fine, error otherwise
+     */
+    public ResponseSuccess updateUserPassword(String enteredPassword, String enteredPasswordNew) {
 
         // Get the user making the request
         User user = getUser();
@@ -255,19 +318,24 @@ public class TrashDBBackend {
         userTable.update(cleanedUser);
 
 
-        ResponseMessage success = new ResponseMessage("User updated successfully");
+        ResponseSuccess success = new ResponseSuccess("User updated successfully");
         return success;
 
 
     }
 
-    public ResponseMessage removeUser() {
+    /**
+     * Delete a user's account
+     *
+     * @return Success message if the user was deleted fine, error otherwise
+     */
+    public ResponseSuccess removeUser() {
 
         // Get the user making the request
         User user = getUser();
         userTable.delete(user.id());
 
-        ResponseMessage success = new ResponseMessage("User deleted successfully");
+        ResponseSuccess success = new ResponseSuccess("User deleted successfully");
         return success;
 
     }
