@@ -133,6 +133,8 @@ test {
     }
 
     finalizedBy jacocoTestReport
+
+    environment "APP_TOKEN_SECRET", "test-secret"
 }
 
 

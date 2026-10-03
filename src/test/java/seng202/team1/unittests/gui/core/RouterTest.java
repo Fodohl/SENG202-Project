@@ -14,7 +14,8 @@ class RouterTest extends TrashAppTest {
 
 
     @Test
-    public void entryPageShouldBeDashboard() {
+    public void entryPageShouldBeStarting() {
+        router.switchPhase(Phases.PREFLIGHT);
         assertEquals(Pages.STARTING, router.getCurrentPage());
     }
 
