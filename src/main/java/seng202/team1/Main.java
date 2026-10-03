@@ -33,7 +33,7 @@ public class Main extends Application {
         Image logoIcon = appLogo.toRawImage();
         stage.getIcons().add(logoIcon);
 
-        // Check if the taskbar needs to be set aswell
+        // Check if the taskbar needs to be set as well
         if (!java.awt.Taskbar.isTaskbarSupported())
             return;
 

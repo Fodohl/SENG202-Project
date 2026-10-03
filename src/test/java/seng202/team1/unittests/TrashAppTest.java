@@ -79,7 +79,7 @@ public class TrashAppTest {
     }
 
     @Test
-    void usesTestDatabase() {
+    void    usesTestDatabase() {
         assertEquals("jdbc:sqlite:./src/test/resources/test_database.db", databaseManager.getUrl());
     }
 
