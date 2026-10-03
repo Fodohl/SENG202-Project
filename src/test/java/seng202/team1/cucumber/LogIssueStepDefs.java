@@ -28,7 +28,7 @@ public class LogIssueStepDefs {
     public void init() throws IOException {
 
         TrashAppTest.initFx();
-        globalState = new GlobalState(null, true);
+        globalState = TrashAppTest.newTestState();
 
     }
 

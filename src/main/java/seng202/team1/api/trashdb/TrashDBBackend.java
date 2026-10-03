@@ -7,6 +7,7 @@ import seng202.team1.database.DAO.TrashLogDAO;
 import seng202.team1.database.DAO.UserDAO;
 import seng202.team1.database.DatabaseManager;
 import seng202.team1.database.exceptions.DuplicateEntryException;
+import seng202.team1.state.GlobalState;
 import seng202.team1.types.bin.Bin;
 import seng202.team1.types.trashdb.ResponseSuccess;
 import seng202.team1.types.trashdb.TrashDBFullnessResponse;
@@ -21,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static seng202.team1.api.trashdb.TokenService.EXPIRY_DAYS;
+import static seng202.team1.state.GlobalState.IS_TEST_MODE;
 
 /**
  * Simulates what would be the trashapp API
@@ -49,13 +51,15 @@ public class TrashDBBackend {
     /// The authenticated user making the request
     private User user;
 
+    private static final String testBackendDB = "jdbc:sqlite:./src/test/resources/test_database_be.db";
+
     /**
      * Constructs a new database backend
      */
     public TrashDBBackend() {
 
         // Will connect to the online db without a sqlite file
-        db = new DatabaseManager(null);
+        db = new DatabaseManager(IS_TEST_MODE ? testBackendDB : null);
 
         binTable = new BinDAO(db);
         userTable = new UserDAO(db);

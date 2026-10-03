@@ -3,6 +3,8 @@ package seng202.team1.tasks.preflight;
 import seng202.team1.tasks.Task;
 import seng202.team1.tasks.TaskManager;
 
+import static seng202.team1.state.GlobalState.IS_TEST_MODE;
+
 /**
  * A task to load all the logged status reports
  */
@@ -25,7 +27,7 @@ public class ReadStatusReportsTask extends Task {
     @Override
     public void task(TaskManager manager) {
 
-        if (!manager.getGlobalState().isTestState())
+        if (!IS_TEST_MODE)
             manager.getGlobalState().getStatusReportStore().load();
     }
 }

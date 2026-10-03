@@ -33,10 +33,7 @@ public class TimelineStepDefs {
     public void init() throws IOException {
 
         TrashAppTest.initFx();
-        globalState = new GlobalState(null, true);
-        globalState.getDatabaseManager().resetDB();
-
-        globalState.getDatabaseManager();
+        globalState = TrashAppTest.newTestState();
 
         BinDAO binDAO = globalState.getBinDAO();
     }

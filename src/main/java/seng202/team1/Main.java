@@ -72,7 +72,7 @@ public class Main extends Application {
 //        HotReloader.attach(config, stage);
 
         // Setup app state
-        GlobalState state = new GlobalState(stage, false);
+        GlobalState state = new GlobalState(stage);
         stage.show();
 
          // Set up the window

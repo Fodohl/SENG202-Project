@@ -59,7 +59,7 @@ public class TokenService {
      * @param payload The payload to sign
      * @return The signed payload
      */
-    private String sign(String payload) {
+    public String sign(String payload) {
         try {
 
             // Setup the hasher

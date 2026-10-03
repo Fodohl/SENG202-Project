@@ -30,8 +30,7 @@ public class LogTrashStepDefs {
     public void init() throws IOException {
 
         TrashAppTest.initFx();
-        globalState = new GlobalState(null, true);
-        globalState.getDatabaseManager().resetDB();
+        globalState = TrashAppTest.newTestState();
     }
 
 

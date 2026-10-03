@@ -206,7 +206,7 @@ public class AuthState {
      *
      * @param enteredCode The code to check
      */
-    public Integer validateCode(String enteredCode) {
+    public static Integer validateCode(String enteredCode) {
 
         if (enteredCode.length() != 6)
             throw new InvalidParameterException("Code must be 6 digits");

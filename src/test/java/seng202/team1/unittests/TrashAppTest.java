@@ -50,18 +50,25 @@ public class TrashAppTest {
             // already running
         }
 
-        // Don't draw
+    }
+
+    public static GlobalState newTestState() {
+
+        GlobalState.IS_TEST_MODE = true;
         GlobalState.IS_HEADLESS_MODE = true;
 
+        GlobalState globalState = new GlobalState(null);
+        globalState.getDatabaseManager().resetDB();
+
+        return globalState;
     }
 
 
     @BeforeEach
     void initState() throws InstanceAlreadyExistsException {
-        state = new GlobalState(null, true);
-        databaseManager = state.getDatabaseManager();
-        databaseManager.resetDB();
+        state = newTestState();
 
+        databaseManager = state.getDatabaseManager();
         trashLogs = state.getTrashLogDAO();
         bins = state.getBinDAO();
 

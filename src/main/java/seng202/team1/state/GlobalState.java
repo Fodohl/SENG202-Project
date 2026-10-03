@@ -33,6 +33,9 @@ public class GlobalState {
     /// Whether there is a screen to draw to or now
     public static boolean IS_HEADLESS_MODE = false;
 
+    /// / Whethere the state is for a unittest or not
+    public static boolean IS_TEST_MODE = false;
+
     /// The manager of the app's window
     private Router router;
 
@@ -60,9 +63,6 @@ public class GlobalState {
     /// Current user location or null if none is requested
     private Feature requestedLocation;
 
-    /// Whether this state is to be used for unitesting or not
-    boolean testState = false;
-
     /// The handler for issue reports
     private StatusReportStore statusReportStore;
 
@@ -83,11 +83,10 @@ public class GlobalState {
      *
      * @param stage the primary JavaFX stage to hand off to the {@link Router}
      */
-    public GlobalState(Stage stage, boolean testState) {
+    public GlobalState(Stage stage) {
 
         // Setup data
-        this.testState = testState;
-        databaseManager = new DatabaseManager(testState ?
+        databaseManager = new DatabaseManager(IS_TEST_MODE ?
                 "jdbc:sqlite:./src/test/resources/test_database.db" :
                 "jdbc:sqlite:database.db"
         );
@@ -96,7 +95,7 @@ public class GlobalState {
         binDAO = new BinDAO(databaseManager);
         trashLogDAO = new TrashLogDAO(databaseManager);
 
-        statusReportStore = new StatusReportStore(binDAO, testState ? StatusReportStore.testDataPath()
+        statusReportStore = new StatusReportStore(binDAO, IS_TEST_MODE ? StatusReportStore.testDataPath()
                 : StatusReportStore.defaultDataPath());
 
         // Set up API
@@ -109,7 +108,7 @@ public class GlobalState {
         router = new Router(this, stage);
 
         // Fetch data etc for cached sessions
-        if(!testState)
+        if (!IS_TEST_MODE)
             auth.tryTriggerLoadSession();
 
     }
@@ -253,15 +252,6 @@ public class GlobalState {
     }
 
     /**
-     * Get whether this state is for testing or not
-     *
-     * @return True if this is for testing false, otherwise
-     */
-    public boolean isTestState() {
-        return testState;
-    }
-
-    /**
      * Get the current leaderboard
      *
      * @return The current leaderboard
@@ -280,10 +270,10 @@ public class GlobalState {
     }
 
 
-       public void refreshBinFullness() {
+    public void refreshBinFullness() {
 
         // No need to recalc fullness every test
-        if (testState)
+        if (IS_TEST_MODE)
             return;
 
         // Only want recent reports of fullness

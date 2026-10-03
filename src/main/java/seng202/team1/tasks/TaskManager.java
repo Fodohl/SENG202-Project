@@ -93,8 +93,8 @@ public class TaskManager extends StateReferrer {
      *
      * @see #runTask(Task, Long...)
      */
-    public void runTask(String name, Consumer<TaskManager> task, Long... deps){
-        runTask(new GenericTask(this, name, task), deps);
+    public long runTask(String name, Consumer<TaskManager> task, Long... deps){
+        return runTask(new GenericTask(this, name, task), deps);
     }
 
     /**
