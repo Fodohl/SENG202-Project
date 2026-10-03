@@ -8,6 +8,8 @@ import javafx.scene.control.Button;
  */
 public class UIButton extends Button {
 
+    private String prompt;
+
     /**
      * Construct a new primary button
      *
@@ -25,9 +27,27 @@ public class UIButton extends Button {
      */
     public UIButton(String prompt, boolean secondary){
         super(prompt);
+        this.prompt = prompt;
 
         getStyleClass().add("button");
         if(secondary)
             getStyleClass().add("secondary");
+    }
+
+    /**
+     * Enable the loading state of the button, disabling it
+     *
+     * @param isLoading Whether the button is in loading state or not
+     */
+    public void setSpinner(boolean isLoading) {
+
+        if(isLoading){
+            setText("...");
+            setDisable(true);
+        } else{
+            setText(prompt);
+            setDisable(false);
+        }
+
     }
 }

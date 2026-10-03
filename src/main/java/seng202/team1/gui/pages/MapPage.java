@@ -5,13 +5,13 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.layout.*;
 import javafx.scene.control.Label;
-import seng202.team1.api.photon.Feature;
-import seng202.team1.common.StringHelpers;
-import seng202.team1.data.bin.Bin;
+import seng202.team1.types.photon.Feature;
+import seng202.team1.helpers.StringHelpers;
+import seng202.team1.types.bin.Bin;
 import seng202.team1.data.route.RouteInstruction;
-import seng202.team1.data.trashlog.TrashLog;
+import seng202.team1.types.trashlog.TrashLog;
 import seng202.team1.gui.components.*;
-import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.Router;
 import seng202.team1.gui.modals.Modals;
 
 import java.util.Comparator;
@@ -26,40 +26,67 @@ public class MapPage extends Page {
     /// The shown bin, null if no bin is being shown right now
     private Bin selectedBin = null;
 
+    /// Whether the map is waiting for the user to click to set their location
     private boolean isWaitingForLocation = false;
 
     /// The map the page uses
     private UIMap map;
 
+    /// The sidebar that contains bin details
     private VBox sidebar;
 
+    /// The dialog box prompting the user to perform an action
     private HBox mapDialog;
 
+    /// The sidebar field for the bin's id
     private UIKeyValuePair sidebarBinID;
+
+    /// The sidebar field for the bin's type
     private UIKeyValuePair sidebarBinType;
+
+    /// The sidebar field for the bin's fullness
     private UIKeyValuePair sidebarBinStatus;
+
+    /// The sidebar field for the bin's last upadte time
     private UIKeyValuePair sidebarBinUpdated;
+
+    /// The sidebar field for the bin's location
     private UIKeyValuePair sidebarBinAddress;
+
+    /// The sidebar field for the bin's usage count for this user
     private UIKeyValuePair sidebarBinTimesUsed;
+
+    /// The sidebar field for the bin's last use time for this user
     private UIKeyValuePair sidebarBinLastUsed;
 
+    /// Latitude location of the user
     private Double userPosLat = null;
+
+    /// Longitude location of the user
     private Double userPosLong = null;
 
+    /// ID for the marker of the users location
     private int userPosMarkerID = 0xFFFFFFFF;
+
+    /// The id of the modal that is currently showing the directions to a bin, -1 if none opened yet
     private long directionsModalID = -1;
 
     /**
      * Constructs a new MapPage
      *
-     * @param windowManager the window this page is on
+     * @param router the window this page is on
      */
-    public MapPage(WindowManager windowManager) {
+    public MapPage(Router router) {
 
-        super(windowManager, Pages.MAP, true);
+        super(router, Pages.MAP);
 
     }
 
+    /**
+     * Build the bin image part of the sidebar
+     *
+     * @return The bin image part of the sidebar
+     */
     public VBox binImage(){
 
         // Load the image
@@ -72,6 +99,11 @@ public class MapPage extends Page {
         return container;
     }
 
+    /**
+     * Build the bin info sidebar
+     *
+     * @return The bin info sidebar
+     */
     private VBox sidebar() {
 
         // Title
@@ -104,8 +136,8 @@ public class MapPage extends Page {
 
         // Modals
         directionsButton.setOnMouseClicked(e -> tryDrawDirections());
-        logButton.setOnMouseClicked(e -> windowManager.openModal(Modals.LOG_TRASH, selectedBin));
-        issueButton.setOnMouseClicked(e -> windowManager.openModal(Modals.LOG_ISSUE, selectedBin));
+        logButton.setOnMouseClicked(e -> router.openModal(Modals.LOG_TRASH, selectedBin));
+        issueButton.setOnMouseClicked(e -> router.openModal(Modals.LOG_ISSUE, selectedBin));
 
         // Combine
         VBox box = new VBox(titleSection, infoSection, addressSection, collectionSection, actionsSection);
@@ -127,7 +159,7 @@ public class MapPage extends Page {
 
         // Populate the map
         map = new UIMap();
-        for (Bin bin : windowManager.getGlobalState().getBinDAO().getAll())
+        for (Bin bin : getState().getBinDAO().getAll())
             map.addPoint(bin.getLatitude(), bin.getLongitude(), bin.getID(), bin.getCategory().toString().toLowerCase());
 
         // Handle map events
@@ -136,7 +168,7 @@ public class MapPage extends Page {
         map.registerMapRouted(this::onMapRouted);
 
         // Refresh sidebar on log
-        windowManager.registerModalChangeCallback(e -> {
+        router.registerModalChangeCallback(e -> {
             if(e == Modals._CLOSED)
                 refreshSidebar();
         });
@@ -155,6 +187,9 @@ public class MapPage extends Page {
         return new StackPane(map, mapDialog, sidebar);
     }
 
+    /**
+     * Refresh the sidebar
+     */
     @Override
     public void updateContents() {
 
@@ -163,10 +198,13 @@ public class MapPage extends Page {
         handleLocationRequest();
     }
 
+    /**
+     * Convert a location search event into user map position
+     */
     private void handleLocationRequest() {
 
         // No requested location
-        Feature location = windowManager.getGlobalState().consumeMapSearchRequest();
+        Feature location = getState().consumeMapSearchRequest();
         if(location == null)
             return;
 
@@ -179,20 +217,31 @@ public class MapPage extends Page {
         setUserLocation(coords.getLast(), coords.getFirst());
     }
 
+    /**
+     * Record the location of the user
+     *
+     * @param lat The latitude position of the user
+     * @param lng The longitude position of the user
+     */
     private void setUserLocation(Double lat, Double lng) {
 
         userPosLat = lat;
         userPosLong = lng;
 
-        // Remove old point
+        // Hide outdated user position
         map.removePoint(userPosMarkerID);
 
-        // Display user location on map
+        // Center on user's new position
         map.addPoint(userPosLat, userPosLong, userPosMarkerID, "default");
         map.centreOnPoint(userPosMarkerID);
 
     }
 
+    /**
+     * Show a bin in the sidebar when it is clicked on the map
+     *
+     * @param binID The ID of the bin that was clicked
+     */
     private void onMarkerClick(Integer binID) {
 
         // Clicking on the user marker does nothing
@@ -203,17 +252,18 @@ public class MapPage extends Page {
         if (Objects.equals(selectedBin, binID))
             selectedBin = null;
         else
-            selectedBin = windowManager.getGlobalState().getBinDAO().getOne(binID);
+            selectedBin = getState().getBinDAO().getOne(binID);
 
         clearPreviousBin();
         updateContents();
     }
 
     /**
-     * when map clickec but no point
+     * Handle when map clicked but not on a marked. If waiting for location interprets as the users location, otherwise
+     * interprets as clicking off a previously clicked bin
      *
-     * @param lat
-     * @param lng
+     * @param lat The click position in the world latitudinally
+     * @param lng The click position in the world longitudinally
      */
     private void onPosClick(Double lat, Double lng) {
 
@@ -233,13 +283,19 @@ public class MapPage extends Page {
         tryDrawDirections();
     }
 
+    /**
+     * Show a popup of directions to a given bin
+     *
+     * @param instructions The direction steps to the bin
+     */
     private void onMapRouted(List<RouteInstruction> instructions){
-        directionsModalID = windowManager.spawnModal(Modals.DIRECTIONS, instructions);
+        directionsModalID = router.spawnModal(Modals.DIRECTIONS, instructions);
     }
 
     /**
      * Update the contents of the status bar to show the selected bin (if any). If no bin is selected sidebar is not shown
      *
+     * @todo image
      */
     private void refreshSidebar() {
 
@@ -250,7 +306,7 @@ public class MapPage extends Page {
             return;
 
         // Get usage
-        List<TrashLog> uses = windowManager.getGlobalState().getTrashLogDAO()
+        List<TrashLog> uses = getState().getTrashLogDAO()
                 .getAll().stream()
                 .filter(l -> l.binID() == selectedBin.getID())
                 .sorted(Comparator.comparing(TrashLog::createdAt))
@@ -258,7 +314,7 @@ public class MapPage extends Page {
         TrashLog newest = uses.isEmpty() ? null : uses.getLast();
 
         // Refresh the bins' average status
-        selectedBin = getWindow().getGlobalState().getBinDAO().getOne(selectedBin.getID());
+        selectedBin = getRouter().getGlobalState().getBinDAO().getOne(selectedBin.getID());
 
         sidebarBinID.setText(selectedBin.getID().toString());
         sidebarBinType.setText(StringHelpers.enumNameToTitle(selectedBin.getCategory().name()));
@@ -269,13 +325,21 @@ public class MapPage extends Page {
         sidebarBinLastUsed.setText(newest == null ? "N/A " : StringHelpers.toLocaleString(newest.disposedAt()));
     }
 
+    /**
+     * Clear the UI state of the last shown bin
+     */
     private void clearPreviousBin(){
 
-        windowManager.hideOverlay();
+        router.hideOverlay();
         removeDirections();
 
     }
 
+    /**
+     * Prompt the user to click a location on the map and prepare to interpret that click
+     *
+     * @return True if have to wait for the location, false if already have it
+     */
     private boolean waitForLocation(){
 
         // Already have location
@@ -288,11 +352,17 @@ public class MapPage extends Page {
         return true;
     }
 
+    /**
+     * Stop waiting for the user to click a place on the map as their location
+     */
     private void stopWaitingForLocation(){
         isWaitingForLocation = false;
         mapDialog.setVisible(false);
     }
 
+    /**
+     * Attempt to render the route to a bin
+     */
     private void tryDrawDirections(){
 
         // Dont have a dest point
@@ -306,8 +376,11 @@ public class MapPage extends Page {
         map.setRoute(userPosLat, userPosLong, selectedBin.getLatitude(), selectedBin.getLongitude());
     }
 
+    /**
+     * Clear directions from the map and close the instructions popup
+     */
     private void removeDirections(){
-        windowManager.killModal(directionsModalID);
+        router.killModal(directionsModalID);
         map.clearRoute();
     }
 }

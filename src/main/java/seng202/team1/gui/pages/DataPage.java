@@ -3,16 +3,16 @@ package seng202.team1.gui.pages;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
-import seng202.team1.common.StringHelpers;
+import seng202.team1.helpers.StringHelpers;
 import seng202.team1.data.ExportManager;
-import seng202.team1.data.bin.Bin;
-import seng202.team1.data.bin.BinCategory;
-import seng202.team1.data.bin.BinFullness;
+import seng202.team1.types.bin.Bin;
+import seng202.team1.types.bin.BinCategory;
+import seng202.team1.types.bin.BinFullness;
 import seng202.team1.data.table.StringTableBuilder;
 import seng202.team1.gui.components.UIIconButton;
 import seng202.team1.gui.components.UITable;
 import seng202.team1.gui.components.UITitle;
-import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.Router;
 
 import java.util.Comparator;
 
@@ -21,17 +21,20 @@ import java.util.Comparator;
  */
 public class DataPage extends Page {
 
+    /// The container for the whole page
     private VBox root;
+
+    /// The table that contains the app's data
     private UITable table;
 
     /**
      * Constructs a new DataPage
      *
-     * @param windowManager the window this page is on
+     * @param router the window this page is on
      */
-    public DataPage(WindowManager windowManager){
+    public DataPage(Router router){
 
-        super(windowManager, Pages.DATA);
+        super(router, Pages.DATA);
 
     }
 
@@ -51,6 +54,9 @@ public class DataPage extends Page {
         return root;
     }
 
+    /**
+     * Rerender the table with the latest data
+     */
     @Override
     public void updateContents() {
         refreshData();
@@ -65,7 +71,7 @@ public class DataPage extends Page {
         pageTitle.setAlignment(Pos.CENTER);
 
         // Data
-        StringTableBuilder<Bin> tableData = new StringTableBuilder<Bin>(windowManager.getGlobalState().getBinDAO().getAll())
+        StringTableBuilder<Bin> tableData = new StringTableBuilder<Bin>(getState().getBinDAO().getAll())
             .addColumn("binID", "ID")
             .addColumn("fullness", "Fullness", val -> StringHelpers.enumNameToTitle(((BinFullness)val).name()))
             .addColumn("areaName", "Location")
@@ -77,7 +83,7 @@ public class DataPage extends Page {
 
         // Download the table to CSV for exports
         exportButton.setOnMouseClicked(e -> {
-            ExportManager.exportToCSV(windowManager.getStage(), ExportManager.exportName("bin_data"), tableData.build());
+            ExportManager.exportToCSV(router.getStage(), ExportManager.exportName("bin_data"), tableData.build());
         });
 
         // Combine
@@ -87,6 +93,11 @@ public class DataPage extends Page {
 
     }
 
+    /**
+     * Get the table that contains the data
+     *
+     * @return The data table
+     */
     public UITable getTable() {
         return table;
     }

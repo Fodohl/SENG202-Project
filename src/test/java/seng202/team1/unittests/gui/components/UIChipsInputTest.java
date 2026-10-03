@@ -1,8 +1,8 @@
 package seng202.team1.unittests.gui.components;
 
 import org.junit.jupiter.api.Test;
-import seng202.team1.data.bin.BinCategory;
-import seng202.team1.data.status.ReportType;
+import seng202.team1.types.bin.BinCategory;
+import seng202.team1.types.status.ReportType;
 import seng202.team1.gui.components.UIChipsInput;
 import seng202.team1.gui.components.UIIconButton;
 import seng202.team1.unittests.TrashAppTest;

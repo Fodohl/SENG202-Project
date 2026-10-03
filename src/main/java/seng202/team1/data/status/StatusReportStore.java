@@ -1,14 +1,18 @@
 package seng202.team1.data.status;
 
 
-import seng202.team1.data.User;
-import seng202.team1.data.bin.*;
-import seng202.team1.data.sqlite.DAO.BinDAO;
+import seng202.team1.types.user.User;
+import seng202.team1.database.DAO.BinDAO;
+import seng202.team1.types.bin.Bin;
+import seng202.team1.types.bin.BinFullness;
+import seng202.team1.types.status.ReportType;
+import seng202.team1.types.status.StatusReport;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +53,8 @@ public class StatusReportStore {
     }
 
     public List<StatusReport> getReports() {
-        load();
+        if(reports.isEmpty())
+            load();
         return List.copyOf(reports);
     }
 
@@ -63,6 +68,8 @@ public class StatusReportStore {
      *
      * @param newReport {@link StatusReport} to be added
      * @throws IOException if the JSON file cannot be written
+     *
+     * @todo why copy reports just to setall?
      */
     public void add(StatusReport newReport) throws IOException {
         load();
@@ -129,7 +136,7 @@ public class StatusReportStore {
 
     public void logReport(Bin bin, BinFullness fullness, ReportType reportType, String description) {
 
-        User dummy = new User(10, "null-user");
+        User dummy = new User(10, Instant.now(), Instant.now(), "null-user", "test@gamil.com", "", 0);
 
         LocalDateTime timestamp = LocalDateTime.now();
         StatusReport entry = new StatusReport(bin, dummy, fullness, reportType, description, timestamp);

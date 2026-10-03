@@ -1,7 +1,7 @@
 package seng202.team1.gui.layout;
 
 import javafx.scene.Parent;
-import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.Router;
 import seng202.team1.state.GlobalState;
 
 /**
@@ -14,27 +14,27 @@ public abstract class LayoutElement implements Cloneable{
     /// The rendered component, null until the first render call unless pre-rendered
     private Parent rendered;
 
-    /// The reference to the window this component is rendered on
-    protected WindowManager windowManager;
+    /// The reference to the router that handles this window
+    protected Router router;
 
     /**
      * Construct a new lazy-rendered LayoutElement
      * 
-     * @see #LayoutElement(WindowManager, boolean)
+     * @see #LayoutElement(Router, boolean)
      */
-    public LayoutElement(WindowManager windowManager){
-        this(windowManager, false);
+    public LayoutElement(Router router){
+        this(router, false);
     }
     /**
      * Construct a new LayoutElement
      *
-     * @param windowManager A reference to the window this component will be rendered to
+     * @param router A reference to the window this component will be rendered to
      * @param preRender Whether to render during construction or not
      */
-    public LayoutElement(WindowManager windowManager, boolean preRender){
+    public LayoutElement(Router router, boolean preRender){
 
         // Setup state
-        this.windowManager = windowManager;
+        this.router = router;
 
         // Some larger components should pre-render to not lag when user presses nav button
         if(preRender && !GlobalState.IS_HEADLESS_MODE)
@@ -87,11 +87,23 @@ public abstract class LayoutElement implements Cloneable{
     }
 
     /**
-     * Get the window manager responsible for this component
+     * Get the router responsible for this component
      *
-     * @return The window manager responsible for this component
+     * @return The router responsible for this component
      */
-    public WindowManager getWindow(){
-        return windowManager;
+    public Router getRouter(){
+        return router;
     }
+    
+
+    /**
+     * Get the router responsible for this component
+     *
+     * @return The router responsible for this component
+     */
+    public GlobalState getState(){
+        return router.getGlobalState();
+    }
+
+
 }

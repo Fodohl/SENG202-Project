@@ -1,0 +1,5 @@
+FROM eclipse-temurin:25-jre
+WORKDIR /app
+COPY build/libs/taserver.jar taserver.jar
+EXPOSE 4372
+ENTRYPOINT ["java", "-jar", "taserver.jar"]

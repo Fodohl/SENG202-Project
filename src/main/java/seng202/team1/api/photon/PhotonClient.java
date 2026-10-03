@@ -1,21 +1,23 @@
 package seng202.team1.api.photon;
 
-import javafx.scene.shape.ClosePath;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import seng202.team1.api.ApiClient;
+import seng202.team1.api.ApiBackend;
+import seng202.team1.gui.components.BlockableUISet;
 import seng202.team1.gui.components.UIKeyValuePair;
 import seng202.team1.gui.components.UISpinner;
+import seng202.team1.types.photon.Feature;
+import seng202.team1.types.photon.PhotonLocationResponse;
+import seng202.team1.types.photon.Properties;
 
 import java.util.Map;
 import java.util.function.Consumer;
 
 import static seng202.team1.TrashApp.GSON;
+import static seng202.team1.gui.GraphicsCommon.NO_LOADING_UI;
 
 /**
  * API Handler for calls to the Photon geocoding service
  */
-public class PhotonClient extends ApiClient {
+public class PhotonClient extends ApiBackend {
 
     /// Maximum number of locations to fetch
     private final Integer LIMIT_LOCATIONS = 3;
@@ -39,7 +41,7 @@ public class PhotonClient extends ApiClient {
      * @see #searchLocation(String, Consumer, UIKeyValuePair, UISpinner)
      */
     public void searchLocation(String address, Consumer<PhotonLocationResponse> callback){
-        searchLocation(address, callback, null, null);
+        searchLocation(address, callback, NO_LOADING_UI);
     }
 
     /**
@@ -50,7 +52,7 @@ public class PhotonClient extends ApiClient {
      * @param error UI Element to show errors on
      * @param loader UI Element to show whilst waiting for response
      */
-    public void searchLocation(String address, Consumer<PhotonLocationResponse> callback, UIKeyValuePair error, UISpinner loader){
+    public void searchLocation(String address, Consumer<PhotonLocationResponse> callback, BlockableUISet frontend){
 
         Map<String, String> params = Map.of("limit", LIMIT_LOCATIONS.toString(),
                                             "q", address,
@@ -66,6 +68,23 @@ public class PhotonClient extends ApiClient {
                 log.warn(String.format("Failed to parse PhotonLocationResponse: %s", e.getMessage()));
             }
 
-        }, error, loader);
+        }, frontend);
+    }
+
+
+    /**
+     * Convert a photon location feature to a readable address
+     *
+     * @param feature The location
+     * @return The assembled address
+     */
+    public static String featureToAddress(Feature feature){
+
+        Properties properties = feature.properties();
+
+        boolean isAddress = properties.name() == null;
+
+        return isAddress ? String.format("%s %s, %s, %s", properties.housenumber(), properties.street(), properties.city(), properties.postcode())
+                         : String.format("%s, %s, %s", properties.name(), properties.city(), properties.county());
     }
 }

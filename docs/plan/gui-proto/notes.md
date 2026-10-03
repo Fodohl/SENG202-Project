@@ -1,5 +1,5 @@
-- [page] Dashboard (see stats (amount logged, amount tree saved) 
+- [page] Home (see stats (amount logged, amount tree saved) 
 - [page] Map (show bin location and let get nearest bin) 
-- [page] Leaderboard (show list of people with their trees saved score ranked) 
+- [page] Community (show list of people with their trees saved score ranked) 
 - [page] Trash Timeline (history of tracked trash logged) 
 - [page] Settings (preferred location, delete data, export data) 

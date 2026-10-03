@@ -15,7 +15,7 @@ class LayoutElementTest extends TrashAppTest {
 
     @BeforeEach
     public void init(){
-        layoutElement = new MainLayout(windowManager);
+        layoutElement = new MainLayout(router);
     }
 
     @Test

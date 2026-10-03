@@ -1,35 +1,24 @@
 package seng202.team1.gui.layout;
 
-import javafx.animation.PauseTransition;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.geometry.Bounds;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.*;
-import javafx.stage.Popup;
-import javafx.util.Duration;
-import seng202.team1.api.photon.Feature;
-import seng202.team1.common.StringHelpers;
-import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.Router;
 import seng202.team1.gui.components.UIImage;
 import seng202.team1.gui.components.UILocationInput;
 import seng202.team1.gui.components.UINavButton;
 import seng202.team1.gui.pages.Pages;
 
-import static seng202.team1.common.StringHelpers.featureToAddress;
+import java.util.List;
+
 import static seng202.team1.gui.GraphicsCommon.precentWindowX;
 
 /**
- * Composite UI component that contains elements consistent across the whole app
- *
- * Note: there should be only one per window
+ * Composite UI component that contains elements consistent across the MAIN phase of the app
  */
-public class MainLayout extends LayoutElement {
+public class MainLayout extends Layout {
 
     /// The element that contains the content of the current page
     private ScrollPane content = new ScrollPane();
@@ -40,10 +29,10 @@ public class MainLayout extends LayoutElement {
     /**
      * Construct a new CoreUI for a given window
      *
-     * @param windowManager The reference to the window this UI & its pages will be shown on
+     * @param router The reference to the window this UI & its pages will be shown on
      */
-    public MainLayout(WindowManager windowManager) {
-        super(windowManager);
+    public MainLayout(Router router) {
+        super(router);
 
     }
 
@@ -66,14 +55,14 @@ public class MainLayout extends LayoutElement {
 
         // Navigation Menu
         VBox navbar = new VBox(8);
-        for (Pages option : Pages.values())
+        for (Pages option : router.getPagesInPhase())
             if(option != Pages.SETTINGS)
-                navbar.getChildren().add(new UINavButton(windowManager, option));
+                navbar.getChildren().add(new UINavButton(router, option));
 
         // Settings at the bottom
         Region spacer = new Region();
         VBox.setVgrow(spacer, Priority.ALWAYS);
-        HBox navSettings = new UINavButton(windowManager, Pages.SETTINGS);
+        HBox navSettings = new UINavButton(router, Pages.SETTINGS);
 
         // Combine
         VBox sidebar = new VBox();
@@ -93,7 +82,7 @@ public class MainLayout extends LayoutElement {
     private Parent header() {
 
         // Search Bard
-        UILocationInput searchBar = new UILocationInput(getWindow().getGlobalState());
+        UILocationInput searchBar = new UILocationInput(getRouter().getGlobalState());
 
         // Account
         Label accountLabel = new Label("Account (DB)");
@@ -111,9 +100,9 @@ public class MainLayout extends LayoutElement {
     }
 
     /**
-     * Combine UI elements to build the CoreUI
+     * Combine UI elements to build the layout
      *
-     * @return A new root node containing the rendered CoreUI
+     * @return A new root node containing the rendered layout
      */
     @Override
     protected Parent renderSelf() {
@@ -144,8 +133,9 @@ public class MainLayout extends LayoutElement {
      */
     public void swap(Parent rendered) {
 
-        // Change the content to the new page
+        // Show the top of the new page
         content.setContent(rendered);
+        content.setVvalue(0);
     }
 
     /**

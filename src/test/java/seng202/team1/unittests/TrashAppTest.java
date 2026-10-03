@@ -5,15 +5,18 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import seng202.team1.common.StringHelpers;
-import seng202.team1.data.bin.*;
-import seng202.team1.data.sqlite.DAO.BinDAO;
-import seng202.team1.data.sqlite.DatabaseManager;
+import seng202.team1.helpers.StringHelpers;
+import seng202.team1.types.bin.Bin;
+import seng202.team1.types.bin.BinCategory;
+import seng202.team1.types.bin.BinFullness;
+import seng202.team1.database.DAO.BinDAO;
+import seng202.team1.database.DatabaseManager;
 import seng202.team1.data.table.StringTableBuilder;
-import seng202.team1.data.sqlite.exceptions.InstanceAlreadyExistsException;
-import seng202.team1.data.sqlite.DAO.TrashLogDAO;
-import seng202.team1.gui.WindowManager;
+import seng202.team1.database.exceptions.InstanceAlreadyExistsException;
+import seng202.team1.database.DAO.TrashLogDAO;
+import seng202.team1.gui.Router;
 import seng202.team1.state.GlobalState;
+import seng202.team1.data.bin.BinDataset;
 
 import java.time.Instant;
 import java.util.*;
@@ -26,7 +29,7 @@ public class TrashAppTest {
 
     protected GlobalState state;
 
-    protected WindowManager windowManager;
+    protected Router router;
 
     protected DatabaseManager databaseManager;
 
@@ -47,18 +50,25 @@ public class TrashAppTest {
             // already running
         }
 
-        // Don't draw
+    }
+
+    public static GlobalState newTestState() {
+
+        GlobalState.IS_TEST_MODE = true;
         GlobalState.IS_HEADLESS_MODE = true;
 
+        GlobalState globalState = new GlobalState(null);
+        globalState.getDatabaseManager().resetDB();
+
+        return globalState;
     }
 
 
     @BeforeEach
     void initState() throws InstanceAlreadyExistsException {
-        state = new GlobalState(null, true);
-        databaseManager = state.getDatabaseManager();
-        databaseManager.resetDB();
+        state = newTestState();
 
+        databaseManager = state.getDatabaseManager();
         trashLogs = state.getTrashLogDAO();
         bins = state.getBinDAO();
 
@@ -66,8 +76,14 @@ public class TrashAppTest {
         bins.add(testBin);
 
         // Extract state for easier access
+        router = state.getRouter();
         binDataset = state.getDataset();
-        windowManager = state.getWindowManager();
+    }
+
+    @AfterEach
+    void tearDown() {
+        binDataset = state.getDataset();
+        router = state.getRouter();
     }
 
     protected ArrayList<Bin> testData(){
