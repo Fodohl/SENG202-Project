@@ -69,6 +69,7 @@ public class TimelinePage extends Page {
     void renderTimelineEntries() {
 
         List<StatusReport> reports = windowManager.getGlobalState().getStatusReportStore().getReports();
+        // TODO: Get only user generated reports
         List<TrashLog> trash = windowManager.getGlobalState().getTrashLogDAO().getAll();
 
         List<UITimelineEntry> timelineEntries = new ArrayList<>();
@@ -83,9 +84,8 @@ public class TimelinePage extends Page {
             StringTable table = buildExportTable(reports, trash);
             ExportManager.exportToCSV(windowManager.getStage(), ExportManager.exportName("timeline"), table);
         });
-        exportButton.setAlignment(Pos.CENTER);
         timeline = new UITimeline(timelineEntries);
-        root.getChildren().setAll(timeline, exportButton);
+        root.getChildren().setAll(exportButton, timeline);
 
     }
 
@@ -102,8 +102,8 @@ public class TimelinePage extends Page {
         trash.forEach(t -> exportEntries.add(ExportEntry.from(t)));
 
         return new StringTableBuilder<>(exportEntries)
-                .addColumn("time", "Time", o -> StringHelpers.toLocaleString((Instant) o))
-                .addColumn("source", "Source")
+                .addColumn("time", "Timestamp", o -> StringHelpers.toLocaleString((Instant) o))
+                .addColumn("source", "Type")
                 .addColumn("binId", "Bin ID")
                 .addColumn("userId", "User ID")
                 .addColumn("fullness", "Fullness")
