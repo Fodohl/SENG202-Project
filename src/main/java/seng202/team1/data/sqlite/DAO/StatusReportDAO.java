@@ -2,7 +2,6 @@ package seng202.team1.data.sqlite.DAO;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import seng202.team1.data.User;
 import seng202.team1.data.bin.BinFullness;
 import seng202.team1.data.sqlite.DatabaseManager;
 import seng202.team1.data.sqlite.SqlTimeUtils;
@@ -58,30 +57,6 @@ public class StatusReportDAO extends SqlTimeUtils implements DAOInterface<Status
         try (Connection conn = databaseManager.connect();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                reports.add(new StatusReport(
-                        rs.getInt("id"),
-                        rs.getInt("bin_id"),
-                        rs.getInt("user_id"),
-                        convertStringToBinFullness(rs.getString("fullness")),
-                        convertStringToIssue(rs.getString("issue")),
-                        rs.getString("description"),
-                        getInstant(rs, "created_at")));
-            }
-            return reports;
-        } catch (SQLException sqlException) {
-            log.error(sqlException);
-            return new ArrayList<>();
-        }
-    }
-
-    public List<StatusReport> getAllFullnessReports(int binId) {
-        List<StatusReport> reports = new ArrayList<>();
-        String sql = "SELECT * FROM status_reports WHERE issue = ?";
-        try (Connection conn = databaseManager.connect();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, "_FULLNESS_UPDATE");
-            ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 reports.add(new StatusReport(
                         rs.getInt("id"),

@@ -6,19 +6,16 @@ import seng202.team1.api.photon.PhotonClient;
 import seng202.team1.data.sqlite.DAO.StatusReportDAO;
 import seng202.team1.data.status.ReportType;
 import seng202.team1.data.status.StatusReport;
-import seng202.team1.data.status.StatusReportStore;
 import seng202.team1.data.sqlite.DAO.TrashLogDAO;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.pages.Pages;
 import seng202.team1.data.sqlite.DatabaseManager;
 import seng202.team1.data.sqlite.DAO.BinDAO;
-import seng202.team1.data.sqlite.exceptions.InstanceAlreadyExistsException;
 import seng202.team1.data.bin.BinDataset;
 import seng202.team1.data.bin.Bin;
 
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.List;
 
@@ -55,9 +52,6 @@ public class GlobalState {
 
     boolean testState = false;
 
-    /// The handler for issue reports
-    private StatusReportStore statusReportStore;
-
     /**
      * Construct a new Global state instance
      *
@@ -76,11 +70,6 @@ public class GlobalState {
         binDAO = new BinDAO(databaseManager);
         trashLogDAO = new TrashLogDAO(databaseManager);
         statusReportDAO = new StatusReportDAO(databaseManager);
-
-        //statusReportStore = new StatusReportStore(binDAO, testState ? StatusReportStore.testDataPath()
-        //                                                            : StatusReportStore.defaultDataPath());
-        //if(!testState)
-        //    statusReportStore.load();
 
         loadBins();
         refreshBinFullness();
@@ -125,14 +114,6 @@ public class GlobalState {
         return location;
     }
 
-    /**
-     * Get the status log handler
-     *
-     * @return The status log handler
-     */
-    public StatusReportStore getStatusReportStore() {
-        return statusReportStore;
-    }
 
     /**
      * Loads the bins from JSON file to the database if there are no bins in the

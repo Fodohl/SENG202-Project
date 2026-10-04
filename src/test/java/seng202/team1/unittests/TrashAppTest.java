@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import seng202.team1.common.StringHelpers;
 import seng202.team1.data.bin.*;
 import seng202.team1.data.sqlite.DAO.BinDAO;
+import seng202.team1.data.sqlite.DAO.StatusReportDAO;
 import seng202.team1.data.sqlite.DatabaseManager;
 import seng202.team1.data.table.StringTableBuilder;
 import seng202.team1.data.sqlite.exceptions.InstanceAlreadyExistsException;
@@ -32,6 +33,7 @@ public class TrashAppTest {
 
     protected TrashLogDAO trashLogs;
     protected BinDAO bins;
+    protected StatusReportDAO statusReportDAO;
     protected BinDataset binDataset;
 
 
@@ -61,6 +63,7 @@ public class TrashAppTest {
 
         trashLogs = state.getTrashLogDAO();
         bins = state.getBinDAO();
+        statusReportDAO = state.getStatusReportDAO();
 
         Bin testBin = new Bin(1, 0, 0, BinCategory.GENERAL_WASTE, Instant.now(), null, null, BinFullness.EMPTY);
         bins.add(testBin);

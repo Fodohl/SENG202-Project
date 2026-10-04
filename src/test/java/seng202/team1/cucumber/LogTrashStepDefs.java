@@ -1,21 +1,13 @@
 package seng202.team1.cucumber;
 
-import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import org.junit.jupiter.api.Assertions;
 import seng202.team1.common.StringHelpers;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.BinCategory;
 import seng202.team1.data.bin.BinFullness;
-import seng202.team1.data.sqlite.DAO.BinDAO;
-import seng202.team1.data.sqlite.DAO.TrashLogDAO;
-import seng202.team1.data.sqlite.DatabaseManager;
-import seng202.team1.data.status.ReportType;
-import seng202.team1.data.status.StatusReport;
-import seng202.team1.data.status.StatusReportStore;
 import seng202.team1.data.trashlog.TrashLog;
 import seng202.team1.data.trashlog.TrashType;
 import seng202.team1.gui.modals.LogTrashModal;
@@ -23,12 +15,8 @@ import seng202.team1.state.GlobalState;
 import seng202.team1.unittests.TrashAppTest;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
