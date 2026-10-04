@@ -64,6 +64,8 @@
             return;
 
         const node = target.getElement();
+        if (!node)
+            return;
 
         if (isActive) {
             // Dont add if already added

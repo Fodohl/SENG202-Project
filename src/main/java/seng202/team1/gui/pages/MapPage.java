@@ -354,7 +354,7 @@ public class MapPage extends Page {
         selectedBin = getRouter().getGlobalState().getBinDAO().getOne(selectedBin.getID());
 
         sidebarBinID.setText(selectedBin.getID().toString());
-        binImage.setSource(selectedBin.getPhotoURL());
+        binImage.setSource(selectedBin.getPhotoURL() != null ? selectedBin.getPhotoURL() : "/media/images/bin.png");
         sidebarBinType.setText(StringHelpers.enumNameToTitle(selectedBin.getCategory().name()));
         sidebarBinStatus.setText(String.format("%s (estimate)", StringHelpers.enumNameToTitle(selectedBin.getFullness().name())));
         sidebarBinUpdated.setText(StringHelpers.toLocaleString(selectedBin.getUpdated()));

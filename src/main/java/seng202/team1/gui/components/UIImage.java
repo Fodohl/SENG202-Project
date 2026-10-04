@@ -69,9 +69,9 @@ public class UIImage extends StackPane {
 
     private void renderImage(String path) {
 
-        if(path == null){
+        // NO image to load
+        if(path == null)
             return;
-        }
 
         // Image not on disk
         if (path.startsWith("http")) {
@@ -179,6 +179,7 @@ public class UIImage extends StackPane {
     private void loadWebImage(String path) {
 
         // Show loader
+        String webPath = path.trim().replace(" ", "%20");
         getChildren().setAll(new UISpinner(Math.min(width, height) / 2));
 
         Thread thread = new Thread(() -> {
@@ -186,13 +187,13 @@ public class UIImage extends StackPane {
             try {
 
                 // Load image
-                Image img = new Image(fetchImage(path));
+                Image img = new Image(fetchImage(webPath));
                 ImageView imageView = new ImageView(img);
 
                 Platform.runLater(() -> getChildren().setAll(setupImageView(imageView)));
 
             } catch (Exception e) {
-                log.warn("Invalid image path:  {}", path);
+                log.warn("Invalid image path:  {}", webPath);
             }
 
         });
@@ -213,6 +214,8 @@ public class UIImage extends StackPane {
         if(!Files.exists(file)){
             InputStream is = url.toURL().openStream();
             Files.copy(is, file);
+        } else{
+            log.info("Cache hit for image: {} -> {}", path, file);
         }
 
         return Files.newInputStream(file);
