@@ -88,6 +88,7 @@ public class AuthState {
                 setSession(new Session(user, token.token()));
 
                 // Successful login
+                tryTriggerLoadSession();
                 state.getRouter().switchPhase(Phases.MAIN);
                 save();
 

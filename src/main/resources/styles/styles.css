@@ -257,13 +257,13 @@
 .account-text {
     -fx-text-fill: -text-primary;
     -fx-font-weight: bold;
+    -fx-cursor: hand;
 }
 
 .title{
     -fx-font-size: 40px;
     -fx-font-weight: bold;
     -fx-padding: 14px;
-    -fx-text-alignment: center;
     -fx-text-alignment: center;
 }
 
@@ -372,8 +372,11 @@
 }
 
 .bin-icon .img{
-    -fx-background-color: -bg-third;
-    -fx-padding: 10px 10px;
+    -fx-background-color: transparent;
+}
+
+.bin-icon .img *{
+    -fx-background-color: transparent;
 }
 
 .buttons{
@@ -424,6 +427,8 @@
 
 .table-cell-row-hover{
     -fx-background-color: -bg-secondary;
+    -fx-cursor: hand;
+
 }
 
 .table-cell-header{
@@ -434,6 +439,8 @@
     -fx-border-color: transparent transparent transparent transparent;
     -fx-text-fill: -bg-primary-light;
     -fx-alignment: center-left;
+    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.1;
 }
 
 .table-cell-header-hover{
@@ -443,6 +450,9 @@
 .table-cell-highlight-first{
     -fx-background-color: -active;
     -fx-font-weight: bold;
+    -fx-scale-x: 1.1;
+    -fx-border-color: transparent transparent transparent transparent;
+
 }
 
 .table-cell-highlight{
@@ -612,6 +622,10 @@
     -fx-background-color: -bg-primary-light;
 }
 
+.map-dialog *{
+    -fx-background-color: transparent;
+}
+
 .modal-window .modal{
     -fx-border-radius: 0px;
 }
@@ -671,6 +685,11 @@
 .timeline {
     -fx-alignment: center;
     -fx-min-height: 200;
+}
+
+.timeline-error{
+    -fx-alignment: center;
+    -fx-text-alignment: center;
 }
 
 .timeline .svg-icon * {
@@ -865,4 +884,25 @@
 
 .starting .logo-h1 {
     -fx-font-size: 54px;
+}
+
+.data-table {
+    -fx-max-width: 1200px;
+}
+
+
+.pop-over-side-bar-unselected{
+    -fx-background-color: -bg-primary-dark;
+    -fx-padding: 20px;
+    -fx-alignment: center;
+}
+
+.pop-over-side-bar-unselected *{
+    -fx-wrap-text: true;
+    -fx-text-alignment: center;
+}
+
+.pop-over-side-bar-unselected .button{
+    -fx-scale-x: 0.6;
+    -fx-scale-y: 0.6;
 }

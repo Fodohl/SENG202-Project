@@ -58,10 +58,11 @@ public class ResetPage extends Page {
         Label back = new Label("Go Back");
         back.getStyleClass().add("forgot");
 
+        // Assume enter keypress in a password is same as login press
+        passwordConfirm.setOnAction(e -> handleReset());
 
         signUp.setOnAction(e -> handleReset());
         back.setOnMouseClicked(e -> handleBack());
-
 
         VBox form = new VBox(10, title, email, code, password, passwordConfirm, signUp, back);
         form.getStyleClass().add("auth-form");

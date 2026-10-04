@@ -264,4 +264,13 @@ public class UIMap extends UIWebRenderer {
     public void centreOnPoint(int markerId) {
         call(String.format("centerOnMarker(%d);", markerId));
     }
+
+    /**
+     * Select a bin on the map
+     *
+     * @param binID The bin to select
+     */
+    public void showBin(Integer binID) {
+        call(String.format("onPointClicked(%d);", binID));
+    }
 }

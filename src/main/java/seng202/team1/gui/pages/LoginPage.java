@@ -67,6 +67,9 @@ public class LoginPage extends Page{
         signUp.setOnAction(e -> handleSignUp());
         forgot.setOnMouseClicked(e -> handleForgot());
 
+        // Assume enter keypress in a password is same as login press
+        password.setOnAction(e -> handleLogin());
+
         // Error handling
         UIKeyValuePair error = new UIKeyValuePair("Error", "");
         error.setVisible(false);

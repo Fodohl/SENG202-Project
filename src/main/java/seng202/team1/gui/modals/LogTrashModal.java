@@ -132,7 +132,7 @@ public class LogTrashModal extends Modal {
         Integer binID = bin.getID();
 
         TrashType type = null;
-        Integer weight = 0;
+        Integer weight = null;
         BinFullness fullness = null;
         Integer userID = 1;
 

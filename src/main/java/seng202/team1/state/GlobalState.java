@@ -1,7 +1,6 @@
 package seng202.team1.state;
 
 import javafx.stage.Stage;
-import seng202.team1.gui.Router;
 import seng202.team1.tasks.background.SyncToBackendTask;
 import seng202.team1.types.photon.Feature;
 import seng202.team1.api.photon.PhotonClient;
@@ -11,6 +10,7 @@ import seng202.team1.database.DAO.StatusReportDAO;
 import seng202.team1.types.status.ReportType;
 import seng202.team1.types.status.StatusReport;
 import seng202.team1.database.DAO.TrashLogDAO;
+import seng202.team1.gui.Router;
 import seng202.team1.gui.pages.Pages;
 import seng202.team1.database.DatabaseManager;
 import seng202.team1.database.DAO.BinDAO;
@@ -18,6 +18,7 @@ import seng202.team1.data.bin.BinDataset;
 import seng202.team1.types.bin.Bin;
 import seng202.team1.tasks.TaskManager;
 import seng202.team1.tasks.preflight.PreflightManager;
+import seng202.team1.types.status.StatusReport;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -31,7 +32,6 @@ import java.util.List;
  * @todo bin dataset doesnt need to be loaded each open? move to task
  */
 public class GlobalState {
-
 
     /// Whether there is a screen to draw to or now
     public static boolean IS_HEADLESS_MODE = false;
@@ -70,6 +70,11 @@ public class GlobalState {
     private Feature requestedLocation;
 
     boolean testState = false;
+    /// Current bin to show or null if none is requested
+    private Integer requestedShowBinId;
+
+    /// The handler for issue reports
+    private StatusReportStore statusReportStore;
 
     /// The handler for app start up tasks
     private PreflightManager preflightManager;
@@ -96,7 +101,6 @@ public class GlobalState {
                 "jdbc:sqlite:database.db"
         );
         binDataset = new BinDataset();
-        binDataset.readGeoJSON();
 
         binDAO = new BinDAO(databaseManager);
         trashLogDAO = new TrashLogDAO(databaseManager);
@@ -116,6 +120,7 @@ public class GlobalState {
             auth.tryTriggerLoadSession();
 
     }
+
 
     /**
      * Fetch the data the app needs in the background
@@ -190,6 +195,7 @@ public class GlobalState {
         return binDAO;
     }
 
+
     /**
      * get the status report DAO
      *
@@ -198,6 +204,7 @@ public class GlobalState {
     public StatusReportDAO getStatusReportDAO() {
         return statusReportDAO;
     }
+
     /**
      * Get the geocoding API client
      *
@@ -309,4 +316,26 @@ public class GlobalState {
     }
 
 
+    /**
+     * Switch to the map and try show a request bin
+     *
+     * @param id The bin to show (must be a int)
+     */
+    public void goToBin(String id) {
+
+        requestedShowBinId = Integer.valueOf(id);
+        router.switchPage(Pages.MAP);
+    }
+
+    /**
+     * Get the bin show request and clear it
+     *
+     * @return The bin to show or null if none requested
+     */
+    public Integer consumeBinShowRequest(){
+
+        Integer binID = requestedShowBinId;
+        requestedShowBinId = null;
+        return binID;
+    }
 }

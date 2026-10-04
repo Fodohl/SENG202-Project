@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 
@@ -51,6 +52,9 @@ public class UITable extends GridPane {
 
     /// Curent key being used to sort the table, if null will used the default one in StringTableBuilder
     private String currentSortDataKey = null;
+
+    /// Handler to trigger when a row is clicked
+    private Consumer<HashMap<String, String>> rowClickHandler = null;
 
     /// Whether the data is currently being sorted ascendingly
     private boolean sortAscending = false;
@@ -209,7 +213,6 @@ public class UITable extends GridPane {
             return;
         }
 
-
         // Sort ascending by default for newly sorted col
         currentSortDataKey = dataKey;
         sortAscending = true;
@@ -242,24 +245,34 @@ public class UITable extends GridPane {
             rowCells.add(addCell(value));
 
         attachRowHover(rowCells);
+        attachRowClick(rowCells, dataRow);
     }
-
 
     private void attachRowHover(List<Node> rowCells) {
 
+        // Dont highlight rows already highlighted
         boolean alreadyHighlighted = rowCells.stream().anyMatch(cell ->
-                            cell.getStyleClass().contains("table-cell-highlight")
-                        ||  cell.getStyleClass().contains("table-cell-highlight-first"));
+                cell.getStyleClass().contains("table-cell-highlight")
+                        || cell.getStyleClass().contains("table-cell-highlight-first"));
 
         if (alreadyHighlighted)
             return;
 
         for (Node cell : rowCells) {
-            cell.setOnMouseEntered(event ->
-                    rowCells.forEach(sibling -> sibling.getStyleClass().add("table-cell-row-hover")));
-            cell.setOnMouseExited(event ->
-                    rowCells.forEach(sibling -> sibling.getStyleClass().remove("table-cell-row-hover")));
+            cell.setOnMouseEntered(e -> rowCells.forEach(sibling -> sibling.getStyleClass().add("table-cell-row-hover")));
+            cell.setOnMouseExited(e -> rowCells.forEach(sibling -> sibling.getStyleClass().remove("table-cell-row-hover")));
         }
+    }
+
+    private void attachRowClick(List<Node> rowCells, HashMap<String, String> dataRow) {
+
+        // Nothing to handle the event
+        if (rowClickHandler == null)
+            return;
+
+        for (Node cell : rowCells)
+            cell.setOnMouseClicked(e -> rowClickHandler.accept(dataRow));
+
     }
 
     /**
@@ -315,8 +328,10 @@ public class UITable extends GridPane {
         cell.getStyleClass().add("table-cell");
 
         // Highlight the header row
-        if (isHeader)
+        if (isHeader) {
             cell.getStyleClass().add("table-cell-header");
+            cell.setViewOrder(-1);
+        }
 
         // Make the cell fill its full grid column/row so its background shows the whole
         GridPane.setHgrow(cell, Priority.ALWAYS);
@@ -343,7 +358,7 @@ public class UITable extends GridPane {
 
     /**
      * Highlight the give cell if it meets the current highlighting conditions
-     *
+     * <p>
      * Warning: assumes the cell is in place currentRow,Col
      *
      * @param cell The cell to apply highlighting to
@@ -353,6 +368,7 @@ public class UITable extends GridPane {
         // First row gets special highlighting
         if (highlightFirst && currentRow == 1) {
             cell.getStyleClass().add("table-cell-highlight-first");
+            cell.setViewOrder(-1);
             return;
         }
 
@@ -373,6 +389,7 @@ public class UITable extends GridPane {
 
     /**
      * Applies zebra striping to ordinary data rows
+     *
      * @param cell The cell to stripe
      */
     private void stripe(Node cell) {
@@ -444,7 +461,18 @@ public class UITable extends GridPane {
      *
      * @return The dataset
      */
-    public StringTable getData(){
+    public StringTable getData() {
         return outData;
+    }
+
+
+    /**
+     * Sets the callback to run when a row is clicked
+     *
+     * @param handler Receives the clicked row's data (header value map)
+     */
+    public void setOnRowClick(Consumer<HashMap<String, String>> handler) {
+        this.rowClickHandler = handler;
+        buildTableContent();
     }
 }
