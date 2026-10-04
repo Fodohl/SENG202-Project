@@ -8,8 +8,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
-import seng202.team1.data.export.StringTable;
-import seng202.team1.data.export.StringTableBuilder;
+import seng202.team1.data.table.StringTable;
+import seng202.team1.data.table.StringTableBuilder;
 
 import java.util.HashMap;
 import java.util.List;

@@ -5,7 +5,9 @@ import javafx.scene.Parent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import seng202.team1.data.export.ExportManager;
 import seng202.team1.helpers.DateHelpers;
+import seng202.team1.helpers.StringHelpers;
 import seng202.team1.types.bin.Bin;
 import seng202.team1.types.bin.BinCategory;
 import seng202.team1.types.status.ReportType;
@@ -14,8 +16,8 @@ import seng202.team1.types.trashlog.TrashLog;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.components.*;
 import seng202.team1.data.export.ExportEntry;
-import seng202.team1.data.export.StringTable;
-import seng202.team1.data.export.StringTableBuilder;
+import seng202.team1.data.table.StringTable;
+import seng202.team1.data.table.StringTableBuilder;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -81,7 +83,17 @@ public class TimelinePage extends Page {
         UITitle pageTitle = new UITitle("Timeline");
         pageTitle.setAlignment(Pos.CENTER);
 
-        VBox root = new VBox(50, botCards, pageTitle, timelineSection);
+        UIIconButton exportButton = new UIIconButton("/media/images/export.svg", "Export Timeline");
+        exportButton.getStyleClass().add("data-button");
+
+        exportButton.setOnMouseClicked(e -> {
+            List<StatusReport> reports = router.getGlobalState().getStatusReportStore().getReports();
+            List<TrashLog> trash = router.getGlobalState().getTrashLogDAO().getAll();
+            StringTable table = buildExportTable(reports, trash);
+            ExportManager.exportToCSV(router.getStage(), ExportManager.exportName("timeline"), table);
+        });
+
+        VBox root = new VBox(50, botCards, pageTitle, exportButton, timelineSection);
         root.getStyleClass().add("timeline-page");
         renderTimelineEntries();
         return root;
@@ -125,17 +137,8 @@ public class TimelinePage extends Page {
         timelineEntries.addAll(buildReportsEntries(reports));
         timelineEntries.addAll(buildTrashEntries(trash));
 
-        UIIconButton exportButton = new UIIconButton("/media/images/export.svg", "Export Timeline Data");
-        exportButton.getStyleClass().add("data-button");
-
-        // Download the table to CSV for exports
-        exportButton.setOnMouseClicked(e -> {
-            StringTable table = buildExportTable(reports, trash);
-            ExportManager.exportToCSV(windowManager.getStage(), ExportManager.exportName("timeline"), table);
-        });
-
-        timeline = new UITimeline(entries);
-        timelineSection.getChildren().setAll(timeline, exportButton);
+        timeline = new UITimeline(timelineEntries);
+        timelineSection.getChildren().setAll(timeline);
 
 
 
@@ -157,7 +160,6 @@ public class TimelinePage extends Page {
                 .addColumn("time", "Timestamp", o -> StringHelpers.toLocaleString((Instant) o))
                 .addColumn("source", "Type")
                 .addColumn("binId", "Bin ID")
-                .addColumn("userId", "User ID")
                 .addColumn("fullness", "Fullness")
                 .addColumn("issue", "Issue")
                 .addColumn("trashType", "Trash Type")

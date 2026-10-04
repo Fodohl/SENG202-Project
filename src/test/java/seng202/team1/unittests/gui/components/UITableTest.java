@@ -7,8 +7,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import seng202.team1.types.bin.Bin;
 import seng202.team1.types.bin.BinCategory;
-import seng202.team1.data.export.StringTable;
-import seng202.team1.data.export.StringTableBuilder;
+import seng202.team1.data.table.StringTable;
+import seng202.team1.data.table.StringTableBuilder;
 import seng202.team1.gui.components.UITable;
 import seng202.team1.unittests.TrashAppTest;
 
