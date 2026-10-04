@@ -2,7 +2,7 @@ package seng202.team1.unittests.gui.modals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import seng202.team1.data.bin.Bin;
+import seng202.team1.types.bin.Bin;
 import seng202.team1.gui.components.UIChipsInput;
 import seng202.team1.gui.components.UIDropDown;
 import seng202.team1.gui.components.UITextInput;
@@ -21,7 +21,7 @@ class LogTrashModalTest extends TrashAppTest {
     void init() {
         testBin = testData().getFirst();
 
-        modal = new LogTrashModal(windowManager);
+        modal = new LogTrashModal(router);
         modal.getRendered();
     }
 
@@ -30,8 +30,8 @@ class LogTrashModalTest extends TrashAppTest {
         UITextInput weightInput = modal.getWeightInput();
         weightInput.setInput("25");
 
-        windowManager.openModal(Modals.LOG_TRASH, testBin);
-        windowManager.closeModal();
+        router.openModal(Modals.LOG_TRASH, testBin);
+        router.closeModal();
 
         assertFalse(weightInput.hasInput());
     }

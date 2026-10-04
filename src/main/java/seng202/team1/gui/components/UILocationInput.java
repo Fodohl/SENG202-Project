@@ -10,10 +10,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Popup;
 import javafx.util.Duration;
-import seng202.team1.api.photon.Feature;
+import seng202.team1.types.photon.Feature;
 import seng202.team1.api.photon.PhotonClient;
-import seng202.team1.common.StringHelpers;
-import seng202.team1.gui.layout.LayoutElement;
 import seng202.team1.state.GlobalState;
 
 /**
@@ -46,6 +44,9 @@ public class UILocationInput extends HBox {
 
     /// A reference to the client connection with the geocoding service
     private PhotonClient photonClient;
+
+    /// The UI component set to manage whilst waiting for requests to complete
+    private BlockableUISet frontend;
 
     /**
      * Constructs a new UILocationInput
@@ -81,6 +82,7 @@ public class UILocationInput extends HBox {
         );
 
         error = new UIKeyValuePair("Error", "none");
+        frontend = new BlockableUISet(error, loader, null);
 
         // Build Search Bar
         getChildren().addAll(searchIcon, searchInput, loader);
@@ -136,7 +138,7 @@ public class UILocationInput extends HBox {
             // Force the popup to be below the search bar
             Bounds bounds = this.localToScreen(this.getBoundsInLocal());
             searchPopup.show(this.getScene().getWindow(), bounds.getMinX() + 20, bounds.getMaxY());
-        }, error, loader);
+        }, frontend);
     }
 
 
@@ -148,7 +150,7 @@ public class UILocationInput extends HBox {
      */
     private Label makeLocationLable(Feature location) {
 
-        String addressText = StringHelpers.featureToAddress(location);
+        String addressText = PhotonClient.featureToAddress(location);
         Label suggestion = new Label(addressText);
 
         suggestion.setOnMouseClicked(e -> {

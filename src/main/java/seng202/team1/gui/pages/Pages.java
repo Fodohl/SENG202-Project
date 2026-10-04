@@ -6,10 +6,16 @@ package seng202.team1.gui.pages;
  */
 public enum Pages {
 
-    DASHBOARD,
-    MAP,
-    TIMELINE,
-    SETTINGS,
-    DATA,
+    STARTING,
 
+    LOGIN,
+    SIGN_UP,
+    RESET,
+
+    HOME,
+    MAP,
+    COMMUNITY,
+    TIMELINE,
+    DATA,
+    SETTINGS,
 }

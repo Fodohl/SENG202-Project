@@ -1,7 +1,7 @@
 package seng202.team1.gui.pages;
 
 import seng202.team1.gui.layout.LayoutElement;
-import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.Router;
 
 /**
  * A {@link LayoutElement} that represents a page
@@ -14,26 +14,26 @@ public abstract class Page extends LayoutElement {
     /**
      * Constructs a new Page
      *
-     * @see #Page(WindowManager, Pages, boolean)
+     * @see #Page(Router, Pages, boolean)
      */
-    public Page(WindowManager windowManager, Pages pageType) {
-        this(windowManager, pageType, false);
+    public Page(Router router, Pages pageType) {
+        this(router, pageType, false);
     }
 
     /**
      * Constructs a new Page
      *
-     * @param windowManager The window this page is on
+     * @param router The window this page is on
      * @param pageType The type of page this is
      * @param preRender Whether to render during construction or not
      */
-    public Page(WindowManager windowManager, Pages pageType, boolean preRender){
+    public Page(Router router, Pages pageType, boolean preRender){
 
-        super(windowManager, preRender);
+        super(router, preRender);
 
         // Register handler for page changes
         this.pageType = pageType;
-        this.windowManager.registerPageChangeCallback(this::onPageChange);
+        this.router.registerPageChangeCallback(this::onPageChange);
 
     }
 

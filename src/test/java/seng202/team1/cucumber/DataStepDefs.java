@@ -4,22 +4,13 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import seng202.team1.data.bin.Bin;
-import seng202.team1.data.bin.BinCategory;
-import seng202.team1.data.bin.BinFullness;
-import seng202.team1.data.sqlite.DAO.BinDAO;
-import seng202.team1.data.trashlog.TrashLog;
-import seng202.team1.data.trashlog.TrashType;
-import seng202.team1.gui.WindowManager;
+import seng202.team1.database.DAO.BinDAO;
 import seng202.team1.gui.components.UITable;
-import seng202.team1.gui.modals.LogTrashModal;
 import seng202.team1.gui.pages.DataPage;
 import seng202.team1.state.GlobalState;
 import seng202.team1.unittests.TrashAppTest;
 
 import java.io.IOException;
-import java.time.Instant;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -35,7 +26,7 @@ public class DataStepDefs {
     public void init() throws IOException {
 
         TrashAppTest.initFx();
-        globalState = new GlobalState(null, true);
+        globalState = new GlobalState(null);
         globalState.getDatabaseManager().resetDB();
 
         globalState.getDatabaseManager();
@@ -48,7 +39,7 @@ public class DataStepDefs {
 
     public void openPage() {
 
-        DataPage dataPage = new DataPage(globalState.getWindowManager());
+        DataPage dataPage = new DataPage(globalState.getRouter());
         dataPage.rerender();
 
         dataTable = dataPage.getTable();

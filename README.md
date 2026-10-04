@@ -25,8 +25,8 @@ This version includes:
 - Interactive map of bin locations around the city
 - Viewing bin status, fullness and other information
 - Logging rubbish disposal and issues with bins
-- Dashboard statistics
-- Leaderboard
+- Home statistics
+- Community
 - CSV export
 
 ## Prerequisites
@@ -63,6 +63,8 @@ IntelliJ has built-in support for Gradle. To import your project:
 - Location Search: https://photon.komoot.io/
 - Public Bin Data: https://opendata-christchurchcity.hub.arcgis.com/datasets/ChristchurchCity::bin-opendata/explore?location=-43.591737%2C172.824069%2C11.00
 - Map Location Sample Code: https://eng-git.canterbury.ac.nz/public-seng-resources/seng202/seng202-advanced-fx-public/-/tree/master?ref_type=heads
+- Spring tutorial code: https://spring.io/guides/gs/rest-service
+- Sprint auth codeL https://docs.spring.io/spring-security/reference/servlet/authentication/onetimetoken.html
 
 ## Thirdparty
 - unpkg

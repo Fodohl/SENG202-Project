@@ -2,11 +2,12 @@ package seng202.team1;
 
 import fr.brouillard.oss.cssfx.CSSFX;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
-import seng202.team1.data.sqlite.DatabaseManager;
-import seng202.team1.data.sqlite.exceptions.InstanceAlreadyExistsException;
+import seng202.team1.database.exceptions.InstanceAlreadyExistsException;
+import seng202.team1.debug.JFRMarker;
 import seng202.team1.gui.components.UIImage;
 import seng202.team1.state.GlobalState;
 
@@ -46,8 +47,19 @@ public class Main extends Application {
         taskbar.setIconImage(SwingFXUtils.fromFXImage(logoIcon, null));
     }
 
+    void deferLoadAppIcon(Stage stage){
+         try{
+            Thread.sleep(800);
+        } catch (InterruptedException e) {
+            //nvm
+        }
+
+        // Begin loading
+        Platform.runLater(() -> setAppIcon(stage));
+    }
+
     /**
-     * The JavaFX entry point to the game. Will setup the window and show the main menu
+     * The JavaFX entry point to the app. Will set up the window and show the main menu
      *
      * @param stage the primary stage for this application, onto which
      *              the application scene can be set.
@@ -57,18 +69,22 @@ public class Main extends Application {
 
         // Dev tools
         CSSFX.start();
-
-        // Dev tools
-        CSSFX.start();
 //        HotReloader.attach(config, stage);
 
-        // Set up the window
-        setAppIcon(stage);
+        // Setup app state
+        GlobalState state = new GlobalState(stage);
+        stage.show();
+
+         // Set up the window
+        state.getBackgroundTasks().runTask("Setup App Icon", e -> deferLoadAppIcon(stage));
         stage.setTitle("TrashApp v1");
 
-        // Setup app state
-        GlobalState state = new GlobalState(stage, false);
-        stage.show();
+        JFRMarker guiReady = new JFRMarker("GUI Shown");
+        guiReady.commit();
+        TrashApp.startUpTime.commit();
+
+        long end = System.nanoTime();
+        System.out.printf("Took %.1f ms%n", (end - TrashApp.start) / 1_000_000.0);
     }
 
 
