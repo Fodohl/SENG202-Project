@@ -3,8 +3,8 @@ package seng202.team1.unittests.data.table;
 import org.junit.jupiter.api.Test;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.BinCategory;
-import seng202.team1.data.table.StringTable;
-import seng202.team1.data.table.StringTableBuilder;
+import seng202.team1.data.export.StringTable;
+import seng202.team1.data.export.StringTableBuilder;
 import seng202.team1.unittests.TrashAppTest;
 
 import java.time.Instant;

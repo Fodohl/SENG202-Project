@@ -1,4 +1,4 @@
-package seng202.team1.data.table;
+package seng202.team1.data.export;
 
 import seng202.team1.data.User;
 import seng202.team1.data.bin.BinFullness;

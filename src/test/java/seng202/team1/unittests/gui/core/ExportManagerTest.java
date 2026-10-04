@@ -22,8 +22,8 @@ import org.mockito.Mockito;
 
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import seng202.team1.data.ExportManager;
-import seng202.team1.data.table.StringTable;
+import seng202.team1.data.export.ExportManager;
+import seng202.team1.data.export.StringTable;
 
 public class ExportManagerTest {
     

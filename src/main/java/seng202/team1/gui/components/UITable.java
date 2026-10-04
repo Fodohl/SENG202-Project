@@ -7,11 +7,10 @@ import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
-import seng202.team1.data.table.StringTable;
-import seng202.team1.data.table.StringTableBuilder;
+import seng202.team1.data.export.StringTable;
+import seng202.team1.data.export.StringTableBuilder;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;

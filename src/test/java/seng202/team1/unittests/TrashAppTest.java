@@ -1,7 +1,6 @@
 package seng202.team1.unittests;
 
 import javafx.application.Platform;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,7 +8,7 @@ import seng202.team1.common.StringHelpers;
 import seng202.team1.data.bin.*;
 import seng202.team1.data.sqlite.DAO.BinDAO;
 import seng202.team1.data.sqlite.DatabaseManager;
-import seng202.team1.data.table.StringTableBuilder;
+import seng202.team1.data.export.StringTableBuilder;
 import seng202.team1.data.sqlite.exceptions.InstanceAlreadyExistsException;
 import seng202.team1.data.sqlite.DAO.TrashLogDAO;
 import seng202.team1.gui.WindowManager;

@@ -1,10 +1,9 @@
-package seng202.team1.data;
+package seng202.team1.data.export;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -14,7 +13,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import seng202.team1.data.table.StringTable;
 
 /**
  * Manages exporting data to csv
