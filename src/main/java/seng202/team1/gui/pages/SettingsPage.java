@@ -2,6 +2,8 @@ package seng202.team1.gui.pages;
 
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +26,7 @@ public class SettingsPage extends Page {
     private static final Logger log = LoggerFactory.getLogger(SettingsPage.class);
     private UITextInput userName;
     private UITextInput userEmail;
+    private UIAvatar avatar;
 
     private UITextInput userPasswordOld;
     private UITextInput userPasswordNew;
@@ -58,9 +61,15 @@ public class SettingsPage extends Page {
 
         UITitle detailsTitle = new UITitle("User Details");
         UIKeyValuePair updateErrors = new UIKeyValuePair("Error", "");
+        UIKeyValuePair iconErrors = new UIKeyValuePair("Error", "");
+        avatar = new UIAvatar(user, 150);
         userName = new UITextInput("Enter your name...");
         userEmail = new UITextInput("Enter your email...");
-        UISection userDetails = new UISection(detailsTitle, updateErrors, userName, userEmail);
+
+        // Combine and style the avatar spot
+        VBox details = new VBox(userName, userEmail);
+        HBox.setHgrow(details, Priority.ALWAYS);
+        UISection userDetails = new UISection(detailsTitle, iconErrors, new HBox(50, avatar, details), updateErrors);
 
         UITitle changePasswordTitle = new UITitle("Change Password");
         UIKeyValuePair passwordErrors = new UIKeyValuePair("Error", "");
@@ -76,6 +85,9 @@ public class SettingsPage extends Page {
         UIButton logOut = new UIButton("Log Out");
         UIButton deleteAccount = new UIButton("Delete Account");
         UISection manageButtons = new UISection(15, logOut, deleteAccount);
+
+        // Assume enter keypress in a password is same as login press
+        userPasswordNewConfirm.setOnAction(e -> saveChanges());
 
         save.setOnAction(e -> saveChanges());
         cancel.setOnAction(e -> updateContents());
@@ -93,11 +105,15 @@ public class SettingsPage extends Page {
         // Hide errors until needed
         updateErrors.setVisible(false);
         passwordErrors.setVisible(false);
+        iconErrors.setVisible(false);
 
         // Ensure button spacing
         saveSection.getStyleClass().add("buttons");
         manageButtons.getStyleClass().add("buttons");
         deleteAccount.getStyleClass().add("error");
+
+        // Fix visual weight
+        avatar.setStyle(avatar.getStyle() + "-fx-translate-y:  -15px;");
 
         VBox root = new VBox(20, userDetails, passwordChange, saveSection, manageButtons);
         root.setAlignment(Pos.CENTER);
@@ -156,9 +172,9 @@ public class SettingsPage extends Page {
 
         getState().getTaServer().updateUser(enteredName, enteredEmail, s -> {
 
-            // Refresh app with new details
+            // Refresh whole app with new details
             getState().getAuth().updateUser(enteredName, enteredEmail);
-            updateContents();
+            router.refreshPage(pageType);
 
         }, updateFrontendUI);
     }
@@ -218,6 +234,6 @@ public class SettingsPage extends Page {
         user = session.userDetails();
         userName.setInput(user.name());
         userEmail.setInput(user.email());
-
+        avatar.setUser(user);
     }
 }

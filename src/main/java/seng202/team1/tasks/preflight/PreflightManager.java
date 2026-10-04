@@ -27,5 +27,6 @@ public class PreflightManager extends TaskManager {
         long propegateBinTask = runTask(new PropegateBinsTask(this), parseDataSetTask);
         long readSatusReports = runTask(new ReadStatusReportsTask(this));
         long refreshBinsFulls = runTask(new RefreshBinFullnessTask(this), readSatusReports, propegateBinTask);
+        long startUpWbkitTask = runTask(new StartWebKitTask(this), refreshBinsFulls);
     }
 }

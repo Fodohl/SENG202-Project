@@ -134,6 +134,13 @@ test {
 
     finalizedBy jacocoTestReport
 
+     testLogging {
+        events "failed"
+        exceptionFormat "full"
+        showStackTraces = true
+        showCauses = true
+    }
+
     environment "APP_TOKEN_SECRET", "test-secret"
 }
 
@@ -203,6 +210,6 @@ tasks.withType(JavaExec).configureEach {
     jvmArgs += [
         '--enable-native-access=ALL-UNNAMED',
         '--enable-native-access=javafx.web',
-        '--enable-native-access=javafx.graphics'
+        '--enable-native-access=javafx.graphics',
     ]
 }

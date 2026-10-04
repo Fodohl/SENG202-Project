@@ -66,7 +66,8 @@ public class DataPage extends Page {
      * Refreshes the data shown in the data table
      */
     private void refreshData(){
-         // Title
+
+        // Title
         UITitle pageTitle = new UITitle("Raw Data");
         pageTitle.setAlignment(Pos.CENTER);
 
@@ -86,8 +87,11 @@ public class DataPage extends Page {
             ExportManager.exportToCSV(router.getStage(), ExportManager.exportName("bin_data"), tableData.build());
         });
 
-        // Combine
         table = new UITable(tableData, false);
+        table.getStyleClass().add("data-table");
+        table.setOnRowClick(row -> getState().goToBin(row.get("ID")));
+
+        // Combine
         root.getChildren().clear();
         root.getChildren().addAll(pageTitle, exportButton, table);
 

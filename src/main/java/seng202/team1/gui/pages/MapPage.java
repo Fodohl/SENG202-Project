@@ -33,13 +33,22 @@ public class MapPage extends Page {
     private UIMap map;
 
     /// The sidebar that contains bin details
-    private VBox sidebar;
+    private VBox renderedSidebarBinInfo;
+
+    /// The sidebar that contains bin details
+    private VBox renderedSidebarUnselected;
+
+    /// Butto to only show if user has a location, lets them clear it
+    private UIButton clearlocation;
 
     /// The dialog box prompting the user to perform an action
     private HBox mapDialog;
 
     /// The sidebar field for the bin's id
     private UIKeyValuePair sidebarBinID;
+
+    /// The sidebar field for the bin's image
+    private UIImage binImage;
 
     /// The sidebar field for the bin's type
     private UIKeyValuePair sidebarBinType;
@@ -71,6 +80,9 @@ public class MapPage extends Page {
     /// The id of the modal that is currently showing the directions to a bin, -1 if none opened yet
     private long directionsModalID = -1;
 
+    /// The element containing the page
+    private StackPane root;
+
     /**
      * Constructs a new MapPage
      *
@@ -90,11 +102,11 @@ public class MapPage extends Page {
     public VBox binImage(){
 
         // Load the image
-        UIImage bin = new UIImage("/media/images/bin.png", 70, 130);
-        bin.getStyleClass().add("img");
+        binImage = new UIImage("/media/images/bin.png", 340, 160);
+        binImage.getStyleClass().add("img");
 
         // Style the container
-        VBox container = new VBox(bin);
+        VBox container = new VBox(binImage);
         container.getStyleClass().add("bin-icon");
         return container;
     }
@@ -104,7 +116,7 @@ public class MapPage extends Page {
      *
      * @return The bin info sidebar
      */
-    private VBox sidebar() {
+    private VBox sidebarBinInfo() {
 
         // Title
         UITitle title = new UITitle("Bin Details");
@@ -147,6 +159,27 @@ public class MapPage extends Page {
     }
 
     /**
+     * Sidebar to show when no bin is selected
+     *
+     * @return The sidebar element
+     */
+    private VBox sideBarUnselected(){
+
+
+        Label message = new Label("Please click a bin on the map to see its info here or log an item of trash");
+
+        clearlocation = new UIButton("Click Here To Clear Your Selected Location");
+        clearlocation.setOnMouseClicked(e -> clearUserLocation());
+        clearlocation.setVisible(false);
+
+        // Combine
+        VBox box = new VBox(30, message, clearlocation);
+        box.getStyleClass().addAll("pop-over-side-bar", "pop-over-side-bar-unselected");
+        StackPane.setAlignment(box, Pos.CENTER_RIGHT);
+        return box;
+    }
+
+    /**
      * Constructs the UI for the map page
      *
      * @return the UI layout for the page
@@ -155,7 +188,8 @@ public class MapPage extends Page {
     protected Parent renderSelf() {
 
         // Setup the sidebar
-        sidebar = sidebar();
+        renderedSidebarBinInfo = sidebarBinInfo();
+        renderedSidebarUnselected = sideBarUnselected();
 
         // Populate the map
         map = new UIMap();
@@ -184,7 +218,8 @@ public class MapPage extends Page {
         mapDialogText.setAlignment(Pos.CENTER);
         HBox.setHgrow(mapDialogText, Priority.ALWAYS);
 
-        return new StackPane(map, mapDialog, sidebar);
+        root = new StackPane(map, mapDialog, renderedSidebarUnselected);
+        return root;
     }
 
     /**
@@ -196,6 +231,17 @@ public class MapPage extends Page {
         stopWaitingForLocation();
         refreshSidebar();
         handleLocationRequest();
+        handleShowRequest();
+    }
+
+    private void handleShowRequest() {
+
+        // No requested location
+        Integer binID = getState().consumeBinShowRequest();
+        if(binID == null)
+            return;
+
+        map.showBin(binID);
     }
 
     /**
@@ -227,6 +273,7 @@ public class MapPage extends Page {
 
         userPosLat = lat;
         userPosLong = lng;
+        clearlocation.setVisible(true);
 
         // Hide outdated user position
         map.removePoint(userPosMarkerID);
@@ -294,14 +341,13 @@ public class MapPage extends Page {
 
     /**
      * Update the contents of the status bar to show the selected bin (if any). If no bin is selected sidebar is not shown
-     *
-     * @todo image
      */
     private void refreshSidebar() {
 
         // Sidebar hidden
         boolean hidden = selectedBin == null;
-        sidebar.setVisible(!hidden);
+        root.getChildren().set(2, hidden ? renderedSidebarUnselected : renderedSidebarBinInfo);
+
         if (hidden)
             return;
 
@@ -317,6 +363,7 @@ public class MapPage extends Page {
         selectedBin = getRouter().getGlobalState().getBinDAO().getOne(selectedBin.getID());
 
         sidebarBinID.setText(selectedBin.getID().toString());
+        binImage.setSource(selectedBin.getPhotoURL() != null ? selectedBin.getPhotoURL() : "/media/images/bin.png");
         sidebarBinType.setText(StringHelpers.enumNameToTitle(selectedBin.getCategory().name()));
         sidebarBinStatus.setText(String.format("%s (estimate)", StringHelpers.enumNameToTitle(selectedBin.getFullness().name())));
         sidebarBinUpdated.setText(StringHelpers.toLocaleString(selectedBin.getUpdated()));
@@ -382,5 +429,16 @@ public class MapPage extends Page {
     private void removeDirections(){
         router.killModal(directionsModalID);
         map.clearRoute();
+    }
+
+    /**
+     * Remove the user's location
+     */
+    private void clearUserLocation() {
+        userPosLong = null;
+        userPosLat = null;
+        clearlocation.setVisible(false);
+
+        map.removePoint(userPosMarkerID);
     }
 }
