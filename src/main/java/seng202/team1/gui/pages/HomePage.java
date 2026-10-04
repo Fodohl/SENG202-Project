@@ -115,8 +115,8 @@ public class HomePage extends Page {
             int trollsSlain = BinTrollService.getTrollsSlain(
                     session.userDetails(),
                     router.getGlobalState()
-                            .getStatusReportStore()
-                            .getReports()
+                            .getStatusReportDAO()
+                            .getAll()
             );
 
             trolls.setText(String.valueOf(trollsSlain));

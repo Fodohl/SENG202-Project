@@ -2,6 +2,8 @@ package seng202.team1.data.status;
 
 import seng202.team1.types.user.User;
 import seng202.team1.types.status.StatusReport;
+
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -14,8 +16,8 @@ import java.util.Objects;
 
 public class BinTrollService {
     public static int getTrolls(
-            LocalDateTime lastReport,
-            LocalDateTime currentReport
+            Instant lastReport,
+            Instant currentReport
     ) {
         if (lastReport == null) {
             return 12;
@@ -44,22 +46,22 @@ public class BinTrollService {
                 .sorted(Comparator.comparing(StatusReport::getSubmittedAt))
                 .toList();
 
-        Map<Integer, LocalDateTime> lastReportTimes = new HashMap<>();
+        Map<Integer, Instant> lastReportTimes = new HashMap<>();
 
         int totalTrolls = 0;
 
         for (StatusReport report : sortedReports) {
 
-            int binID = report.getBin().getID();
+            int binID = report.getId();
 
-            LocalDateTime previousReport =
+            Instant previousReport =
                     lastReportTimes.get(binID);
 
             int trollsAtBin = getTrolls(
                     previousReport,
                     report.getSubmittedAt());
 
-            if (Objects.equals(report.getSubmittedBy().id(), user.id())) {
+            if (Objects.equals(report.getUserId(), user.id())) {
                 totalTrolls += trollsAtBin;
             }
 

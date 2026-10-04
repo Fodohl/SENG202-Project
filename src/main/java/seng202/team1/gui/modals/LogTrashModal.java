@@ -182,7 +182,7 @@ public class LogTrashModal extends Modal {
         var session = getState().getAuth().getSession();
 
         if (session != null && session.userDetails() != null) {
-            StatusReport reportToAdd = new StatusReport(binID, session.userDetails(), fullness, ReportType._FULLNESS_UPDATE, "", Instant.now());
+            StatusReport reportToAdd = new StatusReport(binID, session.userDetails().id(), fullness, ReportType._FULLNESS_UPDATE, "", Instant.now());
             getState().getStatusReportDAO().add(reportToAdd);
         } else {
             StatusReport reportToAdd = new StatusReport(binID, 0, fullness, ReportType._FULLNESS_UPDATE, "", Instant.now());
