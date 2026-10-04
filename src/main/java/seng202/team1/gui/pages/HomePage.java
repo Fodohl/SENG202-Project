@@ -55,7 +55,7 @@ public class HomePage extends Page {
         leaderBoard = new UICard("Community Position:", "#4",  "(Top 10%)", "/media/images/dir-continue.svg", true);
         trees = new UICard("Trees Saved:", "1.1",  "Trees", "/media/images/tree.svg", true);
         total = new UICard("Trash Logged:", "184",  "Items", "/media/images/throw.svg", true);
-        trolls = new UICard("Trolls Slain:", "0", "Trolls", "/media/images/throw.svg", true);
+        trolls = new UICard("Trolls Slain:", "0", "Trolls", "/media/images/troll.svg", true);
 
         HBox topCards = new HBox(20, leaderBoard, trees, trolls, total);
         topCards.setAlignment(Pos.TOP_LEFT);
