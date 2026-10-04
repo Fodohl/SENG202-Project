@@ -13,6 +13,7 @@ import seng202.team1.gui.components.*;
 
 import java.util.Comparator;
 import java.util.List;
+import seng202.team1.data.status.BinTrollService;
 
 /**
  * Page that displays a overview of the TrashApp
@@ -27,6 +28,9 @@ public class HomePage extends Page {
 
     /// Te user's total logged items
     private UICard total;
+
+    /// Users total trolls
+    private UICard trolls;
 
     /**
      * Constructs a new HomePage
@@ -51,12 +55,13 @@ public class HomePage extends Page {
         leaderBoard = new UICard("Community Position:", "#4",  "(Top 10%)", "/media/images/leaderboard.svg", true);
         trees = new UICard("Trees Saved:", "1.1",  "Trees", "/media/images/tree.svg", true);
         total = new UICard("Trash Logged:", "184",  "Items", "/media/images/throw.svg", true);
+        trolls = new UICard("Trolls Slain:", "0", "Trolls", "/media/images/troll.svg", true);
 
-        HBox topCards = new HBox(20, leaderBoard, trees, total);
+        HBox topCards = new HBox(20, leaderBoard, trees, trolls, total);
         topCards.setAlignment(Pos.TOP_LEFT);
 
         // Cards should grow
-        for(UICard card : List.of(leaderBoard, trees, total))
+        for(UICard card : List.of(leaderBoard, trees, trolls, total))
             HBox.setHgrow(card, Priority.ALWAYS);
 
         StackPane mapView = mapPreview();
@@ -103,5 +108,20 @@ public class HomePage extends Page {
                 .map(b -> router.getGlobalState().getBinDAO().getOne(b.binID()))
                 .toList();
         total.setText(String.format("%s", bins.size()));
+
+        var session = router.getGlobalState().getAuth().getSession();
+
+        if (session != null && session.userDetails() != null) {
+            int trollsSlain = BinTrollService.getTrollsSlain(
+                    session.userDetails(),
+                    router.getGlobalState()
+                            .getStatusReportStore()
+                            .getReports()
+            );
+
+            trolls.setText(String.valueOf(trollsSlain));
+        } else {
+            trolls.setText("0");
+        }
     }
 }
