@@ -69,12 +69,8 @@ public class GlobalState {
     /// Current user location or null if none is requested
     private Feature requestedLocation;
 
-    boolean testState = false;
     /// Current bin to show or null if none is requested
     private Integer requestedShowBinId;
-
-    /// The handler for issue reports
-    private StatusReportStore statusReportStore;
 
     /// The handler for app start up tasks
     private PreflightManager preflightManager;
