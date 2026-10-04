@@ -254,6 +254,7 @@ public class Router extends StateReferrer {
         // Show the page
         history.add(currentPage);
         layout.swap(page.getRendered());
+        layout.refreshLayout();
 
        // Update pages to show latest data post render
         for (Consumer<Pages> callback : pageSwitchCallbacks)
@@ -494,6 +495,7 @@ public class Router extends StateReferrer {
         if(page == null)
             return;
 
+        layout.refreshLayout();
         page.updateContents();
     }
 

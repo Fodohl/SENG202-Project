@@ -48,7 +48,7 @@ public class HomePage extends Page {
     protected Parent renderSelf() {
 
         // Top cards
-        leaderBoard = new UICard("Community Position:", "#4",  "(Top 10%)", "/media/images/dir-continue.svg", true);
+        leaderBoard = new UICard("Community Position:", "#4",  "(Top 10%)", "/media/images/leaderboard.svg", true);
         trees = new UICard("Trees Saved:", "1.1",  "Trees", "/media/images/tree.svg", true);
         total = new UICard("Trash Logged:", "184",  "Items", "/media/images/throw.svg", true);
 

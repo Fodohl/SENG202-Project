@@ -1,5 +1,6 @@
 package seng202.team1.gui.components;
 
+import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 
 import java.util.Comparator;
@@ -21,6 +22,11 @@ public class UITimeline extends VBox {
     public UITimeline(List<UITimelineEntry> nodes) {
         super(0);
 
+        if(nodes.isEmpty()){
+            renderErrorMessage();
+            return;
+        }
+
         // Add the 'today' node
         getChildren().add(new UITimelineEntry());
 
@@ -30,6 +36,17 @@ public class UITimeline extends VBox {
                                              .toList().reversed();
 
         getChildren().addAll(entries);
+    }
+
+    /**
+     * Show an error message for when the user has got nothing to show on the timeline
+     */
+    private void renderErrorMessage() {
+
+        Label error = new Label("Please log trash at a bin on the map page for it to appear here");
+        error.getStyleClass().add("timeline-error");
+        getChildren().add(error);
+
     }
 
 

@@ -257,6 +257,7 @@
 .account-text {
     -fx-text-fill: -text-primary;
     -fx-font-weight: bold;
+    -fx-cursor: hand;
 }
 
 .title{
@@ -676,6 +677,11 @@
 .timeline {
     -fx-alignment: center;
     -fx-min-height: 200;
+}
+
+.timeline-error{
+    -fx-alignment: center;
+    -fx-text-alignment: center;
 }
 
 .timeline .svg-icon * {

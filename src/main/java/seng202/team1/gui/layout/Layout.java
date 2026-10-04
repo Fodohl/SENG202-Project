@@ -17,4 +17,8 @@ public abstract class Layout extends LayoutElement{
 
 
     public abstract void swap(Parent rendered);
+
+    public void refreshLayout(){
+        // overriden if needed
+    }
 }
