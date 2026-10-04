@@ -67,19 +67,19 @@ public class StringTable extends LinkedHashMap<String, List<String>> {
      * the variable is inaccessible.
      *
      * Note: If data failed to add, table will remain unaltered.
-     * Note: Data does not have to be a consistent type, just must conform to the specified headers.
+     * Note: Data does not have be a consistent type, just must conform to the specified headers.
      *
      * @param object The data for the row
      * @return True if the row was added successfully, false otherwise.
      */
-    public boolean addRowToTable(Object object, Map<String, Function<Object, String>> formatters){
+    public boolean add(Object object, Map<String, Function<Object, String>> formatters){
 
         // Get fields the object has
-        List<Field> declearedFields = Arrays.asList(object.getClass().getDeclaredFields());
+        List<Field> declaredFields = Arrays.asList(object.getClass().getDeclaredFields());
 
         // Map field name to field
         HashMap<String, Field> fields = new HashMap<>();
-        for(Field field : declearedFields)
+        for(Field field : declaredFields)
             fields.put(field.getName(), field);
 
         // Validate that object has required keys and that they are accessible
@@ -119,7 +119,7 @@ public class StringTable extends LinkedHashMap<String, List<String>> {
             } catch (IllegalAccessException e) {
 
                 // Should never happen as prechecked above, unrecoverable as data may have been added here
-                throw new RuntimeException(String.format("Failed mid object addRowToTable to StringTable: %s", e.getMessage()));
+                throw new RuntimeException(String.format("Failed mid object add to StringTable: %s", e.getMessage()));
             }
         });
 
@@ -146,6 +146,11 @@ public class StringTable extends LinkedHashMap<String, List<String>> {
         return get(keySet().stream().toList().getFirst()).size();
     }
 
+    /**
+     * Get the map of header to data key
+     *
+     * @return The map of headers to feilds
+     */
     public Map<String, String> getColMap() {
         return colMap;
     }

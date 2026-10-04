@@ -8,6 +8,8 @@ import javafx.scene.layout.VBox;
 public class UIParagraphInput extends VBox implements UIInputComponent {
 
     private TextArea textArea = new TextArea();
+
+    /// The label to show invalid input messages in
     private Label errorText = new Label();
 
     public UIParagraphInput(String placeholder){
@@ -27,11 +29,22 @@ public class UIParagraphInput extends VBox implements UIInputComponent {
         });
     }
 
+    /**
+     * Get the entered text or null if none
+     *
+     * @return The entered input
+     */
     @Override
     public String getInput() {
+
         return textArea.getText();
     }
 
+    /**
+     * Set the input to a desired value
+     *
+     * @param value The new string input value
+     */
     @Override
     public void setInput(Object value) {
 
@@ -39,22 +52,47 @@ public class UIParagraphInput extends VBox implements UIInputComponent {
             textArea.setText((String)value);
     }
 
+    /**
+     * Get whether a user has entered input yet
+     *
+     * Note: if true then getInput() will not be null
+     *
+     * @return True if the user has inputted a value
+     */
     @Override
     public boolean hasInput() {
+
+        if(getInput() == null)
+            return  false;
+
         return !textArea.getText().isEmpty();
     }
 
+
+  /**
+     * Reset the value of the input to default, clearing any errors
+     */
     @Override
     public void clear() {
         textArea.setText(null);
         setError("");
     }
 
+    /**
+     * Check if the current input has resulted in an error
+     *
+     * @return True if there is an error set
+     */
     @Override
     public boolean isErroring(){
         return isErroringInternal(errorText);
     }
 
+    /**
+     * Set the error for this input
+     *
+     * @param error The error message
+     */
     @Override
     public void setError(String error) {
         setIsErrorInternal(error, this, errorText);

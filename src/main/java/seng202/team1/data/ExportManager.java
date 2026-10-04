@@ -84,6 +84,12 @@ public class ExportManager {
         return value;
     }
 
+    /**
+     * Get a unique name for a export file
+     *
+     * @param name The base export name
+     * @return The new name
+     */
     public static String exportName(String name) {
         return String.format("export_%s_%s.csv", name, Instant.now().toString()) ;
     }

@@ -2,7 +2,6 @@ package seng202.team1.gui.pages;
 
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import seng202.team1.common.StringHelpers;
 import seng202.team1.data.ExportManager;
@@ -22,7 +21,8 @@ import java.util.Comparator;
  */
 public class DataPage extends Page {
 
-    VBox root;
+    private VBox root;
+    private UITable table;
 
     /**
      * Constructs a new DataPage
@@ -56,18 +56,21 @@ public class DataPage extends Page {
         refreshData();
     }
 
+    /**
+     * Refreshes the data shown in the data table
+     */
     private void refreshData(){
          // Title
         UITitle pageTitle = new UITitle("Raw Data");
         pageTitle.setAlignment(Pos.CENTER);
 
         // Data
-        StringTableBuilder<Bin> tableData = new StringTableBuilder<Bin>(windowManager.getGlobalState().getDataLoader().getBinObjects())
+        StringTableBuilder<Bin> tableData = new StringTableBuilder<Bin>(windowManager.getGlobalState().getBinDAO().getAll())
             .addColumn("binID", "ID")
             .addColumn("fullness", "Fullness", val -> StringHelpers.enumNameToTitle(((BinFullness)val).name()))
             .addColumn("areaName", "Location")
             .addColumn("type", "Type", val -> StringHelpers.enumNameToTitle(((BinCategory)val).name()))
-            .sortBy(Comparator.comparing(item -> item.getID()));
+            .sortBy(Comparator.comparing(Bin::getID));
 
         UIIconButton exportButton = new UIIconButton("/media/images/export.svg", "Export Data");
         exportButton.getStyleClass().add("data-button");
@@ -78,8 +81,13 @@ public class DataPage extends Page {
         });
 
         // Combine
-        UITable table = new UITable(tableData, false);
+        table = new UITable(tableData, false);
+        root.getChildren().clear();
         root.getChildren().addAll(pageTitle, exportButton, table);
 
+    }
+
+    public UITable getTable() {
+        return table;
     }
 }

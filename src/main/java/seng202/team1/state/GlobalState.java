@@ -3,22 +3,27 @@ package seng202.team1.state;
 import javafx.stage.Stage;
 import seng202.team1.api.photon.Feature;
 import seng202.team1.api.photon.PhotonClient;
-import seng202.team1.api.trashdb.TrashDBClient;
-import seng202.team1.api.trashdb.TrashDBLeaderboardResponse;
-import seng202.team1.data.User;
-import seng202.team1.data.bin.BinLoader;
+import seng202.team1.data.status.ReportType;
+import seng202.team1.data.status.StatusReport;
 import seng202.team1.data.status.StatusReportStore;
-import seng202.team1.data.trashlog.TrashLogStore;
+import seng202.team1.data.sqlite.DAO.TrashLogDAO;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.pages.Pages;
+import seng202.team1.data.sqlite.DatabaseManager;
+import seng202.team1.data.sqlite.DAO.BinDAO;
+import seng202.team1.data.sqlite.exceptions.InstanceAlreadyExistsException;
+import seng202.team1.data.bin.BinDataset;
+import seng202.team1.data.bin.Bin;
 
-import java.util.Locale;
-import java.util.Map;
+import java.time.LocalDate;
+import java.util.List;
+
 
 /**
  * Stores the current state of the app and provides managers to control it
  */
 public class GlobalState {
+
 
     /// Whether there is a screen to draw to or now
     public static boolean IS_HEADLESS_MODE = false;
@@ -26,59 +31,56 @@ public class GlobalState {
     /// The manager of the app's window
     private WindowManager windowManager;
 
+    /// The current window
     private Stage stage;
 
     /// The handler for the static bin data
-    private BinLoader binLoader;
+    private BinDataset binDataset;
 
-    private TrashLogStore trashLogStore;
+    private TrashLogDAO trashLogDAO;
 
-    private StatusReportStore statusReportStore;
+    private BinDAO binDAO;
+
+    private DatabaseManager databaseManager;
 
     private PhotonClient photonClient;
 
-    private TrashDBClient trashDBClient;
-
     private Feature requestedLocation;
 
-    private TrashDBLeaderboardResponse leaderboard;
+    boolean testState = false;
+
+    /// The handler for issue reports
+    private StatusReportStore statusReportStore;
 
     /**
-     * Constructs a new GlobalState and sets up managers
+     * Construct a new Global state instance
      *
-     * @param stage The window for the app
+     * @param stage the primary JavaFX stage to hand off to the {@link WindowManager}
      */
-    public GlobalState(Stage stage){
+    public GlobalState(Stage stage, boolean testState) {
 
-        // Data must be loaded first as UI depends on it
-        binLoader = new BinLoader();
-        binLoader.readGeoJSON();
+        this.testState = testState;
+        databaseManager = new DatabaseManager(testState ?
+                                                "jdbc:sqlite:./src/test/resources/test_database.db" :
+                                                "jdbc:sqlite:database.db"
+                                            );
+        binDataset = new BinDataset();
+        binDataset.readGeoJSON();
 
-        trashLogStore = new TrashLogStore(TrashLogStore.defaultDataPath());
-        trashLogStore.load();
+        binDAO = new BinDAO(databaseManager);
+        trashLogDAO = new TrashLogDAO(databaseManager);
 
-        //@todo clean up loaders & paths
-        statusReportStore = new StatusReportStore(binLoader, StatusReportStore.defaultDataPath());
-        statusReportStore.loadStatusReport();
-        binLoader.loadBinFullness(statusReportStore);
+        statusReportStore = new StatusReportStore(binDAO, testState ? StatusReportStore.testDataPath()
+                                                                    : StatusReportStore.defaultDataPath());
+        if(!testState)
+            statusReportStore.load();
+
+        loadBins();
+        refreshBinFullness();
 
         photonClient = new PhotonClient();
-        trashDBClient = new TrashDBClient();
 
-        this.stage = stage;
         windowManager = new WindowManager(this, stage);
-
-        fetchData();
-    }
-
-    private void fetchData() {
-
-        trashDBClient.getLeaderboard(leaderboard -> {
-
-            this.leaderboard = leaderboard;
-            windowManager.refreshPage(Pages.LEADERBOARD);
-
-        });
     }
 
     /**
@@ -90,28 +92,15 @@ public class GlobalState {
         return windowManager;
     }
 
-    /**
-     * Get the current data loader
-     *
-     * @return The data loader for the app
-     */
-    public BinLoader getDataLoader() {
-        return binLoader;
+    public TrashLogDAO getTrashLogDAO() {
+        return trashLogDAO;
     }
 
-    public TrashLogStore getTrashLogStore() {
-        return trashLogStore;
-    }
-
-    public StatusReportStore getStatusReportStore() {
-        return statusReportStore;
-    }
+    public BinDAO getBinDAO() { return binDAO; }
 
     public PhotonClient getPhotonClient() {
         return photonClient;
     }
-
-    private User currentUser;
 
     public void setMapSearchRequest(Feature location) {
         requestedLocation = location;
@@ -127,19 +116,65 @@ public class GlobalState {
         return location;
     }
 
-    public TrashDBLeaderboardResponse getLeaderboard() {
-        return leaderboard;
+    /**
+     * Get the status log handler
+     *
+     * @return The status log handler
+     */
+    public StatusReportStore getStatusReportStore() {
+        return statusReportStore;
     }
 
-    public void show() {
-        stage.show();
+    /**
+     * Loads the bins from JSON file to the database if there are no bins in the
+     * current database
+     */
+    private void loadBins() {
+        if (binDAO.getAll().isEmpty())
+            binDAO.addBatch(binDataset.getBinDataset());
     }
 
-    public User getCurrentUser() {
-        return currentUser;
+
+    public void refreshBinFullness(){
+
+        // No need to recalc fullness every test
+        if(testState)
+            return;
+
+        // Only want recent reports of fullness
+        List<StatusReport> fullnessReports = statusReportStore.getReports().stream()
+                                                    .filter(r -> r.getIssue() == ReportType._FULLNESS_UPDATE)
+                                                    .filter(r -> r.getSubmittedAt().isAfter(LocalDate.now().atStartOfDay()))
+                                                    .toList();
+
+        // Get each bin's new fullness as an average of this week's reports
+        getBinDAO().getAll().stream().forEach(b -> {
+            List<StatusReport> reportsFoBin = fullnessReports.stream().filter(r -> r.getBinID() == b.getID()).toList();
+            refreshBinFullness(b, binDAO, reportsFoBin);
+        });
     }
 
-    public  void setCurrentUser(User currentUser) {
-        this.currentUser = currentUser;
+    public void refreshBinFullness(Bin bin){
+
+         // Only want recent reports of fullness
+        List<StatusReport> reportsFoBin = statusReportStore.getReports().stream()
+                                                    .filter(r -> r.getIssue() == ReportType._FULLNESS_UPDATE)
+                                                    .filter(r -> r.getSubmittedAt().isAfter(LocalDate.now().atStartOfDay()))
+                                                    .filter(r -> r.getBinID() == bin.getID())
+                                                    .toList();
+
+        refreshBinFullness(bin, binDAO, reportsFoBin);
+    }
+
+    private void refreshBinFullness(Bin bin, BinDAO binDAO, List<StatusReport> reportsFoBin) {
+        bin.updateFullness(binDAO, reportsFoBin);
+    }
+
+    public DatabaseManager getDatabaseManager() {
+        return databaseManager;
+    }
+
+    public BinDataset getDataset() {
+        return binDataset;
     }
 }

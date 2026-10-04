@@ -15,9 +15,18 @@ import seng202.team1.gui.pages.Pages;
  */
 public class UIIconButton extends HBox {
 
+    /// The button prompt
     private String prompt;
+
+    /// The icon prompt
     private String iconPath;
 
+    /**
+     * Constructs a new UIIconButton
+     *
+     * @param iconPath The path to the icon image file
+     * @param prompt The prompt to show on the button
+     */
     public UIIconButton(String iconPath, String prompt) {
 
         super();
@@ -41,10 +50,21 @@ public class UIIconButton extends HBox {
 
     }
 
+    /**
+     * Get the prompt on the button
+     *
+     * @return The prompt text
+     */
     public String getText(){
         return prompt;
     }
 
+    /**
+     * Replace the icon in the button with one of the same contents but different dims
+     *
+     * @param width The new width value of the icon
+     * @param height The new height value of the icon
+     */
     public void resizeIcon(double width, double height){
 
         // Recreate the icon

@@ -5,26 +5,26 @@ import javafx.concurrent.Worker;
 import javafx.scene.layout.StackPane;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
+import netscape.javascript.JSObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
-import seng202.team1.common.URLHelpers;
-import seng202.team1.data.bin.BinLoader;
+import org.json.simple.parser.JSONParser;
 import seng202.team1.state.GlobalState;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayDeque;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
 
+/**
+ * A UI Component that handles rendering and interacting with webviews
+ */
 public abstract class UIWebRenderer extends StackPane {
-
 
     /// UIWebRenderer specific logger
     private static final Logger log = LogManager.getLogger(UIWebRenderer.class);
@@ -37,11 +37,27 @@ public abstract class UIWebRenderer extends StackPane {
     /// List of calls that are waiting to be executed once the JS runtime is ready
     private Queue<String> engineCalls = new ArrayDeque<>();
 
-    /// Whether the webview has finished initalisation
+    /// Whether the webview has finished initialisation
     private boolean webReady = false;
 
-    public UIWebRenderer(String htmlFile) {
+    /// Bridge to pass calls from JavaScript to Java
+    public class JavaBridge {
+        public void callJavaAPI(String functionName, String jsonParams) {
+            Platform.runLater(() -> {
+                processAPICall(functionName, jsonParams);
+            });
+        }
+    }
 
+    /// Instance of bridge to do the JS handling
+    private final JavaBridge javaBridge = new JavaBridge();
+
+    /**
+     * Constructs a new UIWebRenderer
+     *
+     * @param htmlFile The source code for the webview contents
+     */
+    public UIWebRenderer(String htmlFile) {
 
         // Check that the map code exits
         URL mapUrl = UIMap.class.getResource(String.format("/web/%s.html", htmlFile));
@@ -67,43 +83,56 @@ public abstract class UIWebRenderer extends StackPane {
             if (newValue != Worker.State.SUCCEEDED)
                 return;
 
+            // Inject API caller for JS side communication
+            ((JSObject) engine.executeScript("window")).setMember("javaBridge",javaBridge);
+            call(parseAPISourceCode());
+
             webReady = true;
-            proccessCalls();
+            processCalls();
         });
 
-        // Inject API handler
-        engine.locationProperty().addListener((obs, oldValue, newValue) -> {
-
-            // Prevent trying to go to the address
-            engine.getLoadWorker().cancel();
-
-            // Handle call after fx tick
-            Platform.runLater(() -> processAPICall(newValue));
-        });
-
-        // Inject API caller
-        call(parseAPISourceCode());
-
-        // Pipe js logs to sout
+        // Pipe js logs to south
         webView.getEngine().setOnError(e -> log.error("{}", e));
     }
 
+    /**
+     * Process an API call from the JS in the webview
+     *
+     * @param callURL The full API url that the JS queried
+     */
+    private void processAPICall(String function, String jsonParams) {
 
-    private void processAPICall(String callURL){
+        Map<String, String> params = new HashMap<>();
 
-        // Parse the call
-        URI callData;
-        try{
-            callData = new URI(callURL);
-            callData = new URI(callData.getRawFragment());
-        } catch (URISyntaxException e) {
-            log.warn(String.format("Trash App API Call Dropped: %s - 1 - %s", callURL, e.getMessage()));
+        // No params
+        if(jsonParams == null || jsonParams.isEmpty()){
+            processAPICall(function, params);
             return;
         }
 
-        // Extract the call info
-        String function = URLHelpers.getPage(callData);
-        Map<String, String> params = URLHelpers.getParams(callData);
+        try {
+            // Parse JSON into simple string map
+            JSONObject json = (JSONObject) new JSONParser().parse(jsonParams);
+
+            for (Object key : json.keySet()) {
+                Object val = json.get(key);
+                params.put(String.valueOf(key), val != null ? String.valueOf(val) : null);
+            }
+
+        } catch (Exception e) {
+            log.warn(String.format("Trash App API Call Dropped: %s(%s) - 1 - %s", function, jsonParams, e.getMessage()));
+        }
+
+
+        processAPICall(function, params);
+    }
+
+    /**
+     * Process an API call from the JS in the webview
+     *
+     * @param callURL The full API url that the JS queried
+     */
+    private void processAPICall(String function, Map<String, String> params){
 
         try {
 
@@ -119,7 +148,7 @@ public abstract class UIWebRenderer extends StackPane {
                     break;
                 }
 
-                 case "onConsoleError" : {
+                case "onConsoleError" : {
                     log.error(params.get("message"));
                     break;
                 }
@@ -133,8 +162,8 @@ public abstract class UIWebRenderer extends StackPane {
 
         } catch (Exception e){
 
-            // Drop any packets that dont have requried keys or required type
-            log.warn(String.format("Trash App API Call Dropped: %s - 2 - %s", callURL, e.getMessage()));
+            // Drop any packets that do not have required keys or required type
+            log.warn(String.format("Trash App API Call Dropped: %s(%s) - 2 - %s", function, params, e.getMessage()));
             return;
         }
 
@@ -148,7 +177,7 @@ public abstract class UIWebRenderer extends StackPane {
     /**
      * Clears the waiting queue of calls to the web engine by running them all
      */
-    private void proccessCalls() {
+    private void processCalls() {
 
         // Run all calls that are waiting to be run
         for (String js : engineCalls)
@@ -175,6 +204,11 @@ public abstract class UIWebRenderer extends StackPane {
         engine.executeScript(js);
     }
 
+    /**
+     * Read the JavaScript file the contains the API helpers for each webview
+     *
+     * @return The parsed code, will panic if fails otherwise
+     */
     private String parseAPISourceCode(){
         InputStream is = UIWebRenderer.class.getClassLoader().getResourceAsStream("web/js/api.js");
 

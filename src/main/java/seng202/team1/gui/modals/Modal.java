@@ -13,14 +13,24 @@ import seng202.team1.gui.components.UITitle;
 import seng202.team1.gui.layout.LayoutElement;
 import seng202.team1.gui.pages.Pages;
 
-//@todo abstract away the simaliries between this and page?
 
+/**
+ * A Modal to display overlay contents
+ */
 public abstract class Modal extends LayoutElement implements Cloneable {
 
+    /// The type of modal this UI component represents
     private Modals modalType;
 
+    /// The window ID for this modal (if pop up modal)
     private long modalWindow = -1;
 
+       /**
+     * Constructs a new Modal
+     *
+    * @param windowManager The window this modal is on
+     * @param modalType The type of modal this is
+     */
     public Modal(WindowManager windowManager, Modals modalType){
 
         super(windowManager);
@@ -32,6 +42,11 @@ public abstract class Modal extends LayoutElement implements Cloneable {
 
     abstract Parent buildBody();
 
+    /**
+     * Render the base layout for the modal with the contents of subclasses composited inside
+     *
+     * @return The full rendered modal
+     */
     @Override
     protected Parent renderSelf() {
 
@@ -51,6 +66,12 @@ public abstract class Modal extends LayoutElement implements Cloneable {
         return contents;
     }
 
+    /**
+     * Render the header text of the modal
+     *
+     * @param modalType The modal type, to be used as a title
+     * @return The rendered header
+     */
     private HBox header(Modals modalType){
 
         String iconPath = String.format("/media/images/%s.svg", modalType.name().toLowerCase());
@@ -77,6 +98,9 @@ public abstract class Modal extends LayoutElement implements Cloneable {
         return headerContents;
     }
 
+    /**
+     * Stop displaying the modal
+     */
     public void closeModal(){
 
         if(modalWindow == -1)
@@ -108,10 +132,20 @@ public abstract class Modal extends LayoutElement implements Cloneable {
         updateContents();
     }
 
+    /**
+     * Set the ID of the popup window the modal is shown in
+     *
+     * @param windowID The window's ID
+     */
     public void setWindowed(long windowID) {
         modalWindow = windowID;
     }
 
+    /**
+     * Create a new instance of the modal to be shown in a seperate popup window
+     *
+     * @return A new modal instance
+     */
     @Override
     public Modal clone() {
         Modal clone = (Modal) super.clone();

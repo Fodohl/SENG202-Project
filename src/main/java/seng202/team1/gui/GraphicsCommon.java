@@ -43,11 +43,18 @@ public class GraphicsCommon {
         return (int) Math.floor(percent * WINDOW_HEIGHT);
     }
 
+    /**
+     * Toggles a CSS class on an element
+     *
+     * @param enable Whether to enable the class or not
+     * @param node The element to style
+     * @param className The class to toggle
+     */
     public static void toggleClass(boolean enable, Node node, String className){
 
           if(enable){
 
-            // Dont addRowToTable if already added
+            // Dont add if already added
             if(!node.getStyleClass().contains(className))
                 node.getStyleClass().add(className);
         } else{

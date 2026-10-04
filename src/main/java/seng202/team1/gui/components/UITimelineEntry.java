@@ -11,16 +11,29 @@ import seng202.team1.common.StringHelpers;
 
 import java.time.Instant;
 
+/**
+ * A UI Component for showing a point in a timeline
+ */
 public class UITimelineEntry extends HBox {
 
-    private final int TIMELINE_WIDTH = 5;
-
+    /// When in the timeline this entry should go
     private Instant timestamp;
 
+    private String text;
+
+    /**
+     * Constructs a new chunk node for the timeline that represents this entry
+     *
+     * @param timestamp When in the timeline this entry should go
+     * @param icon The icon that categorises the timeline
+     * @param title The entry title
+     * @param text The entry information
+     */
     public UITimelineEntry(Instant timestamp, UIImage icon, String title, String text) {
 
         super();
         this.timestamp = timestamp;
+        this.text = text;
 
         setAlignment(Pos.CENTER);
         getStyleClass().add("timeline");
@@ -68,7 +81,22 @@ public class UITimelineEntry extends HBox {
         this.getChildren().addAll(detailsContainer,  dateContainer, connector, verticalAxis);
     }
 
+    /**
+     * Get the point in time this entry represents
+     *
+     * @return The instant this entry represents
+     */
     public Instant getTime(){
         return timestamp;
     }
+
+    /**
+     * Get the information this entry displays
+     *
+     * @return The subtile text
+     */
+    public String getText() {
+        return text;
+    }
+
 }

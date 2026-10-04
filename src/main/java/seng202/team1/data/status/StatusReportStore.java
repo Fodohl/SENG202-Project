@@ -3,8 +3,11 @@ package seng202.team1.data.status;
 
 import seng202.team1.data.User;
 import seng202.team1.data.bin.*;
+import seng202.team1.data.sqlite.DAO.BinDAO;
 
 import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -25,9 +28,10 @@ public class StatusReportStore {
 
     /**
      * Instantiates StatusReportStore for use in app
+     *
      * @param filePath of JSON for bin reports
      */
-    public StatusReportStore(BinLoader bins, Path filePath) {
+    public StatusReportStore(BinDAO bins, Path filePath) {
         this.filePath = Objects.requireNonNull(filePath);
         this.loader = new StatusReportLoader(bins, filePath);
         this.writer = new StatusReportWriter();
@@ -37,7 +41,7 @@ public class StatusReportStore {
     /**
      * Loads all {@link StatusReport} and saves them to reports array
      */
-    public void loadStatusReport() {
+    public void load() {
         loader.readJson();
 
         reports.clear();
@@ -45,66 +49,33 @@ public class StatusReportStore {
     }
 
     public List<StatusReport> getReports() {
-        loadStatusReport();
+        load();
         return List.copyOf(reports);
     }
 
     public List<StatusReport> getReportsById(int id) {
-        loadStatusReport();
+        load();
         return loader.getStatusReportsById(id);
     }
 
     /**
-     * Gets the last time a bin was reported
-     * @author Connor
-     */
-
-    public LocalDateTime getLastReportTime(int binID) {
-        loadStatusReport();
-
-        return reports.stream()
-                .filter(report -> report.getBin().getID() == binID)
-                .map(StatusReport::getSubmittedAt)
-                .max(LocalDateTime::compareTo)
-                .orElse(null);
-    }
-
-    /**
-     * Adds a status report to the store.
+     * Adds bin report to JSON file
      *
-     * @param newReport report to add
-     * @throws IOException if the report cannot be written
-     * @author Connor Rocket
-     */
-
-    public void add(StatusReport newReport) throws IOException {
-        addReportToJson(newReport);
-    }
-
-    /**
-     * Saves a new status report without removing existing reports.
-     *
-     * @param newReport report to save
+     * @param newReport {@link StatusReport} to be added
      * @throws IOException if the JSON file cannot be written
-     * @throws NullPointerException if newReport is null
-     * @author Connor Rocket
      */
-    public void addReportToJson(StatusReport newReport) throws IOException {
+    public void add(StatusReport newReport) throws IOException {
+        load();
         Objects.requireNonNull(newReport);
-
         List<StatusReport> updatedReports = new ArrayList<>(reports);
         updatedReports.add(newReport);
-
-        writer.writeJson(filePath, updatedReports);
-
-        // Only update memory after successful write
-        reports.clear();
-        reports.addAll(updatedReports);
+        writeToJSON(updatedReports);
     }
 
 
     /**
      * Removes a report from JSON file and from report array
+     *
      * @param report {@link StatusReport} to be removed
      * @throws IOException if the JSON file cannot be written
      */
@@ -115,6 +86,7 @@ public class StatusReportStore {
 
     /**
      * Writes to JSON file updated reports
+     *
      * @param updatedReports list of {@link StatusReport} to be written to JSON
      * @throws IOException if the JSON file cannot be written
      */
@@ -129,7 +101,6 @@ public class StatusReportStore {
      *
      * @return default JSON file location
      *
-     * @todo subclass this
      */
     public static Path defaultDataPath() {
         return Path.of(
@@ -140,32 +111,35 @@ public class StatusReportStore {
     }
 
 
-    public void logReport(Bin bin,
-                          User user,
-                          BinFullness fullness,
-                          ReportType reportType,
-                          String description) {
+    public static Path testDataPath() {
+        try {
 
-        Objects.requireNonNull(user);
+            // Get a temp file on this system
+            Path path = Files.createTempFile("trashapp_test_reports", ".json");
 
-        LocalDateTime timestamp = LocalDateTime.now();
+            // Empty fails to parse so instead delete the file and let the store recreated it
+            Files.delete(path);
 
-        StatusReport entry = new StatusReport(bin, user, fullness, reportType, description, timestamp);
-
-        try{
-            addReportToJson(entry);
+            return path;
         } catch (IOException e) {
-            // check fails
-            //@Todo log err
+            throw new UncheckedIOException(e);
         }
-
     }
 
-    public int getTrollsSlain(User user) {
-        return BinTrollService.getTrollsSlain(
-                user,
-                getReports()
-        );
+
+    public void logReport(Bin bin, BinFullness fullness, ReportType reportType, String description) {
+
+        User dummy = new User(10, "null-user");
+
+        LocalDateTime timestamp = LocalDateTime.now();
+        StatusReport entry = new StatusReport(bin, dummy, fullness, reportType, description, timestamp);
+
+        try {
+            add(entry);
+        } catch (IOException e) {
+            // check fails
+        }
+
     }
 
 }

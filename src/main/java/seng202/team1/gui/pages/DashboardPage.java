@@ -2,7 +2,6 @@ package seng202.team1.gui.pages;
 
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
-import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
@@ -10,12 +9,9 @@ import seng202.team1.common.StringHelpers;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.BinCategory;
 import seng202.team1.data.trashlog.TrashLog;
-import seng202.team1.gui.GraphicsCommon;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.components.UICard;
 import seng202.team1.gui.components.UIGraphLine;
-import seng202.team1.data.User;
-
 
 import java.util.Comparator;
 import java.util.List;
@@ -27,13 +23,11 @@ public class DashboardPage extends Page {
 
     private UICard leaderBoard;
     private UICard trees;
-    private UICard trollsSlain;
     private UICard dataset;
     private UICard lastLog;
     private UICard organicLogged;
     private UICard trashLogged;
     private UICard recycLogged;
-
 
     /**
      * Constructs a new DashboardPage
@@ -58,10 +52,8 @@ public class DashboardPage extends Page {
         leaderBoard = new UICard("Leaderboard Position:", "#4",  "(Top 10%)", "/media/images/dir-continue.svg", true);
         trees = new UICard("Trees Saved:", "1.1",  "Trees", "/media/images/tree.svg", true);
         dataset = new UICard("Trash Logged:", "184",  "Items", "/media/images/throw.svg", true);
-        trollsSlain = new UICard("Trolls Slain:", "0", "Trolls", "/media/images/bin.png", true
-        );
 
-        HBox topCards = new HBox(20, leaderBoard, trees, trollsSlain, dataset);
+        HBox topCards = new HBox(20, leaderBoard, trees, dataset);
         topCards.setAlignment(Pos.TOP_LEFT);
 
         // Graph
@@ -89,29 +81,18 @@ public class DashboardPage extends Page {
         return root;
     }
 
-    //@todo auto attach bin to log class
-
     @Override
     public void updateContents() {
 
 
         // Get usage
-        List<TrashLog> uses = windowManager.getGlobalState().getTrashLogStore()
-                                           .getAll().stream()
-                                           .sorted(Comparator.comparing(TrashLog::createdAt))
-                                           .toList();
+        List<TrashLog> uses = windowManager.getGlobalState().getTrashLogDAO()
+                .getAll().stream()
+                .sorted(Comparator.comparing(TrashLog::createdAt))
+                .toList();
         List<Bin> bins = uses.stream()
-                              .map(b -> windowManager.getGlobalState().getDataLoader().getBinById(b.binLogId()))
-                              .toList();
-
-        User currentUser = new User(10, "null-user");
-
-        int trolls = windowManager
-                .getGlobalState()
-                .getStatusReportStore()
-                .getTrollsSlain(currentUser);
-
-        trollsSlain.setText(String.valueOf(trolls));
+                .map(b -> windowManager.getGlobalState().getBinDAO().getOne(b.binID()))
+                .toList();
 
         TrashLog newestLog = uses.isEmpty() ? null : uses.getLast();
         Bin newestBin = bins.isEmpty() ? null : bins.getLast();
@@ -123,7 +104,7 @@ public class DashboardPage extends Page {
         organicLogged.setText(String.format("%d", newestBin == null ? 0 : bins.stream().filter(b -> b.getCategory() == BinCategory.ORGANIC).toList().size()));
 
         // Hasn't logged
-        if(newestLog == null){
+        if(newestLog == null || newestBin == null){
             lastLog.setText("No trash logged yet.");
             lastLog.setSubtitle("Use the map to log some trash");
             return;

@@ -14,7 +14,7 @@ class UIImageTest extends TrashAppTest {
     @Test
     public void shouldNotCrashIfImageDoesntExist(){
 
-        // Should not addRowToTable a image node if doesn't exist
+        // Should not add a image node if doesn't exist
         UIImage image = new UIImage("/xyz/this_wont_exist.notafile", 10,10);
         assertTrue(image.getChildren().isEmpty());
 
@@ -23,7 +23,7 @@ class UIImageTest extends TrashAppTest {
     @Test
     public void shouldBeAbleToLoadSvg(){
 
-        // Should not addRowToTable a image node if doesn't exist
+        // Should not add a image node if doesn't exist
         UIImage image = new UIImage("/media/images/empty.svg", 10,10);
         assertInstanceOf(SVGImage.class, image.getChildren().getFirst());
 
@@ -32,7 +32,7 @@ class UIImageTest extends TrashAppTest {
     @Test
     public void shouldLoadStandardImagesNativesly(){
 
-        // Should not addRowToTable a image node if doesn't exist
+        // Should not add a image node if doesn't exist
         UIImage image = new UIImage("/media/images/bin.png", 10,10);
         assertInstanceOf(ImageView.class, image.getChildren().getFirst());
 

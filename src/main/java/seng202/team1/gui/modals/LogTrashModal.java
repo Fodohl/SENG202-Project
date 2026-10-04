@@ -2,36 +2,58 @@ package seng202.team1.gui.modals;
 
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
 import seng202.team1.common.StringHelpers;
-import seng202.team1.data.User;
 import seng202.team1.data.bin.Bin;
 import seng202.team1.data.bin.BinFullness;
 import seng202.team1.data.bin.BinCategory;
 import seng202.team1.data.status.ReportType;
 import seng202.team1.data.status.StatusReport;
+import seng202.team1.data.trashlog.TrashLog;
 import seng202.team1.data.trashlog.TrashType;
 import seng202.team1.gui.WindowManager;
 import seng202.team1.gui.components.*;
 
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
-//@todo confimation icon
-//@todo animate components
 
-public class LogTrashModal extends Modal{
+/**
+ * A Modal (overlay) to display trash log controls
+ */
+public class LogTrashModal extends Modal {
 
+    /// The bin this issue is refering to
     private Bin bin = null;
 
+    /// The input for what type of trash this is
     private UIDropDown typeInput;
+
+    /// The input for how heavy this peice of trash is
     private UITextInput weightInput;
+
+    /// The input for how full the bin is
     private UIChipsInput fullnessInput;
 
-    public LogTrashModal(WindowManager windowManager){
+    /// The button to fire a submit event
+    private UIButton submit;
+
+    /**
+     * Construct a new LogTrashModal
+     *
+     * @param windowManager The window manager responsible for this modal
+     */
+    public LogTrashModal(WindowManager windowManager) {
         super(windowManager, Modals.LOG_TRASH);
     }
 
+    /**
+     * Composite subcomponents into a inner UI for this modal
+     *
+     * @return The UI for this modal
+     */
     @Override
     Parent buildBody() {
 
@@ -41,8 +63,8 @@ public class LogTrashModal extends Modal{
         // Log data
         UIIconText typeLabel = new UIIconText("bin", "Trash Type");
         typeInput = new UIDropDown("Select waste type...", trashTypes);
-        UIIconText weightLabel = new UIIconText("scales", "Estimated Weight in Grams");
-        weightInput = new UITextInput("Enter waste weight in g...");
+        UIIconText weightLabel = new UIIconText("scales", "Estimated Weight (grams)");
+        weightInput = new UITextInput("Enter waste weight...");
         UISection logInputSection = new UISection(15, typeLabel, typeInput, weightLabel, weightInput);
 
         // Bin data
@@ -51,7 +73,7 @@ public class LogTrashModal extends Modal{
         UISection binInputSection = new UISection(15, fullnessLabel, fullnessInput);
 
         // Actions
-        UIButton submit = new UIButton("Submit Log");
+        submit = new UIButton("Submit Log");
         UIButton cancel = new UIButton("Cancel", true);
         UISection actionsSection = new UISection(15, submit, cancel);
 
@@ -66,21 +88,29 @@ public class LogTrashModal extends Modal{
         return new VBox(logInputSection, binInputSection, actionsSection);
     }
 
+    /**
+     * Handle data being sent to this modal
+     *
+     * @param data The bin this modal is referencing
+     */
     @Override
     public void recvData(Object data) {
 
         // Not a bin
-        if(!(data instanceof Bin))
+        if (!(data instanceof Bin))
             return;
 
-        bin = (Bin)data;
+        bin = (Bin) data;
     }
 
+    /**
+     * Clear the form input for a subsequent report
+     */
     @Override
     protected void updateContents() {
 
         // Cant reset yet
-        if(typeInput == null || weightInput == null || fullnessInput == null)
+        if (typeInput == null || weightInput == null || fullnessInput == null)
             return;
 
         // Reset input
@@ -89,75 +119,118 @@ public class LogTrashModal extends Modal{
         fullnessInput.clear();
     }
 
-    private void submitTrashLog(){
+     /**
+     * Validate & send the collected form to the data backend
+     */
+    private void submitTrashLog() {
 
-        // No bin setup (@todo log error)
-        if(bin == null)
+        // No bin setup
+        if (bin == null)
             return;
 
         BinCategory category = bin.getCategory();
         Integer binID = bin.getID();
 
         TrashType type = null;
-        Integer weight = null;
+        Integer weight = 0;
         BinFullness fullness = null;
+        Integer userID = 1;
 
         // Get type
-        for(TrashType trashType : TrashType.values())
-            if(StringHelpers.enumNameToTitle(trashType.name()).equals(typeInput.getInput())){
+        for (TrashType trashType : TrashType.values())
+            if (StringHelpers.enumNameToTitle(trashType.name()).equals(typeInput.getInput())) {
                 type = trashType;
             }
 
         // Invalid type
-        if(type == null)
+        if (type == null)
             typeInput.setError("Not a valid trash type");
 
         // No Category
-        if(!typeInput.hasInput())
+        if (!typeInput.hasInput())
             typeInput.setError("Must select trash type");
 
         // Get weight
-        try{
+        try {
             weight = Integer.parseInt(weightInput.getInput());
         } catch (NumberFormatException e) {
             weightInput.setError("Weight must be a whole number");
         }
 
         // Cant have negative trash
-        if(weight != null && weight <= 0)
+        if (weight != null && weight <= 0)
             weightInput.setError("Weight must be positive");
 
-        UIIconButton fullnessChip = (UIIconButton)fullnessInput.getInput();
-        String selectedFullness = fullnessChip.getText();
+        UIIconButton fullnessChip = (UIIconButton) fullnessInput.getInput();
+        String selectedFullness = fullnessChip != null ? fullnessChip.getText() : "";
 
         // Get type
-        for(BinFullness fullnessLevel : BinFullness.values())
-            if(StringHelpers.enumNameToTitle(fullnessLevel.name()).equals(selectedFullness)){
+        for (BinFullness fullnessLevel : BinFullness.values())
+            if (StringHelpers.enumNameToTitle(fullnessLevel.name()).equals(selectedFullness)) {
                 fullness = fullnessLevel;
             }
 
-        if(fullness == null)
+        if (fullness == null)
             fullnessInput.setError("Not a valid fullness");
 
         // Invalid
-        if(typeInput.isErroring() ||  weightInput.isErroring() || fullnessInput.isErroring())
+        if (typeInput.isErroring() || weightInput.isErroring() || fullnessInput.isErroring())
             return;
 
         // Save
-        windowManager.getGlobalState().getTrashLogStore().logTrash(category, type, weight, binID);
+        windowManager.getGlobalState().getTrashLogDAO().add(new TrashLog(Instant.now(), Instant.now(), userID, binID, type, weight));
+        windowManager.getGlobalState().getStatusReportStore().logReport(bin, fullness, ReportType._FULLNESS_UPDATE, "");
 
-        User user = windowManager.getGlobalState().getCurrentUser();
+         // Refresh the bins' average status
+        getWindow().getGlobalState().refreshBinFullness(bin);
 
-        windowManager.getGlobalState()
-                .getStatusReportStore()
-                .logReport(
-                        bin,
-                        user,
-                        fullness,
-                        ReportType._FULLNESS_UPDATE,
-                        ""
-                );
         closeModal();
+    }
+
+
+    /**
+     * Get the input of the report text
+     *
+     * @return The report text input component
+     */
+    public UITextInput getWeightInput() {
+        return weightInput;
+    }
+
+    /**
+     * Get the bin linked to the modal
+     *
+     * @return The bin this log is referencing, null if none
+     */
+    public Bin getBin() {
+        return bin;
+    }
+
+    /**
+     * Get the button for submitting the form
+     *
+     * @return The submit button
+     */
+    public Button getSubmitButton() {
+        return submit;
+    }
+
+     /**
+     * Get the input of the report type
+     *
+     * @return The report type input component
+     */
+    public UIDropDown getTypeInput() {
+        return typeInput;
+    }
+
+     /**
+     * Get the input of the report text
+     *
+     * @return The report text input component
+     */
+    public UIChipsInput getFullnessInput() {
+        return fullnessInput;
     }
 
 }

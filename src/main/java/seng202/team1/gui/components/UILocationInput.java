@@ -16,30 +16,52 @@ import seng202.team1.common.StringHelpers;
 import seng202.team1.gui.layout.LayoutElement;
 import seng202.team1.state.GlobalState;
 
+/**
+ * A UIComponent to display an autocompleting address input field
+ *
+ * @credit Debouncer technique re https://stackoverflow.com/questions/34784037/javafx-8-how-to-add-a-timedelay-to-a-listener deboucer
+ */
 public class UILocationInput extends HBox {
 
-
+    /// The popup to show to suggest possible addresses
     private Popup searchPopup = new Popup();
+
+    /// The container which holds each suggestion
     private VBox suggestionContainer = new VBox();
+
+    /// The input field where the user input their address
     private TextField searchInput;
+
+    /// Timer to prevent hammering the API whilst typing
     private PauseTransition debouncer;
 
+    /// The text to show any search request errors on
     private UIKeyValuePair error;
+
+    /// The loader to indicate that the address is being searched for
     private UISpinner loader;
 
+    /// A reference to the global application state
     private GlobalState globalState;
+
+    /// A reference to the client connection with the geocoding service
     private PhotonClient photonClient;
 
-    public UILocationInput(LayoutElement parent){
+    /**
+     * Constructs a new UILocationInput
+     *
+     * @param globalState The reference to application sate
+     */
+    public UILocationInput(GlobalState globalState){
 
-        this.globalState = parent.getWindow().getGlobalState();
+        this.globalState = globalState;
         this.photonClient = globalState.getPhotonClient();
 
         setupPopup();
 
         // Search Images
         UIImage searchIcon = new UIImage("/media/images/search.svg", 16, 16);
-        loader = new UISpinner(20,20);
+        loader = new UISpinner(20);
         loader.setVisible(false);
 
         // Search text
@@ -65,7 +87,9 @@ public class UILocationInput extends HBox {
         getStyleClass().add("search-bar");
     }
 
-
+    /**
+     * Build the popup, setting up the suggestions container
+     */
     private void setupPopup() {
 
         // Style
@@ -83,7 +107,11 @@ public class UILocationInput extends HBox {
         searchPopup.setAutoHide(true);
     }
 
-
+    /**
+     * Search for an address and being the fetch for suggestions
+     *
+     * @param address The address to query for
+     */
     private void search(String address){
 
         // Prevent API error when user clears their input
@@ -111,6 +139,13 @@ public class UILocationInput extends HBox {
         }, error, loader);
     }
 
+
+    /**
+     * Construct a label for a location suggestion
+     *
+     * @param location The suggestion
+     * @return The formatted location node
+     */
     private Label makeLocationLable(Feature location) {
 
         String addressText = StringHelpers.featureToAddress(location);
@@ -124,6 +159,11 @@ public class UILocationInput extends HBox {
         return suggestion;
     }
 
+    /**
+     * Submit the current resolved location as a search and pass off to the global state
+     *
+     * @param location The found location
+     */
     private void submitSearch(Feature location) {
 
         globalState.setMapSearchRequest(location);
@@ -133,14 +173,17 @@ public class UILocationInput extends HBox {
         searchPopup.hide();
     }
 
-
+    /**
+     * Handle the user pressing enter to submit the search, will find the best match to whatever is entered
+     *
+     * @param actionEvent The submission action
+     */
     private void handleSearchSubmitAction(ActionEvent actionEvent) {
 
 
         // Submit the first location found (known to have the highest likelyhood)
         photonClient.searchLocation(searchInput.getText(), locationResponse -> {
 
-             //@todo err: not a known place
              if(locationResponse.features().isEmpty())
                  return;
 
