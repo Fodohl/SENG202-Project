@@ -2,6 +2,7 @@ package seng202.team1.tasks.preflight;
 
 import javafx.application.Platform;
 import seng202.team1.gui.components.UIMap;
+import seng202.team1.gui.pages.Pages;
 import seng202.team1.tasks.Task;
 import seng202.team1.tasks.TaskManager;
 
@@ -16,7 +17,7 @@ public class StartWebKitTask extends Task {
      * @param preflightManager The task manager responsible for this task
      */
     public StartWebKitTask(PreflightManager preflightManager){
-        super(preflightManager, "starting map engine");
+        super(preflightManager, "map engine startup");
     }
 
      /**
@@ -33,8 +34,9 @@ public class StartWebKitTask extends Task {
         } catch (InterruptedException e) {
         }
 
+        // Map must be pre-loaded as it causes lag and it also needs points loaded so that data page can highlight them
         Platform.runLater(() -> {
-            UIMap map = new UIMap();
+            manager.getGlobalState().getRouter().rerenderPage(Pages.MAP);
         });
     }
 }

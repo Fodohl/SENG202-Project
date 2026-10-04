@@ -63,6 +63,9 @@ public class GlobalState {
     /// Current user location or null if none is requested
     private Feature requestedLocation;
 
+    /// Current bin to show or null if none is requested
+    private Integer requestedShowBinId;
+
     /// The handler for issue reports
     private StatusReportStore statusReportStore;
 
@@ -306,4 +309,26 @@ public class GlobalState {
     }
 
 
+    /**
+     * Switch to the map and try show a request bin
+     *
+     * @param id The bin to show (must be a int)
+     */
+    public void goToBin(String id) {
+
+        requestedShowBinId = Integer.valueOf(id);
+        router.switchPage(Pages.MAP);
+    }
+
+    /**
+     * Get the bin show request and clear it
+     *
+     * @return The bin to show or null if none requested
+     */
+    public Integer consumeBinShowRequest(){
+
+        Integer binID = requestedShowBinId;
+        requestedShowBinId = null;
+        return binID;
+    }
 }

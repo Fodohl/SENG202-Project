@@ -427,6 +427,8 @@
 
 .table-cell-row-hover{
     -fx-background-color: -bg-secondary;
+    -fx-cursor: hand;
+
 }
 
 .table-cell-header{

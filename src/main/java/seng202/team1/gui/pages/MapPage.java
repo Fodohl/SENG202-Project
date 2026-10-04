@@ -231,6 +231,17 @@ public class MapPage extends Page {
         stopWaitingForLocation();
         refreshSidebar();
         handleLocationRequest();
+        handleShowRequest();
+    }
+
+    private void handleShowRequest() {
+
+        // No requested location
+        Integer binID = getState().consumeBinShowRequest();
+        if(binID == null)
+            return;
+
+        map.showBin(binID);
     }
 
     /**
@@ -330,8 +341,6 @@ public class MapPage extends Page {
 
     /**
      * Update the contents of the status bar to show the selected bin (if any). If no bin is selected sidebar is not shown
-     *
-     * @todo image
      */
     private void refreshSidebar() {
 

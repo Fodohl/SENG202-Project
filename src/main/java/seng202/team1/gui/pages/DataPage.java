@@ -89,6 +89,7 @@ public class DataPage extends Page {
 
         table = new UITable(tableData, false);
         table.getStyleClass().add("data-table");
+        table.setOnRowClick(row -> getState().goToBin(row.get("ID")));
 
         // Combine
         root.getChildren().clear();
