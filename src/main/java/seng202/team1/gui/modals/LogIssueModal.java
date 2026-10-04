@@ -165,7 +165,25 @@ public class LogIssueModal extends Modal {
             return;
 
         // Refresh the bins' average status
-        getState().getStatusReportStore().logReport(bin, fullness, type, report);
+        var session = getState().getAuth().getSession();
+
+        if (session != null && session.userDetails() != null) {
+            getState().getStatusReportStore().logReport(
+                    bin,
+                    fullness,
+                    type,
+                    report,
+                    session.userDetails()
+            );
+        } else {
+            getState().getStatusReportStore().logReport(
+                    bin,
+                    fullness,
+                    type,
+                    report
+            );
+        }
+
         getState().refreshBinFullness(bin);
         getState().sync();
 

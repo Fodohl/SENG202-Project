@@ -134,19 +134,48 @@ public class StatusReportStore {
     }
 
 
-    public void logReport(Bin bin, BinFullness fullness, ReportType reportType, String description) {
-
-        User dummy = new User(10, Instant.now(), Instant.now(), "null-user", "test@gamil.com", "", 0);
+    public void logReport(
+            Bin bin,
+            BinFullness fullness,
+            ReportType reportType,
+            String description,
+            User user) {
 
         LocalDateTime timestamp = LocalDateTime.now();
-        StatusReport entry = new StatusReport(bin, dummy, fullness, reportType, description, timestamp);
+
+        StatusReport entry = new StatusReport(
+                bin,
+                user,
+                fullness,
+                reportType,
+                description,
+                timestamp
+        );
 
         try {
             add(entry);
         } catch (IOException e) {
             // check fails
         }
+    }
 
+    public void logReport(
+            Bin bin,
+            BinFullness fullness,
+            ReportType reportType,
+            String description) {
+
+        User dummy = new User(
+                10,
+                Instant.now(),
+                Instant.now(),
+                "null-user",
+                "test@gmail.com",
+                "",
+                0
+        );
+
+        logReport(bin, fullness, reportType, description, dummy);
     }
 
 }
