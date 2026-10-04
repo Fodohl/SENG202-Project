@@ -67,6 +67,11 @@ public class UIImage extends StackPane {
         renderImage(path);
     }
 
+    /**
+     * Load a image from a path onto this component
+     *
+     * @param path The image to load, if it exsists
+     */
     private void renderImage(String path) {
 
         // NO image to load
@@ -159,6 +164,12 @@ public class UIImage extends StackPane {
         return setupImageView(imageView);
     }
 
+    /**
+     * Resizes a image view to fit the desired dimensions
+     *
+     * @param imageView The image to size
+     * @return The resized view
+     */
     private ImageView setupImageView(ImageView imageView) {
 
         // Resize to dims
@@ -200,6 +211,12 @@ public class UIImage extends StackPane {
         thread.start();
     }
 
+    /**
+     * Load an image from the cache, downloading it to the cahce if it doesnt exist
+     *
+     * @param path The image to download/load
+     * @return The image
+     */
     private InputStream fetchImage(String path) throws IOException {
 
         // Parse the URL
@@ -246,6 +263,11 @@ public class UIImage extends StackPane {
         return this.snapshot(params, null);
     }
 
+    /**
+     * Update this image to show a different image
+     *
+     * @param path The image to show
+     */
     public void setSource(String path) {
         renderImage(path);
     }
