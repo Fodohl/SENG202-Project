@@ -41,8 +41,10 @@ public class UIImage extends StackPane {
      */
     public UIImage(String path, double width, double height) {
 
-        // Ensure stack pane is same dimensions
+        // Ensure stack pane is always exactly the requested dimensions
+        setMinSize(width, height);
         setPrefSize(width, height);
+        setMaxSize(width, height);
         setAlignment(Pos.CENTER);
 
         // Check that the image exists

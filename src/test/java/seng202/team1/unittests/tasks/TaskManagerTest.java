@@ -54,8 +54,15 @@ public class TaskManagerTest extends TrashAppTest {
 
         // Run task
         AtomicBoolean ran = new AtomicBoolean(false);
-        long testA = taskManager.runTask("a", m -> { ran.set(true);});
-        assertTrue(taskManager.hasTasksUncompleted());
+        taskManager.runTask("a", m -> ran.set(true));
+        long timeout = System.currentTimeMillis() + 2000;
+
+        while (taskManager.hasTasksUncompleted() && System.currentTimeMillis() < timeout) {
+            Thread.sleep(10);
+        }
+
+        assertTrue(ran.get());
+        assertFalse(taskManager.hasTasksUncompleted());
 
 
         Thread.sleep(500);

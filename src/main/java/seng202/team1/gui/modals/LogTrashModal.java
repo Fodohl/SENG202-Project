@@ -179,8 +179,15 @@ public class LogTrashModal extends Modal {
 
         // Save
         getState().getTrashLogDAO().add(new TrashLog(Instant.now(), Instant.now(), userID, binID, type, weight));
-        StatusReport reportToAdd = new StatusReport(binID, 1, fullness, ReportType._FULLNESS_UPDATE, "", Instant.now());
-        getState().getStatusReportDAO().add(reportToAdd);
+        var session = getState().getAuth().getSession();
+
+        if (session != null && session.userDetails() != null) {
+            StatusReport reportToAdd = new StatusReport(binID, session.userDetails(), fullness, ReportType._FULLNESS_UPDATE, "", Instant.now());
+            getState().getStatusReportDAO().add(reportToAdd);
+        } else {
+            StatusReport reportToAdd = new StatusReport(binID, 0, fullness, ReportType._FULLNESS_UPDATE, "", Instant.now());
+            getState().getStatusReportDAO().add(reportToAdd);
+        }
         getState().refreshBinFullness(bin);
 
         getState().sync();
