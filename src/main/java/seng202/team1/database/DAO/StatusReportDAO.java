@@ -1,12 +1,12 @@
-package seng202.team1.data.sqlite.DAO;
+package seng202.team1.database.DAO;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import seng202.team1.data.bin.BinFullness;
-import seng202.team1.data.sqlite.DatabaseManager;
-import seng202.team1.data.sqlite.SqlTimeUtils;
-import seng202.team1.data.status.ReportType;
-import seng202.team1.data.status.StatusReport;
+import seng202.team1.types.bin.BinFullness;
+import seng202.team1.database.DatabaseManager;
+import seng202.team1.database.SqlTimeUtils;
+import seng202.team1.types.status.ReportType;
+import seng202.team1.types.status.StatusReport;
 
 import java.sql.*;
 import java.util.ArrayList;

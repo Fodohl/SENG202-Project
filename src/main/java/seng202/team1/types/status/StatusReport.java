@@ -1,8 +1,9 @@
-package seng202.team1.data.status;
+package seng202.team1.types.status;
 
-import seng202.team1.data.User;
-import seng202.team1.data.bin.Bin;
-import seng202.team1.data.bin.BinFullness;
+import seng202.team1.types.user.User;
+import seng202.team1.types.bin.Bin;
+import seng202.team1.types.bin.BinFullness;
+import seng202.team1.types.status.ReportType;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -23,11 +24,13 @@ public class StatusReport {
 
     /**
      * Constructor for StatusReport class
-     *
-     * @param binId
-     * @param submittedBy
-     * @param description
-     * @param submittedAt
+     * @param reportId id of the StatusReport
+     * @param binId id of the bin the StatusReport concerns
+     * @param userId id of the user who made the report
+     * @param fullness enum representing how full the bin is
+     * @param issue enum representing the issue with the bin
+     * @param description String describing the issue
+     * @param submittedAt Instant of when the report was submitted
      */
 
     public StatusReport(int reportId,

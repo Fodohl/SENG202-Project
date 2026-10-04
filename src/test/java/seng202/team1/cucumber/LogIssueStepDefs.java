@@ -88,8 +88,8 @@ public class LogIssueStepDefs {
     }
 
      private List<StatusReport> getReports() {
-        return globalState.getStatusReportStore().getReports().stream()
-                .filter(r -> r.getBinID() == 1)
+        return globalState.getStatusReportDAO().getAll().stream()
+                .filter(r -> r.getBinId() == 1)
                 .filter(r -> r.getIssue() != ReportType._FULLNESS_UPDATE)
                 .toList();
     }

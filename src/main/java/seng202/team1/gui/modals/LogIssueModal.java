@@ -12,6 +12,7 @@ import seng202.team1.types.status.ReportType;
 import seng202.team1.types.bin.BinFullness;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.components.*;
+import seng202.team1.types.status.StatusReport;
 
 import java.time.Instant;
 
@@ -168,7 +169,8 @@ public class LogIssueModal extends Modal {
             return;
 
         // Refresh the bins' average status
-        getState().getStatusReportStore().logReport(bin, fullness, type, report);
+        StatusReport reportToAdd = new StatusReport(binID, 1, fullness, type, report, Instant.now());
+        getState().getStatusReportDAO().add(reportToAdd);
         getState().refreshBinFullness(bin);
         getState().sync();
 

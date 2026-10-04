@@ -9,6 +9,7 @@ import seng202.team1.types.bin.Bin;
 import seng202.team1.types.bin.BinFullness;
 import seng202.team1.types.bin.BinCategory;
 import seng202.team1.types.status.ReportType;
+import seng202.team1.types.status.StatusReport;
 import seng202.team1.types.trashlog.TrashLog;
 import seng202.team1.types.trashlog.TrashType;
 import seng202.team1.gui.Router;
@@ -178,7 +179,8 @@ public class LogTrashModal extends Modal {
 
         // Save
         getState().getTrashLogDAO().add(new TrashLog(Instant.now(), Instant.now(), userID, binID, type, weight));
-        getState().getStatusReportStore().logReport(bin, fullness, ReportType._FULLNESS_UPDATE, "");
+        StatusReport reportToAdd = new StatusReport(binID, 1, fullness, ReportType._FULLNESS_UPDATE, "", Instant.now());
+        getState().getStatusReportDAO().add(reportToAdd);
         getState().refreshBinFullness(bin);
 
         getState().sync();

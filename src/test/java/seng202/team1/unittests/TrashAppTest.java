@@ -5,6 +5,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import seng202.team1.database.DAO.StatusReportDAO;
 import seng202.team1.helpers.StringHelpers;
 import seng202.team1.types.bin.Bin;
 import seng202.team1.types.bin.BinCategory;
@@ -35,6 +36,7 @@ public class TrashAppTest {
 
     protected TrashLogDAO trashLogs;
     protected BinDAO bins;
+    protected StatusReportDAO statusReportDAO;
     protected BinDataset binDataset;
 
 
@@ -71,6 +73,7 @@ public class TrashAppTest {
         databaseManager = state.getDatabaseManager();
         trashLogs = state.getTrashLogDAO();
         bins = state.getBinDAO();
+        statusReportDAO = state.getStatusReportDAO();
 
         Bin testBin = new Bin(1, 0, 0, BinCategory.GENERAL_WASTE, Instant.now(), null, null, BinFullness.EMPTY);
         bins.add(testBin);

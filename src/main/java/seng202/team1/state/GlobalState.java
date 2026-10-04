@@ -1,21 +1,21 @@
 package seng202.team1.state;
 
 import javafx.stage.Stage;
+import seng202.team1.gui.Router;
 import seng202.team1.tasks.background.SyncToBackendTask;
 import seng202.team1.types.photon.Feature;
 import seng202.team1.api.photon.PhotonClient;
 import seng202.team1.api.trashdb.TrashDBClient;
 import seng202.team1.types.trashdb.TrashDBLeaderboardResponse;
-import seng202.team1.data.sqlite.DAO.StatusReportDAO;
-import seng202.team1.data.status.ReportType;
-import seng202.team1.data.status.StatusReport;
-import seng202.team1.data.sqlite.DAO.TrashLogDAO;
-import seng202.team1.gui.WindowManager;
+import seng202.team1.database.DAO.StatusReportDAO;
+import seng202.team1.types.status.ReportType;
+import seng202.team1.types.status.StatusReport;
+import seng202.team1.database.DAO.TrashLogDAO;
 import seng202.team1.gui.pages.Pages;
 import seng202.team1.database.DatabaseManager;
 import seng202.team1.database.DAO.BinDAO;
 import seng202.team1.data.bin.BinDataset;
-import seng202.team1.data.bin.Bin;
+import seng202.team1.types.bin.Bin;
 import seng202.team1.tasks.TaskManager;
 import seng202.team1.tasks.preflight.PreflightManager;
 
@@ -81,7 +81,7 @@ public class GlobalState {
     private TrashDBLeaderboardResponse leaderboard;
 
     /// The current user and credentials
-    private AuthState auth;Store;
+    private AuthState auth;
 
     /**
      * Construct a new Global state instance

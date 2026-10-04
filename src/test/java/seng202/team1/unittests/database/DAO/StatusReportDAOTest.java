@@ -1,9 +1,9 @@
-package seng202.team1.unittests.data.repository;
+package seng202.team1.unittests.database.DAO;
 
 import org.junit.jupiter.api.Test;
-import seng202.team1.data.bin.BinFullness;
-import seng202.team1.data.status.ReportType;
-import seng202.team1.data.status.StatusReport;
+import seng202.team1.types.bin.BinFullness;
+import seng202.team1.types.status.ReportType;
+import seng202.team1.types.status.StatusReport;
 import seng202.team1.unittests.TrashAppTest;
 
 import java.time.Instant;

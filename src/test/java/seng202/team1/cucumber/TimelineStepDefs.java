@@ -9,6 +9,7 @@ import seng202.team1.types.bin.BinCategory;
 import seng202.team1.types.bin.BinFullness;
 import seng202.team1.database.DAO.BinDAO;
 import seng202.team1.types.status.ReportType;
+import seng202.team1.types.status.StatusReport;
 import seng202.team1.types.trashlog.TrashLog;
 import seng202.team1.types.trashlog.TrashType;
 import seng202.team1.gui.components.UITimelineEntry;
@@ -55,9 +56,10 @@ public class TimelineStepDefs {
         Instant now = Instant.now();
         globalState.getTrashLogDAO().add(new TrashLog(now, now, 1, bin.getID(), TrashType.PLASTIC_BOTTLE, 500));
 
-        globalState.getStatusReportStore().logReport(bin, BinFullness.SEMI_FULL, ReportType.GRAFFITI, "Spray paint");
+        StatusReport reportToAdd = new StatusReport(1, 1, BinFullness.SEMI_FULL, ReportType.GRAFFITI, "Spray paint", Instant.now());
+        globalState.getStatusReportDAO().add(reportToAdd);
 
-        long saved = globalState.getStatusReportStore().getReports().stream()
+        long saved = globalState.getStatusReportDAO().getAll().stream()
                 .filter(r -> r.getIssue() != ReportType._FULLNESS_UPDATE)
                 .count();
         assertEquals(2, saved);
