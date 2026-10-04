@@ -134,6 +134,13 @@ test {
 
     finalizedBy jacocoTestReport
 
+     testLogging {
+        events "failed"
+        exceptionFormat "full"
+        showStackTraces = true
+        showCauses = true
+    }
+
     environment "APP_TOKEN_SECRET", "test-secret"
 }
 
