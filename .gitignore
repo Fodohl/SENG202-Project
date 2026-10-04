@@ -21,3 +21,4 @@ build/
 identifier.sqlite
 *.db
 test_database.db
+/.env

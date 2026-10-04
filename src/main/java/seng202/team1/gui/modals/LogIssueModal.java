@@ -5,14 +5,12 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
-import seng202.team1.common.StringHelpers;
-import seng202.team1.data.bin.Bin;
-import seng202.team1.data.bin.BinCategory;
-import seng202.team1.data.status.ReportType;
-import seng202.team1.data.bin.BinFullness;
-import seng202.team1.data.status.StatusReport;
-import seng202.team1.data.trashlog.TrashType;
-import seng202.team1.gui.WindowManager;
+import seng202.team1.helpers.StringHelpers;
+import seng202.team1.types.bin.Bin;
+import seng202.team1.types.bin.BinCategory;
+import seng202.team1.types.status.ReportType;
+import seng202.team1.types.bin.BinFullness;
+import seng202.team1.gui.Router;
 import seng202.team1.gui.components.*;
 
 import java.time.Instant;
@@ -40,10 +38,10 @@ public class LogIssueModal extends Modal {
     /**
      * Construct a new LogTrashModal
      *
-     * @param windowManager The window manager responsible for this modal
+     * @param router The router responsible for this modal
      */
-    public LogIssueModal(WindowManager windowManager) {
-        super(windowManager, Modals.LOG_ISSUE);
+    public LogIssueModal(Router router) {
+        super(router, Modals.LOG_ISSUE);
     }
 
     /**
@@ -169,10 +167,11 @@ public class LogIssueModal extends Modal {
         if (typeInput.isErroring() || reportInput.isErroring() || fullnessInput.isErroring())
             return;
 
-         // Refresh the bins' average status
-        getWindow().getGlobalState().refreshBinFullness(bin);
-        StatusReport reportToAdd = new StatusReport(bin.getID(), 1, fullness, type, report, Instant.now());
-        windowManager.getGlobalState().getStatusReportDAO().add(reportToAdd);
+        // Refresh the bins' average status
+        getState().getStatusReportStore().logReport(bin, fullness, type, report);
+        getState().refreshBinFullness(bin);
+        getState().sync();
+
         closeModal();
     }
 

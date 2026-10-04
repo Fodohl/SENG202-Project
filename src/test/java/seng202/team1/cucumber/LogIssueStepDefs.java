@@ -5,13 +5,13 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
-import seng202.team1.common.StringHelpers;
-import seng202.team1.data.bin.Bin;
-import seng202.team1.data.bin.BinCategory;
-import seng202.team1.data.bin.BinFullness;
-import seng202.team1.data.status.ReportType;
-import seng202.team1.data.status.StatusReport;
+import seng202.team1.types.bin.Bin;
+import seng202.team1.types.bin.BinCategory;
+import seng202.team1.types.bin.BinFullness;
+import seng202.team1.types.status.ReportType;
+import seng202.team1.types.status.StatusReport;
 import seng202.team1.gui.modals.LogIssueModal;
+import seng202.team1.helpers.StringHelpers;
 import seng202.team1.state.GlobalState;
 import seng202.team1.unittests.TrashAppTest;
 
@@ -28,7 +28,7 @@ public class LogIssueStepDefs {
     public void init() throws IOException {
 
         TrashAppTest.initFx();
-        globalState = new GlobalState(null, true);
+        globalState = TrashAppTest.newTestState();
 
     }
 
@@ -45,7 +45,7 @@ public class LogIssueStepDefs {
 
         globalState.getBinDAO().add(bin);
 
-        modal = new LogIssueModal(globalState.getWindowManager());
+        modal = new LogIssueModal(globalState.getRouter());
         modal.getRendered();
         modal.recvData(bin);
     }
@@ -88,8 +88,8 @@ public class LogIssueStepDefs {
     }
 
      private List<StatusReport> getReports() {
-        return globalState.getStatusReportDAO().getAll().stream()
-                .filter(r -> r.getBinId() == 1)
+        return globalState.getStatusReportStore().getReports().stream()
+                .filter(r -> r.getBinID() == 1)
                 .filter(r -> r.getIssue() != ReportType._FULLNESS_UPDATE)
                 .toList();
     }

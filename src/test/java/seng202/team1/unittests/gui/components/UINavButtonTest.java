@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import seng202.team1.gui.components.UINavButton;
 import seng202.team1.gui.pages.Pages;
+import seng202.team1.gui.phases.Phases;
 import seng202.team1.unittests.TrashAppTest;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,7 +18,7 @@ class UINavButtonTest extends TrashAppTest {
 
     @BeforeEach
     public void init(){
-        button = new UINavButton(windowManager, NAV_TYPE);
+        button = new UINavButton(router, NAV_TYPE);
     }
 
     // test active if active
@@ -25,7 +26,8 @@ class UINavButtonTest extends TrashAppTest {
     public void shouldHaveActiveStyleIfMatchesPage(){
 
         // Switch to this
-        windowManager.switchPage(NAV_TYPE);
+        router.switchPhase(Phases.MAIN);
+        router.switchPage(NAV_TYPE);
 
         assertTrue(button.getStyleClass().contains("active"));
 
@@ -47,7 +49,7 @@ class UINavButtonTest extends TrashAppTest {
 
         // Simulate click
         button.getOnMouseClicked().handle(null);
-        assertEquals(NAV_TYPE, windowManager.getCurrentPage());
+        assertEquals(NAV_TYPE, router.getCurrentPage());
 
     }
     private void switchAway() {
@@ -56,6 +58,6 @@ class UINavButtonTest extends TrashAppTest {
         Pages switchType = Pages.DATA;
         assert NAV_TYPE != switchType;
 
-        windowManager.switchPage(switchType);
+        router.switchPage(switchType);
     }
 }

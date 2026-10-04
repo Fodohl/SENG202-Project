@@ -2,6 +2,7 @@ package seng202.team1.gui;
 
 import javafx.scene.Node;
 import seng202.team1.Main;
+import seng202.team1.gui.components.BlockableUISet;
 
 /**
  * Utility class that provides helpers for common graphics tasks
@@ -13,6 +14,8 @@ public class GraphicsCommon {
 
     /// How tall the window is in pixels
     public static final int WINDOW_HEIGHT = 850;
+
+    public static final BlockableUISet NO_LOADING_UI = new BlockableUISet(null, null, null);
 
     /**
      * Get a width as a percentage of the window

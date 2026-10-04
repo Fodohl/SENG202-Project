@@ -15,7 +15,7 @@ class CoreUITest extends TrashAppTest {
 
     @BeforeEach
     public void init(){
-        ui = new MainLayout(windowManager);
+        ui = new MainLayout(router);
         ui.rerender();
     }
 

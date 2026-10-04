@@ -4,12 +4,11 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import seng202.team1.common.StringHelpers;
-import seng202.team1.data.bin.Bin;
-import seng202.team1.data.bin.BinCategory;
-import seng202.team1.data.bin.BinFullness;
-import seng202.team1.data.trashlog.TrashLog;
-import seng202.team1.data.trashlog.TrashType;
+import seng202.team1.types.bin.Bin;
+import seng202.team1.types.bin.BinCategory;
+import seng202.team1.types.bin.BinFullness;
+import seng202.team1.types.trashlog.TrashLog;
+import seng202.team1.types.trashlog.TrashType;
 import seng202.team1.gui.modals.LogTrashModal;
 import seng202.team1.state.GlobalState;
 import seng202.team1.unittests.TrashAppTest;
@@ -20,6 +19,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static seng202.team1.helpers.StringHelpers.enumNameToTitle;
 
 public class LogTrashStepDefs {
 
@@ -30,8 +30,7 @@ public class LogTrashStepDefs {
     public void init() throws IOException {
 
         TrashAppTest.initFx();
-        globalState = new GlobalState(null, true);
-        globalState.getDatabaseManager().resetDB();
+        globalState = TrashAppTest.newTestState();
     }
 
 
@@ -48,7 +47,7 @@ public class LogTrashStepDefs {
 
         globalState.getBinDAO().add(bin);
 
-        modal = new LogTrashModal(globalState.getWindowManager());
+        modal = new LogTrashModal(globalState.getRouter());
         modal.getRendered();
         modal.recvData(bin);
     }
@@ -60,9 +59,9 @@ public class LogTrashStepDefs {
 
     @When("they correctly log their usage")
     public void theyCorrectlyLogTheirUsage() {
-        modal.getTypeInput().setInput(StringHelpers.enumNameToTitle(TrashType.CARDBOARD_BOX.name()));
+        modal.getTypeInput().setInput(enumNameToTitle(TrashType.CARDBOARD_BOX.name()));
         modal.getWeightInput().setInput("500");
-        modal.getFullnessInput().setInput(StringHelpers.enumNameToTitle(BinFullness.SEMI_FULL.name()));
+        modal.getFullnessInput().setInput(enumNameToTitle(BinFullness.SEMI_FULL.name()));
         modal.getSubmitButton().getOnMouseClicked().handle(null);
     }
 

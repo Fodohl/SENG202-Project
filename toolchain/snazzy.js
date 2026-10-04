@@ -13,7 +13,7 @@ async function main() {
     const {default: encodeMapStyles} = await import('gmaps-apistyle-encoder');
 
     // Load json
-    const targetFile = process.argv[2] || '../src/main/resources/json/snazzy.json';
+    const targetFile = process.argv[2] || '../src/main/resources/config/snazzy.json';
     const filePath = path.resolve(process.cwd(), targetFile);
     const rawContent = fs.readFileSync(filePath, 'utf8');
 

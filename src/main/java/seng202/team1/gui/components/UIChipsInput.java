@@ -2,9 +2,8 @@ package seng202.team1.gui.components;
 
 import javafx.scene.control.Label;
 import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import seng202.team1.common.StringHelpers;
+import seng202.team1.helpers.StringHelpers;
 import seng202.team1.gui.GraphicsCommon;
 
 import java.util.Arrays;
