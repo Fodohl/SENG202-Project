@@ -11,6 +11,7 @@ import seng202.team1.gui.components.UIImage;
 import seng202.team1.gui.components.UILocationInput;
 import seng202.team1.gui.components.UINavButton;
 import seng202.team1.gui.pages.Pages;
+import seng202.team1.types.user.Session;
 import seng202.team1.types.user.User;
 
 import java.util.List;
@@ -93,9 +94,8 @@ public class MainLayout extends Layout {
         UILocationInput searchBar = new UILocationInput(getRouter().getGlobalState());
 
         // Account
-        User user = getState().getAuth().getSession().userDetails();
-        accountLabel = new Label(user.name());
-        accountIcon = new UIAvatar(user);
+        accountLabel = new Label("name");
+        accountIcon = new UIAvatar(null);
         accountLabel.getStyleClass().add("account-text");
 
         // Move account to end
@@ -165,7 +165,12 @@ public class MainLayout extends Layout {
     @Override
     public void refreshLayout() {
 
-        User user = getState().getAuth().getSession().userDetails();
+        // Check if the user is actually logged in
+        Session session = getState().getAuth().getSession();
+        if(session == null)
+            return;
+
+        User user = session.userDetails();
         accountLabel.setText(user.name());
         accountIcon.setUser(user);
     }
