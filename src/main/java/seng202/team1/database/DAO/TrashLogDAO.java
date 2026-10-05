@@ -24,23 +24,6 @@ public class TrashLogDAO extends BaseDAO<TrashLog> {
         super(databaseManager);
     }
 
-    /**
-     * Converts string from database to TrashType
-     *
-     * @param type string name
-     * @return trash type that matches the string, OTHER if null or unknown
-     */
-    private TrashType convertStringToType(String type) {
-        if (type == null) {
-            return TrashType.OTHER;
-        }
-        try {
-            return TrashType.valueOf(type.toUpperCase(Locale.ROOT));
-        } catch (IllegalArgumentException exception) {
-            return TrashType.OTHER;
-        }
-    }
-
     @Override
     protected TrashLog fromRow(ResultSet rs) throws SQLException {
         return new TrashLog(

@@ -30,35 +30,6 @@ public class BinDAO extends BaseDAO<Bin> {
         super(databaseManager);
     }
 
-    /**
-     * Converts string from database to BinCategory
-     * @param category string name
-     * @return bin category that matches the string, GENERAL_WASTE if unknown
-     */
-    private BinCategory convertStringToCategory(String category) {
-        return switch (category.toUpperCase(Locale.ROOT)) {
-            case "RECYCLABLE" -> BinCategory.RECYCLABLE;
-            case "ORGANIC" -> BinCategory.ORGANIC;
-            case "E-WASTE", "E_WASTE" -> BinCategory.E_WASTE;
-            default -> BinCategory.GENERAL_WASTE;
-        };
-    }
-
-    /**
-     * Converts string from database to BinFullness
-     * @param fullness string name
-     * @return bin fullness that matches the string, UNKNOWN if null or unknown
-     */
-    private BinFullness convertStringToFullness(String fullness) {
-        if (fullness == null) {
-            return BinFullness.UNKNOWN;
-        }
-        try {
-            return BinFullness.valueOf(fullness.toUpperCase(Locale.ROOT));
-        } catch (IllegalArgumentException e) {
-            return BinFullness.UNKNOWN;
-        }
-    }
 
     @Override
     protected Bin fromRow(ResultSet rs) throws SQLException {

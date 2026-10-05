@@ -26,18 +26,6 @@ public class StatusReportDAO extends BaseDAO<StatusReport> {
         super(databaseManager);
     }
 
-    /**
-     * Converts the string representation saved in the database to a {@link ReportType}
-     * @param issueString String representation of report type
-     * @return ReportType associated with the report
-     */
-    private ReportType convertStringToIssue(String issueString) {
-        try {
-            return ReportType.valueOf(issueString.toUpperCase(Locale.ROOT));
-        } catch (IllegalArgumentException e) {
-            throw new IllegalStateException("Unexpected value: " + issueString, e);
-        }
-    }
 
     /**
      * Converts the string representation saved in the database to a {@link BinFullness}
