@@ -167,7 +167,7 @@ public class LogTrashModal extends Modal {
         }
 
         // Cant have negative trash
-        if (weight <= 0)
+        if (weight != null && weight <= 0)
             weightInput.setError("Weight must be positive");
 
         UIIconButton fullnessChip = (UIIconButton) fullnessInput.getInput();
