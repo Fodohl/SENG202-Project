@@ -5,6 +5,8 @@ import javafx.scene.Parent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import seng202.team1.gui.Router;
@@ -15,7 +17,6 @@ import seng202.team1.types.user.User;
 import java.security.InvalidParameterException;
 
 import static seng202.team1.state.AuthState.*;
-import static seng202.team1.state.AuthState.validatePassword;
 
 /**
  * Page that displays the configuration menu of the app
@@ -91,7 +92,12 @@ public class SettingsPage extends Page {
 
         save.setOnAction(e -> saveChanges());
         cancel.setOnAction(e -> updateContents());
-        deleteAccount.setOnAction(e -> delete());
+        deleteAccount.setOnAction(e -> {
+            if (confirm("Delete Account", "Are you sure you want to delete your account? This cannot be undone."))
+            {
+                delete();
+            }
+        });
         logOut.setOnAction(e -> logOut());
 
         // Hide input
@@ -120,6 +126,22 @@ public class SettingsPage extends Page {
         return root;
     }
 
+    /**
+     * Show a confirmation dialog
+     *
+     * @param title The dialog title
+     * @param message The question to ask the user
+     * @return True if OK is pressed
+     */
+    private boolean confirm(String title, String message) {
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, message, ButtonType.OK, ButtonType.CANCEL);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+
+        return alert.showAndWait().filter(b -> b == ButtonType.OK).isPresent();
+    }
+
     private void delete() {
 
         getState().getTaServer().deleteUser(s -> {
@@ -133,6 +155,8 @@ public class SettingsPage extends Page {
     private void saveChanges() {
 
         if (user == null)
+            return;
+        if (!confirm("Save Changes", "Are you sure you want to update your account details?"))
             return;
 
         String enteredName = userName.getInput();
