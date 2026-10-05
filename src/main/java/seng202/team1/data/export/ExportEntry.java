@@ -43,12 +43,12 @@ public record ExportEntry(
                 null, null);
     }
 
-    public static ExportEntry from(TrashLog t) {
+    public static ExportEntry from(TrashLog t, BinFullness f) {
         return new ExportEntry(
                 t.disposedAt(),
                 "Trash Log",
                 t.binID(),
-                null, null, null,
+                f, null, null,
                 t.trashType(), t.trashWeight());
     }
 }

@@ -4,6 +4,7 @@ import seng202.team1.database.DatabaseManager;
 import seng202.team1.types.bin.BinFullness;
 import seng202.team1.types.status.ReportType;
 import seng202.team1.types.status.StatusReport;
+import seng202.team1.types.trashlog.TrashLog;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -108,6 +109,28 @@ public class StatusReportDAO extends BaseDAO<StatusReport> {
     public List<StatusReport> getFullnessReportsByBinId(int binId) {
         return queryList("SELECT * FROM status_reports WHERE bin_id = ? AND issue = ?",
                 binId, ReportType._FULLNESS_UPDATE);
+    }
+
+    /**
+     * Gets all non fullness reports
+     * @return A list of StatusReports with issue other that ReportType._FULLNESS_UPDATE
+     */
+    public List<StatusReport> getNonFullnessReports() {
+        return queryList("SELECT * FROM status_reports WHERE issue IS NOT ? COLLATE NOCASE", ReportType._FULLNESS_UPDATE);
+    }
+
+    /**
+     * Returns the fullness saved in StatusReport for a fullness update caused by a trash log
+     * @param trashLog TrashLog that we want the fullness for
+     * @return BinFullness related to the trashLog
+     */
+    public BinFullness getFullnessByTrashLog(TrashLog trashLog) {
+        StatusReport fullnessReport = queryOne("SELECT * FROM status_reports WHERE bin_id = ? AND issue = ? AND created_at = ? And description = ?",
+                trashLog.binID(), ReportType._FULLNESS_UPDATE, trashLog.createdAt(), trashLog.trashLogId());
+        if (fullnessReport == null) {
+            return BinFullness.UNKNOWN;
+        }
+        return fullnessReport.getFullness();
     }
 
     /**
