@@ -24,8 +24,13 @@ import seng202.team1.types.trashlog.TrashType;
  */
 public class TreeDaysCalculator {
 
+    /// Path of the trash emissions data file
     private static final String EMISSIONS_PATH = "/data/trash_emissions.json";
+    
+    /// Number of tree-days equivalent to absorbing 1 kg of CO2e
     private static final double TREE_DAYS_PER_KG_CO2E = 60.33;
+
+    /// Conversion factor from grams to kilograms
     private static final double GRAMS_PER_KG = 1000;
 
     /// Emission info for each trash type
