@@ -167,7 +167,7 @@ public class TimelinePage extends Page {
 
                     // Convert log into format expected by timeline entry
                     UIImage icon = new UIImage(String.format("/media/images/%s.svg", bin.getCategory().name().toLowerCase()), 50, 50);
-                    String desciption = String.format("%s (%dg) logged at %s", trashType, log.trashWeight(), bin.getAreaName());
+                    String desciption = String.format("%s (%.2fg) logged at %s", trashType, log.trashWeight(), bin.getAreaName());
 
                     return new UITimelineEntry(DateHelpers.fromLocalTime(LocalDateTime.ofInstant(log.disposedAt(), ZoneId.systemDefault())), icon, "Trash Logged", desciption);
                 })

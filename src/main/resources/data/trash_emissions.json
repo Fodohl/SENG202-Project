@@ -1,0 +1,457 @@
+[
+  {
+    "id": "PLASTIC_BOTTLE_500ML",
+    "displayName": "Plastic drink bottle (500 ml)",
+    "weightGrams": 23,
+    "treatedFactor": -1.1464,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "PLASTIC_BOTTLE_1L",
+    "displayName": "Plastic drink bottle (1 L)",
+    "weightGrams": 33,
+    "treatedFactor": -1.1464,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "PLASTIC_BOTTLE_2L",
+    "displayName": "Plastic drink bottle (2 L)",
+    "weightGrams": 48,
+    "treatedFactor": -1.1464,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "PLASTIC_MILK_BOTTLE_2L",
+    "displayName": "Plastic milk bottle (2 L)",
+    "weightGrams": 45,
+    "treatedFactor": -0.8378,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "PLASTIC_BOTTLE_CAP",
+    "displayName": "Plastic bottle cap",
+    "weightGrams": 2.5,
+    "treatedFactor": -0.8378,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "ALUMINIUM_CAN_330ML",
+    "displayName": "Aluminium can (330 ml)",
+    "weightGrams": 13,
+    "treatedFactor": -10.0641,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "ALUMINIUM_CAN_500ML",
+    "displayName": "Aluminium can (500 ml)",
+    "weightGrams": 17,
+    "treatedFactor": -10.0641,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "STEEL_FOOD_CAN",
+    "displayName": "Steel food can",
+    "weightGrams": 60,
+    "treatedFactor": -2.0172,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "GLASS_BOTTLE_330ML",
+    "displayName": "Glass bottle (330 ml)",
+    "weightGrams": 190,
+    "treatedFactor": -0.3086,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "GLASS_WINE_BOTTLE",
+    "displayName": "Glass wine bottle (750 ml)",
+    "weightGrams": 500,
+    "treatedFactor": -0.3086,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "GLASS_JAR",
+    "displayName": "Glass jar",
+    "weightGrams": 200,
+    "treatedFactor": -0.3086,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "PLASTIC_CUP_LID",
+    "displayName": "Plastic cup lid",
+    "weightGrams": 4,
+    "treatedFactor": 0.022,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "CARDBOARD_CUP_SLEEVE",
+    "displayName": "Cardboard cup sleeve",
+    "weightGrams": 5,
+    "treatedFactor": -3.4613,
+    "litteredFactor": 0.1984
+  },
+  {
+    "id": "PLASTIC_CUTLERY_SET",
+    "displayName": "Plastic cutlery set",
+    "weightGrams": 10,
+    "treatedFactor": 0.022,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "POLYSTYRENE_CLAMSHELL",
+    "displayName": "Polystyrene takeaway box",
+    "weightGrams": 10,
+    "treatedFactor": 0.022,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "PIZZA_BOX",
+    "displayName": "Pizza box",
+    "weightGrams": 400,
+    "treatedFactor": -3.4613,
+    "litteredFactor": 0.1984
+  },
+  {
+    "id": "PLASTIC_SHOPPING_BAG",
+    "displayName": "Plastic shopping bag",
+    "weightGrams": 6,
+    "treatedFactor": 0.022,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "PLASTIC_BIN_LINER",
+    "displayName": "Plastic bin liner",
+    "weightGrams": 15,
+    "treatedFactor": 0.022,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "CLING_FILM_SHEET",
+    "displayName": "Cling film sheet",
+    "weightGrams": 3,
+    "treatedFactor": 0.022,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "BUBBLE_WRAP_SHEET",
+    "displayName": "Bubble wrap sheet",
+    "weightGrams": 20,
+    "treatedFactor": 0.022,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "NEWSPAPER",
+    "displayName": "Newspaper",
+    "weightGrams": 250,
+    "treatedFactor": -2.9873,
+    "litteredFactor": -0.937
+  },
+  {
+    "id": "MAGAZINE",
+    "displayName": "Magazine",
+    "weightGrams": 200,
+    "treatedFactor": -3.3841,
+    "litteredFactor": -0.474
+  },
+  {
+    "id": "JUNK_MAIL_ITEM",
+    "displayName": "Piece of junk mail",
+    "weightGrams": 15,
+    "treatedFactor": -3.3841,
+    "litteredFactor": -0.474
+  },
+  {
+    "id": "OFFICE_PAPER_SHEET",
+    "displayName": "Sheet of office paper",
+    "weightGrams": 5,
+    "treatedFactor": -3.1526,
+    "litteredFactor": 1.2456
+  },
+  {
+    "id": "OFFICE_PAPER_REAM",
+    "displayName": "Ream of office paper",
+    "weightGrams": 2500,
+    "treatedFactor": -3.1526,
+    "litteredFactor": 1.2456
+  },
+  {
+    "id": "CARDBOARD_BOX_SMALL",
+    "displayName": "Small cardboard box",
+    "weightGrams": 150,
+    "treatedFactor": -3.4613,
+    "litteredFactor": 0.1984
+  },
+  {
+    "id": "CARDBOARD_BOX_LARGE",
+    "displayName": "Large cardboard box",
+    "weightGrams": 1000,
+    "treatedFactor": -3.4613,
+    "litteredFactor": 0.1984
+  },
+  {
+    "id": "PHONE_BOOK",
+    "displayName": "Phone book",
+    "weightGrams": 1500,
+    "treatedFactor": -2.8881,
+    "litteredFactor": -0.937
+  },
+  {
+    "id": "TEXTBOOK",
+    "displayName": "Textbook",
+    "weightGrams": 1200,
+    "treatedFactor": -3.4172,
+    "litteredFactor": 1.2456
+  },
+  {
+    "id": "APPLE_CORE",
+    "displayName": "Apple core",
+    "weightGrams": 30,
+    "treatedFactor": -0.1653,
+    "litteredFactor": 0.2535
+  },
+  {
+    "id": "BANANA_PEEL",
+    "displayName": "Banana peel",
+    "weightGrams": 40,
+    "treatedFactor": -0.1653,
+    "litteredFactor": 0.2535
+  },
+  {
+    "id": "VEGETABLE_PEELINGS",
+    "displayName": "Vegetable peelings",
+    "weightGrams": 200,
+    "treatedFactor": -0.1653,
+    "litteredFactor": 0.2535
+  },
+  {
+    "id": "BREAD_SLICE",
+    "displayName": "Slice of bread",
+    "weightGrams": 30,
+    "treatedFactor": -0.1653,
+    "litteredFactor": 1.0913
+  },
+  {
+    "id": "COOKED_RICE_PORTION",
+    "displayName": "Portion of cooked rice",
+    "weightGrams": 180,
+    "treatedFactor": -0.1653,
+    "litteredFactor": 1.5102
+  },
+  {
+    "id": "MEAT_SCRAPS",
+    "displayName": "Meat scraps",
+    "weightGrams": 100,
+    "treatedFactor": -0.1653,
+    "litteredFactor": 0.5071
+  },
+  {
+    "id": "BEEF_SCRAPS",
+    "displayName": "Beef scraps",
+    "weightGrams": 100,
+    "treatedFactor": -0.1653,
+    "litteredFactor": 0.474
+  },
+  {
+    "id": "POULTRY_SCRAPS",
+    "displayName": "Poultry scraps",
+    "weightGrams": 100,
+    "treatedFactor": -0.1653,
+    "litteredFactor": 0.5401
+  },
+  {
+    "id": "DAIRY_WASTE",
+    "displayName": "Dairy waste",
+    "weightGrams": 200,
+    "treatedFactor": -0.1653,
+    "litteredFactor": 0.5291
+  },
+  {
+    "id": "COFFEE_GROUNDS",
+    "displayName": "Used coffee grounds",
+    "weightGrams": 20,
+    "treatedFactor": -0.1653,
+    "litteredFactor": 0.5512
+  },
+  {
+    "id": "FOOD_CADDY_FULL",
+    "displayName": "Kitchen food caddy (full)",
+    "weightGrams": 5000,
+    "treatedFactor": -0.1653,
+    "litteredFactor": 0.5512
+  },
+  {
+    "id": "GRASS_CLIPPINGS_BAG",
+    "displayName": "Bag of grass clippings",
+    "weightGrams": 10000,
+    "treatedFactor": -0.1213,
+    "litteredFactor": 0.1323
+  },
+  {
+    "id": "SMARTPHONE",
+    "displayName": "Smartphone",
+    "weightGrams": 180,
+    "treatedFactor": -1.1684,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "TABLET",
+    "displayName": "Tablet",
+    "weightGrams": 500,
+    "treatedFactor": -1.1684,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "LAPTOP",
+    "displayName": "Laptop",
+    "weightGrams": 1800,
+    "treatedFactor": -1.1684,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "DESKTOP_COMPUTER",
+    "displayName": "Desktop computer",
+    "weightGrams": 8000,
+    "treatedFactor": -1.6424,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "FLAT_PANEL_MONITOR",
+    "displayName": "Flat-panel monitor",
+    "weightGrams": 3500,
+    "treatedFactor": -1.0913,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "CRT_MONITOR",
+    "displayName": "CRT monitor",
+    "weightGrams": 15000,
+    "treatedFactor": -0.6283,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "KEYBOARD",
+    "displayName": "Keyboard",
+    "weightGrams": 900,
+    "treatedFactor": -0.3968,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "COMPUTER_MOUSE",
+    "displayName": "Computer mouse",
+    "weightGrams": 100,
+    "treatedFactor": -0.3968,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "PRINTER",
+    "displayName": "Printer",
+    "weightGrams": 7000,
+    "treatedFactor": -0.6173,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "SMALL_APPLIANCE",
+    "displayName": "Small household appliance",
+    "weightGrams": 1500,
+    "treatedFactor": -0.9921,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "CAR_TYRE",
+    "displayName": "Car tyre",
+    "weightGrams": 9000,
+    "treatedFactor": -0.4189,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "CARPET_OFFCUT",
+    "displayName": "Carpet offcut",
+    "weightGrams": 3000,
+    "treatedFactor": -2.6235,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "TIMBER_OFFCUT",
+    "displayName": "Timber offcut",
+    "weightGrams": 2000,
+    "treatedFactor": -1.8298,
+    "litteredFactor": -1.0141
+  },
+  {
+    "id": "WOOD_FLOORING_PLANK",
+    "displayName": "Wood flooring plank",
+    "weightGrams": 1500,
+    "treatedFactor": -4.0565,
+    "litteredFactor": -0.948
+  },
+  {
+    "id": "CLAY_BRICK",
+    "displayName": "Clay brick",
+    "weightGrams": 2500,
+    "treatedFactor": 0.022,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "CONCRETE_RUBBLE",
+    "displayName": "Concrete rubble",
+    "weightGrams": 20000,
+    "treatedFactor": -0.011,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "ASPHALT_SHINGLE",
+    "displayName": "Asphalt shingle",
+    "weightGrams": 1200,
+    "treatedFactor": -0.0992,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "VINYL_FLOOR_TILE",
+    "displayName": "Vinyl floor tile",
+    "weightGrams": 500,
+    "treatedFactor": 0.022,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "STEEL_BEAM_OFFCUT",
+    "displayName": "Structural steel offcut",
+    "weightGrams": 5000,
+    "treatedFactor": -2.1275,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "PVC_PIPE_LENGTH",
+    "displayName": "PVC pipe length",
+    "weightGrams": 2000,
+    "treatedFactor": 0.022,
+    "litteredFactor": 0.022
+  },
+  {
+    "id": "RECYCLING_BIN_FULL",
+    "displayName": "Household recycling bin (full)",
+    "weightGrams": 10000,
+    "treatedFactor": -3.0865,
+    "litteredFactor": 0.0331
+  },
+  {
+    "id": "GENERAL_WASTE_BAG",
+    "displayName": "General waste bag",
+    "weightGrams": 8000,
+    "treatedFactor": 0.3417,
+    "litteredFactor": 0.3417
+  },
+  {
+    "id": "MIXED_ORGANICS_LOAD",
+    "displayName": "Mixed organics load",
+    "weightGrams": 20000,
+    "treatedFactor": -0.1433,
+    "litteredFactor": 0.1984
+  },
+  {
+    "id": "OTHER",
+    "displayName": "Other",
+    "weightGrams": 0,
+    "treatedFactor": 0,
+    "litteredFactor": 0
+  }
+]

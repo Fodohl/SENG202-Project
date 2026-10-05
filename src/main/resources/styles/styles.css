@@ -82,6 +82,22 @@
     -fx-border-width: 3px;
 }
 
+.combo-box .text-field,
+.combo-box .text-field:focused {
+    -fx-border-color: transparent;
+    -fx-border-width: 0;
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.search-dropdown .arrow-button,
+.search-dropdown .arrow-button:hover,
+.search-dropdown .arrow-button:pressed {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-border-color: transparent;
+}
+
 .text-area .viewport {
     -fx-background-color: transparent;
 }

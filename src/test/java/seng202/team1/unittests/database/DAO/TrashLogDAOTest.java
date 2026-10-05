@@ -1,6 +1,8 @@
 package seng202.team1.unittests.database.DAO;
 
-import org.jooq.impl.QOM;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -8,14 +10,11 @@ import seng202.team1.types.trashlog.TrashLog;
 import seng202.team1.types.trashlog.TrashType;
 import seng202.team1.unittests.TrashAppTest;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-
 public class TrashLogDAOTest extends TrashAppTest {
 
     @Test
     void testAddTrashLog() {
-        TrashLog trashLogToAdd = new TrashLog(Instant.now(), Instant.now(), 1, 1, TrashType.COFFEE_CUP, 0);
+        TrashLog trashLogToAdd = new TrashLog(Instant.now(), Instant.now(), 1, 1, TrashType.CARDBOARD_BOX_SMALL, 0);
         trashLogs.add(trashLogToAdd);
         Assertions.assertEquals(1, bins.getAll().size());
         TrashLog trashLog = trashLogs.getAll().getFirst();
@@ -31,7 +30,7 @@ public class TrashLogDAOTest extends TrashAppTest {
 
     @Test
     void testGetTrashByID() {
-        TrashLog trashLogToAdd = new TrashLog(Instant.now(), Instant.now(), 1, 1, TrashType.PAPER, 0);
+        TrashLog trashLogToAdd = new TrashLog(Instant.now(), Instant.now(), 1, 1, TrashType.OFFICE_PAPER_SHEET, 0);
         int id = trashLogs.add(trashLogToAdd);
         TrashLog returnedTrashLog = trashLogs.getOne(id);
         Instant expectedCreatedAt = trashLogToAdd.createdAt().truncatedTo(ChronoUnit.MILLIS);
@@ -46,7 +45,7 @@ public class TrashLogDAOTest extends TrashAppTest {
 
     @Test
     void testDeleteTrash() {
-        int insertId  = trashLogs.add(new TrashLog(Instant.now(), Instant.now(), 1, 1, TrashType.COFFEE_CUP, 0));
+        int insertId  = trashLogs.add(new TrashLog(Instant.now(), Instant.now(), 1, 1, TrashType.CARDBOARD_BOX_SMALL, 0));
         int totalTrashBefore = trashLogs.getAll().size();
         trashLogs.delete(insertId);
         Assertions.assertEquals(totalTrashBefore - 1, trashLogs.getAll().size());
@@ -54,9 +53,9 @@ public class TrashLogDAOTest extends TrashAppTest {
 
     @Test
     void testUpdateTrash() {
-        TrashLog trashLog = new TrashLog(Instant.now(), Instant.now(), 1, 1, TrashType.COFFEE_CUP, 0);
+        TrashLog trashLog = new TrashLog(Instant.now(), Instant.now(), 1, 1, TrashType.CARDBOARD_BOX_SMALL, 0);
         int id = trashLogs.add(trashLog);
-        TrashLog updatedTrashLog = new TrashLog(id, Instant.now(), Instant.now(), Instant.now(), 1, 1, TrashType.PLASTIC_BOTTLE, 50);
+        TrashLog updatedTrashLog = new TrashLog(id, Instant.now(), Instant.now(), Instant.now(), 1, 1, TrashType.BANANA_PEEL, 50);
         trashLogs.update(updatedTrashLog);
         TrashLog result = trashLogs.getOne(id);
 
