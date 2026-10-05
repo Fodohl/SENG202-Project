@@ -6,8 +6,9 @@ import seng202.team1.types.photon.Feature;
 import seng202.team1.api.photon.PhotonClient;
 import seng202.team1.api.trashdb.TrashDBClient;
 import seng202.team1.types.trashdb.TrashDBLeaderboardResponse;
+import seng202.team1.database.DAO.StatusReportDAO;
 import seng202.team1.types.status.ReportType;
-import seng202.team1.data.status.StatusReportStore;
+import seng202.team1.types.status.StatusReport;
 import seng202.team1.database.DAO.TrashLogDAO;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.pages.Pages;
@@ -19,7 +20,9 @@ import seng202.team1.tasks.TaskManager;
 import seng202.team1.tasks.preflight.PreflightManager;
 import seng202.team1.types.status.StatusReport;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 
@@ -51,6 +54,9 @@ public class GlobalState {
     /// The DAO responsible for bins
     private BinDAO binDAO;
 
+    /// The DAO responsible for reports
+    private StatusReportDAO statusReportDAO;
+
     /// The database connection to the local sqlite DB
     private DatabaseManager databaseManager;
 
@@ -63,8 +69,8 @@ public class GlobalState {
     /// Current user location or null if none is requested
     private Feature requestedLocation;
 
-    /// The handler for issue reports
-    private StatusReportStore statusReportStore;
+    /// Current bin to show or null if none is requested
+    private Integer requestedShowBinId;
 
     /// The handler for app start up tasks
     private PreflightManager preflightManager;
@@ -94,9 +100,7 @@ public class GlobalState {
 
         binDAO = new BinDAO(databaseManager);
         trashLogDAO = new TrashLogDAO(databaseManager);
-
-        statusReportStore = new StatusReportStore(binDAO, IS_TEST_MODE ? StatusReportStore.testDataPath()
-                : StatusReportStore.defaultDataPath());
+        statusReportDAO = new StatusReportDAO(databaseManager);
 
         // Set up API
         photonClient = new PhotonClient();
@@ -189,12 +193,12 @@ public class GlobalState {
 
 
     /**
-     * Get the status log handler
+     * get the status report DAO
      *
-     * @return The status log handler
+     * @return The status report DAO
      */
-    public StatusReportStore getStatusReportStore() {
-        return statusReportStore;
+    public StatusReportDAO getStatusReportDAO() {
+        return statusReportDAO;
     }
 
     /**
@@ -277,27 +281,29 @@ public class GlobalState {
             return;
 
         // Only want recent reports of fullness
-        List<StatusReport> fullnessReports = statusReportStore.getReports().stream()
-                .filter(r -> r.getIssue() == ReportType._FULLNESS_UPDATE)
-                .filter(r -> r.getSubmittedAt().isAfter(LocalDate.now().atStartOfDay()))
-                .toList();
+        Instant startOfDay = LocalDate.now()
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant();
+        List<StatusReport> fullnessReports = statusReportDAO.getAll().stream()
+                                                    .filter(r -> r.getIssue() == ReportType._FULLNESS_UPDATE)
+                                                    .filter(r -> r.getSubmittedAt().isAfter(startOfDay))
+                                                    .toList();
 
         // Get each bin's new fullness as an average of this week's reports
         getBinDAO().getAll().stream().forEach(b -> {
-            List<StatusReport> reportsFoBin = fullnessReports.stream().filter(r -> r.getBinID() == b.getID()).toList();
+            List<StatusReport> reportsFoBin = fullnessReports.stream().filter(r -> r.getBinId() == b.getID()).toList();
             refreshBinFullness(b, binDAO, reportsFoBin);
         });
     }
 
-    public void refreshBinFullness(Bin bin) {
-
-        // Only want recent reports of fullness
-        List<StatusReport> reportsFoBin = statusReportStore.getReports().stream()
-                .filter(r -> r.getIssue() == ReportType._FULLNESS_UPDATE)
-                .filter(r -> r.getSubmittedAt().isAfter(LocalDate.now().atStartOfDay()))
-                .filter(r -> r.getBinID() == bin.getID())
-                .toList();
-
+    public void refreshBinFullness(Bin bin){
+        Instant startOfDay = LocalDate.now()
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant();
+         // Only want recent reports of fullness
+        List<StatusReport> reportsFoBin = statusReportDAO.getFullnessReportsByBinId(bin.getID()).stream()
+                .filter(r -> r.getSubmittedAt().isAfter(startOfDay))
+                .toList();;
         refreshBinFullness(bin, binDAO, reportsFoBin);
     }
 
@@ -306,4 +312,26 @@ public class GlobalState {
     }
 
 
+    /**
+     * Switch to the map and try show a request bin
+     *
+     * @param id The bin to show (must be a int)
+     */
+    public void goToBin(String id) {
+
+        requestedShowBinId = Integer.valueOf(id);
+        router.switchPage(Pages.MAP);
+    }
+
+    /**
+     * Get the bin show request and clear it
+     *
+     * @return The bin to show or null if none requested
+     */
+    public Integer consumeBinShowRequest(){
+
+        Integer binID = requestedShowBinId;
+        requestedShowBinId = null;
+        return binID;
+    }
 }

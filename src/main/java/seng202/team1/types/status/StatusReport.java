@@ -3,7 +3,9 @@ package seng202.team1.types.status;
 import seng202.team1.types.user.User;
 import seng202.team1.types.bin.Bin;
 import seng202.team1.types.bin.BinFullness;
+import seng202.team1.types.status.ReportType;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 /**
@@ -12,35 +14,57 @@ import java.time.LocalDateTime;
  */
 
 public class StatusReport {
-    private final Bin bin;
-    private final User submittedBy;
+    private final int id;
+    private final int binId;
+    private final int userId;
     private final BinFullness fullness;
     private final ReportType issue;
-    private final LocalDateTime submittedAt;
+    private final Instant submittedAt;
     private final String description;
 
     /**
      * Constructor for StatusReport class
-     *
-     * @param bin
-     * @param submittedBy
-     * @param description
-     * @param submittedAt
+     * @param reportId id of the StatusReport
+     * @param binId id of the bin the StatusReport concerns
+     * @param userId id of the user who made the report
+     * @param fullness enum representing how full the bin is
+     * @param issue enum representing the issue with the bin
+     * @param description String describing the issue
+     * @param submittedAt Instant of when the report was submitted
      */
 
-    public StatusReport(Bin bin,
-                        User submittedBy,
+    public StatusReport(int reportId,
+                        int binId,
+                        int userId,
                         BinFullness fullness,
                         ReportType issue,
                         String description,
-                        LocalDateTime submittedAt) {
-        this.bin = bin;
-        this.submittedBy = submittedBy;
+                        Instant submittedAt) {
+        this.id = reportId;
+        this.binId = binId;
+        this.userId = userId;
         this.fullness = fullness;
         this.issue = issue;
         this.description = description;
         this.submittedAt = submittedAt;
     }
+
+    public StatusReport(int binId,
+                        int userId,
+                        BinFullness fullness,
+                        ReportType issue,
+                        String description,
+                        Instant submittedAt) {
+        this.id = -1;
+        this.binId = binId;
+        this.userId = userId;
+        this.fullness = fullness;
+        this.issue = issue;
+        this.description = description;
+        this.submittedAt = submittedAt;
+    }
+
+    public int getId() { return id; }
 
     /**
      * Get the bin
@@ -48,31 +72,18 @@ public class StatusReport {
      * @return bin
      */
 
-    public Bin getBin() {
-        return bin;
+    public int getBinId() {
+        return binId;
     }
 
     /**
-     * Get the bin ID
-     * @return binID associated with report
-     */
-    public int getBinID() {
-
-        if(bin ==null)
-            return -1;
-
-        return bin.getID();
-
-    }
-
-    /**
-     * Get the reporter
+     * Get the user id of the reporter
      * Return the reporter
-     * @return submittedBy
+     * @return userId
      */
 
-    public User getSubmittedBy() {
-        return submittedBy;
+    public int getUserId() {
+        return userId;
     }
 
     /**
@@ -81,7 +92,7 @@ public class StatusReport {
      * @return submittedAt
      */
 
-    public LocalDateTime getSubmittedAt() {return submittedAt;}
+    public Instant getSubmittedAt() {return submittedAt;}
 
     /**
      * Get report description
@@ -103,8 +114,8 @@ public class StatusReport {
      * @return a boolean for whether the two StatusReports are equal
      */
     public boolean equals(StatusReport statusReport) {
-        return this.getBinID() == statusReport.getBinID()
-                && this.getSubmittedBy().id() == statusReport.getSubmittedBy().id()
+        return this.getBinId() == statusReport.getBinId()
+                && this.getUserId() == statusReport.getUserId()
                 && this.getFullness().equals(statusReport.getFullness())
                 && this.getIssue().equals(statusReport.getIssue())
                 && this.getDescription().equals(statusReport.getDescription());
@@ -119,8 +130,8 @@ public class StatusReport {
     @Override
     public String toString() {
         return "StatusReport{" +
-                "binID=" + getBinID() +
-                ", submittedBy=" + getSubmittedBy() +
+                "binID=" + getBinId() +
+                ", submittedBy=" + getUserId() +
                 ", fullness=" + getFullness() +
                 ", issue=" + getIssue() +
                 ", description="+ description +

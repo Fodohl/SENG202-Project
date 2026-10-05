@@ -3,10 +3,10 @@ DROP TABLE IF EXISTS trash_logs;
 DROP TABLE IF EXISTS bins;
 --SPLIT
 DROP TABLE IF EXISTS users;
-
+--SPLIT
+DROP TABLE IF EXISTS status_reports;
 --SPLIT
 CREATE TABLE bins (
-
     id INTEGER PRIMARY KEY,
     lat DECIMAL(11, 8) NOT NULL,
     lng DECIMAL(11, 8) NOT NULL,
@@ -47,3 +47,17 @@ CREATE TABLE users (
    reset_code INTEGER
 
 );
+
+--SPLIT
+CREATE TABLE status_reports (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    bin_id INTEGER,
+    user_id INTEGER,
+    fullness VARCHAR(255),
+    issue VARCHAR(255),
+    description VARCHAR(255),
+    created_at INTEGER NOT NULL,
+    CONSTRAINT fk_status_report_bin
+        FOREIGN KEY (bin_id)
+            REFERENCES bins(id)
+            ON DELETE CASCADE);

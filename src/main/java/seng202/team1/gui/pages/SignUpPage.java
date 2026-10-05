@@ -66,6 +66,9 @@ public class SignUpPage extends Page {
         Label back = new Label("Go Back");
         back.getStyleClass().add("forgot");
 
+        // Assume enter keypress in a password is same as login press
+        passwordConfirm.setOnAction(e -> handleSignUp());
+
         signUp.setOnAction(e -> handleSignUp());
         back.setOnMouseClicked(e -> handleBack());
 

@@ -84,10 +84,10 @@ public class Router extends StateReferrer {
     /**
      * Constructs a new Router, loading the pages for this app
      *
-     * @param state The reference to global state
+     * @param state        The reference to global state
      * @param currentStage The main app window
      */
-    public Router(GlobalState state, Stage currentStage){
+    public Router(GlobalState state, Stage currentStage) {
         super(state);
 
         // Setup window
@@ -95,7 +95,7 @@ public class Router extends StateReferrer {
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 
         // Dont load stage if not running with a window
-        if(!GlobalState.IS_HEADLESS_MODE)
+        if (!GlobalState.IS_HEADLESS_MODE)
             currentStage.setScene(scene);
 
         // Load CSS
@@ -148,35 +148,35 @@ public class Router extends StateReferrer {
         loadModal(Modals.DIRECTIONS, new DirectionsModal(this));
     }
 
-     /**
+    /**
      * Store a phase given its type
-     *
+     * <p>
      * Warning: will unsafely fail if phase is already loaded
      *
-     * @param type The type of phase
+     * @param type  The type of phase
      * @param phase The phase contents
      */
-    private void loadPhase(Phases type, Phase phase){
+    private void loadPhase(Phases type, Phase phase) {
 
         // Should never have two of the same page types
-        if(phases.get(type) != null)
+        if (phases.get(type) != null)
             throw new InvalidParameterException("Phase type already exists");
 
         phases.put(type, phase);
     }
 
-     /**
+    /**
      * Store a page given its type
-     *
+     * <p>
      * Warning: will unsafely fail if page is already loaded
      *
      * @param type The type of page
      * @param page The page contents
      */
-    private void loadPage(Pages type, Page page){
+    private void loadPage(Pages type, Page page) {
 
         // Should never have two of the same page types
-        if(pages.get(type) != null)
+        if (pages.get(type) != null)
             throw new InvalidParameterException("Page type already exists");
 
         pages.put(type, page);
@@ -185,24 +185,24 @@ public class Router extends StateReferrer {
 
     /**
      * Store a modal given its type
-     *
+     * <p>
      * Warning: will unsafely fail if modal is already loaded
      *
-     * @param type The type of modal
+     * @param type  The type of modal
      * @param modal The modal contents
      */
-    private void loadModal(Modals type, Modal modal){
+    private void loadModal(Modals type, Modal modal) {
 
         // Should never have two of the same page types
-        if(modals.get(type) != null)
+        if (modals.get(type) != null)
             throw new InvalidParameterException("Modal type already exists");
 
         modals.put(type, modal);
     }
 
-     /**
+    /**
      * Change the phase to another desired one
-     *
+     * <p>
      * Note: idempotent
      * Note: will not switch if phase not loaded, warning will be logged
      *
@@ -215,7 +215,7 @@ public class Router extends StateReferrer {
         Phase phase = phases.get(phaseType);
 
         // phase not stored
-        if(phase == null){
+        if (phase == null) {
             log.warn("Phase not loaded for type: {}", phaseType.name());
             return;
         }
@@ -227,7 +227,7 @@ public class Router extends StateReferrer {
 
     /**
      * Change the active page to another desired one
-     *
+     * <p>
      * Note: idempotent
      * Note: will not switch if page not loaded, warning will be logged
      *
@@ -240,13 +240,13 @@ public class Router extends StateReferrer {
         LayoutElement page = pages.get(pageType);
 
         // Page not stored
-        if(page == null){
+        if (page == null) {
             log.warn("Page not loaded for type: {}", pageType.name());
             return;
         }
 
         // Page not allowed
-        if(!phases.get(currentPhase).allowsPage(pageType)){
+        if (!phases.get(currentPhase).allowsPage(pageType)) {
             log.warn("Page '{}' invalid for phase: {}", pageType.name(), currentPhase.name());
             return;
         }
@@ -254,8 +254,9 @@ public class Router extends StateReferrer {
         // Show the page
         history.add(currentPage);
         layout.swap(page.getRendered());
+        layout.refreshLayout();
 
-       // Update pages to show latest data post render
+        // Update pages to show latest data post render
         for (Consumer<Pages> callback : pageSwitchCallbacks)
             callback.accept(pageType);
     }
@@ -280,16 +281,16 @@ public class Router extends StateReferrer {
 
     /**
      * Register an event handler for a page change event
-     *
+     * <p>
      * Warning: an event handler cannot be registered twice
      *
      * @param callback The function to run when a page change is triggered
      * @return True if the callback was registered successfully
      */
-    public boolean registerPageChangeCallback(Consumer<Pages> callback){
+    public boolean registerPageChangeCallback(Consumer<Pages> callback) {
 
         // Prevent a callback being triggered twice
-        if(pageSwitchCallbacks.contains(callback))
+        if (pageSwitchCallbacks.contains(callback))
             return false;
 
         // Store
@@ -299,16 +300,16 @@ public class Router extends StateReferrer {
 
     /**
      * Register an event handler for a modal change event
-     *
+     * <p>
      * Warning: an event handler cannot be registered twice
      *
      * @param callback The function to run when a modal change is triggered
      * @return True if the callback was registered successfully
      */
-    public boolean registerModalChangeCallback(Consumer<Modals> callback){
+    public boolean registerModalChangeCallback(Consumer<Modals> callback) {
 
         // Prevent a callback being triggered twice
-        if(modalSwitchCallbacks.contains(callback))
+        if (modalSwitchCallbacks.contains(callback))
             return false;
 
         // Store
@@ -319,7 +320,7 @@ public class Router extends StateReferrer {
     /**
      * Switch to the previously shown page
      */
-    public void backPage(){
+    public void backPage() {
 
         // Remove this page from history
         history.pop();
@@ -334,7 +335,7 @@ public class Router extends StateReferrer {
      *
      * @param contents The element to overlay
      */
-    public void showOverlay(Parent contents){
+    public void showOverlay(Parent contents) {
 
         // Remove the currently shown overlay
         hideOverlay();
@@ -347,7 +348,7 @@ public class Router extends StateReferrer {
     /**
      * Hide the currently shown overlay
      */
-    public void hideOverlay(){
+    public void hideOverlay() {
         overlay.setVisible(false);
     }
 
@@ -356,7 +357,7 @@ public class Router extends StateReferrer {
      *
      * @see #openModal(Modals, Object)
      */
-    public void openModal(Modals modalType){
+    public void openModal(Modals modalType) {
         openModal(modalType, null);
     }
 
@@ -364,9 +365,9 @@ public class Router extends StateReferrer {
      * Open a modal as an overlay
      *
      * @param modalType The modal to show
-     * @param data The data to pass to the overlay
+     * @param data      The data to pass to the overlay
      */
-    public void openModal(Modals modalType, Object data){
+    public void openModal(Modals modalType, Object data) {
 
         // Update pages to show latest data pre render
         for (Consumer<Modals> callback : modalSwitchCallbacks)
@@ -377,13 +378,13 @@ public class Router extends StateReferrer {
         Modal modal = modals.get(modalType);
 
         // Hiding modal
-        if(modalType == Modals._CLOSED){
+        if (modalType == Modals._CLOSED) {
             overlay.setVisible(false);
             return;
         }
 
         // Page not stored
-        if(modal == null){
+        if (modal == null) {
             log.warn("Modal not loaded for type: {}", modalType.name());
             return;
         }
@@ -396,7 +397,7 @@ public class Router extends StateReferrer {
     /**
      * Close the shown modal
      */
-    public void closeModal(){
+    public void closeModal() {
 
         // Run close handlers
         //@TODO
@@ -410,7 +411,7 @@ public class Router extends StateReferrer {
      *
      * @see #spawnModal(Modals, Object)
      */
-    public long spawnModal(Modals modalType){
+    public long spawnModal(Modals modalType) {
         return spawnModal(modalType, null);
     }
 
@@ -418,17 +419,17 @@ public class Router extends StateReferrer {
      * Open a instance of a modal into a popup window
      *
      * @param modalType The modal to show
-     * @param data The data to pass to the overlay
+     * @param data      The data to pass to the overlay
      * @return The ID of the opened modal
      */
-    public long spawnModal(Modals modalType, Object data){
+    public long spawnModal(Modals modalType, Object data) {
 
         // Select the page
         currentModal = modalType;
         Modal modal = modals.get(modalType);
 
         // Page not stored
-        if(modal == null){
+        if (modal == null) {
             log.warn("Modal not loaded for type: {}", modalType.name());
             return -1;
         }
@@ -471,11 +472,11 @@ public class Router extends StateReferrer {
      *
      * @param windowID The ID of the popup modal
      */
-    public void killModal(long windowID){
+    public void killModal(long windowID) {
 
         // Get the modal
         Stage window = windowedModals.get(windowID);
-        if(window == null)
+        if (window == null)
             return;
 
         // Kill
@@ -491,10 +492,25 @@ public class Router extends StateReferrer {
     public void refreshPage(Pages pageType) {
 
         Page page = pages.get(pageType);
-        if(page == null)
+        if (page == null)
             return;
 
+        layout.refreshLayout();
         page.updateContents();
+    }
+
+    /**
+     * Force a rerender of a page
+     *
+     * @param pageType The page to update
+     */
+    public void rerenderPage(Pages pageType) {
+
+        Page page = pages.get(pageType);
+        if (page == null)
+            return;
+
+        page.rerender();
     }
 
     /**
@@ -511,7 +527,7 @@ public class Router extends StateReferrer {
      *
      * @param layout The new layout
      */
-    private void updateLayout(Layout layout){
+    private void updateLayout(Layout layout) {
         this.layout = layout;
         root.getChildren().set(0, this.layout.getRendered());
     }

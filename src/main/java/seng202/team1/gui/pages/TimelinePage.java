@@ -130,7 +130,7 @@ public class TimelinePage extends Page {
      */
     void renderTimelineEntries() {
 
-        List<StatusReport> reports = router.getGlobalState().getStatusReportStore().getReports();
+        List<StatusReport> reports = router.getGlobalState().getStatusReportDAO().getAll();
         List<TrashLog> trash = router.getGlobalState().getTrashLogDAO().getAll();
 
         List<UITimelineEntry> timelineEntries = new ArrayList<>();
@@ -183,9 +183,8 @@ public class TimelinePage extends Page {
 
                     // Convert report into format expected by timeline entry
                     UIImage icon = new UIImage(String.format("/media/images/%s.svg", report.getIssue().name().toLowerCase()), 50, 50);
-                    Instant time = DateHelpers.fromLocalTime(report.getSubmittedAt());
 
-                    return new UITimelineEntry(time, icon, "Status Report", report.getDescription());
+                    return new UITimelineEntry(report.getSubmittedAt(), icon, "Status Report", report.getDescription());
                 })
                 .toList();
     }
@@ -209,7 +208,7 @@ public class TimelinePage extends Page {
 
                     // Convert log into format expected by timeline entry
                     UIImage icon = new UIImage(String.format("/media/images/%s.svg", bin.getCategory().name().toLowerCase()), 50, 50);
-                    String description = String.format("%s (%dg) logged at %s", trashType, log.trashWeight(), bin.getAreaName());
+                    String description = String.format("%s (%.2fg) logged at %s", trashType, log.trashWeight(), bin.getAreaName());
 
                     return new UITimelineEntry(DateHelpers.fromLocalTime(LocalDateTime.ofInstant(log.disposedAt(), ZoneId.systemDefault())), icon, "Trash Logged", description);
                 })

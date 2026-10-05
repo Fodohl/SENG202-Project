@@ -13,6 +13,8 @@ import seng202.team1.gui.components.*;
 
 import java.util.Comparator;
 import java.util.List;
+import seng202.team1.data.status.BinTrollService;
+import seng202.team1.data.treedays.TreeDaysCalculator;
 
 /**
  * Page that displays a overview of the TrashApp
@@ -48,8 +50,8 @@ public class HomePage extends Page {
     protected Parent renderSelf() {
 
         // Top cards
-        leaderBoard = new UICard("Community Position:", "#4",  "(Top 10%)", "/media/images/dir-continue.svg", true);
-        trees = new UICard("Trees Saved:", "1.1",  "Trees", "/media/images/tree.svg", true);
+        leaderBoard = new UICard("Community Position:", "#4",  "(Top 10%)", "/media/images/leaderboard.svg", true);
+        trees = new UICard("Tree Days:", "0",  "tree-days", "/media/images/tree.svg", true);
         total = new UICard("Trash Logged:", "184",  "Items", "/media/images/throw.svg", true);
 
         HBox topCards = new HBox(20, leaderBoard, trees, total);
@@ -102,6 +104,10 @@ public class HomePage extends Page {
         List<Bin> bins = uses.stream()
                 .map(b -> router.getGlobalState().getBinDAO().getOne(b.binID()))
                 .toList();
+
+        double treeDays = TreeDaysCalculator.getTreeDays(uses);
+        trees.setText(String.format("%.1f", treeDays));
+
         total.setText(String.format("%s", bins.size()));
     }
 }

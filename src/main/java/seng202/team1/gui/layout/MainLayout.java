@@ -6,10 +6,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import seng202.team1.gui.Router;
+import seng202.team1.gui.components.UIAvatar;
 import seng202.team1.gui.components.UIImage;
 import seng202.team1.gui.components.UILocationInput;
 import seng202.team1.gui.components.UINavButton;
 import seng202.team1.gui.pages.Pages;
+import seng202.team1.types.user.Session;
+import seng202.team1.types.user.User;
 
 import java.util.List;
 
@@ -25,6 +28,12 @@ public class MainLayout extends Layout {
 
     /// The element that contains the {@link #content} container
     private BorderPane page = null;
+
+    /// The element that contains the user's avatar
+    private UIAvatar accountIcon;
+
+    /// The element that contains the user's name
+    private Label accountLabel;
 
     /**
      * Construct a new CoreUI for a given window
@@ -81,19 +90,25 @@ public class MainLayout extends Layout {
      */
     private Parent header() {
 
-        // Search Bard
+        // Search Bar
         UILocationInput searchBar = new UILocationInput(getRouter().getGlobalState());
 
         // Account
-        Label accountLabel = new Label("Account (DB)");
+        accountLabel = new Label("name");
+        accountIcon = new UIAvatar(null);
         accountLabel.getStyleClass().add("account-text");
+
+        // Move account to end
+        HBox account = new HBox(10, accountLabel, accountIcon);
+        account.setAlignment(Pos.CENTER);
         BorderPane.setAlignment(accountLabel, Pos.CENTER_RIGHT);
+        account.setOnMouseClicked(e -> router.switchPage(Pages.SETTINGS));
 
         // Combine
         BorderPane header = new BorderPane();
         header.getStyleClass().add("header");
         header.setPrefHeight(60);
-        header.setRight(accountLabel);
+        header.setRight(account);
         header.setLeft(searchBar);
 
         return header;
@@ -145,5 +160,18 @@ public class MainLayout extends Layout {
      */
     public BorderPane getPage(){
         return page;
+    }
+
+    @Override
+    public void refreshLayout() {
+
+        // Check if the user is actually logged in
+        Session session = getState().getAuth().getSession();
+        if(session == null)
+            return;
+
+        User user = session.userDetails();
+        accountLabel.setText(user.name());
+        accountIcon.setUser(user);
     }
 }
