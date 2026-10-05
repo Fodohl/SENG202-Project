@@ -1,10 +1,11 @@
-package seng202.team1.data;
+package seng202.team1.data.export;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.Instant;
-import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 
@@ -85,12 +86,12 @@ public class ExportManager {
     }
 
     /**
-     * Get a unique name for a export file
+     * Get a unique name for an export file
      *
      * @param name The base export name
      * @return The new name
      */
     public static String exportName(String name) {
-        return String.format("export_%s_%s.csv", name, Instant.now().toString()) ;
+        return String.format("export_%s_%s.csv", name, DateTimeFormatter.ofPattern("yyyy-MM-dd_HH-mm").withZone(ZoneId.systemDefault()).format(Instant.now()));
     }
 }

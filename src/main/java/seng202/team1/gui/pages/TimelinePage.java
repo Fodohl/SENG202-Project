@@ -5,7 +5,9 @@ import javafx.scene.Parent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import seng202.team1.data.export.ExportManager;
 import seng202.team1.helpers.DateHelpers;
+import seng202.team1.helpers.StringHelpers;
 import seng202.team1.types.bin.Bin;
 import seng202.team1.types.bin.BinCategory;
 import seng202.team1.types.status.ReportType;
@@ -13,6 +15,9 @@ import seng202.team1.types.status.StatusReport;
 import seng202.team1.types.trashlog.TrashLog;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.components.*;
+import seng202.team1.data.export.ExportEntry;
+import seng202.team1.data.table.StringTable;
+import seng202.team1.data.table.StringTableBuilder;
 
 import java.time.Instant;
 import java.time.LocalDateTime;
@@ -78,7 +83,17 @@ public class TimelinePage extends Page {
         UITitle pageTitle = new UITitle("Timeline");
         pageTitle.setAlignment(Pos.CENTER);
 
-        VBox root = new VBox(50, botCards, pageTitle, timelineSection);
+        UIIconButton exportButton = new UIIconButton("/media/images/export.svg", "Export Timeline");
+        exportButton.getStyleClass().add("data-button");
+
+        exportButton.setOnMouseClicked(e -> {
+            List<StatusReport> reports = router.getGlobalState().getStatusReportDAO().getNonFullnessReports();
+            List<TrashLog> trash = router.getGlobalState().getTrashLogDAO().getAll();
+            StringTable table = buildExportTable(reports, trash);
+            ExportManager.exportToCSV(router.getStage(), ExportManager.exportName("timeline"), table);
+        });
+
+        VBox root = new VBox(50, botCards, pageTitle, exportButton, timelineSection);
         root.getStyleClass().add("timeline-page");
         renderTimelineEntries();
         return root;
@@ -118,14 +133,39 @@ public class TimelinePage extends Page {
         List<StatusReport> reports = router.getGlobalState().getStatusReportDAO().getAll();
         List<TrashLog> trash = router.getGlobalState().getTrashLogDAO().getAll();
 
-        // Combine trash logs and status reports
-        ArrayList<UITimelineEntry> entries = new ArrayList<>();
-        entries.addAll(buildReportsEntries(reports));
-        entries.addAll(buildTrashEntries(trash));
+        List<UITimelineEntry> timelineEntries = new ArrayList<>();
+        timelineEntries.addAll(buildReportsEntries(reports));
+        timelineEntries.addAll(buildTrashEntries(trash));
 
-        timeline = new UITimeline(entries);
+        timeline = new UITimeline(timelineEntries);
         timelineSection.getChildren().setAll(timeline);
+    }
 
+    /**
+     * Builds a combined, newest-first table of status reports and trash logs for export
+     *
+     * @param reports The status reports to include
+     * @param trash The trash logs to include
+     * @return The table, ready for ExportManager.exportToCSV
+     */
+    private StringTable buildExportTable(List<StatusReport> reports, List<TrashLog> trash) {
+        List<ExportEntry> exportEntries = new ArrayList<>();
+        reports.forEach(r -> exportEntries.add(ExportEntry.from(r)));
+        /// TrashLog and BinFullness from associated StatusReport
+        trash.forEach(t -> exportEntries.add(ExportEntry.from(t,
+                router.getGlobalState().getStatusReportDAO().getFullnessByTrashLog(t))));
+
+        return new StringTableBuilder<>(exportEntries)
+                .addColumn("time", "Timestamp", o -> StringHelpers.toLocaleString((Instant) o))
+                .addColumn("source", "Type")
+                .addColumn("binId", "Bin ID")
+                .addColumn("fullness", "Fullness")
+                .addColumn("issue", "Issue")
+                .addColumn("trashType", "Trash Type")
+                .addColumn("trashWeight", "Weight")
+                .addColumn("description", "Description")
+                .sortBy(Comparator.comparing(ExportEntry::time).reversed())
+                .build();
     }
 
     /**
@@ -167,9 +207,9 @@ public class TimelinePage extends Page {
 
                     // Convert log into format expected by timeline entry
                     UIImage icon = new UIImage(String.format("/media/images/%s.svg", bin.getCategory().name().toLowerCase()), 50, 50);
-                    String desciption = String.format("%s (%.2fg) logged at %s", trashType, log.trashWeight(), bin.getAreaName());
+                    String description = String.format("%s (%.2fg) logged at %s", trashType, log.trashWeight(), bin.getAreaName());
 
-                    return new UITimelineEntry(DateHelpers.fromLocalTime(LocalDateTime.ofInstant(log.disposedAt(), ZoneId.systemDefault())), icon, "Trash Logged", desciption);
+                    return new UITimelineEntry(DateHelpers.fromLocalTime(LocalDateTime.ofInstant(log.disposedAt(), ZoneId.systemDefault())), icon, "Trash Logged", description);
                 })
                 .toList();
 

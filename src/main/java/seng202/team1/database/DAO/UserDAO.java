@@ -1,15 +1,12 @@
 package seng202.team1.database.DAO;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import seng202.team1.types.user.User;
 import seng202.team1.database.DatabaseManager;
-import seng202.team1.database.SqlTimeUtils;
 import seng202.team1.database.exceptions.DuplicateEntryException;
+import seng202.team1.types.user.User;
 
-import java.sql.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -17,16 +14,18 @@ import java.util.Locale;
  * Database Access Object for user accounts
  * @author abdallaweza
  */
-public class UserDAO extends SqlTimeUtils implements DAOInterface<User> {
-    private static final Logger log = LogManager.getLogger(UserDAO.class);
-    private final DatabaseManager databaseManager;
+public class UserDAO extends BaseDAO<User> {
 
+    /**
+     * Instantiates UserDAO and gets a reference to the database singleton
+     * @param databaseManager database singleton
+     */
     public UserDAO(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
+        super(databaseManager);
     }
 
-    /** Converts the current row of a ResultSet into a User */
-    private User fromRow(ResultSet rs) throws SQLException {
+    @Override
+    protected User fromRow(ResultSet rs) throws SQLException {
         int resetCode = rs.getInt("reset_code");
         Integer resetCodeOrNull = rs.wasNull() ? null : resetCode;
         return new User(
@@ -39,62 +38,23 @@ public class UserDAO extends SqlTimeUtils implements DAOInterface<User> {
                 resetCodeOrNull);
     }
 
-    /** Sets an Integer that may be null */
-    private void setNullableInt(PreparedStatement ps, int index, Integer value) throws SQLException {
-        if (value == null) {
-            ps.setNull(index, Types.INTEGER);
-        } else {
-            ps.setInt(index, value);
-        }
-    }
-
     @Override
     public List<User> getAll() {
-        List<User> users = new ArrayList<>();
-        String sql = "SELECT * FROM users";
-        try (Connection conn = databaseManager.connect();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                users.add(fromRow(rs));
-            }
-        } catch (SQLException e) {
-            log.error(e);
-        }
-        return users;
+        return queryList("SELECT * FROM users");
     }
 
     @Override
     public User getOne(int id) {
-        String sql = "SELECT * FROM users WHERE id = ?";
-        try (Connection conn = databaseManager.connect();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                return rs.next() ? fromRow(rs) : null;
-            }
-        } catch (SQLException e) {
-            log.error(e);
-            return null;
-        }
+        return queryOne("SELECT * FROM users WHERE id = ?", id);
     }
 
     /**
      * Finds a user by email (case-insensitive)
+     * @param email email to look up
      * @return the user, or null if none
      */
     public User getByEmail(String email) {
-        String sql = "SELECT * FROM users WHERE email = ?";
-        try (Connection conn = databaseManager.connect();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, email.toLowerCase(Locale.ROOT));
-            try (ResultSet rs = ps.executeQuery()) {
-                return rs.next() ? fromRow(rs) : null;
-            }
-        } catch (SQLException e) {
-            log.error(e);
-            return null;
-        }
+        return queryOne("SELECT * FROM users WHERE email = ?", email.toLowerCase(Locale.ROOT));
     }
 
     /**
@@ -109,54 +69,34 @@ public class UserDAO extends SqlTimeUtils implements DAOInterface<User> {
         }
         String sql = "INSERT INTO users (created_at, updated_at, name, email, password_hash, reset_code) "
                 + "VALUES (?, ?, ?, ?, ?, ?)";
-        try (Connection conn = databaseManager.connect();
-             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            Instant now = Instant.now();
-            setInstant(ps, 1, now);
-            setInstant(ps, 2, now);
-            ps.setString(3, user.name());
-            ps.setString(4, user.email().toLowerCase(Locale.ROOT));
-            ps.setString(5, user.passwordHash());
-            setNullableInt(ps, 6, user.resetCode());
-            ps.executeUpdate();
-            try (ResultSet keys = ps.getGeneratedKeys()) {
-                return keys.next() ? keys.getInt(1) : -1;
-            }
-        } catch (SQLException e) {
-            log.error(e);
-            return -1;
-        }
+        Instant now = Instant.now();
+        return executeInsert(sql,
+                now,
+                now,
+                user.name(),
+                user.email().toLowerCase(Locale.ROOT),
+                user.passwordHash(),
+                user.resetCode());
     }
 
     @Override
     public void delete(int id) {
-        String sql = "DELETE FROM users WHERE id = ?";
-        try (Connection conn = databaseManager.connect();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            log.error(e);
-        }
+        deleteById("users", id);
     }
 
     @Override
     public void update(User user) {
         String sql = "UPDATE users SET updated_at = ?, name = ?, email = ?, password_hash = ?, reset_code = ? "
                 + "WHERE id = ?";
-        try (Connection conn = databaseManager.connect();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            setInstant(ps, 1, Instant.now());
-            ps.setString(2, user.name());
-            ps.setString(3, user.email().toLowerCase(Locale.ROOT));
-            ps.setString(4, user.passwordHash());
-            setNullableInt(ps, 5, user.resetCode());
-            ps.setInt(6, user.id());
-            if (ps.executeUpdate() == 0) {
-                log.warn("Update affected 0 rows for user id {}", user.id());
-            }
-        } catch (SQLException e) {
-            log.error(e);
+        int rows = executeUpdate(sql,
+                Instant.now(),
+                user.name(),
+                user.email().toLowerCase(Locale.ROOT),
+                user.passwordHash(),
+                user.resetCode(),
+                user.id());
+        if (rows == 0) {
+            log.warn("Update affected 0 rows for user id {}", user.id());
         }
     }
 }

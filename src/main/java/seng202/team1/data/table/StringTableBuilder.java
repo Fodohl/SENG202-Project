@@ -82,15 +82,15 @@ public class StringTableBuilder<T> {
             try {
 
                 // Get the field of each object
-                Field leftFeild = left.getClass().getDeclaredField(dataKey);
-                Field rightFeild = left.getClass().getDeclaredField(dataKey);
+                Field leftField = left.getClass().getDeclaredField(dataKey);
+                Field rightField = left.getClass().getDeclaredField(dataKey);
 
-                leftFeild.setAccessible(true);
-                rightFeild.setAccessible(true);
+                leftField.setAccessible(true);
+                rightField.setAccessible(true);
 
                 // Get each value
-                Object leftValue = leftFeild.get(left);
-                Object rightValue = rightFeild.get(right);
+                Object leftValue = leftField.get(left);
+                Object rightValue = rightField.get(right);
 
                 // Both are null and must be equal
                 if (leftValue == null && rightValue == null)

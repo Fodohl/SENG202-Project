@@ -7,7 +7,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.util.Duration;
 import seng202.team1.helpers.StringHelpers;
-import seng202.team1.data.ExportManager;
+import seng202.team1.data.export.ExportManager;
 import seng202.team1.types.bin.Bin;
 import seng202.team1.types.bin.BinCategory;
 import seng202.team1.types.bin.BinFullness;

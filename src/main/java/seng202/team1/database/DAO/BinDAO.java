@@ -1,48 +1,77 @@
 package seng202.team1.database.DAO;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.jooq.DSLContext;
 import org.jooq.impl.DSL;
+import seng202.team1.database.DatabaseManager;
 import seng202.team1.types.bin.Bin;
 import seng202.team1.types.bin.BinCategory;
 import seng202.team1.types.bin.BinFullness;
-import seng202.team1.database.DatabaseManager;
-import seng202.team1.database.SqlTimeUtils;
 
-
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.Instant;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Handles all bin related actions to the database
  * @author Marcus Demafeliz
  */
-public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
-    private final DatabaseManager databaseManager;
-    private static final Logger log = LogManager.getLogger(BinDAO.class);
+public class BinDAO extends BaseDAO<Bin> {
 
-
+    /**
+     * Instantiates BinDAO and gets a reference to the database singleton
+     * @param databaseManager database singleton
+     */
     public BinDAO(DatabaseManager databaseManager) {
-        this.databaseManager = databaseManager;
-
+        super(databaseManager);
     }
 
     /**
      * Converts string from database to BinCategory
      * @param category string name
-     * @return bin category that matches the string
+     * @return bin category that matches the string, GENERAL_WASTE if unknown
      */
     private BinCategory convertStringToCategory(String category) {
-        return switch(category.toUpperCase(Locale.ROOT)) {
+        return switch (category.toUpperCase(Locale.ROOT)) {
             case "RECYCLABLE" -> BinCategory.RECYCLABLE;
             case "ORGANIC" -> BinCategory.ORGANIC;
             case "E-WASTE", "E_WASTE" -> BinCategory.E_WASTE;
-            default ->  BinCategory.GENERAL_WASTE;
+            default -> BinCategory.GENERAL_WASTE;
         };
     }
 
+    /**
+     * Converts string from database to BinFullness
+     * @param fullness string name
+     * @return bin fullness that matches the string, UNKNOWN if null or unknown
+     */
+    private BinFullness convertStringToFullness(String fullness) {
+        if (fullness == null) {
+            return BinFullness.UNKNOWN;
+        }
+        try {
+            return BinFullness.valueOf(fullness.toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException e) {
+            return BinFullness.UNKNOWN;
+        }
+    }
+
+    @Override
+    protected Bin fromRow(ResultSet rs) throws SQLException {
+        return new Bin(
+                rs.getInt("id"),
+                rs.getDouble("lat"),
+                rs.getDouble("lng"),
+                convertStringToCategory(rs.getString("waste_type")),
+                getInstant(rs, "updated_at"),
+                rs.getString("photo_url"),
+                rs.getString("area"),
+                convertStringToFullness(rs.getString("fullness")));
+    }
 
     /**
      * Gets all bins in the database
@@ -50,61 +79,30 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
      */
     @Override
     public List<Bin> getAll() {
-        List<Bin> bins = new ArrayList<>();
-        String sql = "SELECT * FROM bins";
-        try (Connection conn = databaseManager.connect();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                bins.add(new Bin(
-                        rs.getInt("id"),
-                        rs.getDouble("lat"),
-                        rs.getDouble("lng"),
-                        convertStringToCategory(rs.getString("waste_type")),
-                        getInstant(rs, "updated_at"),
-                        rs.getString("photo_url"),
-                        rs.getString("area"),
-                        convertStringToFullness(rs.getString("fullness"))
-                ));
-            }
-            return bins;
-        } catch (SQLException sqlException) {
-            log.error(sqlException);
-            return new ArrayList<>();
-        }
+        return queryList("SELECT * FROM bins");
     }
 
     /**
      * Gets individual bin from database from id
      * @param id id of object to get
-     * @return bin matching the id
+     * @return bin matching the id, or null if none
      */
     @Override
     public Bin getOne(int id) {
-        Bin bin = null;
-        String sql = "SELECT * FROM bins WHERE id = ?";
-        try (Connection conn = databaseManager.connect();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            try (ResultSet rs  = ps.executeQuery()) {
-                while (rs.next()) {
-                    bin = new Bin(
-                            rs.getInt("id"),
-                            rs.getDouble("lat"),
-                            rs.getDouble("lng"),
-                            convertStringToCategory(rs.getString("waste_type")),
-                            getInstant(rs, "updated_at"),
-                            rs.getString("photo_url"),
-                            rs.getString("area"),
-                            convertStringToFullness(rs.getString("fullness"))
-                            );
-                }
-                return bin;
-            }
-        } catch (SQLException sqlException) {
-            log.error(sqlException);
-            return null;
+        return queryOne("SELECT * FROM bins WHERE id = ?", id);
+    }
+
+    /**
+     * Gets all bins updated after the given time
+     * @param instant cutoff time, or null to get every bin
+     * @return bins with an update time after the cutoff
+     */
+    public List<Bin> getBinsAfter(Instant instant) {
+        // No known update time
+        if (instant == null) {
+            return getAll();
         }
+        return queryList("SELECT * FROM bins WHERE updated_at > ?", instant);
     }
 
     /**
@@ -114,31 +112,20 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
      */
     @Override
     public int add(Bin toAdd) {
-        String sql = "INSERT INTO bins (id, lat, lng, waste_type, updated_at, photo_url, area) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = databaseManager.connect();
-             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setInt(1, toAdd.getID());
-            ps.setDouble(2, toAdd.getLatitude());
-            ps.setDouble(3, toAdd.getLongitude());
-            ps.setString(4, toAdd.getCategory().toString());
-            setInstant(ps, 5, toAdd.getUpdated());
-            ps.setString(6, toAdd.getPhotoURL());
-            ps.setString(7, toAdd.getAreaName());
-            ps.executeUpdate();
-            ResultSet rs = ps.getGeneratedKeys();
-            int insertId = -1;
-            if (rs.next()) {
-                insertId = rs.getInt(1);
-            }
-            return insertId;
-        } catch (SQLException sqlException) {
-            log.error(sqlException);
-            return -1;
-        }
+        String sql = "INSERT INTO bins (id, lat, lng, waste_type, updated_at, photo_url, area) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        return executeInsert(sql,
+                toAdd.getID(),
+                toAdd.getLatitude(),
+                toAdd.getLongitude(),
+                toAdd.getCategory(),
+                toAdd.getUpdated(),
+                toAdd.getPhotoURL(),
+                toAdd.getAreaName());
     }
 
     /**
-     * Adds a batch of bins to the database
+     * Adds a batch of bins to the database, ignoring bins whose id already exists
      * @param bins list of bins to add
      */
     public void addBatch(List<Bin> bins) {
@@ -158,8 +145,7 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
                                     DSL.field("waste_type"),
                                     DSL.field("updated_at"),
                                     DSL.field("photo_url"),
-                                    DSL.field("area")
-                            )
+                                    DSL.field("area"))
                             .values(
                                     bin.getID(),
                                     bin.getLatitude(),
@@ -167,8 +153,7 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
                                     bin.getCategory().toString(),
                                     updatedMillis,
                                     bin.getPhotoURL(),
-                                    bin.getAreaName()
-                            )
+                                    bin.getAreaName())
                             .onDuplicateKeyIgnore()
                             .execute();
                 }
@@ -184,90 +169,40 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
      */
     @Override
     public void delete(int id) {
-        String sql = "DELETE FROM bins WHERE id = ?";
-        try (Connection conn = databaseManager.connect();
-             PreparedStatement ps =conn.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            ps.executeUpdate();
-        } catch (SQLException sqlException) {
-            log.error(sqlException);
-        }
+        deleteById("bins", id);
     }
 
     /**
      * Updates bin from database by id
-     * @param toUpdate Bin with the updated parameter matching id with the bin that needs to be updated
+     * @param toUpdate Bin with the updated parameters, matching the id of the bin to update
      */
     @Override
     public void update(Bin toUpdate) {
-        String sql = "UPDATE bins SET lat = ?, lng = ?, waste_type = ?, updated_at = ?, photo_url = ?, area = ?, fullness = ? WHERE id = ?";
-        try (Connection conn = databaseManager.connect();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setDouble(1, toUpdate.getLatitude());
-            ps.setDouble(2, toUpdate.getLongitude());
-            ps.setString(3, toUpdate.getCategory().toString());
-            setInstant(ps, 4, toUpdate.getUpdated());
-            ps.setString(5, toUpdate.getPhotoURL());
-            ps.setString(6, toUpdate.getAreaName());
-            ps.setString(7, toUpdate.getFullness().toString());
-            ps.setInt(8, toUpdate.getID());
-            int rows = ps.executeUpdate();
-            if (rows == 0) {
-                log.warn("Update affected 0 rows for bin id {}", toUpdate.getID());
-            }
-        } catch (SQLException sqlException) {
-            log.error(sqlException);
+        String sql = "UPDATE bins SET lat = ?, lng = ?, waste_type = ?, updated_at = ?, photo_url = ?, "
+                + "area = ?, fullness = ? WHERE id = ?";
+        int rows = executeUpdate(sql,
+                toUpdate.getLatitude(),
+                toUpdate.getLongitude(),
+                toUpdate.getCategory(),
+                toUpdate.getUpdated(),
+                toUpdate.getPhotoURL(),
+                toUpdate.getAreaName(),
+                toUpdate.getFullness(),
+                toUpdate.getID());
+        if (rows == 0) {
+            log.warn("Update affected 0 rows for bin id {}", toUpdate.getID());
         }
     }
 
-    private BinFullness convertStringToFullness(String fullness) {
-        if (fullness == null)
-            return BinFullness.UNKNOWN;
-
-        try {
-            return BinFullness.valueOf(fullness.toUpperCase(Locale.ROOT));
-        } catch (IllegalArgumentException e) {
-            return BinFullness.UNKNOWN;
-        }
-    }
-
-   public List<Bin> getBinsAfter(Instant instant) {
-
-        // No known update time
-        if (instant == null)
-            return getAll();
-
-        List<Bin> bins = new ArrayList<>();
-        String sql = "SELECT * FROM bins WHERE updated_at > ?";
-        try (Connection conn = databaseManager.connect();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            setInstant(ps, 1, instant);
-            try (ResultSet rs = ps.executeQuery()) {
-                while (rs.next()) {
-                    bins.add(new Bin(
-                            rs.getInt("id"),
-                            rs.getDouble("lat"),
-                            rs.getDouble("lng"),
-                            convertStringToCategory(rs.getString("waste_type")),
-                            getInstant(rs, "updated_at"),
-                            rs.getString("photo_url"),
-                            rs.getString("area"),
-                            convertStringToFullness(rs.getString("fullness"))
-                    ));
-                }
-            }
-            return bins;
-        } catch (SQLException sqlException) {
-            log.error(sqlException);
-            return new ArrayList<>();
-        }
-    }
-
+    /**
+     * Updates the fullness of several bins in a single transaction
+     * @param fullness map of bin id to new fullness
+     */
     public void updateFullness(HashMap<Integer, BinFullness> fullness) {
-
-        // Fullness hasnt changed since last check
-        if (fullness == null || fullness.isEmpty())
+        // Fullness hasn't changed since last check
+        if (fullness == null || fullness.isEmpty()) {
             return;
+        }
 
         long nowMillis = Instant.now().toEpochMilli();
 
@@ -286,6 +221,5 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
         } catch (Exception e) {
             log.error(e);
         }
-
     }
 }
