@@ -1,13 +1,11 @@
 package seng202.team1.gui.components;
 
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
-import seng202.team1.common.StringHelpers;
+import seng202.team1.helpers.StringHelpers;
 
 import java.time.Instant;
 
@@ -22,14 +20,34 @@ public class UITimelineEntry extends HBox {
     private String text;
 
     /**
-     * Constructs a new chunk node for the timeline that represents this entry
+     * Constructs a new start chunk node for the top of the timeline
      *
-     * @param timestamp When in the timeline this entry should go
-     * @param icon The icon that categorises the timeline
-     * @param title The entry title
-     * @param text The entry information
+     * @see #UITimelineEntry(Instant, UIImage, String, String, boolean)
+     */
+    public UITimelineEntry() {
+        this(Instant.now(), new UIImage("", 0, 0), "", "", true);
+
+    }
+
+    /**
+     * Constructs a new normal chunk node for the timeline
+     *
+     * @see #UITimelineEntry(Instant, UIImage, String, String, boolean)
      */
     public UITimelineEntry(Instant timestamp, UIImage icon, String title, String text) {
+        this(timestamp, icon, title, text, false);
+    }
+
+    /**
+     * Constructs a new timeline chunk
+     *
+     * @param timestamp When in the timelien this occurrs
+     * @param icon The icon to show relative to this chunk
+     * @param title What this chunk is about
+     * @param text Extra info about this chunk
+     * @param isFirst Whether this is the first chunk in the timelier or not
+     */
+    public UITimelineEntry(Instant timestamp, UIImage icon, String title, String text, boolean isFirst) {
 
         super();
         this.timestamp = timestamp;
@@ -37,6 +55,9 @@ public class UITimelineEntry extends HBox {
 
         setAlignment(Pos.CENTER);
         getStyleClass().add("timeline");
+
+        if (isFirst)
+            getStyleClass().add("timeline-first");
 
         Label titleLabel = new Label(title);
         Label textLabel = new Label(text);
@@ -76,9 +97,15 @@ public class UITimelineEntry extends HBox {
         // This entries portion of the timeline axis
         StackPane verticalAxis = new StackPane(timelineChunk, dot);
         verticalAxis.setPrefWidth(30);
+        verticalAxis.getStyleClass().add("timeline-axis");
+
+        if (isFirst) {
+            StackPane.setAlignment(dot, Pos.BASELINE_CENTER);
+            verticalAxis.getChildren().add(new Label("Today"));
+        }
 
         // Combine
-        this.getChildren().addAll(detailsContainer,  dateContainer, connector, verticalAxis);
+        this.getChildren().addAll(detailsContainer, dateContainer, connector, verticalAxis);
     }
 
     /**
@@ -86,7 +113,7 @@ public class UITimelineEntry extends HBox {
      *
      * @return The instant this entry represents
      */
-    public Instant getTime(){
+    public Instant getTime() {
         return timestamp;
     }
 

@@ -8,21 +8,16 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
-import seng202.team1.common.StringHelpers;
-import seng202.team1.data.bin.Bin;
-import seng202.team1.data.bin.BinFullness;
-import seng202.team1.data.status.ReportType;
-import seng202.team1.data.trashlog.TrashLog;
-import seng202.team1.data.trashlog.TrashType;
+import seng202.team1.helpers.StringHelpers;
+import seng202.team1.types.bin.Bin;
+import seng202.team1.types.bin.BinFullness;
+import seng202.team1.types.bin.BinCategory;
+import seng202.team1.types.status.ReportType;
+import seng202.team1.types.trashlog.TrashLog;
+import seng202.team1.types.trashlog.TrashType;
 import seng202.team1.data.treedays.TreeDaysCalculator;
-import seng202.team1.gui.WindowManager;
-import seng202.team1.gui.components.UIButton;
-import seng202.team1.gui.components.UIChipsInput;
-import seng202.team1.gui.components.UIIconButton;
-import seng202.team1.gui.components.UIIconText;
-import seng202.team1.gui.components.UISearchDropDown;
-import seng202.team1.gui.components.UISection;
-import seng202.team1.gui.components.UITextInput;
+import seng202.team1.gui.Router;
+import seng202.team1.gui.components.*;
 
 
 /**
@@ -48,10 +43,10 @@ public class LogTrashModal extends Modal {
     /**
      * Construct a new LogTrashModal
      *
-     * @param windowManager The window manager responsible for this modal
+     * @param router The router responsible for this modal
      */
-    public LogTrashModal(WindowManager windowManager) {
-        super(windowManager, Modals.LOG_TRASH);
+    public LogTrashModal(Router router) {
+        super(router, Modals.LOG_TRASH);
     }
 
     /**
@@ -192,12 +187,28 @@ public class LogTrashModal extends Modal {
             return;
 
         // Save
-        windowManager.getGlobalState().getTrashLogDAO().add(new TrashLog(Instant.now(), Instant.now(), userID, binID, type, weight));
-        windowManager.getGlobalState().getStatusReportStore().logReport(bin, fullness, ReportType._FULLNESS_UPDATE, "");
+        getState().getTrashLogDAO().add(new TrashLog(Instant.now(), Instant.now(), userID, binID, type, weight));
+        var session = getState().getAuth().getSession();
 
-         // Refresh the bins' average status
-        getWindow().getGlobalState().refreshBinFullness(bin);
+        if (session != null && session.userDetails() != null) {
+            getState().getStatusReportStore().logReport(
+                    bin,
+                    fullness,
+                    ReportType._FULLNESS_UPDATE,
+                    "",
+                    session.userDetails()
+            );
+        } else {
+            getState().getStatusReportStore().logReport(
+                    bin,
+                    fullness,
+                    ReportType._FULLNESS_UPDATE,
+                    ""
+            );
+        }
+        getState().refreshBinFullness(bin);
 
+        getState().sync();
         closeModal();
     }
 

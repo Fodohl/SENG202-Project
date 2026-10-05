@@ -2,12 +2,10 @@ package seng202.team1.unittests.data.table;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
-import seng202.team1.data.bin.Bin;
+import seng202.team1.types.bin.Bin;
 import seng202.team1.data.table.StringTable;
 import seng202.team1.data.table.StringTableBuilder;
 import seng202.team1.unittests.TrashAppTest;
-
-import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 

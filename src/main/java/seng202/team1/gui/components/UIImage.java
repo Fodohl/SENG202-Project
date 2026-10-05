@@ -1,5 +1,6 @@
 package seng202.team1.gui.components;
 
+import javafx.application.Platform;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -17,8 +18,13 @@ import org.apache.logging.log4j.Logger;
 import org.girod.javafx.svgimage.SVGImage;
 import org.girod.javafx.svgimage.SVGLoader;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Objects;
 
 /**
@@ -32,6 +38,16 @@ public class UIImage extends StackPane {
     /// UImage specific logger
     private static final Logger log = LogManager.getLogger(UIImage.class);
 
+    /// How many pixels across the image should be rendered as
+    private double width;
+
+    /// How many pixels tall the image should be rendered as
+    private double height;
+
+    /// Where downloaded web images are kept (never expire)
+    private static final Path CACHE_DIR = Path.of(System.getProperty("user.home"), ".trashapp/cache/images");
+
+
     /**
      * Constructs a new UI Image
      *
@@ -41,9 +57,34 @@ public class UIImage extends StackPane {
      */
     public UIImage(String path, double width, double height) {
 
-        // Ensure stack pane is same dimensions
+        // Ensure stack pane is always exactly the requested dimensions
+        setMinSize(width, height);
         setPrefSize(width, height);
+        setMaxSize(width, height);
         setAlignment(Pos.CENTER);
+
+        this.width = width;
+        this.height = height;
+
+        renderImage(path);
+    }
+
+    /**
+     * Load a image from a path onto this component
+     *
+     * @param path The image to load, if it exsists
+     */
+    private void renderImage(String path) {
+
+        // NO image to load
+        if(path == null)
+            return;
+
+        // Image not on disk
+        if (path.startsWith("http")) {
+            loadWebImage(path);
+            return;
+        }
 
         // Check that the image exists
         InputStream is = UIImage.class.getResourceAsStream(path);
@@ -53,20 +94,16 @@ public class UIImage extends StackPane {
         }
 
         // Load image
-        getChildren().add(path.endsWith(".svg") ? loadSvgImage(path, width, height)
-                : loadImage(is, width, height));
-
+        getChildren().setAll(path.endsWith(".svg") ? loadSvgImage(path) : loadImage(is));
     }
 
     /**
      * Load a Scalable Vector Graphics (SVG) image file
      *
-     * @param path   The path to the svg
-     * @param width  How many pixels across the svg should be scaled to
-     * @param height How many pixels tall the svg should be scaled to
+     * @param path The path to the svg
      * @return A scaled SVG container
      */
-    private Node loadSvgImage(String path, double width, double height) {
+    private Node loadSvgImage(String path) {
 
         // Load image
         URL fullpath = getClass().getResource(path);
@@ -118,15 +155,24 @@ public class UIImage extends StackPane {
      * Load a standard image file from a stream
      *
      * @param stream The opened image file stream
-     * @param width  How many pixels across the image should be rendered as
-     * @param height How many pixels tall the image should be rendered as
      * @return The resized image view for the image
      */
-    private ImageView loadImage(InputStream stream, double width, double height) {
+    private ImageView loadImage(InputStream stream) {
 
         // Load image
         Image img = new Image(stream);
         ImageView imageView = new ImageView(img);
+
+        return setupImageView(imageView);
+    }
+
+    /**
+     * Resizes a image view to fit the desired dimensions
+     *
+     * @param imageView The image to size
+     * @return The resized view
+     */
+    private ImageView setupImageView(ImageView imageView) {
 
         // Resize to dims
         imageView.setFitWidth(width);
@@ -134,8 +180,65 @@ public class UIImage extends StackPane {
         imageView.setPreserveRatio(true);
 
         return imageView;
+
     }
 
+    /**
+     * Load and cache a image from a online URL
+     *
+     * @param path The image to load
+     * @return The loaded image
+     */
+    private void loadWebImage(String path) {
+
+        // Show loader
+        String webPath = path.trim().replace(" ", "%20");
+        getChildren().setAll(new UISpinner(Math.min(width, height) / 2));
+
+        Thread thread = new Thread(() -> {
+
+            try {
+
+                // Load image
+                Image img = new Image(fetchImage(webPath));
+                ImageView imageView = new ImageView(img);
+
+                Platform.runLater(() -> getChildren().setAll(setupImageView(imageView)));
+
+            } catch (Exception e) {
+                log.warn("Invalid image path:  {}", webPath);
+            }
+
+        });
+        thread.start();
+    }
+
+    /**
+     * Load an image from the cache, downloading it to the cahce if it doesnt exist
+     *
+     * @param path The image to download/load
+     * @return The image
+     */
+    private InputStream fetchImage(String path) throws IOException {
+
+        // Parse the URL
+        URI url = URI.create(path);
+        String filename = Paths.get(url.getPath()).getFileName().toString();
+        Path file = CACHE_DIR.resolve(filename);
+
+        // Make sure cache exists
+        Files.createDirectories(CACHE_DIR);
+
+        // Image not yet cached
+        if(!Files.exists(file)){
+            InputStream is = url.toURL().openStream();
+            Files.copy(is, file);
+        } else{
+            log.info("Cache hit for image: {} -> {}", path, file);
+        }
+
+        return Files.newInputStream(file);
+    }
 
     /**
      * Convert the image to a raw image buffer
@@ -160,5 +263,14 @@ public class UIImage extends StackPane {
 
         // Write the component to an image
         return this.snapshot(params, null);
+    }
+
+    /**
+     * Update this image to show a different image
+     *
+     * @param path The image to show
+     */
+    public void setSource(String path) {
+        renderImage(path);
     }
 }

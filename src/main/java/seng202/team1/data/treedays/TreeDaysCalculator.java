@@ -15,9 +15,9 @@ import java.util.Optional;
 import com.google.gson.reflect.TypeToken;
 
 import seng202.team1.TrashApp;
-import seng202.team1.data.trashlog.TrashEmission;
-import seng202.team1.data.trashlog.TrashLog;
-import seng202.team1.data.trashlog.TrashType;
+import seng202.team1.types.trashlog.TrashEmission;
+import seng202.team1.types.trashlog.TrashLog;
+import seng202.team1.types.trashlog.TrashType;
 
 /**
  * Calculates the tree-days of all of the logged trash.

@@ -4,23 +4,19 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import seng202.team1.data.bin.Bin;
-import seng202.team1.data.bin.BinCategory;
-import seng202.team1.data.bin.BinFullness;
-import seng202.team1.data.sqlite.DAO.BinDAO;
-import seng202.team1.data.status.ReportType;
-import seng202.team1.data.trashlog.TrashLog;
-import seng202.team1.data.trashlog.TrashType;
-import seng202.team1.gui.components.UITable;
-import seng202.team1.gui.components.UITimeline;
+import seng202.team1.types.bin.Bin;
+import seng202.team1.types.bin.BinCategory;
+import seng202.team1.types.bin.BinFullness;
+import seng202.team1.database.DAO.BinDAO;
+import seng202.team1.types.status.ReportType;
+import seng202.team1.types.trashlog.TrashLog;
+import seng202.team1.types.trashlog.TrashType;
 import seng202.team1.gui.components.UITimelineEntry;
-import seng202.team1.gui.pages.DataPage;
 import seng202.team1.gui.pages.TimelinePage;
 import seng202.team1.state.GlobalState;
 import seng202.team1.unittests.TrashAppTest;
 
 import java.io.IOException;
-import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
@@ -37,10 +33,7 @@ public class TimelineStepDefs {
     public void init() throws IOException {
 
         TrashAppTest.initFx();
-        globalState = new GlobalState(null, true);
-        globalState.getDatabaseManager().resetDB();
-
-        globalState.getDatabaseManager();
+        globalState = TrashAppTest.newTestState();
 
         BinDAO binDAO = globalState.getBinDAO();
     }
@@ -48,7 +41,7 @@ public class TimelineStepDefs {
 
     public void openPage() {
 
-        TimelinePage dataPage = new TimelinePage(globalState.getWindowManager());
+        TimelinePage dataPage = new TimelinePage(globalState.getRouter());
         dataPage.rerender();
 
         timlineEntries = dataPage.getTimeline().getEntries();

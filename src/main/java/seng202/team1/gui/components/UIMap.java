@@ -1,21 +1,11 @@
 package seng202.team1.gui.components;
 
 import com.google.gson.reflect.TypeToken;
-import javafx.application.Platform;
-import javafx.concurrent.Worker;
-import javafx.scene.layout.StackPane;
-import javafx.scene.web.WebEngine;
-import javafx.scene.web.WebView;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import seng202.team1.common.URLHelpers;
 import seng202.team1.data.route.RouteInstruction;
-import seng202.team1.state.GlobalState;
 
 import java.lang.reflect.Type;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -273,5 +263,14 @@ public class UIMap extends UIWebRenderer {
      */
     public void centreOnPoint(int markerId) {
         call(String.format("centerOnMarker(%d);", markerId));
+    }
+
+    /**
+     * Select a bin on the map
+     *
+     * @param binID The bin to select
+     */
+    public void showBin(Integer binID) {
+        call(String.format("onPointClicked(%d);", binID));
     }
 }

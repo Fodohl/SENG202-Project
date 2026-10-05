@@ -102,6 +102,12 @@ dependencies {
 
     // https://mvnrepository.com/artifact/com.google.code.gson/gson
     implementation 'com.google.code.gson:gson:2.14.0'
+
+    // https://mvnrepository.com/artifact/commons-validator/commons-validator
+    implementation 'commons-validator:commons-validator:1.11.0'
+
+    // https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client
+    implementation 'org.mariadb.jdbc:mariadb-java-client:3.5.10'
 }
 
 application {
@@ -127,6 +133,15 @@ test {
     }
 
     finalizedBy jacocoTestReport
+
+     testLogging {
+        events "failed"
+        exceptionFormat "full"
+        showStackTraces = true
+        showCauses = true
+    }
+
+    environment "APP_TOKEN_SECRET", "test-secret"
 }
 
 
@@ -194,6 +209,7 @@ jacocoTestReport {
 tasks.withType(JavaExec).configureEach {
     jvmArgs += [
         '--enable-native-access=ALL-UNNAMED',
-        '--enable-native-access=javafx.web'
+        '--enable-native-access=javafx.web',
+        '--enable-native-access=javafx.graphics',
     ]
 }

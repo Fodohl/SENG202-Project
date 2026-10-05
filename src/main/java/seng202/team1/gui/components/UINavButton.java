@@ -1,11 +1,8 @@
 package seng202.team1.gui.components;
 
-import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
-import seng202.team1.common.StringHelpers;
+import seng202.team1.helpers.StringHelpers;
 import seng202.team1.gui.GraphicsCommon;
-import seng202.team1.gui.WindowManager;
+import seng202.team1.gui.Router;
 import seng202.team1.gui.pages.Pages;
 
 /**
@@ -18,8 +15,8 @@ import seng202.team1.gui.pages.Pages;
  */
 public class UINavButton extends UIIconButton {
 
-    /// The window manager responsible for the active page and switching to others
-    private WindowManager windowManager;
+    /// The router responsible for the active page and switching to others
+    private Router router;
 
     /// The page type this nav button represents as a clickable destination
     private Pages dest;
@@ -27,22 +24,22 @@ public class UINavButton extends UIIconButton {
     /**
      * Constructs a new UINavButton
      *
-     * @param windowManager The current window manger for the page this button is on
+     * @param router The current window manger for the page this button is on
      * @param dest The navigation destination
      */
-    public UINavButton(WindowManager windowManager, Pages dest) {
+    public UINavButton(Router router, Pages dest) {
 
         // Setup state
         super(String.format("/media/images/%s.svg", dest.name().toLowerCase()), StringHelpers.toTitleCase(dest.name()));
-        this.windowManager = windowManager;
+        this.router = router;
         this.dest = dest;
 
         // Apply styles
-        updateIsActive(windowManager.getCurrentPage());
+        updateIsActive(router.getCurrentPage());
 
         // Handle events
-        setOnMouseClicked(e -> windowManager.switchPage(dest));
-        windowManager.registerPageChangeCallback(this::updateIsActive);
+        setOnMouseClicked(e -> router.switchPage(dest));
+        router.registerPageChangeCallback(this::updateIsActive);
     }
 
 

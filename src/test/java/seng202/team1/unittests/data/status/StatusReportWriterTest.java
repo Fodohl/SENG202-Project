@@ -3,11 +3,12 @@ package seng202.team1.unittests.data.status;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
-import seng202.team1.data.bin.*;
-import seng202.team1.data.status.ReportType;
-import seng202.team1.data.status.StatusReport;
-import seng202.team1.data.User;
+import seng202.team1.types.bin.BinFullness;
+import seng202.team1.types.status.ReportType;
+import seng202.team1.types.status.StatusReport;
+import seng202.team1.types.user.User;
 import seng202.team1.data.status.StatusReportWriter;
+import seng202.team1.types.bin.BinCategory;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -29,7 +30,7 @@ public class StatusReportWriterTest {
     private StatusReportWriter statusReportWriter;
     private StatusReport testStatusReport;
     private StatusReport testStatusReport2;
-    private Bin testBin;
+    private seng202.team1.types.bin.Bin testBin;
     private User testUser;
 
     @TempDir
@@ -39,14 +40,14 @@ public class StatusReportWriterTest {
     public void setUp() {
         statusReportWriter = new StatusReportWriter();
 
-        testBin = new Bin(
+        testBin = new seng202.team1.types.bin.Bin(
                 1,
                 1.0,
                 1.0,
                 BinCategory.GENERAL_WASTE, Instant.now(), "testPark"
         );
 
-        testUser = new User(1, "Test");
+        testUser = new User(1, Instant.now(), Instant.now(), "Test", "", "", 0);
 
         testStatusReport = new StatusReport(
                 testBin,
@@ -59,7 +60,7 @@ public class StatusReportWriterTest {
 
          testStatusReport2 = new StatusReport(
                 testBin,
-                new User(2, "Test2"),
+                new User(2, Instant.now(), Instant.now(), "Test2", "", "", 0),
                 BinFullness.EMPTY,
                 ReportType.GRAFFITI,
                 "Test description2",
@@ -86,7 +87,7 @@ public class StatusReportWriterTest {
 
         assertTrue(contents.contains("\"binID\":1"));
         assertTrue(contents.contains("\"user\":\"Test\""));
-        assertTrue(contents.contains("\"userID\":1"));
+        assertTrue(contents.contains("\"id\":1"));
         assertTrue(contents.contains("\"fullness\":\"FULL\""));
         assertTrue(contents.contains("\"issue\":\"OTHER\""));
         assertTrue(contents.contains("\"description\":\"Test description\""));
@@ -101,7 +102,7 @@ public class StatusReportWriterTest {
         assertTrue(contents.contains("\"statusReports\":[]"));
         assertFalse(contents.contains("\"binID\""));
         assertFalse(contents.contains("\"user\""));
-        assertFalse(contents.contains("\"userID\""));
+        assertFalse(contents.contains("\"id\""));
         assertFalse(contents.contains("\"fullness\""));
         assertFalse(contents.contains("\"issue\""));
         assertFalse(contents.contains("\"description\""));
@@ -116,14 +117,14 @@ public class StatusReportWriterTest {
 
         assertTrue(contents.contains("\"binID\":1"));
         assertTrue(contents.contains("\"user\":\"Test\""));
-        assertTrue(contents.contains("\"userID\":1"));
+        assertTrue(contents.contains("\"id\":1"));
         assertTrue(contents.contains("\"fullness\":\"FULL\""));
         assertTrue(contents.contains("\"issue\":\"OTHER\""));
         assertTrue(contents.contains("\"description\":\"Test description\""));
 
         assertTrue(contents.contains("\"binID\":1"));
         assertTrue(contents.contains("\"user\":\"Test2\""));
-        assertTrue(contents.contains("\"userID\":2"));
+        assertTrue(contents.contains("\"id\":2"));
         assertTrue(contents.contains("\"fullness\":\"EMPTY\""));
         assertTrue(contents.contains("\"issue\":\"GRAFFITI\""));
         assertTrue(contents.contains("\"description\":\"Test description2\""));
@@ -137,13 +138,13 @@ public class StatusReportWriterTest {
         String contents = Files.readString(testFile);
         assertTrue(contents.contains("\"binID\":1"));
         assertTrue(contents.contains("\"user\":\"Test2\""));
-        assertTrue(contents.contains("\"userID\":2"));
+        assertTrue(contents.contains("\"id\":2"));
         assertTrue(contents.contains("\"fullness\":\"EMPTY\""));
         assertTrue(contents.contains("\"issue\":\"GRAFFITI\""));
         assertTrue(contents.contains("\"description\":\"Test description2\""));
 
         assertFalse(contents.contains("\"user\":\"Test\""));
-        assertFalse(contents.contains("\"userID\":1"));
+        assertFalse(contents.contains("\"id\":1"));
         assertFalse(contents.contains("\"fullness\":\"FULL\""));
         assertFalse(contents.contains("\"issue\":\"OTHER\""));
         assertFalse(contents.contains("\"description\":\"Test description\""));
@@ -165,7 +166,7 @@ public class StatusReportWriterTest {
 
         assertTrue(contents.contains("\"binID\":1"));
         assertTrue(contents.contains("\"user\":\"Test\""));
-        assertTrue(contents.contains("\"userID\":1"));
+        assertTrue(contents.contains("\"id\":1"));
         assertTrue(contents.contains("\"fullness\":null"));
         assertTrue(contents.contains("\"issue\":null"));
         assertTrue(contents.contains("\"description\":null"));

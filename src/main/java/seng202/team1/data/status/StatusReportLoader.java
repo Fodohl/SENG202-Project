@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -15,10 +16,13 @@ import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import seng202.team1.data.User;
-import seng202.team1.data.bin.Bin;
-import seng202.team1.data.bin.BinFullness;
-import seng202.team1.data.sqlite.DAO.BinDAO;
+import seng202.team1.types.user.User;
+import seng202.team1.types.bin.Bin;
+import seng202.team1.types.bin.BinFullness;
+import seng202.team1.database.DAO.BinDAO;
+import seng202.team1.types.status.ReportType;
+import seng202.team1.types.status.StatusReport;
+
 
 /**
  * Loads bin report data from a JSON file into {@link StatusReport} instances
@@ -112,10 +116,10 @@ public class StatusReportLoader {
         Bin bin = bins.getOne(binID);
         String reportStatus = (String) jsonObject.get("fullness");
         String reportUser = (String) jsonObject.get("user");
-        int reportUserID = ((Number) jsonObject.get("userID")).intValue();
+        int reportUserID = ((Number) jsonObject.get("id")).intValue();
         String reportIssue = (String) jsonObject.get("issue");
         String reportDescription = (String) jsonObject.get("description");
-        User user = new User(reportUserID, reportUser);
+        User user = new User(reportUserID, Instant.now(), Instant.now(), reportUser, "", "", 0);
         LocalDateTime time = LocalDateTime.parse(jsonObject.get("createdAt").toString());
 
         BinFullness status;
