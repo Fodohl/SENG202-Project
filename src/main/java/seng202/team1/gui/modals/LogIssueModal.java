@@ -1,6 +1,7 @@
 package seng202.team1.gui.modals;
 
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
@@ -11,6 +12,9 @@ import seng202.team1.types.status.ReportType;
 import seng202.team1.types.bin.BinFullness;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.components.*;
+import seng202.team1.types.status.StatusReport;
+
+import java.time.Instant;
 
 /**
  * A Modal (overlay) to display a bin issue report
@@ -168,22 +172,12 @@ public class LogIssueModal extends Modal {
         var session = getState().getAuth().getSession();
 
         if (session != null && session.userDetails() != null) {
-            getState().getStatusReportStore().logReport(
-                    bin,
-                    fullness,
-                    type,
-                    report,
-                    session.userDetails()
-            );
+            StatusReport reportToAdd = new StatusReport(binID, session.userDetails().id(), fullness, type, report, Instant.now());
+            getState().getStatusReportDAO().add(reportToAdd);
         } else {
-            getState().getStatusReportStore().logReport(
-                    bin,
-                    fullness,
-                    type,
-                    report
-            );
+            StatusReport reportToAdd = new StatusReport(binID, 0, fullness, type, report, Instant.now());
+            getState().getStatusReportDAO().add(reportToAdd);
         }
-
         getState().refreshBinFullness(bin);
         getState().sync();
 

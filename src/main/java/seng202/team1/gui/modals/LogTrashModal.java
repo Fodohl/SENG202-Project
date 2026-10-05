@@ -13,6 +13,7 @@ import seng202.team1.types.bin.Bin;
 import seng202.team1.types.bin.BinFullness;
 import seng202.team1.types.bin.BinCategory;
 import seng202.team1.types.status.ReportType;
+import seng202.team1.types.status.StatusReport;
 import seng202.team1.types.trashlog.TrashLog;
 import seng202.team1.types.trashlog.TrashType;
 import seng202.team1.data.treedays.TreeDaysCalculator;
@@ -191,20 +192,11 @@ public class LogTrashModal extends Modal {
         var session = getState().getAuth().getSession();
 
         if (session != null && session.userDetails() != null) {
-            getState().getStatusReportStore().logReport(
-                    bin,
-                    fullness,
-                    ReportType._FULLNESS_UPDATE,
-                    "",
-                    session.userDetails()
-            );
+            StatusReport reportToAdd = new StatusReport(binID, session.userDetails().id(), fullness, ReportType._FULLNESS_UPDATE, "", Instant.now());
+            getState().getStatusReportDAO().add(reportToAdd);
         } else {
-            getState().getStatusReportStore().logReport(
-                    bin,
-                    fullness,
-                    ReportType._FULLNESS_UPDATE,
-                    ""
-            );
+            StatusReport reportToAdd = new StatusReport(binID, 0, fullness, ReportType._FULLNESS_UPDATE, "", Instant.now());
+            getState().getStatusReportDAO().add(reportToAdd);
         }
         getState().refreshBinFullness(bin);
 

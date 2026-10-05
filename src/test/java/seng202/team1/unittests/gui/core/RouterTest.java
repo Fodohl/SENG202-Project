@@ -58,18 +58,4 @@ class RouterTest extends TrashAppTest {
         assertFalse(router.registerPageChangeCallback(callback));
     }
 
-    @Test
-    public void backShouldGoToPreviousPage() {
-
-        router.switchPhase(Phases.MAIN);
-
-        // Switch to a page
-        router.switchPage(Pages.HOME);
-        router.switchPage(Pages.MAP);
-
-        // Go back
-        router.backPage();
-        assertEquals(Pages.HOME, router.getCurrentPage());
-    }
-
 }

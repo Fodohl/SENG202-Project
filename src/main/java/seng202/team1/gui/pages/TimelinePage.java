@@ -115,7 +115,7 @@ public class TimelinePage extends Page {
      */
     void renderTimelineEntries() {
 
-        List<StatusReport> reports = router.getGlobalState().getStatusReportStore().getReports();
+        List<StatusReport> reports = router.getGlobalState().getStatusReportDAO().getAll();
         List<TrashLog> trash = router.getGlobalState().getTrashLogDAO().getAll();
 
         // Combine trash logs and status reports
@@ -142,9 +142,8 @@ public class TimelinePage extends Page {
 
                     // Convert report into format expected by timeline entry
                     UIImage icon = new UIImage(String.format("/media/images/%s.svg", report.getIssue().name().toLowerCase()), 50, 50);
-                    Instant time = DateHelpers.fromLocalTime(report.getSubmittedAt());
 
-                    return new UITimelineEntry(time, icon, "Status Report", report.getDescription());
+                    return new UITimelineEntry(report.getSubmittedAt(), icon, "Status Report", report.getDescription());
                 })
                 .toList();
     }
