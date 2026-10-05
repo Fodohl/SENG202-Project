@@ -26,6 +26,7 @@ public class BinFullnessCalculator {
     }
 
     public static void refreshBinFullness(Bin bin, BinDAO binDAO, List<StatusReport> reportsFoBin) {
-        bin.updateFullness(binDAO, reportsFoBin);
+        bin.updateFullness(reportsFoBin);
+        binDAO.update(bin);
     }
 }

@@ -73,3 +73,16 @@ CREATE TABLE community_cleanliness (
 
     UNIQUE (year, month)
 );
+
+
+--SPLIT
+CREATE TABLE leaderboard (
+    place INTEGER PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    user_name VARCHAR(255) NOT NULL,
+    log_count INTEGER NOT NULL,
+    tree_days DECIMAL(10, 2) NOT NULL,
+    updated_at BIGINT NOT NULL,
+
+    CONSTRAINT fk_leaderboard_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);

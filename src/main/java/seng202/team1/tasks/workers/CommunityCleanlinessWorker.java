@@ -20,6 +20,6 @@ public class CommunityCleanlinessWorker extends Task {
 
     @Override
     public void task(TaskManager manager) {
-        manager.getGlobalState().getTaServer().runRecomputeFullness();
+        manager.getGlobalState().getTaServer().runRecountCommunityTrash();
     }
 }

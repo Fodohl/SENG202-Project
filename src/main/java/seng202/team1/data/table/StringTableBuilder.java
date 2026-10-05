@@ -16,7 +16,7 @@ public class StringTableBuilder<T> {
     private final Map<String, String> colMap = new LinkedHashMap<>();
 
     /// The map of fields to data formatters
-    private final Map<String, Function<Object, String>> formatters = new HashMap<>();
+    private final Map<String, Function<T, String>> formatters = new HashMap<>();
 
     /// The comparator that is currently sorting the table
     private Comparator<T> comparator;
@@ -36,18 +36,19 @@ public class StringTableBuilder<T> {
      * @see #addColumn(String, String, Function)
      */
     public StringTableBuilder<T> addColumn(String dataKey, String displayName) {
-        return addColumn(dataKey, displayName, obj -> obj == null ? "" : obj.toString());
+        colMap.put(dataKey, displayName);
+        return this;
     }
 
     /**
      * Add a new column to the string table
      *
-     * @param dataKey The field name on the object
+     * @param dataKey     The field name on the object
      * @param displayName The name to put as the header
-     * @param formatter The function to use to format the value of the field
+     * @param formatter   The function to use to format the value of the field
      * @return The builder instance
      */
-    public StringTableBuilder<T> addColumn(String dataKey, String displayName, Function<Object, String> formatter) {
+    public StringTableBuilder<T> addColumn(String dataKey, String displayName, Function<T, String> formatter) {
         colMap.put(dataKey, displayName);
         formatters.put(dataKey, formatter);
         return this;
@@ -66,10 +67,10 @@ public class StringTableBuilder<T> {
 
     /**
      * Sort by a specific field
-     *
+     * <p>
      * Note: Expects templated type to a Comparable, however if not will fall back to string comparison
      *
-     * @param dataKey The field to sort by
+     * @param dataKey   The field to sort by
      * @param ascending Whether to sort ascendingly or descendinly
      * @return The builder instance
      */
@@ -82,15 +83,15 @@ public class StringTableBuilder<T> {
             try {
 
                 // Get the field of each object
-                Field leftField = left.getClass().getDeclaredField(dataKey);
-                Field rightField = left.getClass().getDeclaredField(dataKey);
+                Field leftFeild = left.getClass().getDeclaredField(dataKey);
+                Field rightFeild = left.getClass().getDeclaredField(dataKey);
 
-                leftField.setAccessible(true);
-                rightField.setAccessible(true);
+                leftFeild.setAccessible(true);
+                rightFeild.setAccessible(true);
 
                 // Get each value
-                Object leftValue = leftField.get(left);
-                Object rightValue = rightField.get(right);
+                Object leftValue = leftFeild.get(left);
+                Object rightValue = rightFeild.get(right);
 
                 // Both are null and must be equal
                 if (leftValue == null && rightValue == null)
@@ -106,7 +107,7 @@ public class StringTableBuilder<T> {
                 if (leftValue instanceof Comparable && rightValue instanceof Comparable) {
 
                     // Use the object's custom comparison logic
-                    Comparable<Object> leftCompare = (Comparable<Object>)leftValue;
+                    Comparable<Object> leftCompare = (Comparable<Object>) leftValue;
                     comparison = leftCompare.compareTo(rightValue);
 
                 } else {
@@ -130,8 +131,10 @@ public class StringTableBuilder<T> {
      *
      * @param newData The new data for the table
      */
-    public void updateData(List<T> newData){
-        this.rawData = newData;
+    public void updateData(List<T> newData) {
+
+        // Copy the list so it can be messed with
+        this.rawData = new ArrayList<>(newData);
     }
 
     /**

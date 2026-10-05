@@ -5,6 +5,7 @@ import seng202.team1.api.trashdb.TrashDBClient;
 import seng202.team1.tasks.background.SyncToBackendTask;
 import seng202.team1.tasks.workers.BinFullnessWorker;
 import seng202.team1.tasks.workers.CommunityCleanlinessWorker;
+import seng202.team1.tasks.workers.LeaderboardWorker;
 import seng202.team1.types.photon.Feature;
 import seng202.team1.api.photon.PhotonClient;
 import seng202.team1.types.trashdb.CommunityCleanliness;
@@ -153,6 +154,7 @@ public class GlobalState {
 
          backgroundTasks.runTask(new BinFullnessWorker(backgroundTasks));
          backgroundTasks.runTask(new CommunityCleanlinessWorker(backgroundTasks));
+         backgroundTasks.runTask(new LeaderboardWorker(backgroundTasks));
     }
 
     /**
@@ -284,7 +286,7 @@ public class GlobalState {
      *
      * @return The current leaderboard or null if still loading
      */
-    public TrashDBLeaderboardResponse getCommunity() {
+    public TrashDBLeaderboardResponse getLeaderboard() {
         return leaderboard;
     }
 

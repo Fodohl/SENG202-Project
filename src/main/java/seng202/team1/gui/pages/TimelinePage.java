@@ -154,7 +154,7 @@ public class TimelinePage extends Page {
         trash.forEach(t -> exportEntries.add(ExportEntry.from(t)));
 
         return new StringTableBuilder<>(exportEntries)
-                .addColumn("time", "Timestamp", o -> StringHelpers.toLocaleString((Instant) o))
+                .addColumn("time", "Timestamp", entry -> StringHelpers.toLocaleString(entry.time()))
                 .addColumn("source", "Type")
                 .addColumn("binId", "Bin ID")
                 .addColumn("fullness", "Fullness")

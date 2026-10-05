@@ -12,6 +12,6 @@ public class BinFullnessWorker extends Task {
 
     @Override
     public void task(TaskManager manager) {
-        manager.getGlobalState().getTaServer().runRecountCommunityTrash();
+        manager.getGlobalState().getTaServer().runRecomputeFullness();
     }
 }

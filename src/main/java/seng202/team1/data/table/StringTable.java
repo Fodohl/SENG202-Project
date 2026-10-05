@@ -72,7 +72,7 @@ public class StringTable extends LinkedHashMap<String, List<String>> {
      * @param object The data for the row
      * @return True if the row was added successfully, false otherwise.
      */
-    public boolean add(Object object, Map<String, Function<Object, String>> formatters){
+    public <T> boolean add(T object, Map<String, Function<T, String>> formatters){
 
         // Get fields the object has
         List<Field> declaredFields = Arrays.asList(object.getClass().getDeclaredFields());
@@ -98,11 +98,11 @@ public class StringTable extends LinkedHashMap<String, List<String>> {
         }
 
         // Add each value to the table
-        colMap.forEach((data, display) -> {
+        colMap.forEach((dataKey, display) -> {
             try {
 
                 // Get the object
-                Object objectValue = fields.get(data).get(object);
+                Object objectValue = fields.get(dataKey).get(object);
 
                 // No formater
                 if(formatters == null){
@@ -110,10 +110,10 @@ public class StringTable extends LinkedHashMap<String, List<String>> {
                      return;
                 }
 
-                Function<Object, String> formatter = formatters.get(data);
+                Function<T, String> formatter = formatters.get(dataKey);
 
                 // Format the data
-                String formattedValue = formatter != null ? formatter.apply(objectValue) : (objectValue.toString());
+                String formattedValue = formatter != null ? formatter.apply(object) : (objectValue.toString());
                 get(display).add(formattedValue);
 
             } catch (IllegalAccessException e) {

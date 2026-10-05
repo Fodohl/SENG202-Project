@@ -275,29 +275,29 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
         }
     }
 
-    public void updateFullness(HashMap<Integer, BinFullness> fullness) {
+    public void updateFullness(Map<Integer, BinFullness> fullness) {
 
         // Fullness hasnt changed since last check
         if (fullness == null || fullness.isEmpty())
             return;
 
         long nowMillis = Instant.now().toEpochMilli();
+        String sql = "UPDATE bins SET fullness = ?, updated_at = ? WHERE id = ?";
 
-        try (Connection conn = databaseManager.connect()) {
+        try (Connection conn = databaseManager.connect(); PreparedStatement ps = conn.prepareStatement(sql)) {
             DSLContext context = databaseManager.getDSLContext(conn);
             context.transaction(configuration -> {
-                DSLContext ctx = DSL.using(configuration);
-                for (Map.Entry<Integer, BinFullness> entry : fullness.entrySet()) {
-                    ctx.update(DSL.table("bins"))
-                            .set(DSL.field("fullness"), entry.getValue().toString())
-                            .set(DSL.field("updated_at"), nowMillis)
-                            .where(DSL.field("id").eq(entry.getKey()))
-                            .execute();
+                for (Map.Entry<Integer, BinFullness> e : fullness.entrySet()) {
+                    ps.setString(1, e.getValue().toString());
+                    ps.setLong(2, nowMillis);
+                    ps.setInt(3, e.getKey());
+                    ps.addBatch();
                 }
+                ps.executeBatch();
+                conn.commit();
             });
         } catch (Exception e) {
             log.error(e);
         }
-
     }
 }

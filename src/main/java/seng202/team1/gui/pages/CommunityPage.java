@@ -8,8 +8,17 @@ import seng202.team1.data.table.StringTableBuilder;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.components.*;
 import seng202.team1.types.trashdb.TrashDBCleanlinessResponse;
+import seng202.team1.types.trashdb.TrashDBLeaderboardResponse;
+import seng202.team1.types.trashlog.TrashLog;
+import seng202.team1.types.user.User;
 
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
+
+import static seng202.team1.data.treedays.TreeDaysCalculator.getTreeDays;
+import static seng202.team1.helpers.LeaderBoardHelpers.toRankedOrder;
 
 /**
  * Page that displays a ranking of the TrashApps users
@@ -52,18 +61,20 @@ public class CommunityPage extends Page {
         pageTitle.setAlignment(Pos.CENTER);
 
         // Data
-        String thisUser = "Mike M";
-        tableData = new StringTableBuilder<LeaderBoardEntry>(router.getGlobalState().getCommunity().entries())
-                .addColumn("position", "Position")
-                .addColumn("name", "Name", item -> {
+        tableData = new StringTableBuilder<LeaderBoardEntry>(new ArrayList<>())
+                .addColumn("place", "Position")
+                .addColumn("userName", "Name", item -> {
+
+                    // Must use the users' name here as it may have changed in their settings, but the leaderboard wont
+                    // have refreshed that yet in its entry
+                    User user = getState().getAuth().getSession().userDetails();
 
                     // Indicate which row the user belongs to
-                    String name = (String)item;
-                    return thisUser.equals(name) ? name + " (You)" : name;
+                    return user.id().equals(item.userId()) ? user.name() + " (You)" : item.userName();
                 })
-                .addColumn("items_logged", "Trash")
-                .addColumn("trees", "Trees Saved")
-                .sortBy(Comparator.comparing(item -> item.position()));
+                .addColumn("logCount", "Trash")
+                .addColumn("treeDays", "Trees Days Saved")
+                .sortBy(Comparator.comparing(item -> item.place()));
 
         table = new UITable(tableData, true, row -> row.get("Name").contains("(You)"));
 
@@ -84,22 +95,44 @@ public class CommunityPage extends Page {
     public void updateContents() {
 
         // Cant update on first render
-        if(root == null)
+        if (root == null)
             return;
 
         TrashDBCleanlinessResponse graphData = getState().getCommunityClealiness();
-        if(graphData != null){
+        TrashDBLeaderboardResponse leaderboardData = getState().getLeaderboard();
+
+        if (graphData != null) {
             communiy.setData(graphData.counts());
             root.getChildren().set(0, communiy);
-        } else{
+        } else {
             root.getChildren().set(0, new UISpinner(50));
         }
 
-        if(tableData == null)
-            return;
+        // Nothing to display yet
+        if (leaderboardData == null)
+            root.getChildren().set(2, new UISpinner(50));
 
-        // Show the latest leaderboard info
-        tableData.updateData(router.getGlobalState().getCommunity().entries());
+        // Calculate the users latest stat
+        User user = getState().getAuth().getSession().userDetails();
+        List<TrashLog> logs = getState().getTrashLogDAO().getAll();
+        int trashlogged = logs.size();
+        double treeDays = getTreeDays(logs);
+
+
+        // Make sure has latest tree score
+        List<LeaderBoardEntry> updated  = leaderboardData.entries().stream().map(entry -> {
+
+            // Assume what the database has for others is latest
+            if(entry.userId() != user.id())
+                return entry;
+
+            return new LeaderBoardEntry(-1, user.id(), user.name(), trashlogged, treeDays, Instant.now());
+
+        }).toList();
+
+        // Display table
+        tableData.updateData(toRankedOrder(updated));
         table.buildTableContent();
+        root.getChildren().set(2, table);
     }
 }
