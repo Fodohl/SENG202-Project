@@ -1,8 +1,5 @@
 package seng202.team1.data.export;
 
-import seng202.team1.state.AuthState;
-import seng202.team1.types.user.Session;
-import seng202.team1.types.user.User;
 import seng202.team1.types.bin.BinFullness;
 import seng202.team1.types.status.ReportType;
 import seng202.team1.types.status.StatusReport;
@@ -35,13 +32,13 @@ public record ExportEntry(
         String description,
         // Trash log only
         TrashType trashType,
-        Integer trashWeight
+        Double trashWeight
 ) {
     public static ExportEntry from(StatusReport r) {
         return new ExportEntry(
                 r.getSubmittedAt().atZone(ZoneId.systemDefault()).toInstant(),
                 "Status Report",
-                r.getBinID(),
+                r.getBinId(),
                 r.getFullness(), r.getIssue(), r.getDescription(),
                 null, null);
     }

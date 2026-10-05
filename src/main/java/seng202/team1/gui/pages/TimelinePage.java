@@ -87,7 +87,7 @@ public class TimelinePage extends Page {
         exportButton.getStyleClass().add("data-button");
 
         exportButton.setOnMouseClicked(e -> {
-            List<StatusReport> reports = router.getGlobalState().getStatusReportStore().getReports();
+            List<StatusReport> reports = router.getGlobalState().getStatusReportDAO().getAll();
             List<TrashLog> trash = router.getGlobalState().getTrashLogDAO().getAll();
             StringTable table = buildExportTable(reports, trash);
             ExportManager.exportToCSV(router.getStage(), ExportManager.exportName("timeline"), table);
@@ -139,9 +139,6 @@ public class TimelinePage extends Page {
 
         timeline = new UITimeline(timelineEntries);
         timelineSection.getChildren().setAll(timeline);
-
-
-
     }
 
     /**
