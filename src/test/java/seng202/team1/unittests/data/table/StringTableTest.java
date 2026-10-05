@@ -39,12 +39,12 @@ public class StringTableTest extends TrashAppTest {
     }
 
     @Test
-    public void shouldSaftleyReturnEmptyIfOutOfBoundsLower() {
+    public void shouldSafelyReturnEmptyIfOutOfBoundsLower() {
         assertTrue(table.getDataRow(-1).isEmpty());
     }
 
     @Test
-    public void shouldSaftleyReturnEmptyIfOutOfBoundsUpper() {
+    public void shouldSafelyReturnEmptyIfOutOfBoundsUpper() {
         assertTrue(table.getDataRow(0xFFFFF).isEmpty());
     }
 

@@ -4,7 +4,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.layout.VBox;
 import seng202.team1.helpers.StringHelpers;
-import seng202.team1.data.ExportManager;
+import seng202.team1.data.export.ExportManager;
 import seng202.team1.types.bin.Bin;
 import seng202.team1.types.bin.BinCategory;
 import seng202.team1.types.bin.BinFullness;
