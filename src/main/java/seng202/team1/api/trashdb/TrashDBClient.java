@@ -3,6 +3,7 @@ package seng202.team1.api.trashdb;
 import seng202.team1.api.ApiBackend;
 import seng202.team1.gui.components.BlockableUISet;
 import seng202.team1.helpers.DateHelpers;
+import seng202.team1.types.status.StatusReport;
 import seng202.team1.types.trashdb.ResponseSuccess;
 import seng202.team1.types.trashdb.TrashDBFullnessResponse;
 import seng202.team1.types.trashdb.TrashDBLeaderboardResponse;
@@ -17,6 +18,7 @@ import java.util.function.Consumer;
 
 import static seng202.team1.TrashApp.GSON;
 import static seng202.team1.gui.GraphicsCommon.NO_LOADING_UI;
+import static seng202.team1.helpers.DateHelpers.toOffsetTime;
 
 /**
  * API client to abstract async communication with the trash app's database
@@ -240,5 +242,11 @@ public class TrashDBClient extends ApiBackend {
      */
     public void deleteUser(Consumer<ResponseSuccess> callback, BlockableUISet frontend) {
         sendAsync(() -> backend.removeUser(), callback, frontend);
+    }
+
+    public CompletableFuture<ResponseSuccess> postReport(StatusReport report, Consumer<ResponseSuccess> callback) {
+
+        return sendAsync(() -> backend.addUserReport(report), callback, NO_LOADING_UI);
+
     }
 }

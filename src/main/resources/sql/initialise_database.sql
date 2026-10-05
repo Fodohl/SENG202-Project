@@ -50,14 +50,15 @@ CREATE TABLE users (
 
 --SPLIT
 CREATE TABLE status_reports (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
     bin_id INTEGER,
     user_id INTEGER,
     fullness VARCHAR(255),
     issue VARCHAR(255),
     description VARCHAR(255),
-    created_at INTEGER NOT NULL,
-    CONSTRAINT fk_status_report_bin
-        FOREIGN KEY (bin_id)
-            REFERENCES bins(id)
-            ON DELETE CASCADE);
+    created_at BIGINT NOT NULL,
+    synced_at BIGINT,
+
+    CONSTRAINT fk_status_report_bin FOREIGN KEY (bin_id) REFERENCES bins(id) ON DELETE CASCADE,
+    CONSTRAINT fk_status_report_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);

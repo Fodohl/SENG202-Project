@@ -3,12 +3,16 @@ package seng202.team1.api.trashdb;
 import seng202.team1.api.HttpStatus;
 import seng202.team1.data.bin.BinDataset;
 import seng202.team1.database.DAO.BinDAO;
+import seng202.team1.database.DAO.StatusReportDAO;
 import seng202.team1.database.DAO.TrashLogDAO;
 import seng202.team1.database.DAO.UserDAO;
 import seng202.team1.database.DatabaseManager;
 import seng202.team1.database.exceptions.DuplicateEntryException;
 import seng202.team1.state.GlobalState;
 import seng202.team1.types.bin.Bin;
+import seng202.team1.types.bin.BinFullness;
+import seng202.team1.types.status.ReportType;
+import seng202.team1.types.status.StatusReport;
 import seng202.team1.types.trashdb.ResponseSuccess;
 import seng202.team1.types.trashdb.TrashDBFullnessResponse;
 import seng202.team1.types.trashlog.TrashLog;
@@ -45,6 +49,9 @@ public class TrashDBBackend {
     /// The DAO responsible for trash
     private TrashLogDAO trashTable;
 
+    /// The DAO responsible for status reports
+    private StatusReportDAO statusReportsTable;
+
     /// The handler for securing user tokens
     private final TokenService tokenService = new TokenService();
 
@@ -64,7 +71,7 @@ public class TrashDBBackend {
         binTable = new BinDAO(db);
         userTable = new UserDAO(db);
         trashTable = new TrashLogDAO(db);
-
+        statusReportsTable = new StatusReportDAO(db);
     }
 
     /**
@@ -342,5 +349,32 @@ public class TrashDBBackend {
         ResponseSuccess success = new ResponseSuccess("User deleted successfully");
         return success;
 
+    }
+
+    public ResponseSuccess addUserReport(StatusReport request) {
+
+           // Enforce the user id
+        User user = getUser();
+        StatusReport report = new StatusReport(
+                -1,
+                request.getBinId(),
+                user.id(),
+                request.getFullness(),
+                request.getIssue(),
+                request.getDescription(),
+                request.getSubmittedAt(),
+                Instant.now()
+        );
+
+
+        // Store
+        int id = statusReportsTable.add(report);
+
+        if(id == -1)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to save report to database");
+
+
+        ResponseSuccess success = new ResponseSuccess("Trash logged successfully");
+        return success;
     }
 }

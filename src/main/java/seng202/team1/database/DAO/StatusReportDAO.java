@@ -27,6 +27,7 @@ public class StatusReportDAO extends SqlTimeUtils implements DAOInterface<Status
 
     /**
      * Instantiates StatusReportDAO and gets a reference to the database singleton
+     *
      * @param databaseManager database singleton
      */
     public StatusReportDAO(DatabaseManager databaseManager) {
@@ -35,6 +36,7 @@ public class StatusReportDAO extends SqlTimeUtils implements DAOInterface<Status
 
     /**
      * Converts the string representation saved in the database to a {@link ReportType}
+     *
      * @param issueString String representation of report type
      * @return ReportType associated with the report
      */
@@ -54,6 +56,7 @@ public class StatusReportDAO extends SqlTimeUtils implements DAOInterface<Status
 
     /**
      * Converts the string representation saved in the database to a {@link BinFullness}
+     *
      * @param binFullnessString String representation of report type
      * @return BinFullness associated with the report
      */
@@ -64,12 +67,14 @@ public class StatusReportDAO extends SqlTimeUtils implements DAOInterface<Status
             case "SEMI_FULL" -> BinFullness.SEMI_FULL;
             case "EMPTY" -> BinFullness.EMPTY;
             case "OVERFLOWING" -> BinFullness.OVERFLOWING;
-            default -> throw new IllegalStateException("Unexpected value: " + binFullnessString.toUpperCase(Locale.ROOT));
+            default ->
+                    throw new IllegalStateException("Unexpected value: " + binFullnessString.toUpperCase(Locale.ROOT));
         };
     }
 
     /**
      * Gets all status reports from the database
+     *
      * @return a list of all status reports
      */
     @Override
@@ -87,7 +92,9 @@ public class StatusReportDAO extends SqlTimeUtils implements DAOInterface<Status
                         convertStringToBinFullness(rs.getString("fullness")),
                         convertStringToIssue(rs.getString("issue")),
                         rs.getString("description"),
-                        getInstant(rs, "created_at")));
+                        getInstant(rs, "created_at"),
+                        getInstant(rs, "synced_at")
+                ));
             }
             return reports;
         } catch (SQLException sqlException) {
@@ -98,6 +105,7 @@ public class StatusReportDAO extends SqlTimeUtils implements DAOInterface<Status
 
     /**
      * Gets a status report related to a certain report id
+     *
      * @param id id of object to get
      * @return Status report related to id
      */
@@ -117,7 +125,9 @@ public class StatusReportDAO extends SqlTimeUtils implements DAOInterface<Status
                             convertStringToBinFullness(rs.getString("fullness")),
                             convertStringToIssue(rs.getString("issue")),
                             rs.getString("description"),
-                            getInstant(rs, "created_at"));
+                            getInstant(rs, "created_at"),
+                            getInstant(rs, "synced_at")
+                    );
                 }
                 return report;
             }
@@ -129,6 +139,7 @@ public class StatusReportDAO extends SqlTimeUtils implements DAOInterface<Status
 
     /**
      * Gets all reports relating to a bin id
+     *
      * @param binId id of the desired bin
      * @return a list of StatusReports relating to the supplied bin id
      */
@@ -147,7 +158,9 @@ public class StatusReportDAO extends SqlTimeUtils implements DAOInterface<Status
                         convertStringToBinFullness(rs.getString("fullness")),
                         convertStringToIssue(rs.getString("issue")),
                         rs.getString("description"),
-                        getInstant(rs, "created_at")));
+                        getInstant(rs, "created_at"),
+                        getInstant(rs, "synced_at")
+                ));
             }
             return reports;
         } catch (SQLException sqlException) {
@@ -158,6 +171,7 @@ public class StatusReportDAO extends SqlTimeUtils implements DAOInterface<Status
 
     /**
      * Gets all reports relating to a user
+     *
      * @param userId id of the desired user
      * @return a list of StatusReports relating to the supplied user id
      */
@@ -176,7 +190,9 @@ public class StatusReportDAO extends SqlTimeUtils implements DAOInterface<Status
                         convertStringToBinFullness(rs.getString("fullness")),
                         convertStringToIssue(rs.getString("issue")),
                         rs.getString("description"),
-                        getInstant(rs, "created_at")));
+                        getInstant(rs, "created_at"),
+                        getInstant(rs, "synced_at")
+                ));
             }
             return reports;
         } catch (SQLException sqlException) {
@@ -187,6 +203,7 @@ public class StatusReportDAO extends SqlTimeUtils implements DAOInterface<Status
 
     /**
      * Gets all fullness reports relating to a certain bin
+     *
      * @param binId id of the desired bin
      * @return a list of fullness StatusReports relating to the supplied bin
      */
@@ -206,7 +223,9 @@ public class StatusReportDAO extends SqlTimeUtils implements DAOInterface<Status
                         convertStringToBinFullness(rs.getString("fullness")),
                         convertStringToIssue(rs.getString("issue")),
                         rs.getString("description"),
-                        getInstant(rs, "created_at")));
+                        getInstant(rs, "created_at"),
+                        getInstant(rs, "synced_at")
+                ));
             }
             return reports;
         } catch (SQLException sqlException) {
@@ -217,20 +236,22 @@ public class StatusReportDAO extends SqlTimeUtils implements DAOInterface<Status
 
     /**
      * Adds a StatusReport to the database
+     *
      * @param statusReportToAdd StatusReport to add
      * @return Report id in the database
      */
     @Override
     public int add(StatusReport statusReportToAdd) {
-        String sql = "INSERT INTO status_reports (bin_id, user_id, fullness, issue, description, created_at) VALUES (?, ?, ?, ?, ?, ?);";
+        String sql = "INSERT INTO status_reports (bin_id, user_id, fullness, issue, description, created_at, synced_at) VALUES (?, ?, ?, ?, ?, ?, ?);";
         try (Connection conn = databaseManager.connect();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setInt(1,  statusReportToAdd.getBinId());
+            ps.setInt(1, statusReportToAdd.getBinId());
             ps.setInt(2, statusReportToAdd.getUserId());
             ps.setString(3, statusReportToAdd.getFullness().toString());
             ps.setString(4, statusReportToAdd.getIssue().toString());
             ps.setString(5, statusReportToAdd.getDescription());
             setInstant(ps, 6, statusReportToAdd.getSubmittedAt());
+            setInstant(ps, 7, statusReportToAdd.getSyncedAt());
             ps.executeUpdate();
             ResultSet rs = ps.getGeneratedKeys();
             int insertId = -1;
@@ -246,6 +267,7 @@ public class StatusReportDAO extends SqlTimeUtils implements DAOInterface<Status
 
     /**
      * Deletes a StatusReport from the database
+     *
      * @param id id of StatusReport to delete
      */
     @Override
@@ -260,13 +282,14 @@ public class StatusReportDAO extends SqlTimeUtils implements DAOInterface<Status
         }
     }
 
+
     /**
      * Updates the StatusReport in the database to the new StatusReport if they have the same id
      * @param statusReportToUpdate StatusReport that needs to be updated (this object must be able to identify itself and its previous self)
      */
     @Override
     public void update(StatusReport statusReportToUpdate) {
-        String sql = "UPDATE status_reports SET bin_id = ?, user_id = ?, fullness = ?, issue = ?, description = ?, created_at = ? WHERE id = ?";
+        String sql = "UPDATE status_reports SET bin_id = ?, user_id = ?, fullness = ?, issue = ?, description = ?, created_at = ?, synced_at = ? WHERE id = ?";
         try (Connection conn = databaseManager.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1,  statusReportToUpdate.getBinId());
@@ -275,13 +298,38 @@ public class StatusReportDAO extends SqlTimeUtils implements DAOInterface<Status
             ps.setString(4, statusReportToUpdate.getIssue().toString());
             ps.setString(5, statusReportToUpdate.getDescription());
             setInstant(ps, 6, statusReportToUpdate.getSubmittedAt());
-            ps.setInt(7, statusReportToUpdate.getId());
+            setInstant(ps, 7, statusReportToUpdate.getSubmittedAt());
+            ps.setInt(8, statusReportToUpdate.getId());
             int rows = ps.executeUpdate();
             if (rows == 0) {
                 log.warn("Update affected 0 rows for status report id {}", statusReportToUpdate.getId());
             }
         } catch (SQLException sqlException) {
             log.error(sqlException);
+        }
+    }
+
+    public List<StatusReport> getUnsynced() {
+        List<StatusReport> reports = new ArrayList<>();
+        String sql = "SELECT * FROM status_reports WHERE synced_at IS NULL";
+        try (Connection conn = databaseManager.connect();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                reports.add(new StatusReport(
+                        rs.getInt("id"),
+                        rs.getInt("bin_id"),
+                        rs.getInt("user_id"),
+                        convertStringToBinFullness(rs.getString("fullness")),
+                        convertStringToIssue(rs.getString("issue")),
+                        rs.getString("description"),
+                        getInstant(rs, "created_at"),
+                        getInstant(rs, "synced_at")));
+            }
+            return reports;
+        } catch (SQLException sqlException) {
+            log.error(sqlException);
+            return new ArrayList<>();
         }
     }
 }
