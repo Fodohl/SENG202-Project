@@ -62,3 +62,14 @@ CREATE TABLE status_reports (
     CONSTRAINT fk_status_report_bin FOREIGN KEY (bin_id) REFERENCES bins(id) ON DELETE CASCADE,
     CONSTRAINT fk_status_report_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+
+--SPLIT
+CREATE TABLE community_cleanliness (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    year INTEGER NOT NULL,
+    month INTEGER NOT NULL,
+    log_count INTEGER NOT NULL DEFAULT 0,
+    updated_at BIGINT NOT NULL,
+
+    UNIQUE (year, month)
+);

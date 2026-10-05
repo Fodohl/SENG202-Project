@@ -7,6 +7,7 @@ import seng202.team1.types.trashdb.LeaderBoardEntry;
 import seng202.team1.data.table.StringTableBuilder;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.components.*;
+import seng202.team1.types.trashdb.TrashDBCleanlinessResponse;
 
 import java.util.Comparator;
 
@@ -20,6 +21,12 @@ public class CommunityPage extends Page {
 
     /// The table that displays the leaderboard
     private UITable table;
+
+    /// The toplevel element of this page
+    private VBox root;
+
+    /// The line graph that display the community cleanlienss
+    private UIGraphLine communiy;
 
     /**
      * Constructs a new CommunityPage
@@ -61,10 +68,10 @@ public class CommunityPage extends Page {
         table = new UITable(tableData, true, row -> row.get("Name").contains("(You)"));
 
         // Milestone
-        UIGraphLine communiy = new UIGraphLine();
+        communiy = new UIGraphLine();
 
         // Combine
-        VBox root = new VBox(50, communiy, pageTitle, table);
+        root = new VBox(50, communiy, pageTitle, table);
         root.getStyleClass().add("communiy");
         return root;
 
@@ -75,6 +82,18 @@ public class CommunityPage extends Page {
      */
     @Override
     public void updateContents() {
+
+        // Cant update on first render
+        if(root == null)
+            return;
+
+        TrashDBCleanlinessResponse graphData = getState().getCommunityClealiness();
+        if(graphData != null){
+            communiy.setData(graphData.counts());
+            root.getChildren().set(0, communiy);
+        } else{
+            root.getChildren().set(0, new UISpinner(50));
+        }
 
         if(tableData == null)
             return;

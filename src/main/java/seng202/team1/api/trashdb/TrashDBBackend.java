@@ -2,10 +2,7 @@ package seng202.team1.api.trashdb;
 
 import seng202.team1.api.HttpStatus;
 import seng202.team1.data.bin.BinDataset;
-import seng202.team1.database.DAO.BinDAO;
-import seng202.team1.database.DAO.StatusReportDAO;
-import seng202.team1.database.DAO.TrashLogDAO;
-import seng202.team1.database.DAO.UserDAO;
+import seng202.team1.database.DAO.*;
 import seng202.team1.database.DatabaseManager;
 import seng202.team1.database.exceptions.DuplicateEntryException;
 import seng202.team1.state.GlobalState;
@@ -13,7 +10,9 @@ import seng202.team1.types.bin.Bin;
 import seng202.team1.types.bin.BinFullness;
 import seng202.team1.types.status.ReportType;
 import seng202.team1.types.status.StatusReport;
+import seng202.team1.types.trashdb.CommunityCleanliness;
 import seng202.team1.types.trashdb.ResponseSuccess;
+import seng202.team1.types.trashdb.TrashDBCleanlinessResponse;
 import seng202.team1.types.trashdb.TrashDBFullnessResponse;
 import seng202.team1.types.trashlog.TrashLog;
 import seng202.team1.types.user.Token;
@@ -22,6 +21,7 @@ import seng202.team1.types.user.User;
 import java.security.InvalidParameterException;
 import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -52,6 +52,9 @@ public class TrashDBBackend {
     /// The DAO responsible for status reports
     private StatusReportDAO statusReportsTable;
 
+    /// The DAO responsible for community cleanliness
+    private CommunityCleanlinessDAO cleanlinessTable;
+
     /// The handler for securing user tokens
     private final TokenService tokenService = new TokenService();
 
@@ -72,6 +75,7 @@ public class TrashDBBackend {
         userTable = new UserDAO(db);
         trashTable = new TrashLogDAO(db);
         statusReportsTable = new StatusReportDAO(db);
+        cleanlinessTable = new CommunityCleanlinessDAO(db);
     }
 
     /**
@@ -376,5 +380,30 @@ public class TrashDBBackend {
 
         ResponseSuccess success = new ResponseSuccess("Trash logged successfully");
         return success;
+    }
+
+    public TrashDBCleanlinessResponse getCollectiveCleanliness() {
+
+        // Get the counts
+        ArrayList<CommunityCleanliness> counts = new ArrayList<>(cleanlinessTable.getPastSixMonths());
+
+        int startYear = counts.getFirst().year();
+        int startMonth = counts.getFirst().month();
+
+        // Inject data for any months not known
+        while (counts.size() != 6){
+
+            // Go to the prev month
+            startMonth -= 1;
+            if(startMonth == 0){
+                startMonth = 12;
+                startYear -= 1;
+            }
+
+            CommunityCleanliness synthetic = new CommunityCleanliness(-1, startYear, startMonth, 0, null);
+            counts.addFirst(synthetic);
+        }
+
+        return new TrashDBCleanlinessResponse(counts);
     }
 }

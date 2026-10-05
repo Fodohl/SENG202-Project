@@ -17,11 +17,14 @@ import java.util.*;
 
 /**
  * Handles all bin related actions to the database
+ *
  * @author Marcus Demafeliz
  */
 public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
+
     /// DatabaseManager managing all the DAO objects
     private final DatabaseManager databaseManager;
+
     /// Logger for recording StatusReportDAO database operations and errors
     private static final Logger log = LogManager.getLogger(BinDAO.class);
 
@@ -33,21 +36,23 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
 
     /**
      * Converts string from database to BinCategory
+     *
      * @param category string name
      * @return bin category that matches the string
      */
     private BinCategory convertStringToCategory(String category) {
-        return switch(category.toUpperCase(Locale.ROOT)) {
+        return switch (category.toUpperCase(Locale.ROOT)) {
             case "RECYCLABLE" -> BinCategory.RECYCLABLE;
             case "ORGANIC" -> BinCategory.ORGANIC;
             case "E-WASTE", "E_WASTE" -> BinCategory.E_WASTE;
-            default ->  BinCategory.GENERAL_WASTE;
+            default -> BinCategory.GENERAL_WASTE;
         };
     }
 
 
     /**
      * Gets all bins in the database
+     *
      * @return all bins as a list
      */
     @Override
@@ -78,6 +83,7 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
 
     /**
      * Gets individual bin from database from id
+     *
      * @param id id of object to get
      * @return bin matching the id
      */
@@ -88,7 +94,7 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
         try (Connection conn = databaseManager.connect();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
-            try (ResultSet rs  = ps.executeQuery()) {
+            try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     bin = new Bin(
                             rs.getInt("id"),
@@ -99,7 +105,7 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
                             rs.getString("photo_url"),
                             rs.getString("area"),
                             convertStringToFullness(rs.getString("fullness"))
-                            );
+                    );
                 }
                 return bin;
             }
@@ -111,6 +117,7 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
 
     /**
      * Add individual bin to the database
+     *
      * @param toAdd bin to add
      * @return returns id of new bin if no error, -1 if SQL error
      */
@@ -141,6 +148,7 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
 
     /**
      * Adds a batch of bins to the database
+     *
      * @param bins list of bins to add
      */
     public void addBatch(List<Bin> bins) {
@@ -182,13 +190,14 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
 
     /**
      * Deletes bin from database by id
+     *
      * @param id id of bin to delete
      */
     @Override
     public void delete(int id) {
         String sql = "DELETE FROM bins WHERE id = ?";
         try (Connection conn = databaseManager.connect();
-             PreparedStatement ps =conn.prepareStatement(sql)) {
+             PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, id);
             ps.executeUpdate();
         } catch (SQLException sqlException) {
@@ -198,6 +207,7 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
 
     /**
      * Updates bin from database by id
+     *
      * @param toUpdate Bin with the updated parameter matching id with the bin that needs to be updated
      */
     @Override
@@ -233,7 +243,7 @@ public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
         }
     }
 
-   public List<Bin> getBinsAfter(Instant instant) {
+    public List<Bin> getBinsAfter(Instant instant) {
 
         // No known update time
         if (instant == null)

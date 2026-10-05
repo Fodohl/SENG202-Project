@@ -1,10 +1,12 @@
 package seng202.team1.state;
 
 import javafx.stage.Stage;
+import seng202.team1.api.trashdb.TrashDBClient;
 import seng202.team1.tasks.background.SyncToBackendTask;
 import seng202.team1.types.photon.Feature;
 import seng202.team1.api.photon.PhotonClient;
-import seng202.team1.api.trashdb.TrashDBClient;
+import seng202.team1.types.trashdb.CommunityCleanliness;
+import seng202.team1.types.trashdb.TrashDBCleanlinessResponse;
 import seng202.team1.types.trashdb.TrashDBLeaderboardResponse;
 import seng202.team1.database.DAO.StatusReportDAO;
 import seng202.team1.types.status.ReportType;
@@ -18,7 +20,6 @@ import seng202.team1.data.bin.BinDataset;
 import seng202.team1.types.bin.Bin;
 import seng202.team1.tasks.TaskManager;
 import seng202.team1.tasks.preflight.PreflightManager;
-import seng202.team1.types.status.StatusReport;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -81,6 +82,9 @@ public class GlobalState {
     /// The current leaderboard state
     private TrashDBLeaderboardResponse leaderboard;
 
+    /// The current community cleanliness state
+    private TrashDBCleanlinessResponse communityCleanliness;
+
     /// The current user and credentials
     private AuthState auth;
 
@@ -123,9 +127,16 @@ public class GlobalState {
      */
     public void fetchData() {
 
-        taServer.getLeaderboard(leaderboard -> {
+        taServer.getLeaderboard(leaderboardResponse -> {
 
-            this.leaderboard = leaderboard;
+            leaderboard = leaderboardResponse;
+            router.refreshPage(Pages.COMMUNITY);
+
+        });
+
+        taServer.getCommunityCleanliness(communityCleanlinessResponse -> {
+
+            communityCleanliness = communityCleanlinessResponse;
             router.refreshPage(Pages.COMMUNITY);
 
         });
@@ -258,10 +269,19 @@ public class GlobalState {
     /**
      * Get the current leaderboard
      *
-     * @return The current leaderboard
+     * @return The current leaderboard or null if still loading
      */
     public TrashDBLeaderboardResponse getCommunity() {
         return leaderboard;
+    }
+
+     /**
+     * Get the current community collective data
+     *
+     * @return The current leaderboard or null if still loading
+     */
+    public TrashDBCleanlinessResponse getCommunityClealiness(){
+        return communityCleanliness;
     }
 
     /**

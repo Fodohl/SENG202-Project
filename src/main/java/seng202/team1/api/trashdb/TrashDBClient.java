@@ -5,6 +5,7 @@ import seng202.team1.gui.components.BlockableUISet;
 import seng202.team1.helpers.DateHelpers;
 import seng202.team1.types.status.StatusReport;
 import seng202.team1.types.trashdb.ResponseSuccess;
+import seng202.team1.types.trashdb.TrashDBCleanlinessResponse;
 import seng202.team1.types.trashdb.TrashDBFullnessResponse;
 import seng202.team1.types.trashdb.TrashDBLeaderboardResponse;
 import seng202.team1.types.trashlog.TrashLog;
@@ -13,6 +14,7 @@ import seng202.team1.types.user.Token;
 import seng202.team1.types.user.User;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
@@ -247,6 +249,12 @@ public class TrashDBClient extends ApiBackend {
     public CompletableFuture<ResponseSuccess> postReport(StatusReport report, Consumer<ResponseSuccess> callback) {
 
         return sendAsync(() -> backend.addUserReport(report), callback, NO_LOADING_UI);
+
+    }
+
+    public void getCommunityCleanliness(Consumer<TrashDBCleanlinessResponse> callback) {
+
+        sendAsync(() -> backend.getCollectiveCleanliness(), callback, NO_LOADING_UI);
 
     }
 }

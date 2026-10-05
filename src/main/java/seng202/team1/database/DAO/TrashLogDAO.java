@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -202,6 +203,26 @@ public class TrashLogDAO extends SqlTimeUtils implements DAOInterface<TrashLog> 
         } catch (SQLException sqlException) {
             log.error(sqlException);
             return new ArrayList<>();
+        }
+    }
+
+    /**
+     * Counts trash logs since the given instant
+     *
+     * @param since start of region
+     * @return number of logs, -1 on SQL error
+     */
+    public int countSince(Instant since) {
+        String sql = "SELECT COUNT(*) FROM trash_logs WHERE disposed_at >= ?";
+        try (Connection conn = databaseManager.connect();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            setInstant(ps, 1, since);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? rs.getInt(1) : 0;
+            }
+        } catch (SQLException sqlException) {
+            log.error(sqlException);
+            return -1;
         }
     }
 }
