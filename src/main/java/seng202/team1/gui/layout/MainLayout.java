@@ -2,6 +2,7 @@ package seng202.team1.gui.layout;
 
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
@@ -13,8 +14,6 @@ import seng202.team1.gui.components.UINavButton;
 import seng202.team1.gui.pages.Pages;
 import seng202.team1.types.user.Session;
 import seng202.team1.types.user.User;
-
-import java.util.List;
 
 import static seng202.team1.gui.GraphicsCommon.precentWindowX;
 
@@ -34,6 +33,9 @@ public class MainLayout extends Layout {
 
     /// The element that contains the user's name
     private Label accountLabel;
+
+    /// The sidebar for navigation
+    private VBox sidebar;
 
     /**
      * Construct a new CoreUI for a given window
@@ -74,7 +76,7 @@ public class MainLayout extends Layout {
         HBox navSettings = new UINavButton(router, Pages.SETTINGS);
 
         // Combine
-        VBox sidebar = new VBox();
+        sidebar = new VBox();
         sidebar.getStyleClass().add("sidebar");
         sidebar.setPrefWidth(precentWindowX(0.15));
         sidebar.getChildren().addAll(logo, navbar, spacer, navSettings);
@@ -93,6 +95,16 @@ public class MainLayout extends Layout {
         // Search Bar
         UILocationInput searchBar = new UILocationInput(getRouter().getGlobalState());
 
+        // Sidebar
+        Button sidebarToggle = new Button("☰");
+
+        sidebarToggle.setOnAction(e-> {
+            boolean hide = sidebar.isVisible();
+
+            sidebar.setVisible(!hide);
+            sidebar.setManaged(!hide);
+        });
+
         // Account
         accountLabel = new Label("name");
         accountIcon = new UIAvatar(null);
@@ -109,7 +121,9 @@ public class MainLayout extends Layout {
         header.getStyleClass().add("header");
         header.setPrefHeight(60);
         header.setRight(account);
-        header.setLeft(searchBar);
+        HBox headerLeft = new HBox(10, sidebarToggle, searchBar);
+        headerLeft.setAlignment(Pos.CENTER_LEFT);
+        header.setLeft(headerLeft);
 
         return header;
     }
