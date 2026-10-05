@@ -1,5 +1,9 @@
 package seng202.team1.gui.modals;
 
+import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
+
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -11,12 +15,9 @@ import seng202.team1.types.bin.BinCategory;
 import seng202.team1.types.status.ReportType;
 import seng202.team1.types.trashlog.TrashLog;
 import seng202.team1.types.trashlog.TrashType;
+import seng202.team1.data.treedays.TreeDaysCalculator;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.components.*;
-
-import java.time.Instant;
-import java.util.Arrays;
-import java.util.List;
 
 
 /**
@@ -28,7 +29,7 @@ public class LogTrashModal extends Modal {
     private Bin bin = null;
 
     /// The input for what type of trash this is
-    private UIDropDown typeInput;
+    private UISearchDropDown typeInput;
 
     /// The input for how heavy this peice of trash is
     private UITextInput weightInput;
@@ -61,9 +62,19 @@ public class LogTrashModal extends Modal {
 
         // Log data
         UIIconText typeLabel = new UIIconText("bin", "Trash Type");
-        typeInput = new UIDropDown("Select waste type...", trashTypes);
+        typeInput = new UISearchDropDown("Search waste type...", trashTypes);
         UIIconText weightLabel = new UIIconText("scales", "Estimated Weight (grams)");
         weightInput = new UITextInput("Enter waste weight...");
+        typeInput.setOnSelectionChanged(selectedType -> {
+            for (TrashType trashType : TrashType.values()) {
+                if (!StringHelpers.enumNameToTitle(trashType.name()).equals(selectedType))
+                    continue;
+
+                TreeDaysCalculator.getEmission(trashType)
+                    .ifPresent(emission -> weightInput.setInput(String.valueOf(emission.weightGrams())));
+                break;
+            }
+        });
         UISection logInputSection = new UISection(15, typeLabel, typeInput, weightLabel, weightInput);
 
         // Bin data
@@ -127,11 +138,10 @@ public class LogTrashModal extends Modal {
         if (bin == null)
             return;
 
-        BinCategory category = bin.getCategory();
         Integer binID = bin.getID();
 
         TrashType type = null;
-        Integer weight = null;
+        Double weight = null;
         BinFullness fullness = null;
         Integer userID = 1;
 
@@ -151,9 +161,9 @@ public class LogTrashModal extends Modal {
 
         // Get weight
         try {
-            weight = Integer.parseInt(weightInput.getInput());
+            weight = Double.parseDouble(weightInput.getInput());
         } catch (NumberFormatException e) {
-            weightInput.setError("Weight must be a whole number");
+            weightInput.setError("Weight must be a number");
         }
 
         // Cant have negative trash
@@ -231,11 +241,11 @@ public class LogTrashModal extends Modal {
     }
 
      /**
-     * Get the input of the report type
+     * Get the input of the trash type
      *
-     * @return The report type input component
+     * @return The trash type input component
      */
-    public UIDropDown getTypeInput() {
+    public UISearchDropDown getTypeInput() {
         return typeInput;
     }
 

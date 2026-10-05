@@ -59,7 +59,7 @@ public class LogTrashStepDefs {
 
     @When("they correctly log their usage")
     public void theyCorrectlyLogTheirUsage() {
-        modal.getTypeInput().setInput(enumNameToTitle(TrashType.CARDBOARD_BOX.name()));
+        modal.getTypeInput().setInput(enumNameToTitle(TrashType.BANANA_PEEL.name()));
         modal.getWeightInput().setInput("500");
         modal.getFullnessInput().setInput(enumNameToTitle(BinFullness.SEMI_FULL.name()));
         modal.getSubmitButton().getOnMouseClicked().handle(null);
@@ -70,7 +70,7 @@ public class LogTrashStepDefs {
         List<TrashLog> logs = getLogs();
 
         assertEquals(1, logs.size());
-        assertEquals(TrashType.CARDBOARD_BOX, logs.getFirst().trashType());
+        assertEquals(TrashType.BANANA_PEEL, logs.getFirst().trashType());
         assertEquals(500, logs.getFirst().trashWeight());
     }
 

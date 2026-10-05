@@ -1,5 +1,7 @@
 package seng202.team1.gui.pages;
 
+import java.util.List;
+
 import javafx.scene.Parent;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
@@ -85,10 +87,10 @@ public class StartingPage extends Page {
      */
     @Override
     public void updateContents() {
+        List<Task> uncompleted = manager.getTasksUncompleted();
 
-        loadingText.setText(String.format("Waiting for '%s' to complete..", manager.hasTasksUncompleted() ?
-                manager.getTasksUncompleted().getFirst().getTaskName()
-                : "N/A"
+        loadingText.setText(String.format("Waiting for '%s' to complete..",
+                uncompleted.isEmpty() ? "N/A" : uncompleted.getFirst().getTaskName()
         ));
 
     }
