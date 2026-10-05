@@ -3,6 +3,8 @@ package seng202.team1.state;
 import javafx.stage.Stage;
 import seng202.team1.api.trashdb.TrashDBClient;
 import seng202.team1.tasks.background.SyncToBackendTask;
+import seng202.team1.tasks.workers.BinFullnessWorker;
+import seng202.team1.tasks.workers.CommunityCleanlinessWorker;
 import seng202.team1.types.photon.Feature;
 import seng202.team1.api.photon.PhotonClient;
 import seng202.team1.types.trashdb.CommunityCleanliness;
@@ -118,7 +120,6 @@ public class GlobalState {
         // Fetch data etc for cached sessions
         if (!IS_TEST_MODE)
             auth.tryTriggerLoadSession();
-
     }
 
 
@@ -140,6 +141,18 @@ public class GlobalState {
             router.refreshPage(Pages.COMMUNITY);
 
         });
+
+        runWorkers();
+    }
+
+    /**
+     * Run the tasks that would realistically be periodically ran on the backed, this assumes that users are using the app
+     * regularly enough that the crowdsourced work is keeping the data fresh
+     */
+    private void runWorkers() {
+
+         backgroundTasks.runTask(new BinFullnessWorker(backgroundTasks));
+         backgroundTasks.runTask(new CommunityCleanlinessWorker(backgroundTasks));
     }
 
     /**
@@ -291,44 +304,6 @@ public class GlobalState {
      */
     public AuthState getAuth() {
         return auth;
-    }
-
-
-    public void refreshBinFullness() {
-
-        // No need to recalc fullness every test
-        if (IS_TEST_MODE)
-            return;
-
-        // Only want recent reports of fullness
-        Instant startOfDay = LocalDate.now()
-                .atStartOfDay(ZoneId.systemDefault())
-                .toInstant();
-        List<StatusReport> fullnessReports = statusReportDAO.getAll().stream()
-                                                    .filter(r -> r.getIssue() == ReportType._FULLNESS_UPDATE)
-                                                    .filter(r -> r.getSubmittedAt().isAfter(startOfDay))
-                                                    .toList();
-
-        // Get each bin's new fullness as an average of this week's reports
-        getBinDAO().getAll().stream().forEach(b -> {
-            List<StatusReport> reportsFoBin = fullnessReports.stream().filter(r -> r.getBinId() == b.getID()).toList();
-            refreshBinFullness(b, binDAO, reportsFoBin);
-        });
-    }
-
-    public void refreshBinFullness(Bin bin){
-        Instant startOfDay = LocalDate.now()
-                .atStartOfDay(ZoneId.systemDefault())
-                .toInstant();
-         // Only want recent reports of fullness
-        List<StatusReport> reportsFoBin = statusReportDAO.getFullnessReportsByBinId(bin.getID()).stream()
-                .filter(r -> r.getSubmittedAt().isAfter(startOfDay))
-                .toList();;
-        refreshBinFullness(bin, binDAO, reportsFoBin);
-    }
-
-    private void refreshBinFullness(Bin bin, BinDAO binDAO, List<StatusReport> reportsFoBin) {
-        bin.updateFullness(binDAO, reportsFoBin);
     }
 
 

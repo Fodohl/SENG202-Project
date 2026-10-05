@@ -230,8 +230,18 @@ public class CommunityCleanlinessDAO extends SqlTimeUtils implements DAOInterfac
      * @return The entry or null if nothing has been logged yet
      */
     public CommunityCleanliness getThisMonth() {
+
+        // Try get the current month
         OffsetDateTime now = toOffsetTime(Instant.now());
+        CommunityCleanliness current = getByMonth(now.getYear(), now.getMonthValue());
+
+        if(current != null)
+            return  current;
+
+        // There must not be a entry for this month, so create it
+        add(new CommunityCleanliness(-1, now.getYear(), now.getMonthValue(), 0, null));
         return getByMonth(now.getYear(), now.getMonthValue());
+
     }
 
     /**

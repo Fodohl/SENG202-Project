@@ -11,7 +11,6 @@ import javafx.scene.layout.VBox;
 import seng202.team1.helpers.StringHelpers;
 import seng202.team1.types.bin.Bin;
 import seng202.team1.types.bin.BinFullness;
-import seng202.team1.types.bin.BinCategory;
 import seng202.team1.types.status.ReportType;
 import seng202.team1.types.status.StatusReport;
 import seng202.team1.types.trashlog.TrashLog;
@@ -19,6 +18,8 @@ import seng202.team1.types.trashlog.TrashType;
 import seng202.team1.data.treedays.TreeDaysCalculator;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.components.*;
+
+import static seng202.team1.data.bin.BinFullnessCalculator.refreshBinFullness;
 
 
 /**
@@ -198,8 +199,8 @@ public class LogTrashModal extends Modal {
             StatusReport reportToAdd = new StatusReport(binID, 0, fullness, ReportType._FULLNESS_UPDATE, "", Instant.now());
             getState().getStatusReportDAO().add(reportToAdd);
         }
-        getState().refreshBinFullness(bin);
 
+        refreshBinFullness(bin, getState().getBinDAO(), getState().getStatusReportDAO());
         getState().sync();
         closeModal();
     }

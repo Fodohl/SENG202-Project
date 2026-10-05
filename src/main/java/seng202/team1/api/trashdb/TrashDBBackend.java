@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import static seng202.team1.api.trashdb.TokenService.EXPIRY_DAYS;
+import static seng202.team1.helpers.DateHelpers.toOffsetTime;
 import static seng202.team1.state.GlobalState.IS_TEST_MODE;
 
 /**
@@ -41,19 +42,19 @@ public class TrashDBBackend {
     private DatabaseManager db;
 
     /// The DAO responsible for bins
-    private BinDAO binTable;
+    protected BinDAO binTable;
 
     /// The DAO responsible for users
-    private UserDAO userTable;
+    protected UserDAO userTable;
 
     /// The DAO responsible for trash
-    private TrashLogDAO trashTable;
+    protected TrashLogDAO trashTable;
 
     /// The DAO responsible for status reports
-    private StatusReportDAO statusReportsTable;
+    protected StatusReportDAO statusReportsTable;
 
     /// The DAO responsible for community cleanliness
-    private CommunityCleanlinessDAO cleanlinessTable;
+    protected CommunityCleanlinessDAO cleanlinessTable;
 
     /// The handler for securing user tokens
     private final TokenService tokenService = new TokenService();
@@ -266,7 +267,7 @@ public class TrashDBBackend {
     /**
      * Update the user's information in the database
      *
-     * @param name The new name of the user
+     * @param name  The new name of the user
      * @param email The new email of the user
      * @return Success message if the user was uploaded fine, error otherwise
      */
@@ -304,7 +305,7 @@ public class TrashDBBackend {
     /**
      * Change the pasword of the user
      *
-     * @param enteredPassword The user's current password to verify
+     * @param enteredPassword    The user's current password to verify
      * @param enteredPasswordNew The user's new password
      * @return Success message if the user password was changed fine, error otherwise
      */
@@ -355,9 +356,15 @@ public class TrashDBBackend {
 
     }
 
+    /**
+     * Upload a status report to the database
+     *
+     * @param request The report to upload
+     * @return Success message if the report was uploaded fine, error otherwise
+     */
     public ResponseSuccess addUserReport(StatusReport request) {
 
-           // Enforce the user id
+        // Enforce the user id
         User user = getUser();
         StatusReport report = new StatusReport(
                 -1,
@@ -374,7 +381,7 @@ public class TrashDBBackend {
         // Store
         int id = statusReportsTable.add(report);
 
-        if(id == -1)
+        if (id == -1)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to save report to database");
 
 
@@ -382,6 +389,11 @@ public class TrashDBBackend {
         return success;
     }
 
+    /**
+     * Get the amount of trash logged each month for the past 6 months
+     *
+     * @return The past 6 months of trashlogging totals
+     */
     public TrashDBCleanlinessResponse getCollectiveCleanliness() {
 
         // Get the counts
@@ -391,11 +403,11 @@ public class TrashDBBackend {
         int startMonth = counts.getFirst().month();
 
         // Inject data for any months not known
-        while (counts.size() != 6){
+        while (counts.size() != 6) {
 
             // Go to the prev month
             startMonth -= 1;
-            if(startMonth == 0){
+            if (startMonth == 0) {
                 startMonth = 12;
                 startYear -= 1;
             }
@@ -405,5 +417,37 @@ public class TrashDBBackend {
         }
 
         return new TrashDBCleanlinessResponse(counts);
+    }
+
+    /**
+     * Run the worker to calculate the community trash totals for this month (blocking)
+     */
+    public void runRecountCommunityTrash() {
+
+        CommunityCleanliness current = cleanlinessTable.getThisMonth();
+
+        // Count this month's logs
+        OffsetDateTime now = toOffsetTime(Instant.now()).withDayOfMonth(1);
+        int count = trashTable.countSince(now.toInstant());
+
+        // Update to the new count
+        current = current.withNewCount(count);
+        cleanlinessTable.update(current);
+    }
+
+    /**
+     * Run the worker to calculate the bin fullness (blocking)
+     */
+    public void runRecomputeFullness() {
+
+        // Recalculate this month's logs
+        CommunityCleanliness current = cleanlinessTable.getThisMonth();
+        OffsetDateTime now = toOffsetTime(Instant.now()).withDayOfMonth(1);
+        int count = trashTable.countSince(now.toInstant());
+
+        // Update to the new count
+        current = current.withNewCount(count);
+        cleanlinessTable.update(current);
+
     }
 }

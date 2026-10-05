@@ -1,18 +1,18 @@
 package seng202.team1.api.trashdb;
 
 import seng202.team1.api.ApiBackend;
+import seng202.team1.database.DAO.CommunityCleanlinessDAO;
+import seng202.team1.database.DAO.TrashLogDAO;
 import seng202.team1.gui.components.BlockableUISet;
 import seng202.team1.helpers.DateHelpers;
 import seng202.team1.types.status.StatusReport;
-import seng202.team1.types.trashdb.ResponseSuccess;
-import seng202.team1.types.trashdb.TrashDBCleanlinessResponse;
-import seng202.team1.types.trashdb.TrashDBFullnessResponse;
-import seng202.team1.types.trashdb.TrashDBLeaderboardResponse;
+import seng202.team1.types.trashdb.*;
 import seng202.team1.types.trashlog.TrashLog;
 import seng202.team1.types.user.Session;
 import seng202.team1.types.user.Token;
 import seng202.team1.types.user.User;
 
+import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -100,6 +100,7 @@ public class TrashDBClient extends ApiBackend {
      * Get the fullness of the bins in the database
      *
      * @param callback The handler to run when the request completes
+     * @return The async request
      */
     public CompletableFuture<TrashDBFullnessResponse> getBinFullness(Consumer<TrashDBFullnessResponse> callback) {
 
@@ -202,6 +203,7 @@ public class TrashDBClient extends ApiBackend {
      *
      * @param log      The log to upload
      * @param callback The handler to run when the request completes
+     * @return The async request
      */
     public CompletableFuture<ResponseSuccess> postLog(TrashLog log, Consumer<ResponseSuccess> callback) {
 
@@ -246,15 +248,41 @@ public class TrashDBClient extends ApiBackend {
         sendAsync(() -> backend.removeUser(), callback, frontend);
     }
 
+    /**
+     * Upload a status report to the database
+     *
+     * @param report The report to upload
+     * @param callback The handler to run when the request completes
+     * @return The async request
+     */
     public CompletableFuture<ResponseSuccess> postReport(StatusReport report, Consumer<ResponseSuccess> callback) {
 
         return sendAsync(() -> backend.addUserReport(report), callback, NO_LOADING_UI);
 
     }
 
+    /**
+     * Get the amount of trash logged each month for the past 6 months
+     *
+     * @param callback The handler to run when the request completes
+     */
     public void getCommunityCleanliness(Consumer<TrashDBCleanlinessResponse> callback) {
 
         sendAsync(() -> backend.getCollectiveCleanliness(), callback, NO_LOADING_UI);
 
+    }
+
+    /**
+     * Run the worker to calculate the community trash totals for this month (blocking)
+     */
+    public void runRecountCommunityTrash() {
+        backend.runRecountCommunityTrash();
+    }
+
+    /**
+     * Run the worker to calculate the bin fullness (blocking)
+     */
+    public void runRecomputeFullness() {
+        backend.runRecomputeFullness();
     }
 }
