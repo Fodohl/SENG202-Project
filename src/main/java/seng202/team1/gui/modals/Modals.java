@@ -8,7 +8,7 @@ public enum Modals {
     _CLOSED,
 
     LOG_TRASH,
-    LOG_ISSUE,
+    REPORT_ISSUE,
     DIRECTIONS
 
 }

@@ -1,22 +1,30 @@
 package seng202.team1.gui.pages;
 
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Parent;
-import javafx.scene.layout.*;
-import javafx.scene.control.Label;
-import seng202.team1.types.photon.Feature;
-import seng202.team1.helpers.StringHelpers;
-import seng202.team1.types.bin.Bin;
-import seng202.team1.data.route.RouteInstruction;
-import seng202.team1.types.trashlog.TrashLog;
-import seng202.team1.gui.components.*;
-import seng202.team1.gui.Router;
-import seng202.team1.gui.modals.Modals;
-
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Parent;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import seng202.team1.data.route.RouteInstruction;
+import seng202.team1.gui.Router;
+import seng202.team1.gui.components.UIButton;
+import seng202.team1.gui.components.UIImage;
+import seng202.team1.gui.components.UIKeyValuePair;
+import seng202.team1.gui.components.UIMap;
+import seng202.team1.gui.components.UISection;
+import seng202.team1.gui.components.UITitle;
+import seng202.team1.gui.modals.Modals;
+import seng202.team1.helpers.StringHelpers;
+import seng202.team1.types.bin.Bin;
+import seng202.team1.types.photon.Feature;
+import seng202.team1.types.trashlog.TrashLog;
 
 /**
  * Page that displays a map with bin locations
@@ -149,7 +157,7 @@ public class MapPage extends Page {
         // Modals
         directionsButton.setOnMouseClicked(e -> tryDrawDirections());
         logButton.setOnMouseClicked(e -> router.openModal(Modals.LOG_TRASH, selectedBin));
-        issueButton.setOnMouseClicked(e -> router.openModal(Modals.LOG_ISSUE, selectedBin));
+        issueButton.setOnMouseClicked(e -> router.openModal(Modals.REPORT_ISSUE, selectedBin));
 
         // Combine
         VBox box = new VBox(titleSection, infoSection, addressSection, collectionSection, actionsSection);

@@ -1,20 +1,24 @@
 package seng202.team1.gui.modals;
 
+import java.time.Instant;
+
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
+import seng202.team1.gui.Router;
+import seng202.team1.gui.components.UIButton;
+import seng202.team1.gui.components.UIChipsInput;
+import seng202.team1.gui.components.UIIconButton;
+import seng202.team1.gui.components.UIIconText;
+import seng202.team1.gui.components.UIParagraphInput;
+import seng202.team1.gui.components.UISection;
 import seng202.team1.helpers.StringHelpers;
 import seng202.team1.types.bin.Bin;
 import seng202.team1.types.bin.BinCategory;
-import seng202.team1.types.status.ReportType;
 import seng202.team1.types.bin.BinFullness;
-import seng202.team1.gui.Router;
-import seng202.team1.gui.components.*;
+import seng202.team1.types.status.ReportType;
 import seng202.team1.types.status.StatusReport;
-
-import java.time.Instant;
 
 /**
  * A Modal (overlay) to display a bin issue report
@@ -42,7 +46,7 @@ public class LogIssueModal extends Modal {
      * @param router The router responsible for this modal
      */
     public LogIssueModal(Router router) {
-        super(router, Modals.LOG_ISSUE);
+        super(router, Modals.REPORT_ISSUE);
     }
 
     /**

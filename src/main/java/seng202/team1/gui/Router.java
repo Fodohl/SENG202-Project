@@ -144,7 +144,7 @@ public class Router extends StateReferrer {
      */
     private void loadModals() {
         loadModal(Modals.LOG_TRASH, new LogTrashModal(this));
-        loadModal(Modals.LOG_ISSUE, new LogIssueModal(this));
+        loadModal(Modals.REPORT_ISSUE, new LogIssueModal(this));
         loadModal(Modals.DIRECTIONS, new DirectionsModal(this));
     }
 
