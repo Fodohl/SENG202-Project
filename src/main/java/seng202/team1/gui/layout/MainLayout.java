@@ -6,6 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
+import javafx.scene.Cursor;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.components.UIAvatar;
 import seng202.team1.gui.components.UIImage;
@@ -112,9 +113,12 @@ public class MainLayout extends Layout {
 
         // Move account to end
         HBox account = new HBox(10, accountLabel, accountIcon);
+        // Apply same visual style as the nav buttons and show it in the "active" state
+        account.getStyleClass().add("button");
         account.setAlignment(Pos.CENTER);
         BorderPane.setAlignment(accountLabel, Pos.CENTER_RIGHT);
         account.setOnMouseClicked(e -> router.switchPage(Pages.SETTINGS));
+        account.setCursor(Cursor.HAND);
 
         // Combine
         BorderPane header = new BorderPane();

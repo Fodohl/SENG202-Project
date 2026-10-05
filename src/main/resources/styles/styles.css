@@ -401,7 +401,7 @@
 
 .button{
     -fx-padding: 10px;
-    -fx-background-color: -bg-secondary;
+    -fx-background-color: -bg-third;
     -fx-background-radius: 20px;
     -fx-border-color: -text-secondary-half;
     -fx-border-radius: 20px;
