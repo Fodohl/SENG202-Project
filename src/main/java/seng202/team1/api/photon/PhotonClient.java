@@ -21,12 +21,15 @@ public class PhotonClient extends ApiBackend {
 
     /// Maximum number of locations to fetch
     private final Integer LIMIT_LOCATIONS = 3;
-
+    
     /// Latitude position to bias searches around
     private final Double SEARCH_PRIO_LAT = -43.5233;
-
+    
     /// Longitude position to bias searches around
     private final Double SEARCH_PRIO_LON = 172.5822;
+
+    /// limit to only in nz
+    private final String NZ_BBOX = "166.0,-47.5,178.8,-34.0";
 
     /**
      * Construct an new API client for Photon
@@ -57,7 +60,8 @@ public class PhotonClient extends ApiBackend {
         Map<String, String> params = Map.of("limit", LIMIT_LOCATIONS.toString(),
                                             "q", address,
                                             "lat", SEARCH_PRIO_LAT.toString(),
-                                            "lon", SEARCH_PRIO_LON.toString()
+                                            "lon", SEARCH_PRIO_LON.toString(),
+                                            "bbox", NZ_BBOX
                                             );
 
         httpGET("", params, json -> {
