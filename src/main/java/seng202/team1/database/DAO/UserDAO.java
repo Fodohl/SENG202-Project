@@ -18,7 +18,9 @@ import java.util.Locale;
  * @author abdallaweza
  */
 public class UserDAO extends SqlTimeUtils implements DAOInterface<User> {
+    /// DatabaseManager managing all the DAO objects
     private static final Logger log = LogManager.getLogger(UserDAO.class);
+    /// Logger for recording StatusReportDAO database operations and errors
     private final DatabaseManager databaseManager;
 
     public UserDAO(DatabaseManager databaseManager) {

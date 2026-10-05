@@ -22,7 +22,9 @@ import seng202.team1.types.trashlog.TrashType;
  * @author Marcus Demafeliz
  */
 public class TrashLogDAO extends SqlTimeUtils implements DAOInterface<TrashLog> {
+    /// DatabaseManager managing all the DAO objects
     private final DatabaseManager databaseManager;
+    /// Logger for recording StatusReportDAO database operations and errors
     private static final Logger log = LogManager.getLogger(TrashLogDAO.class);
 
     /**

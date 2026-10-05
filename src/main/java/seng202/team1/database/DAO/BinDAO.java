@@ -20,7 +20,9 @@ import java.util.*;
  * @author Marcus Demafeliz
  */
 public class BinDAO extends SqlTimeUtils implements DAOInterface<Bin> {
+    /// DatabaseManager managing all the DAO objects
     private final DatabaseManager databaseManager;
+    /// Logger for recording StatusReportDAO database operations and errors
     private static final Logger log = LogManager.getLogger(BinDAO.class);
 
 

@@ -19,7 +19,10 @@ import java.util.Locale;
  * @author Archie Georgeson
  */
 public class StatusReportDAO extends SqlTimeUtils implements DAOInterface<StatusReport> {
+
+    /// DatabaseManager managing all the DAO objects
     private final DatabaseManager databaseManager;
+    /// Logger for recording StatusReportDAO database operations and errors
     private static final Logger log = LogManager.getLogger(StatusReportDAO.class);
 
     /**
