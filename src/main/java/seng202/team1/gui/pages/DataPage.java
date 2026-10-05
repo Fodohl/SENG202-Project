@@ -1,8 +1,11 @@
 package seng202.team1.gui.pages;
 
+import javafx.animation.PauseTransition;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import seng202.team1.helpers.StringHelpers;
 import seng202.team1.data.ExportManager;
 import seng202.team1.types.bin.Bin;
@@ -14,6 +17,7 @@ import seng202.team1.gui.components.UITable;
 import seng202.team1.gui.components.UITitle;
 import seng202.team1.gui.Router;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 
 /**
@@ -21,11 +25,17 @@ import java.util.Comparator;
  */
 public class DataPage extends Page {
 
+    /// Height to hold the page at whilst the table is empty, taller than any screen
+    private static final double LOADING_MIN_HEIGHT = 5000;
+
     /// The container for the whole page
     private VBox root;
 
     /// The table that contains the app's data
     private UITable table;
+
+    /// The data shown in the table, used for exports
+    private StringTableBuilder<Bin> tableData;
 
     /**
      * Constructs a new DataPage
@@ -46,38 +56,9 @@ public class DataPage extends Page {
     @Override
     protected Parent renderSelf() {
 
-        // First build
-        root = new VBox(20);
-        refreshData();
-
-        root.setAlignment(Pos.CENTER);
-        return root;
-    }
-
-    /**
-     * Rerender the table with the latest data
-     */
-    @Override
-    public void updateContents() {
-        refreshData();
-    }
-
-    /**
-     * Refreshes the data shown in the data table
-     */
-    private void refreshData(){
-
         // Title
         UITitle pageTitle = new UITitle("Raw Data");
         pageTitle.setAlignment(Pos.CENTER);
-
-        // Data
-        StringTableBuilder<Bin> tableData = new StringTableBuilder<Bin>(getState().getBinDAO().getAll())
-            .addColumn("binID", "ID")
-            .addColumn("fullness", "Fullness", val -> StringHelpers.enumNameToTitle(((BinFullness)val).name()))
-            .addColumn("areaName", "Location")
-            .addColumn("type", "Type", val -> StringHelpers.enumNameToTitle(((BinCategory)val).name()))
-            .sortBy(Comparator.comparing(Bin::getID));
 
         UIIconButton exportButton = new UIIconButton("/media/images/export.svg", "Export Data");
         exportButton.getStyleClass().add("data-button");
@@ -87,14 +68,50 @@ public class DataPage extends Page {
             ExportManager.exportToCSV(router.getStage(), ExportManager.exportName("bin_data"), tableData.build());
         });
 
+        tableData = new StringTableBuilder<Bin>(new ArrayList<>())
+            .addColumn("binID", "ID")
+            .addColumn("fullness", "Fullness", val -> StringHelpers.enumNameToTitle(((BinFullness)val).name()))
+            .addColumn("areaName", "Location")
+            .addColumn("type", "Type", val -> StringHelpers.enumNameToTitle(((BinCategory)val).name()))
+            .sortBy(Comparator.comparing(Bin::getID));
+
         table = new UITable(tableData, false);
         table.getStyleClass().add("data-table");
         table.setOnRowClick(row -> getState().goToBin(row.get("ID")));
 
-        // Combine
-        root.getChildren().clear();
-        root.getChildren().addAll(pageTitle, exportButton, table);
+        root = new VBox(20, pageTitle, exportButton, table);
+        root.setAlignment(Pos.TOP_CENTER);
 
+        fillTable();
+
+        return root;
+    }
+
+    /**
+     * Show the page with an empty table straight away, then fill in the rows once it is on screen
+     */
+    @Override
+    public void updateContents() {
+
+        tableData.updateData(new ArrayList<>());
+        table.buildTableContent();
+
+        root.setMinHeight(LOADING_MIN_HEIGHT);
+
+        PauseTransition delay = new PauseTransition(Duration.millis(50));
+        delay.setOnFinished(e -> fillTable());
+        delay.play();
+    }
+
+    /**
+     * Fills the data table with the latest bins
+     */
+    private void fillTable(){
+
+        tableData.updateData(getState().getBinDAO().getAll());
+        table.buildTableContent();
+
+        root.setMinHeight(Region.USE_COMPUTED_SIZE);
     }
 
     /**
