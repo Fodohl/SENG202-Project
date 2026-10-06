@@ -5,101 +5,125 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.scene.control.ComboBox;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import org.controlsfx.control.textfield.AutoCompletionBinding;
+import org.controlsfx.control.textfield.TextFields;
 
 /**
  * A dropdown the user can type into and filters the options
  */
 public class UISearchDropDown extends UIDropDown {
 
-    /// The dropdown
-    private ComboBox<String> dropwDown = new ComboBox<>();
+    /// dropdown
+    private TextField searchInput = new TextField();
 
     /// The label to show invalid input messages in
     private Label errorText = new Label();
 
-    private final ObservableList<String> allOptions;
-    private final FilteredList<String> filteredOptions;
+    /// The options the user can pick from
+    private final List<String> options;
+
+    /// The option that matches, or null
+    private final ReadOnlyObjectWrapper<String> selected = new ReadOnlyObjectWrapper<>();
+
+    /// The popup with options as the user types
+    private final AutoCompletionBinding<String> autoCompletion;
 
     /**
-     * Constructs a new dropdown
+     * Makes a new search dropdown
      *
      * @param prompt The default text to show when none selected
-     * @param options The options to show in the dropdown
+     * @param options The options to show
      */
     public UISearchDropDown(String prompt, List<String> options){
         super(prompt, List.of());
 
+        this.options = List.copyOf(options);
+
         // Set values
-        dropwDown.setPromptText(prompt);
-        dropwDown.setEditable(true);
-        dropwDown.getStyleClass().add("search-dropdown");
-        allOptions = FXCollections.observableArrayList(options);
-        filteredOptions = new FilteredList<>(allOptions, option -> true);
-        dropwDown.setItems(filteredOptions);
+        searchInput.setPromptText(prompt);
+        searchInput.getStyleClass().add("search-dropdown");
+        autoCompletion = TextFields.bindAutoCompletion(searchInput, request -> matchingOptions(request.getUserText()));
 
-        dropwDown.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-            event.consume();
-            dropwDown.getEditor().requestFocus();
+        // Show options when clicked
+        searchInput.addEventHandler(MouseEvent.MOUSE_CLICKED, e -> autoCompletion.setUserInput(searchInput.getText()));
+        searchInput.focusedProperty().addListener((obs, wasFocused, isFocused) -> {
+            if(isFocused)
+                autoCompletion.setUserInput(searchInput.getText());
         });
 
-        dropwDown.getEditor().textProperty().addListener((obs, oldValue, newValue) -> {
-            String search = newValue == null ? "" : newValue.trim().toLowerCase(Locale.ROOT);
-            filteredOptions.setPredicate(option -> search.isEmpty()
-                    || option.toLowerCase(Locale.ROOT).contains(search));
-
-            if (dropwDown.isFocused() && !filteredOptions.isEmpty()) {
-                dropwDown.show();
-            } else if (filteredOptions.isEmpty()) {
-                dropwDown.hide();
-            }
-        });
+        // Only count the text as a selection once it matches an option
+        searchInput.textProperty().addListener((obs, oldValue, newValue) -> selected.set(findOption(newValue)));
 
         // Style
-        dropwDown.setMaxWidth(Double.MAX_VALUE);
+        searchInput.setMaxWidth(Double.MAX_VALUE);
         getChildren().clear();
-        getChildren().addAll(dropwDown, errorText);
+        getChildren().addAll(searchInput, errorText);
 
         // Reset error on change
-        dropwDown.valueProperty().addListener((obs, oldVal, newVal) -> {
-            setError("");
-        });
+        selected.addListener((obs, oldVal, newVal) -> setError(""));
+    }
+
+    /**
+     * Get the options containing some text, ignoring case
+     * (LLM helped to make this method)
+     * 
+     * @param text The text to search for
+     * @return The matching options, or all options if the text is empty
+     */
+    private List<String> matchingOptions(String text){
+
+        String search = text == null ? "" : text.trim().toLowerCase(Locale.ROOT);
+        return options.stream().filter(option -> option.toLowerCase(Locale.ROOT).contains(search)).toList();
+    }
+
+    /**
+     * Find the option that matches
+     *
+     * @param text The text to match
+     * @return The matching option, or null
+     */
+    private String findOption(String text){
+
+        if(text == null)
+            return null;
+
+        String search = text.trim();
+        return options.stream().filter(option -> option.equalsIgnoreCase(search)).findFirst().orElse(null);
     }
 
      /**
-     * Get the selected dropdown value or null if none
+     * Get the selected option or null if none
      *
      * @return The selected option
      */
     @Override
     public String getInput() {
-        return dropwDown.getValue();
+        return selected.get();
     }
 
     /**
      * Set the input to a desired value
      *
-     * @param value The new string input value, must match a dropdown
+     * @param value The new string input value
      */
     @Override
     public void setInput(Object value) {
 
-        if(value instanceof  String)
-            dropwDown.setValue((String)value);
+        if(value instanceof String)
+            searchInput.setText((String)value);
     }
 
     /**
-     * Run a listener whenever the value changes
+     * Run a listener whenever it changes
      *
      * @param listener Called with the new value
      */
     public void setOnSelectionChanged(Consumer<String> listener) {
-        dropwDown.valueProperty().addListener((obs, oldValue, newValue) -> listener.accept(newValue));
+        selected.addListener((obs, oldValue, newValue) -> listener.accept(newValue));
     }
 
     /**
@@ -107,11 +131,11 @@ public class UISearchDropDown extends UIDropDown {
      *
      * Note: if true then getInput() will not be null
      *
-     * @return True if the user has inputted a value
+     * @return True if the user has selected something
      */
     @Override
     public boolean hasInput() {
-        return !dropwDown.getSelectionModel().isEmpty();
+        return selected.get() != null;
     }
 
     /**
@@ -119,8 +143,7 @@ public class UISearchDropDown extends UIDropDown {
      */
     @Override
     public void clear() {
-        dropwDown.setValue(null);
-        dropwDown.getEditor().clear();
+        searchInput.clear();
         setError("");
     }
 

@@ -23,7 +23,7 @@ class LogIssueModalTest extends TrashAppTest {
 
         // Setup fields
         modal.getRendered();
-        router.openModal(Modals.LOG_ISSUE, testBin);
+        router.openModal(Modals.REPORT_ISSUE, testBin);
     }
 
     @Test
@@ -31,7 +31,7 @@ class LogIssueModalTest extends TrashAppTest {
         UIParagraphInput reportInput = modal.getReportInput();
         reportInput.setInput("Test report description");
 
-        router.openModal(Modals.LOG_ISSUE, testBin);
+        router.openModal(Modals.REPORT_ISSUE, testBin);
         router.closeModal();
 
         assertFalse(reportInput.hasInput());
