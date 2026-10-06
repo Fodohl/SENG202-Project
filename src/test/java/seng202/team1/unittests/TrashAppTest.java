@@ -109,9 +109,9 @@ public class TrashAppTest {
 
         StringTableBuilder<Bin> table = new StringTableBuilder<>(data)
                                         .addColumn("binID", "ID")
-                                        .addColumn("fullness", "Fullness", val -> StringHelpers.enumNameToTitle(((BinFullness)val).name()))
+                                        .addColumn("fullness", "Fullness", bin -> bin.getFullness().name())
                                         .addColumn("areaName", "Location")
-                                        .addColumn("type", "Type", val -> StringHelpers.enumNameToTitle(((BinCategory)val).name()))
+                                        .addColumn("type", "Type", bin -> bin.getCategory().name())
                                         .sortBy(Comparator.comparing(item -> item.getID()));
         return table;
     }

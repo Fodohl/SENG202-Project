@@ -6,6 +6,10 @@ DROP TABLE IF EXISTS users;
 --SPLIT
 DROP TABLE IF EXISTS status_reports;
 --SPLIT
+DROP TABLE IF EXISTS community_cleanliness;
+--SPLIT
+DROP TABLE IF EXISTS leaderboard;
+--SPLIT
 CREATE TABLE bins (
     id INTEGER PRIMARY KEY,
     lat DECIMAL(11, 8) NOT NULL,
