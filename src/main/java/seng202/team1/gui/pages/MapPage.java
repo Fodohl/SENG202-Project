@@ -193,7 +193,7 @@ public class MapPage extends Page {
 
         // Populate the map
         map = new UIMap();
-        for (Bin bin : getState().getBinDAO().getAll())
+        for (Bin bin : getState().getLocalTables().getBinTable().getAll())
             map.addPoint(bin.getLatitude(), bin.getLongitude(), bin.getID(), bin.getCategory().toString().toLowerCase());
 
         // Handle map events
@@ -237,7 +237,7 @@ public class MapPage extends Page {
     private void handleShowRequest() {
 
         // No requested location
-        Integer binID = getState().consumeBinShowRequest();
+        Integer binID = getState().getUiContext().consumeBinShowRequest();
         if(binID == null)
             return;
 
@@ -250,7 +250,7 @@ public class MapPage extends Page {
     private void handleLocationRequest() {
 
         // No requested location
-        Feature location = getState().consumeMapSearchRequest();
+        Feature location = getState().getUiContext().consumeMapSearchRequest();
         if(location == null)
             return;
 
@@ -299,7 +299,7 @@ public class MapPage extends Page {
         if (Objects.equals(selectedBin, binID))
             selectedBin = null;
         else
-            selectedBin = getState().getBinDAO().getOne(binID);
+            selectedBin = getState().getLocalTables().getBinTable().getOne(binID);
 
         clearPreviousBin();
         updateContents();
@@ -352,7 +352,7 @@ public class MapPage extends Page {
             return;
 
         // Get usage
-        List<TrashLog> uses = getState().getTrashLogDAO()
+        List<TrashLog> uses = getState().getLocalTables().getTrashTable()
                 .getAll().stream()
                 .filter(l -> l.binID() == selectedBin.getID())
                 .sorted(Comparator.comparing(TrashLog::createdAt))
@@ -360,7 +360,7 @@ public class MapPage extends Page {
         TrashLog newest = uses.isEmpty() ? null : uses.getLast();
 
         // Refresh the bins' average status
-        selectedBin = getRouter().getGlobalState().getBinDAO().getOne(selectedBin.getID());
+        selectedBin = getState().getLocalTables().getBinTable().getOne(selectedBin.getID());
 
         sidebarBinID.setText(selectedBin.getID().toString());
         binImage.setSource(selectedBin.getPhotoURL() != null ? selectedBin.getPhotoURL() : "/media/images/bin.png");

@@ -1,5 +1,7 @@
 package seng202.team1.tasks;
 
+import seng202.team1.state.GlobalState;
+
 import java.util.function.Consumer;
 
 /**
@@ -29,7 +31,7 @@ public class GenericTask extends Task{
      * @param manager The task manager that triggered the task
      */
     @Override
-    public void task(TaskManager manager) {
+    public void task(GlobalState state) {
         task.accept(manager);
     }
 }

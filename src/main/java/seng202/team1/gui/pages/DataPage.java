@@ -72,7 +72,7 @@ public class DataPage extends Page {
         pageTitle.setAlignment(Pos.CENTER);
 
         // Data
-        StringTableBuilder<Bin> tableData = new StringTableBuilder<Bin>(getState().getBinDAO().getAll())
+        StringTableBuilder<Bin> tableData = new StringTableBuilder<Bin>(getState().getLocalTables().getBinTable().getAll())
             .addColumn("binID", "ID")
             .addColumn("fullness", "Fullness", bin -> StringHelpers.enumNameToTitle(bin.getFullness().name()))
             .addColumn("areaName", "Location")
@@ -89,7 +89,7 @@ public class DataPage extends Page {
 
         table = new UITable(tableData, false);
         table.getStyleClass().add("data-table");
-        table.setOnRowClick(row -> getState().goToBin(row.get("ID")));
+        table.setOnRowClick(row -> getState().getUiContext().goToBin(row.get("ID")));
 
         // Combine
         root.getChildren().clear();

@@ -56,7 +56,7 @@ public class UILocationInput extends HBox {
     public UILocationInput(GlobalState globalState){
 
         this.globalState = globalState;
-        this.photonClient = globalState.getPhotonClient();
+        this.photonClient = globalState.getAppClients().getPhotonClient();
 
         setupPopup();
 
@@ -168,7 +168,7 @@ public class UILocationInput extends HBox {
      */
     private void submitSearch(Feature location) {
 
-        globalState.setMapSearchRequest(location);
+        globalState.getUiContext().setMapSearchRequest(location);
 
         // Hide the popup and cancel any address resolutions
         debouncer.pause();

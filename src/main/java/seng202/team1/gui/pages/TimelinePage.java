@@ -87,10 +87,7 @@ public class TimelinePage extends Page {
         exportButton.getStyleClass().add("data-button");
 
         exportButton.setOnMouseClicked(e -> {
-            List<StatusReport> reports = router.getGlobalState().getStatusReportDAO().getNonFullnessReports();
-            List<TrashLog> trash = router.getGlobalState().getTrashLogDAO().getAll();
-            StringTable table = buildExportTable(reports, trash);
-            ExportManager.exportToCSV(router.getStage(), ExportManager.exportName("timeline"), table);
+
         });
 
         VBox root = new VBox(50, botCards, pageTitle, exportButton, timelineSection);
@@ -105,14 +102,13 @@ public class TimelinePage extends Page {
     @Override
     public void updateContents() {
 
-
         // Get usage
-        List<TrashLog> uses = router.getGlobalState().getTrashLogDAO()
+        List<TrashLog> uses = getState().getLocalTables().getTrashTable()
                 .getAll().stream()
                 .sorted(Comparator.comparing(TrashLog::createdAt))
                 .toList();
         List<Bin> bins = uses.stream()
-                .map(b -> router.getGlobalState().getBinDAO().getOne(b.binID()))
+                .map(b -> getState().getLocalTables().getBinTable().getOne(b.binID()))
                 .toList();
 
         Bin newestBin = bins.isEmpty() ? null : bins.getLast();
@@ -130,8 +126,8 @@ public class TimelinePage extends Page {
      */
     void renderTimelineEntries() {
 
-        List<StatusReport> reports = router.getGlobalState().getStatusReportDAO().getAll();
-        List<TrashLog> trash = router.getGlobalState().getTrashLogDAO().getAll();
+        List<StatusReport> reports = getState().getLocalTables().getStatusReportsTable().getAll();
+        List<TrashLog> trash = getState().getLocalTables().getTrashTable().getAll();
 
         List<UITimelineEntry> timelineEntries = new ArrayList<>();
         timelineEntries.addAll(buildReportsEntries(reports));
@@ -139,33 +135,6 @@ public class TimelinePage extends Page {
 
         timeline = new UITimeline(timelineEntries);
         timelineSection.getChildren().setAll(timeline);
-    }
-
-    /**
-     * Builds a combined, newest-first table of status reports and trash logs for export
-     *
-     * @param reports The status reports to include
-     * @param trash The trash logs to include
-     * @return The table, ready for ExportManager.exportToCSV
-     */
-    private StringTable buildExportTable(List<StatusReport> reports, List<TrashLog> trash) {
-        List<ExportEntry> exportEntries = new ArrayList<>();
-        reports.forEach(r -> exportEntries.add(ExportEntry.from(r)));
-        /// TrashLog and BinFullness from associated StatusReport
-        trash.forEach(t -> exportEntries.add(ExportEntry.from(t,
-                router.getGlobalState().getStatusReportDAO().getFullnessByTrashLog(t))));
-
-        return new StringTableBuilder<>(exportEntries)
-                .addColumn("time", "Timestamp", entry -> StringHelpers.toLocaleString(entry.time()))
-                .addColumn("source", "Type")
-                .addColumn("binId", "Bin ID")
-                .addColumn("fullness", "Fullness")
-                .addColumn("issue", "Issue")
-                .addColumn("trashType", "Trash Type")
-                .addColumn("trashWeight", "Weight")
-                .addColumn("description", "Description")
-                .sortBy(Comparator.comparing(ExportEntry::time).reversed())
-                .build();
     }
 
     /**
@@ -200,7 +169,7 @@ public class TimelinePage extends Page {
                 .map(log -> {
 
                     // Get associated log data
-                    Bin bin = router.getGlobalState().getBinDAO().getOne(log.binID());
+                    Bin bin = getState().getLocalTables().getBinTable().getOne(log.binID());
 
                     String trashType = enumNameToTitle(log.trashType().name());
 

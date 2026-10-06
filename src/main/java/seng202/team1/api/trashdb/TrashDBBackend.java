@@ -4,6 +4,7 @@ import seng202.team1.api.HttpStatus;
 import seng202.team1.data.bin.BinDataset;
 import seng202.team1.database.DAO.*;
 import seng202.team1.database.DatabaseManager;
+import seng202.team1.database.TableCollection;
 import seng202.team1.database.exceptions.DuplicateEntryException;
 import seng202.team1.state.GlobalState;
 import seng202.team1.types.bin.Bin;
@@ -44,23 +45,8 @@ public class TrashDBBackend {
     /// The database connection to the online DB
     private DatabaseManager db;
 
-    /// The DAO responsible for bins
-    protected BinDAO binTable;
-
-    /// The DAO responsible for users
-    protected UserDAO userTable;
-
-    /// The DAO responsible for trash
-    protected TrashLogDAO trashTable;
-
-    /// The DAO responsible for status reports
-    protected StatusReportDAO statusReportsTable;
-
-    /// The DAO responsible for community cleanliness
-    protected CommunityCleanlinessDAO cleanlinessTable;
-
-    /// The DAO responsible for the leaderboard
-    protected LeaderboardDAO leaderboardTable;
+    /// The collection of table DAO objects for the online mariadb DB
+    private TableCollection tables;
 
     /// The handler for securing user tokens
     private final TokenService tokenService = new TokenService();
@@ -77,13 +63,8 @@ public class TrashDBBackend {
 
         // Will connect to the online db without a sqlite file
         db = new DatabaseManager(IS_TEST_MODE ? testBackendDB : null);
+        tables = new TableCollection(db);
 
-        binTable = new BinDAO(db);
-        userTable = new UserDAO(db);
-        trashTable = new TrashLogDAO(db);
-        statusReportsTable = new StatusReportDAO(db);
-        cleanlinessTable = new CommunityCleanlinessDAO(db);
-        leaderboardTable = new LeaderboardDAO(db);
     }
 
     /**
@@ -100,7 +81,7 @@ public class TrashDBBackend {
         // Propagate bins
         BinDataset bins = new BinDataset();
         bins.readGeoJSON();
-        backend.binTable.addBatch(bins.getBinDataset());
+        backend.tables.getBinTable().addBatch(bins.getBinDataset());
     }
 
     /**
@@ -123,7 +104,7 @@ public class TrashDBBackend {
         if (userID == -1)
             throw new InvalidParameterException("Token malformed or not signed");
 
-        user = userTable.getOne(userID);
+        user = tables.getUserTable().getOne(userID);
 
     }
 
@@ -152,7 +133,7 @@ public class TrashDBBackend {
         try {
 
             // Try to add the user to the db
-            if (userTable.add(user) == -1)
+            if (tables.getUserTable().add(user) == -1)
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to save user to database");
 
             return user;
@@ -172,7 +153,7 @@ public class TrashDBBackend {
     public Token logUserIn(String email, String passwordRaw) {
 
         // User with that email must exist
-        User user = userTable.getByEmail(email);
+        User user = tables.getUserTable().getByEmail(email);
         if (user == null)
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
 
@@ -227,7 +208,7 @@ public class TrashDBBackend {
     public TrashDBFullnessResponse getBinsFullness(OffsetDateTime lastUpdated) {
 
 
-        List<Bin> bins = binTable.getBinsAfter(lastUpdated == null ? null : lastUpdated.toInstant());
+        List<Bin> bins = tables.getBinTable().getBinsAfter(lastUpdated == null ? null : lastUpdated.toInstant());
 
         // Map the bin to it's fullness
         HashMap<Integer, Integer> fullness = new HashMap<>();
@@ -262,7 +243,7 @@ public class TrashDBBackend {
 
 
         // Store
-        int id = trashTable.add(cleanedLog);
+        int id = tables.getTrashTable().add(cleanedLog);
 
         if (id == -1)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to save log to database");
@@ -286,7 +267,7 @@ public class TrashDBBackend {
 
         // Cant update to this email its taken
         boolean newEmail = !user.email().equals(email);
-        if (newEmail && userTable.getByEmail(email) != null)
+        if (newEmail && tables.getUserTable().getByEmail(email) != null)
             throw new ResponseStatusException(HttpStatus.CONFLICT, "User with email already exists");
 
         // Update the user (assumed logged in so clear reset code)
@@ -302,7 +283,7 @@ public class TrashDBBackend {
                 user.passwordHash(),
                 null
         );
-        userTable.update(cleanedUser);
+        tables.getUserTable().update(cleanedUser);
 
         ResponseSuccess success = new ResponseSuccess("User updated successfully");
         return success;
@@ -338,7 +319,7 @@ public class TrashDBBackend {
                 PasswordHasher.hash(enteredPasswordNew),
                 null
         );
-        userTable.update(cleanedUser);
+        tables.getUserTable().update(cleanedUser);
 
 
         ResponseSuccess success = new ResponseSuccess("User updated successfully");
@@ -356,7 +337,7 @@ public class TrashDBBackend {
 
         // Get the user making the request
         User user = getUser();
-        userTable.delete(user.id());
+        tables.getUserTable().delete(user.id());
 
         ResponseSuccess success = new ResponseSuccess("User deleted successfully");
         return success;
@@ -386,7 +367,7 @@ public class TrashDBBackend {
 
 
         // Store
-        int id = statusReportsTable.add(report);
+        int id = tables.getStatusReportsTable().add(report);
 
         if (id == -1)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to save report to database");
@@ -404,7 +385,7 @@ public class TrashDBBackend {
     public TrashDBCleanlinessResponse getCollectiveCleanliness() {
 
         // Get the counts
-        ArrayList<CommunityCleanliness> counts = new ArrayList<>(cleanlinessTable.getPastSixMonths());
+        ArrayList<CommunityCleanliness> counts = new ArrayList<>(tables.getCleanlinessTable().getPastSixMonths());
 
         int startYear = counts.getFirst().year();
         int startMonth = counts.getFirst().month();
@@ -431,22 +412,22 @@ public class TrashDBBackend {
      */
     public void runRecountCommunityTrash() {
 
-        CommunityCleanliness current = cleanlinessTable.getThisMonth();
+        CommunityCleanliness current = tables.getCleanlinessTable().getThisMonth();
 
         // Count this month's logs
         OffsetDateTime now = toOffsetTime(Instant.now()).withDayOfMonth(1);
-        int count = trashTable.countSince(now.toInstant());
+        int count = tables.getTrashTable().countSince(now.toInstant());
 
         // Update to the new count
         current = current.withNewCount(count);
-        cleanlinessTable.update(current);
+        tables.getCleanlinessTable().update(current);
     }
 
 
     public TrashDBLeaderboardResponse getLeaderboard() {
 
 
-        List<LeaderBoardEntry> entries = leaderboardTable.getAll();
+        List<LeaderBoardEntry> entries = tables.getLeaderboardTable().getAll();
         return new TrashDBLeaderboardResponse(entries, -1);
 
     }
@@ -462,12 +443,12 @@ public class TrashDBBackend {
                 .atStartOfDay(ZoneId.systemDefault())
                 .toInstant();
 
-        List<StatusReport> fullnessReports = statusReportsTable.getAll().stream()
+        List<StatusReport> fullnessReports = tables.getStatusReportsTable().getAll().stream()
                 .filter(r -> r.getSubmittedAt().isAfter(startOfDay))
                 .toList();
 
         // Get each bin's new fullness as an average of this week's reports
-        List<Bin> bins = binTable.getAll();
+        List<Bin> bins = tables.getBinTable().getAll();
         bins.forEach(bin -> {
             List<StatusReport> reportsFoBin = fullnessReports.stream().filter(r -> r.getBinId() == bin.getID()).toList();
             bin.updateFullness(reportsFoBin);
@@ -479,7 +460,7 @@ public class TrashDBBackend {
                 bin -> bin.getFullness()
         ));
 
-        binTable.updateFullness(fullness);
+        tables.getBinTable().updateFullness(fullness);
     }
 
     /**
@@ -489,8 +470,8 @@ public class TrashDBBackend {
 
         // Fetch all logs and bins (note: required here as some fancy sql cant be done due to the tree day emissions calcualtor,
         // this shouldn't affect performance as all done in the background)
-        List<User> users = userTable.getAll();
-        List<TrashLog> logs = trashTable.getAll();
+        List<User> users = tables.getUserTable().getAll();
+        List<TrashLog> logs = tables.getTrashTable().getAll();
 
         Map<User, List<TrashLog>> userLogs = users.stream().collect(Collectors.toMap(
                 user -> user,
@@ -507,6 +488,7 @@ public class TrashDBBackend {
                 }).toList();
 
         // Update cache in db
+        LeaderboardDAO leaderboardTable = tables.getLeaderboardTable();
         leaderboardTable.clear();
         leaderboardTable.addBatch(toRankedOrder(calculated));
     }
@@ -514,10 +496,10 @@ public class TrashDBBackend {
 
     public List<TrashLog> getUserTrashLogs() {
 
-        return trashTable.getByUser(getUser().id());
+        return tables.getTrashTable().getByUser(getUser().id());
     }
 
     public List<StatusReport> getUserReports() {
-        return statusReportsTable.getReportsByUserId(getUser().id());
+        return tables.getStatusReportsTable().getReportsByUserId(getUser().id());
     }
 }

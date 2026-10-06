@@ -4,6 +4,8 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.layout.VBox;
+import org.jooq.Select;
+import seng202.team1.database.DAO.StatusReportDAO;
 import seng202.team1.helpers.StringHelpers;
 import seng202.team1.types.bin.Bin;
 import seng202.team1.types.bin.BinCategory;
@@ -12,6 +14,7 @@ import seng202.team1.types.bin.BinFullness;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.components.*;
 import seng202.team1.types.status.StatusReport;
+import seng202.team1.types.user.Session;
 
 import java.time.Instant;
 
@@ -169,19 +172,8 @@ public class LogIssueModal extends Modal {
         if (typeInput.isErroring() || reportInput.isErroring() || fullnessInput.isErroring())
             return;
 
-        // Refresh the bins' average status
-        var session = getState().getAuth().getSession();
-
-        if (session != null && session.userDetails() != null) {
-            StatusReport reportToAdd = new StatusReport(binID, session.userDetails().id(), fullness, type, report, Instant.now());
-            getState().getStatusReportDAO().add(reportToAdd);
-        } else {
-            StatusReport reportToAdd = new StatusReport(binID, 0, fullness, type, report, Instant.now());
-            getState().getStatusReportDAO().add(reportToAdd);
-        }
-        refreshBinFullness(bin, getState().getBinDAO(), getState().getStatusReportDAO());
-        getState().sync();
-
+        // Save
+        getState().getDataService().logReport(bin, fullness, type, report);
         closeModal();
     }
 

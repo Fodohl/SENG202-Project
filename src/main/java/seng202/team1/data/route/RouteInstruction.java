@@ -40,6 +40,8 @@ public class RouteInstruction {
 
     /**
      * Get the route's instruction
+     * <p>
+     * Warning: assumes leaflet's style of whitespaces escaped as '+'
      *
      * @return The instruction
      */

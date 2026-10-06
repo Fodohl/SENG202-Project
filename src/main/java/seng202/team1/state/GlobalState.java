@@ -1,7 +1,14 @@
 package seng202.team1.state;
 
 import javafx.stage.Stage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import seng202.team1.api.AppClients;
 import seng202.team1.api.trashdb.TrashDBClient;
+import seng202.team1.data.DataService;
+import seng202.team1.database.TableCollection;
+import seng202.team1.gui.UIContext;
+import seng202.team1.tasks.AppTasks;
 import seng202.team1.tasks.background.SyncToBackendTask;
 import seng202.team1.tasks.workers.BinFullnessWorker;
 import seng202.team1.tasks.workers.CommunityCleanlinessWorker;
@@ -37,59 +44,30 @@ import java.util.List;
  */
 public class GlobalState {
 
+    private static final Logger log = LoggerFactory.getLogger(GlobalState.class);
     /// Whether there is a screen to draw to or now
     public static boolean IS_HEADLESS_MODE = false;
 
-    /// / Whethere the state is for a unittest or not
+    /// Whether the state is for a unittest or not
     public static boolean IS_TEST_MODE = false;
 
-    /// The manager of the app's window
-    private Router router;
+    /// The collection of table DAO objects for the local sqlite DB
+    private TableCollection localTables;
 
-    /// The current window
-    private Stage stage;
-
-    /// The handler for the static bin data
-    private BinDataset binDataset;
-
-    /// The DAO responsible for trash
-    private TrashLogDAO trashLogDAO;
-
-    /// The DAO responsible for bins
-    private BinDAO binDAO;
-
-    /// The DAO responsible for reports
-    private StatusReportDAO statusReportDAO;
-
-    /// The database connection to the local sqlite DB
-    private DatabaseManager databaseManager;
-
-    /// The handler for geocoding requests
-    private PhotonClient photonClient;
-
-    /// The handler for app API requests
-    private TrashDBClient taServer;
-
-    /// Current user location or null if none is requested
-    private Feature requestedLocation;
-
-    /// Current bin to show or null if none is requested
-    private Integer requestedShowBinId;
-
-    /// The handler for app start up tasks
-    private PreflightManager preflightManager;
-
-    /// The handler for app background tasks
-    public TaskManager backgroundTasks = new TaskManager(this);
-
-    /// The current leaderboard state
-    private TrashDBLeaderboardResponse leaderboard;
-
-    /// The current community cleanliness state
-    private TrashDBCleanlinessResponse communityCleanliness;
+    /// The UI builder and state
+    private UIContext uiContext;
 
     /// The current user and credentials
     private AuthState auth;
+
+    /// The handler for data loading and logging
+    private DataService dataService;
+
+    /// The task managers the app uses
+    private AppTasks appTasks;
+
+    /// The api clients the app uses
+    private AppClients appClients;
 
     /**
      * Construct a new Global state instance
@@ -98,123 +76,23 @@ public class GlobalState {
      */
     public GlobalState(Stage stage) {
 
-        // Setup data
-        databaseManager = new DatabaseManager(IS_TEST_MODE ?
+        // Setup connection to sqlite
+        DatabaseManager databaseManager = new DatabaseManager(IS_TEST_MODE ?
                 "jdbc:sqlite:./src/test/resources/test_database.db" :
                 "jdbc:sqlite:database.db"
         );
-        binDataset = new BinDataset();
 
-        binDAO = new BinDAO(databaseManager);
-        trashLogDAO = new TrashLogDAO(databaseManager);
-        statusReportDAO = new StatusReportDAO(databaseManager);
-
-        // Set up API
-        photonClient = new PhotonClient();
-        taServer = new TrashDBClient();
+        localTables = new TableCollection(databaseManager);
+        dataService = new DataService(this);
+        appClients = new AppClients(this);
+        appTasks = new AppTasks(this);
+        uiContext = new UIContext(this, stage);
         auth = new AuthState(this);
 
-        // Start the app
-        preflightManager = new PreflightManager(this);
-        router = new Router(this, stage);
-
-        // Fetch data etc for cached sessions
+         // Fetch data etc for cached sessions
         if (!IS_TEST_MODE)
-            auth.tryTriggerLoadSession();
-    }
+           auth.tryTriggerLoadSession();
 
-
-    /**
-     * Fetch the data the app needs in the background
-     */
-    public void fetchData() {
-
-        taServer.getLeaderboard(leaderboardResponse -> {
-
-            leaderboard = leaderboardResponse;
-            router.refreshPage(Pages.COMMUNITY);
-
-        });
-
-        taServer.getCommunityCleanliness(communityCleanlinessResponse -> {
-
-            communityCleanliness = communityCleanlinessResponse;
-            router.refreshPage(Pages.COMMUNITY);
-
-        });
-
-
-        taServer.getUserLogs(logs -> {
-
-            List<Instant> localLogs = trashLogDAO.getAll().stream().map(l -> l.createdAt()).toList();
-
-            // Any unkown logs are added to the local db
-            logs.forEach(log -> {
-
-                // Log already stored here
-                if (localLogs.contains(log.createdAt()))
-                    return;
-
-                // Add to the local db (out of sync db id is fine becuase DAO ignores it)
-                trashLogDAO.add(log);
-            });
-
-        });
-
-        taServer.getUserReports(reports -> {
-
-            List<Instant> localReports = statusReportDAO.getAll().stream().map(r -> r.getSubmittedAt()).toList();
-
-            // Any unkown logs are added to the local db
-            reports.forEach(report -> {
-
-                // Log already stored here
-                if (localReports.contains(report.getSubmittedAt()))
-                    return;
-
-                // Add to the local db (out of sync db id is fine becuase DAO ignores it)
-                System.out.println("ADDING!");
-                statusReportDAO.add(report);
-            });
-
-        });
-
-        runWorkers();
-    }
-
-    /**
-     * Run the tasks that would realistically be periodically ran on the backed, this assumes that users are using the app
-     * regularly enough that the crowdsourced work is keeping the data fresh
-     */
-    private void runWorkers() {
-
-         backgroundTasks.runTask(new BinFullnessWorker(backgroundTasks));
-         backgroundTasks.runTask(new CommunityCleanlinessWorker(backgroundTasks));
-         backgroundTasks.runTask(new LeaderboardWorker(backgroundTasks));
-    }
-
-    /**
-     * Set a new map search request for the map to handle
-     *
-     * @param location The search request
-     */
-    public void setMapSearchRequest(Feature location) {
-        requestedLocation = location;
-        router.switchPage(Pages.MAP);
-    }
-
-    /**
-     * Get the current map search request and clear it
-     *
-     * @return The search request or null if none
-     */
-    public Feature consumeMapSearchRequest() {
-
-        // Clear the request
-        Feature location = requestedLocation;
-        requestedLocation = null;
-
-        return location;
     }
 
     /**
@@ -222,7 +100,7 @@ public class GlobalState {
      */
     public void sync() {
 
-        backgroundTasks.runTask(new SyncToBackendTask(backgroundTasks));
+        appTasks.runBackgroundSync();
 
     }
 
@@ -232,107 +110,7 @@ public class GlobalState {
      * @return The window manager for the app
      */
     public Router getRouter() {
-        return router;
-    }
-
-    /**
-     * Get the trash log DAO
-     *
-     * @return The trash log DAO
-     */
-    public TrashLogDAO getTrashLogDAO() {
-        return trashLogDAO;
-    }
-
-    /**
-     * Get the bin DAO
-     *
-     * @return The trash log DAO
-     */
-    public BinDAO getBinDAO() {
-        return binDAO;
-    }
-
-
-    /**
-     * get the status report DAO
-     *
-     * @return The status report DAO
-     */
-    public StatusReportDAO getStatusReportDAO() {
-        return statusReportDAO;
-    }
-
-    /**
-     * Get the geocoding API client
-     *
-     * @return The geocoding API client
-     */
-    public PhotonClient getPhotonClient() {
-        return photonClient;
-    }
-
-    /**
-     * Get the backend API client
-     *
-     * @return The backend API client
-     */
-    public TrashDBClient getTaServer() {
-        return taServer;
-    }
-
-    /**
-     * Get the connection to the local database
-     *
-     * @return The local database client
-     */
-    public DatabaseManager getDatabaseManager() {
-        return databaseManager;
-    }
-
-    /**
-     * Get the CCC bin dataset
-     *
-     * @return The bin dataset
-     */
-    public BinDataset getDataset() {
-        return binDataset;
-    }
-
-    /**
-     * Get the task manager for startup tasks
-     *
-     * @return The start up tasks manager
-     */
-    public PreflightManager getPreflightManager() {
-        return preflightManager;
-    }
-
-    /**
-     * Get the task manager for background tasks
-     *
-     * @return The background tasks manager
-     */
-    public TaskManager getBackgroundTasks() {
-        return backgroundTasks;
-    }
-
-    /**
-     * Get the current leaderboard
-     *
-     * @return The current leaderboard or null if still loading
-     */
-    public TrashDBLeaderboardResponse getLeaderboard() {
-        return leaderboard;
-    }
-
-     /**
-     * Get the current community collective data
-     *
-     * @return The current leaderboard or null if still loading
-     */
-    public TrashDBCleanlinessResponse getCommunityClealiness(){
-        return communityCleanliness;
+        return uiContext.getRouter();
     }
 
     /**
@@ -344,27 +122,23 @@ public class GlobalState {
         return auth;
     }
 
-
-    /**
-     * Switch to the map and try show a request bin
-     *
-     * @param id The bin to show (must be a int)
-     */
-    public void goToBin(String id) {
-
-        requestedShowBinId = Integer.valueOf(id);
-        router.switchPage(Pages.MAP);
+    public TableCollection getLocalTables() {
+        return localTables;
     }
 
-    /**
-     * Get the bin show request and clear it
-     *
-     * @return The bin to show or null if none requested
-     */
-    public Integer consumeBinShowRequest(){
+    public UIContext getUiContext() {
+        return uiContext;
+    }
 
-        Integer binID = requestedShowBinId;
-        requestedShowBinId = null;
-        return binID;
+    public AppTasks getAppTasks() {
+        return appTasks;
+    }
+
+    public AppClients getAppClients() {
+        return appClients;
+    }
+
+    public DataService getDataService() {
+        return dataService;
     }
 }

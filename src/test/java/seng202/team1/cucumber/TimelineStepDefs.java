@@ -35,8 +35,6 @@ public class TimelineStepDefs {
 
         TrashAppTest.initFx();
         globalState = TrashAppTest.newTestState();
-
-        BinDAO binDAO = globalState.getBinDAO();
     }
 
 
@@ -51,15 +49,15 @@ public class TimelineStepDefs {
     @Given("the user has logged bin usages, and issue reports")
     public void theUserHasLoggedBinUsagesAndIssueReports() {
         Bin bin = new Bin(1, -43.5233, 172.5822, BinCategory.GENERAL_WASTE, Instant.now(), "testParkC");
-        globalState.getBinDAO().add(bin);
+        globalState.getLocalTables().getBinTable().add(bin);
 
         Instant now = Instant.now();
-        globalState.getTrashLogDAO().add(new TrashLog(now, now, 1, bin.getID(), TrashType.BANANA_PEEL, 500));
+        globalState.getLocalTables().getTrashTable().add(new TrashLog(now, now, 1, bin.getID(), TrashType.BANANA_PEEL, 500));
 
         StatusReport reportToAdd = new StatusReport(1, 1, BinFullness.SEMI_FULL, ReportType.GRAFFITI, "Spray paint", Instant.now());
-        globalState.getStatusReportDAO().add(reportToAdd);
+        globalState.getLocalTables().getStatusReportsTable().add(reportToAdd);
 
-        long saved = globalState.getStatusReportDAO().getAll().stream()
+        long saved = globalState.getLocalTables().getStatusReportsTable().getAll().stream()
                 .filter(r -> r.getIssue() != ReportType._FULLNESS_UPDATE)
                 .count();
         assertEquals(2, saved);

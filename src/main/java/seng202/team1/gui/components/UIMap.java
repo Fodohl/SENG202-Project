@@ -1,6 +1,7 @@
 package seng202.team1.gui.components;
 
 import com.google.gson.reflect.TypeToken;
+import javafx.application.Platform;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import seng202.team1.data.route.RouteInstruction;
@@ -14,12 +15,12 @@ import static seng202.team1.TrashApp.GSON;
 
 /**
  * A UI Component to handle rendering maps
- *
+ * <p>
  * Loads a leaflet HTML map into a container and provides a API functions to interact with the map inside the webview.
  * Map JS errors will be logged to stdio
- *
+ * <p>
  * Warning: API calls are NOT synchronous, calls may be queued to run later when web engine is ready to run them
- *
+ * <p>
  * JSObject work around as depricated builds on the idea of (2) to inject an /api/ route that is passed to here as the
  * backend (3)
  *
@@ -44,6 +45,46 @@ public class UIMap extends UIWebRenderer {
     Type listType = new TypeToken<ArrayList<RouteInstruction>>() {
     }.getType();
 
+    /// Bridge to pass calls from JavaScript to Java
+    public class MapJavaBridge {
+
+        /**
+         * Pass the event of a marker on the map being clicked to registered callback
+         *
+         * @param markerID The id of the maker clicked
+         */
+        public void onPointClicked(int markerID) {
+            for (Consumer<Integer> callback : pointClickCallbacks) {
+                callback.accept(markerID);
+            }
+        }
+
+
+        /**
+         * Pass the event of a point on the map being clicked to registered callback
+         *
+         * @param lat The latitudinal positon of where the user clicked
+         * @param lng The longitudinal position of where the user clicked
+         */
+        public void onPosClicked(double lat, double lng) {
+            for (BiConsumer<Double, Double> callback : posClickCallbacks) {
+                callback.accept(lat, lng);
+            }
+        }
+
+        /**
+         * Pass the event of a route being found to registered callback
+         *
+         * @param routeJson Stringified JSON list of {@link RouteInstruction}
+         */
+        public void onMapRouted(String routeJson) {
+            List<RouteInstruction> result = GSON.fromJson(routeJson, listType);
+            for (Consumer<List<RouteInstruction>> callback : mapRoutedCallbacks) {
+                callback.accept(result);
+            }
+        }
+    }
+
     /**
      * Constructs a new UIMap
      */
@@ -54,38 +95,6 @@ public class UIMap extends UIWebRenderer {
         getStyleClass().add("map-container");
         getStyleClass().add("dark-tiles");
 
-    }
-
-    /**
-     * Handle a webview function call
-     *
-     * @param function The function that the JS code called
-     * @param params Any arguments for the function
-     */
-    @Override
-    public void handleFunctionCall(String function, Map<String, String> params) {
-        switch (function) {
-
-            case "onPointClicked": {
-                onPointClicked(params);
-                break;
-            }
-
-            case "onPosClicked": {
-                onPosClicked(params);
-                break;
-            }
-
-            case "onMapRouted": {
-                onMapRouted(params);
-                break;
-            }
-
-            default: {
-                throw new IllegalArgumentException("UIMap unknown api call");
-            }
-
-        }
     }
 
 
@@ -139,8 +148,8 @@ public class UIMap extends UIWebRenderer {
      *
      * @param startLat The start latitude position
      * @param startLng The start longitude position
-     * @param endLat The end latitude position
-     * @param endLng The end longitude position
+     * @param endLat   The end latitude position
+     * @param endLng   The end longitude position
      */
     public void setRoute(double startLat, double startLng, double endLat, double endLng) {
         String js = String.format("setRoute(%f,%f,%f,%f);", startLat, startLng, endLat, endLng);
@@ -157,7 +166,7 @@ public class UIMap extends UIWebRenderer {
 
     /**
      * Register an event handler for a point click event
-     *
+     * <p>
      * Warning: an event handler cannot be registered twice
      *
      * @param callback The function to run when a point on the map is clicked
@@ -176,7 +185,7 @@ public class UIMap extends UIWebRenderer {
 
     /**
      * Register an event handler for a position click event
-     *
+     * <p>
      * Warning: an event handler cannot be registered twice
      *
      * @param callback The function to run when a position on the map is clicked
@@ -193,9 +202,9 @@ public class UIMap extends UIWebRenderer {
         return false;
     }
 
-     /**
+    /**
      * Register an event handler for a map routing event
-     *
+     * <p>
      * Warning: an event handler cannot be registered twice
      *
      * @param callback The function to run when a route is found between two points
@@ -210,50 +219,6 @@ public class UIMap extends UIWebRenderer {
         // Store
         mapRoutedCallbacks.add(callback);
         return false;
-    }
-
-    /**
-     * Pass the event of a marker on the map being clicked to registered callback
-     *
-     * @param params Expects params: id={num}
-     */
-    private void onPointClicked(Map<String, String> params) {
-
-        String id = params.get("id");
-        Integer pointId = Objects.equals(id, "null") ? null : Integer.parseInt(id);
-
-        for (Consumer<Integer> callback : pointClickCallbacks)
-            callback.accept(pointId);
-    }
-
-    /**
-     * Pass the event of a point on the map being clicked to registered callback
-     *
-     * @param params Expects params: lat={float} lng={float}
-     */
-    private void onPosClicked(Map<String, String> params) {
-
-        String lat = params.get("lat");
-        String lng = params.get("lng");
-
-        Double latPos = Objects.equals(lat, "null") ? null : Double.parseDouble(lat);
-        Double lngPos = Objects.equals(lng, "null") ? null : Double.parseDouble(lng);
-
-        for (BiConsumer<Double, Double> callback : posClickCallbacks)
-            callback.accept(latPos, lngPos);
-    }
-
-     /**
-     * Pass the event of a route being found to registered callback
-     *
-     * @param params Expects params: rotue=[{RouteInstruction}]
-     */
-    private void onMapRouted(Map<String, String> params) {
-
-        List<RouteInstruction> result = GSON.fromJson(params.get("route"), listType);
-
-        for (Consumer<List<RouteInstruction>> callback : mapRoutedCallbacks)
-            callback.accept(result);
     }
 
     /**
@@ -272,5 +237,10 @@ public class UIMap extends UIWebRenderer {
      */
     public void showBin(Integer binID) {
         call(String.format("onPointClicked(%d);", binID));
+    }
+
+    @Override
+    protected Object newJavaBridge() {
+        return new MapJavaBridge();
     }
 }

@@ -98,8 +98,8 @@ public class CommunityPage extends Page {
         if (root == null)
             return;
 
-        TrashDBCleanlinessResponse graphData = getState().getCommunityClealiness();
-        TrashDBLeaderboardResponse leaderboardData = getState().getLeaderboard();
+        TrashDBCleanlinessResponse graphData = getState().getUiContext().getCommunityCleanliness();
+        TrashDBLeaderboardResponse leaderboardData = getState().getUiContext().getLeaderboard();
 
         if (graphData != null) {
             communiy.setData(graphData.counts());
@@ -114,7 +114,7 @@ public class CommunityPage extends Page {
 
         // Calculate the users latest stat
         User user = getState().getAuth().getSession().userDetails();
-        List<TrashLog> logs = getState().getTrashLogDAO().getAll();
+        List<TrashLog> logs = getState().getLocalTables().getTrashTable().getAll();
         int trashlogged = logs.size();
         double treeDays = getTreeDays(logs);
 
