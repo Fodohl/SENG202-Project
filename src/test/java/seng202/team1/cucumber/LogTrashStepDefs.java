@@ -45,7 +45,7 @@ public class LogTrashStepDefs {
                 "testParkC"
         );
 
-        globalState.getBinDAO().add(bin);
+        globalState.getLocalTables().getBinTable().add(bin);
 
         modal = new LogTrashModal(globalState.getRouter());
         modal.getRendered();
@@ -93,7 +93,7 @@ public class LogTrashStepDefs {
     }
 
     private List<TrashLog> getLogs() {
-        return globalState.getTrashLogDAO().getAll().stream()
+        return globalState.getLocalTables().getTrashTable().getAll().stream()
                 .filter(log -> log.binID() == 1)
                 .toList();
     }
