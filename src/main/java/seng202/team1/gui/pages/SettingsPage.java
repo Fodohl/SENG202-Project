@@ -2,11 +2,13 @@ package seng202.team1.gui.pages;
 
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.control.DialogPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.stage.Modality;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import seng202.team1.gui.Router;
@@ -138,6 +140,12 @@ public class SettingsPage extends Page {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, message, ButtonType.OK, ButtonType.CANCEL);
         alert.setTitle(title);
         alert.setHeaderText(null);
+        alert.initOwner(router.getStage());
+        alert.initModality(Modality.WINDOW_MODAL);
+        alert.setResizable(false);
+
+        DialogPane dialogPane = alert.getDialogPane();
+        dialogPane.setPrefWidth(360);
 
         return alert.showAndWait().filter(b -> b == ButtonType.OK).isPresent();
     }
