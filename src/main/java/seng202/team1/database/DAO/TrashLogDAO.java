@@ -225,5 +225,30 @@ public class TrashLogDAO extends SqlTimeUtils implements DAOInterface<TrashLog> 
             return -1;
         }
     }
+
+     /**
+     * Gets all trash logs from database by user id
+     *
+     * @param id user id of object to get
+     * @return TrashLog trash log from database that matches id
+     */
+    public List<TrashLog> getByUser(int id) {
+        List<TrashLog> trashLogs = new ArrayList<>();
+
+        String sql = "SELECT * FROM trash_logs WHERE user_id = ?";
+        try (Connection conn = databaseManager.connect();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+
+                while (rs.next())
+                    trashLogs.add(toTrashLog(rs));
+                return trashLogs;
+            }
+        } catch (SQLException sqlException) {
+            log.error(sqlException);
+            return trashLogs;
+        }
+    }
 }
 

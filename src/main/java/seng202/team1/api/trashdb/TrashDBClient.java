@@ -5,9 +5,12 @@ import seng202.team1.database.DAO.CommunityCleanlinessDAO;
 import seng202.team1.database.DAO.TrashLogDAO;
 import seng202.team1.gui.components.BlockableUISet;
 import seng202.team1.helpers.DateHelpers;
+import seng202.team1.types.bin.BinFullness;
+import seng202.team1.types.status.ReportType;
 import seng202.team1.types.status.StatusReport;
 import seng202.team1.types.trashdb.*;
 import seng202.team1.types.trashlog.TrashLog;
+import seng202.team1.types.trashlog.TrashType;
 import seng202.team1.types.user.Session;
 import seng202.team1.types.user.Token;
 import seng202.team1.types.user.User;
@@ -190,6 +193,18 @@ public class TrashDBClient extends ApiBackend {
     public void getCommunityCleanliness(Consumer<TrashDBCleanlinessResponse> callback) {
 
         sendAsync(() -> backend.getCollectiveCleanliness(), callback, NO_LOADING_UI);
+
+    }
+
+     public void getUserLogs(Consumer<List<TrashLog>> callback) {
+
+        sendAsync(() -> backend.getUserTrashLogs(), callback, NO_LOADING_UI);
+
+    }
+
+    public void getUserReports(Consumer<List<StatusReport>> callback) {
+
+        sendAsync(() -> backend.getUserReports(), callback, NO_LOADING_UI);
 
     }
 

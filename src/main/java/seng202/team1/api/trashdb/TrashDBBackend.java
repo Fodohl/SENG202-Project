@@ -510,4 +510,14 @@ public class TrashDBBackend {
         leaderboardTable.clear();
         leaderboardTable.addBatch(toRankedOrder(calculated));
     }
+
+
+    public List<TrashLog> getUserTrashLogs() {
+
+        return trashTable.getByUser(getUser().id());
+    }
+
+    public List<StatusReport> getUserReports() {
+        return statusReportsTable.getReportsByUserId(getUser().id());
+    }
 }
