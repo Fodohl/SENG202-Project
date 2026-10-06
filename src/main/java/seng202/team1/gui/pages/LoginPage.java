@@ -2,6 +2,7 @@ package seng202.team1.gui.pages;
 
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
@@ -21,7 +22,7 @@ public class LoginPage extends Page{
     /// Where the user enters their email
     private UITextInput email;
 
-    /// Where the user enters their emailZ
+    /// Where the user enters their email
     private UITextInput password;
 
     /// The button to trigger a login
@@ -29,6 +30,9 @@ public class LoginPage extends Page{
 
     /// The UI component set to manage whilst waiting for requests to complete
     private BlockableUISet frontend;
+
+    /// Whether the session should be persisted after login
+    private CheckBox rememberMe;
 
     /**
      * Constructs a new LoginPage
@@ -59,13 +63,8 @@ public class LoginPage extends Page{
         login = new UIButton("Login", true);
         UIButton signUp = new UIButton("Sign Up", true);
 
-        Label forgot = new Label("Forgot password?");
-        forgot.getStyleClass().add("forgot");
-        login.getStyleClass().add("action");
-
         login.setOnAction(e -> handleLogin());
         signUp.setOnAction(e -> handleSignUp());
-        forgot.setOnMouseClicked(e -> handleForgot());
 
         // Assume enter keypress in a password is same as login press
         password.setOnAction(e -> handleLogin());
@@ -75,7 +74,9 @@ public class LoginPage extends Page{
         error.setVisible(false);
         frontend = new BlockableUISet(error, null, login);
 
-        VBox form = new VBox(10, title, error, email, password, login, signUp, forgot);
+        rememberMe = new CheckBox("Remember me");
+
+        VBox form = new VBox(10, title, error, email, password, rememberMe, login, signUp);
         form.getStyleClass().add("auth-form");
         return form;
     }
@@ -112,7 +113,7 @@ public class LoginPage extends Page{
             return;
 
         // Login
-        auth.login(enteredEmail, enteredPassword, frontend);
+        auth.login(enteredEmail, enteredPassword, rememberMe.isSelected(), frontend);
     }
 
     /**
@@ -120,13 +121,6 @@ public class LoginPage extends Page{
      */
      private void handleSignUp(){
         router.switchPage(Pages.SIGN_UP);
-    }
-
-    /**
-     * Switch to the forgot password page
-     */
-     private void handleForgot(){
-        router.switchPage(Pages.RESET);
     }
 
     /**

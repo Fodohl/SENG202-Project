@@ -30,7 +30,6 @@ public class AuthPhase extends Phase{
     public List<Pages> allowedPages() {
         return List.of(
             Pages.LOGIN,
-            Pages.RESET,
             Pages.SIGN_UP
         );
     }

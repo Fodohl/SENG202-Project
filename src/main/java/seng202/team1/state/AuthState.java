@@ -75,7 +75,7 @@ public class AuthState {
      * @param password The accounts password
      * @param frontend The UI to manipulate whilst waiting for the request to complete
      */
-    public void login(String email, String password, BlockableUISet frontend) {
+    public void login(String email, String password, boolean persist, BlockableUISet frontend) {
 
         // Authenticate the user
         server.postLogin(email, password, token -> {
@@ -90,7 +90,9 @@ public class AuthState {
                 // Successful login
                 tryTriggerLoadSession();
                 state.getRouter().switchPhase(Phases.MAIN);
-                save();
+
+                if(persist)
+                    save();
 
             }, frontend);
 
@@ -110,7 +112,7 @@ public class AuthState {
         server.postUser(userDetails.email(), userDetails.name(), password, r -> {
 
             // Log into the account
-            login(userDetails.email(), password, frontend);
+            login(userDetails.email(), password, true, frontend);
 
         }, frontend);
 

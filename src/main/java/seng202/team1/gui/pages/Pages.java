@@ -10,7 +10,6 @@ public enum Pages {
 
     LOGIN,
     SIGN_UP,
-    RESET,
 
     HOME,
     MAP,
