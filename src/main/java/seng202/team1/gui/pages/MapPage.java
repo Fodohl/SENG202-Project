@@ -373,7 +373,8 @@ public class MapPage extends Page {
         sidebarBinID.setText(selectedBin.getID().toString());
         binImage.setSource(selectedBin.getPhotoURL() != null ? selectedBin.getPhotoURL() : "/media/images/bin.png");
         sidebarBinType.setText(StringHelpers.enumNameToTitle(selectedBin.getCategory().name()));
-        sidebarBinStatus.setText(String.format("%s (estimate)", StringHelpers.enumNameToTitle(selectedBin.getFullness().name())));
+        String fullness = StringHelpers.enumNameToTitle(selectedBin.getFullness().name());
+        sidebarBinStatus.setText("Unknown".equalsIgnoreCase(fullness) ? fullness : fullness + " (estimate)");
         sidebarBinUpdated.setText(StringHelpers.toLocaleString(selectedBin.getUpdated()));
         sidebarBinAddress.setText(selectedBin.getAreaName());
         sidebarBinTimesUsed.setText(String.format("%d", uses.size()));
