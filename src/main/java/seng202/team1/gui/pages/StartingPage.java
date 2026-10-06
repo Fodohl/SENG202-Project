@@ -33,7 +33,7 @@ public class StartingPage extends Page {
 
         super(router, Pages.STARTING);
 
-        manager = getState().getPreflightManager();
+        manager = getState().getAppTasks().getPreflightManager();
         manager.registerTaskCompletionCallback(e -> onTaskCompleted(e));
     }
 

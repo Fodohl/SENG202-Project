@@ -1,12 +1,9 @@
 package seng202.team1.types.status;
 
-import seng202.team1.types.user.User;
-import seng202.team1.types.bin.Bin;
 import seng202.team1.types.bin.BinFullness;
-import seng202.team1.types.status.ReportType;
+import seng202.team1.types.trashlog.TrashLog;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 /**
  * StatusReport
@@ -20,17 +17,20 @@ public class StatusReport {
     private final BinFullness fullness;
     private final ReportType issue;
     private final Instant submittedAt;
+    private final Instant syncedAt;
     private final String description;
 
     /**
      * Constructor for StatusReport class
-     * @param reportId id of the StatusReport
-     * @param binId id of the bin the StatusReport concerns
-     * @param userId id of the user who made the report
-     * @param fullness enum representing how full the bin is
-     * @param issue enum representing the issue with the bin
+     *
+     * @param reportId    id of the StatusReport
+     * @param binId       id of the bin the StatusReport concerns
+     * @param userId      id of the user who made the report
+     * @param fullness    enum representing how full the bin is
+     * @param issue       enum representing the issue with the bin
      * @param description String describing the issue
      * @param submittedAt Instant of when the report was submitted
+     * @param syncedAt    Instant of when the report was synced to the db
      */
 
     public StatusReport(int reportId,
@@ -39,7 +39,8 @@ public class StatusReport {
                         BinFullness fullness,
                         ReportType issue,
                         String description,
-                        Instant submittedAt) {
+                        Instant submittedAt,
+                        Instant syncedAt) {
         this.id = reportId;
         this.binId = binId;
         this.userId = userId;
@@ -47,6 +48,7 @@ public class StatusReport {
         this.issue = issue;
         this.description = description;
         this.submittedAt = submittedAt;
+        this.syncedAt = syncedAt;
     }
 
     public StatusReport(int binId,
@@ -54,21 +56,19 @@ public class StatusReport {
                         BinFullness fullness,
                         ReportType issue,
                         String description,
-                        Instant submittedAt) {
-        this.id = -1;
-        this.binId = binId;
-        this.userId = userId;
-        this.fullness = fullness;
-        this.issue = issue;
-        this.description = description;
-        this.submittedAt = submittedAt;
+                        Instant submittedAt
+    ) {
+        this(-1, binId, userId, fullness, issue, description, submittedAt, null);
     }
 
-    public int getId() { return id; }
+    public int getId() {
+        return id;
+    }
 
     /**
      * Get the bin
      * Return the bin
+     *
      * @return bin
      */
 
@@ -79,6 +79,7 @@ public class StatusReport {
     /**
      * Get the user id of the reporter
      * Return the reporter
+     *
      * @return userId
      */
 
@@ -89,14 +90,18 @@ public class StatusReport {
     /**
      * Get the time
      * Return the time
+     *
      * @return submittedAt
      */
 
-    public Instant getSubmittedAt() {return submittedAt;}
+    public Instant getSubmittedAt() {
+        return submittedAt;
+    }
 
     /**
      * Get report description
      * Return report description
+     *
      * @return description
      */
 
@@ -104,16 +109,30 @@ public class StatusReport {
         return description;
     }
 
-    public BinFullness getFullness() { return fullness; }
+    public BinFullness getFullness() {
+        return fullness;
+    }
 
-    public ReportType getIssue() { return issue; }
+    public ReportType getIssue() {
+        return issue;
+    }
 
     /**
      * Checks if the supplied {@link StatusReport} matches this {@link StatusReport}
+     *
      * @param statusReport to be checked if equal
      * @return a boolean for whether the two StatusReports are equal
      */
-    public boolean equals(StatusReport statusReport) {
+
+    @Override
+    public boolean equals(Object obj) {
+
+
+        // Must be a status report to be comparble
+        if (!(obj instanceof StatusReport))
+            return false;
+
+        StatusReport statusReport = (StatusReport) obj;
         return this.getBinId() == statusReport.getBinId()
                 && this.getUserId() == statusReport.getUserId()
                 && this.getFullness().equals(statusReport.getFullness())
@@ -124,6 +143,7 @@ public class StatusReport {
     /**
      * Returns a string representation of this bin report, including the bin ID,
      * submitter, description, and submission time.
+     *
      * @return a string representation of this bin report
      */
 
@@ -134,7 +154,20 @@ public class StatusReport {
                 ", submittedBy=" + getUserId() +
                 ", fullness=" + getFullness() +
                 ", issue=" + getIssue() +
-                ", description="+ description +
+                ", description=" + description +
                 ", submittedAt=" + getSubmittedAt() + "}";
+    }
+
+    /**
+     * Get when the report was sycned
+     *
+     * @return Instant of successfully sync, null otherwise
+     */
+    public Instant getSyncedAt() {
+        return syncedAt;
+    }
+
+    public StatusReport asSynced() {
+        return new StatusReport(id, binId, userId, fullness, issue, description, submittedAt, Instant.now());
     }
 }

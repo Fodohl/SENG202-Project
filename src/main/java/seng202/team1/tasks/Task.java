@@ -1,6 +1,7 @@
 package seng202.team1.tasks;
 
 import javafx.application.Platform;
+import seng202.team1.state.GlobalState;
 
 /**
  * An instance of a threadable job
@@ -8,7 +9,7 @@ import javafx.application.Platform;
 public abstract class Task implements Cloneable{
 
     /// The task manager that runs this task
-    private TaskManager manager;
+    protected TaskManager manager;
 
     /// The name of what the task does (ie waiting for 'x' to complete)
     private String taskName;
@@ -33,7 +34,7 @@ public abstract class Task implements Cloneable{
      */
     public void run(){
 
-        task(manager);
+        task(manager.getGlobalState());
 
         // Pass back to manager on FX thread
         Platform.runLater(() -> {
@@ -53,10 +54,8 @@ public abstract class Task implements Cloneable{
     /**
      * The task function that the task must preform
      *
-     * @param manager The task manager that triggered the task
-     * @todo if store manager already then dont need to pass it?
      */
-    public abstract void task(TaskManager manager);
+    public abstract void task(GlobalState state);
 
     /***
      * Create a clone of a task by copying it

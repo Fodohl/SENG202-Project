@@ -3,6 +3,7 @@ package seng202.team1.tasks.preflight;
 import javafx.application.Platform;
 import seng202.team1.gui.components.UIMap;
 import seng202.team1.gui.pages.Pages;
+import seng202.team1.state.GlobalState;
 import seng202.team1.tasks.Task;
 import seng202.team1.tasks.TaskManager;
 
@@ -26,7 +27,7 @@ public class StartWebKitTask extends Task {
      * @param manager The task manager that triggered the task
      */
     @Override
-    public void task(TaskManager manager) {
+    public void task(GlobalState state) {
 
         // Sleep so that UI can show the correct loading text
         try {
@@ -36,7 +37,7 @@ public class StartWebKitTask extends Task {
 
         // Map must be pre-loaded as it causes lag and it also needs points loaded so that data page can highlight them
         Platform.runLater(() -> {
-            manager.getGlobalState().getRouter().rerenderPage(Pages.MAP);
+            state.getRouter().rerenderPage(Pages.MAP);
         });
     }
 }

@@ -1,5 +1,6 @@
 package seng202.team1.tasks.preflight;
 
+import seng202.team1.state.GlobalState;
 import seng202.team1.tasks.Task;
 import seng202.team1.tasks.TaskManager;
 
@@ -23,7 +24,7 @@ public class ParseDatasetTask extends Task {
      * @param manager The task manager that triggered the task
      */
     @Override
-    public void task(TaskManager manager) {
-        manager.getGlobalState().getDataset().readGeoJSON();
+    public void task(GlobalState state) {
+        state.getDataService().getBinDataset().readGeoJSON();
     }
 }

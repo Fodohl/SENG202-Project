@@ -4,10 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import seng202.team1.api.trashdb.TrashDBBackend;
 import seng202.team1.api.trashdb.TrashDBClient;
+import seng202.team1.database.DAO.StatusReportDAO;
 import seng202.team1.database.DAO.TrashLogDAO;
+import seng202.team1.database.TableCollection;
+import seng202.team1.state.GlobalState;
 import seng202.team1.tasks.Task;
 import seng202.team1.tasks.TaskManager;
 import seng202.team1.types.bin.Bin;
+import seng202.team1.types.status.StatusReport;
 import seng202.team1.types.trashlog.TrashLog;
 
 import java.util.List;
@@ -27,6 +31,9 @@ public class SyncToBackendTask extends Task {
     /// The reference to the local trash logs
     TrashLogDAO logDAO;
 
+    /// The reference to the local trash logs
+    StatusReportDAO statusReportDAO;
+
     /// The server to upload the trash logs onto
     TrashDBClient server;
 
@@ -38,18 +45,19 @@ public class SyncToBackendTask extends Task {
     public SyncToBackendTask(TaskManager taskManager){
         super(taskManager, "data syncing");
 
-        logDAO = taskManager.getGlobalState().getTrashLogDAO();
-        server = taskManager.getGlobalState().getTaServer();
+        TableCollection tables = taskManager.getGlobalState().getLocalTables();
+        logDAO = tables.getTrashTable();
+        statusReportDAO = tables.getStatusReportsTable();
+        server = taskManager.getGlobalState().getAppClients().getTaServer();
 
     }
 
     /**
      * The job this task carries out
      *
-     * @param manager The task manager that triggered the task
      */
     @Override
-    public void task(TaskManager manager) {
+    public void task(GlobalState state) {
 
         // Wait for any other sync tasks to complete as may pick up what this one is doing
         lock.lock();
@@ -57,11 +65,17 @@ public class SyncToBackendTask extends Task {
 
             // Get items needing to be synced
             List<TrashLog> logs = logDAO.getUnsynced();
-            log.info(String.format("Syncing %d logs", logs.size()));
+            List<StatusReport> reports = statusReportDAO.getUnsynced();
+            log.info(String.format("Syncing %d logs, %d reports", logs.size(), reports.size()));
 
             for(TrashLog log : logs){
                 server.postLog(log, r-> {}).join();
                 logDAO.update(log.asSynced());
+            }
+
+            for(StatusReport report : reports){
+                server.postReport(report, r-> {}).join();
+                statusReportDAO.update(report.asSynced());
             }
 
 

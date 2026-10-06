@@ -4,6 +4,10 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import seng202.team1.database.DatabaseManager;
 import seng202.team1.database.SqlTimeUtils;
+import seng202.team1.types.bin.BinCategory;
+import seng202.team1.types.bin.BinFullness;
+import seng202.team1.types.status.ReportType;
+import seng202.team1.types.trashlog.TrashType;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -14,6 +18,7 @@ import java.sql.Types;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Abstract base class for Database Access Objects. Holds the shared plumbing
@@ -31,6 +36,7 @@ public abstract class BaseDAO<T> extends SqlTimeUtils implements DAOInterface<T>
 
     /**
      * Instantiates the DAO with a reference to the database singleton
+     *
      * @param databaseManager database singleton
      */
     protected BaseDAO(DatabaseManager databaseManager) {
@@ -39,6 +45,7 @@ public abstract class BaseDAO<T> extends SqlTimeUtils implements DAOInterface<T>
 
     /**
      * Converts the current row of a ResultSet into an object of type T
+     *
      * @param rs result set positioned on the row to convert
      * @return the converted object
      * @throws SQLException if a column cannot be read
@@ -67,6 +74,7 @@ public abstract class BaseDAO<T> extends SqlTimeUtils implements DAOInterface<T>
 
     /**
      * Runs a SELECT and maps every row using {@link #fromRow}
+     *
      * @return list of results, empty on error
      */
     protected List<T> queryList(String sql, Object... params) {
@@ -88,6 +96,7 @@ public abstract class BaseDAO<T> extends SqlTimeUtils implements DAOInterface<T>
 
     /**
      * Runs a SELECT and returns the first row
+     *
      * @return first result, or null if none or on error
      */
     protected T queryOne(String sql, Object... params) {
@@ -97,6 +106,7 @@ public abstract class BaseDAO<T> extends SqlTimeUtils implements DAOInterface<T>
 
     /**
      * Runs an INSERT, UPDATE or DELETE
+     *
      * @return number of rows affected, or -1 on SQL error
      */
     protected int executeUpdate(String sql, Object... params) {
@@ -112,6 +122,7 @@ public abstract class BaseDAO<T> extends SqlTimeUtils implements DAOInterface<T>
 
     /**
      * Runs an INSERT and returns the generated key
+     *
      * @return generated id, or -1 on SQL error
      */
     protected int executeInsert(String sql, Object... params) {
@@ -134,5 +145,86 @@ public abstract class BaseDAO<T> extends SqlTimeUtils implements DAOInterface<T>
      */
     protected void deleteById(String table, int id) {
         executeUpdate("DELETE FROM " + table + " WHERE id = ?", id);
+    }
+
+    /**
+     * Converts the string representation saved in the database to a {@link ReportType}
+     *
+     * @param issueString String representation of report type
+     * @return ReportType associated with the report
+     */
+    protected ReportType convertStringToIssue(String issueString) {
+        try {
+            return ReportType.valueOf(issueString.toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalStateException("Unexpected value: " + issueString, e);
+        }
+    }
+
+    /**
+     * Converts string from database to BinCategory
+     *
+     * @param category string name
+     * @return bin category that matches the string, GENERAL_WASTE if unknown
+     */
+    protected BinCategory convertStringToCategory(String category) {
+        return switch (category.toUpperCase(Locale.ROOT)) {
+            case "RECYCLABLE" -> BinCategory.RECYCLABLE;
+            case "ORGANIC" -> BinCategory.ORGANIC;
+            case "E-WASTE", "E_WASTE" -> BinCategory.E_WASTE;
+            default -> BinCategory.GENERAL_WASTE;
+        };
+    }
+
+    /**
+     * Converts string from database to BinFullness
+     *
+     * @param fullness string name
+     * @return bin fullness that matches the string, UNKNOWN if null or unknown
+     */
+    protected BinFullness convertStringToFullness(String fullness) {
+        if (fullness == null) {
+            return BinFullness.UNKNOWN;
+        }
+        try {
+            return BinFullness.valueOf(fullness.toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException e) {
+            return BinFullness.UNKNOWN;
+        }
+    }
+
+    /**
+     * Converts string from database to TrashType
+     *
+     * @param type string name
+     * @return trash type that matches the string, OTHER if null or unknown
+     */
+    protected TrashType convertStringToType(String type) {
+        if (type == null) {
+            return TrashType.OTHER;
+        }
+        try {
+            return TrashType.valueOf(type.toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException exception) {
+            return TrashType.OTHER;
+        }
+    }
+
+    /**
+     * Runs a aggregate query and returns the first int column
+     *
+     * @return the count, or -1 on SQL error
+     */
+    protected int queryInt(String sql, Object... params) {
+        try (Connection conn = databaseManager.connect();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            bindParams(ps, params);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next() ? rs.getInt(1) : 0;
+            }
+        } catch (SQLException e) {
+            log.error(e);
+            return -1;
+        }
     }
 }

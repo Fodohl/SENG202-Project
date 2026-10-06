@@ -19,6 +19,7 @@ import seng202.team1.types.bin.BinCategory;
 import seng202.team1.types.bin.BinFullness;
 import seng202.team1.types.status.ReportType;
 import seng202.team1.types.status.StatusReport;
+import seng202.team1.types.user.Session;
 
 /**
  * A Modal (overlay) to display a bin issue report
@@ -172,19 +173,8 @@ public class LogIssueModal extends Modal {
         if (typeInput.isErroring() || reportInput.isErroring() || fullnessInput.isErroring())
             return;
 
-        // Refresh the bins' average status
-        var session = getState().getAuth().getSession();
-
-        if (session != null && session.userDetails() != null) {
-            StatusReport reportToAdd = new StatusReport(binID, session.userDetails().id(), fullness, type, report, Instant.now());
-            getState().getStatusReportDAO().add(reportToAdd);
-        } else {
-            StatusReport reportToAdd = new StatusReport(binID, 0, fullness, type, report, Instant.now());
-            getState().getStatusReportDAO().add(reportToAdd);
-        }
-        getState().refreshBinFullness(bin);
-        getState().sync();
-
+        // Save
+        getState().getDataService().logReport(bin, fullness, type, report);
         closeModal();
     }
 

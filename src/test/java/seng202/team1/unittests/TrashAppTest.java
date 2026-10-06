@@ -60,7 +60,7 @@ public class TrashAppTest {
         GlobalState.IS_HEADLESS_MODE = true;
 
         GlobalState globalState = new GlobalState(null);
-        globalState.getDatabaseManager().resetDB();
+        globalState.getLocalTables().getDatabaseManager().resetDB();
 
         return globalState;
     }
@@ -70,23 +70,17 @@ public class TrashAppTest {
     void initState() throws InstanceAlreadyExistsException {
         state = newTestState();
 
-        databaseManager = state.getDatabaseManager();
-        trashLogs = state.getTrashLogDAO();
-        bins = state.getBinDAO();
-        statusReportDAO = state.getStatusReportDAO();
+        databaseManager = state.getLocalTables().getDatabaseManager();
+        trashLogs = state.getLocalTables().getTrashTable();
+        bins = state.getLocalTables().getBinTable();
+        statusReportDAO = state.getLocalTables().getStatusReportsTable();
 
         Bin testBin = new Bin(1, 0, 0, BinCategory.GENERAL_WASTE, Instant.now(), null, null, BinFullness.EMPTY);
         bins.add(testBin);
 
         // Extract state for easier access
         router = state.getRouter();
-        binDataset = state.getDataset();
-    }
-
-    @AfterEach
-    void tearDown() {
-        binDataset = state.getDataset();
-        router = state.getRouter();
+        binDataset = state.getDataService().getBinDataset();
     }
 
     protected ArrayList<Bin> testData(){
@@ -109,9 +103,9 @@ public class TrashAppTest {
 
         StringTableBuilder<Bin> table = new StringTableBuilder<>(data)
                                         .addColumn("binID", "ID")
-                                        .addColumn("fullness", "Fullness", val -> StringHelpers.enumNameToTitle(((BinFullness)val).name()))
+                                        .addColumn("fullness", "Fullness", bin -> bin.getFullness().name())
                                         .addColumn("areaName", "Location")
-                                        .addColumn("type", "Type", val -> StringHelpers.enumNameToTitle(((BinCategory)val).name()))
+                                        .addColumn("type", "Type", bin -> bin.getCategory().name())
                                         .sortBy(Comparator.comparing(item -> item.getID()));
         return table;
     }

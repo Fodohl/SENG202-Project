@@ -2,26 +2,35 @@ package seng202.team1.api.trashdb;
 
 import seng202.team1.api.HttpStatus;
 import seng202.team1.data.bin.BinDataset;
-import seng202.team1.database.DAO.BinDAO;
-import seng202.team1.database.DAO.TrashLogDAO;
-import seng202.team1.database.DAO.UserDAO;
+import seng202.team1.database.DAO.*;
 import seng202.team1.database.DatabaseManager;
+import seng202.team1.database.TableCollection;
 import seng202.team1.database.exceptions.DuplicateEntryException;
 import seng202.team1.state.GlobalState;
 import seng202.team1.types.bin.Bin;
-import seng202.team1.types.trashdb.ResponseSuccess;
-import seng202.team1.types.trashdb.TrashDBFullnessResponse;
+import seng202.team1.types.bin.BinFullness;
+import seng202.team1.types.status.ReportType;
+import seng202.team1.types.status.StatusReport;
+import seng202.team1.types.trashdb.*;
 import seng202.team1.types.trashlog.TrashLog;
 import seng202.team1.types.user.Token;
 import seng202.team1.types.user.User;
 
 import java.security.InvalidParameterException;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static seng202.team1.api.trashdb.TokenService.EXPIRY_DAYS;
+import static seng202.team1.data.treedays.TreeDaysCalculator.getTreeDays;
+import static seng202.team1.helpers.DateHelpers.toOffsetTime;
+import static seng202.team1.helpers.LeaderBoardHelpers.toRankedOrder;
 import static seng202.team1.state.GlobalState.IS_TEST_MODE;
 
 /**
@@ -36,14 +45,8 @@ public class TrashDBBackend {
     /// The database connection to the online DB
     private DatabaseManager db;
 
-    /// The DAO responsible for bins
-    private BinDAO binTable;
-
-    /// The DAO responsible for users
-    private UserDAO userTable;
-
-    /// The DAO responsible for trash
-    private TrashLogDAO trashTable;
+    /// The collection of table DAO objects for the online mariadb DB
+    private TableCollection tables;
 
     /// The handler for securing user tokens
     private final TokenService tokenService = new TokenService();
@@ -60,10 +63,7 @@ public class TrashDBBackend {
 
         // Will connect to the online db without a sqlite file
         db = new DatabaseManager(IS_TEST_MODE ? testBackendDB : null);
-
-        binTable = new BinDAO(db);
-        userTable = new UserDAO(db);
-        trashTable = new TrashLogDAO(db);
+        tables = new TableCollection(db);
 
     }
 
@@ -81,7 +81,7 @@ public class TrashDBBackend {
         // Propagate bins
         BinDataset bins = new BinDataset();
         bins.readGeoJSON();
-        backend.binTable.addBatch(bins.getBinDataset());
+        backend.tables.getBinTable().addBatch(bins.getBinDataset());
     }
 
     /**
@@ -104,7 +104,7 @@ public class TrashDBBackend {
         if (userID == -1)
             throw new InvalidParameterException("Token malformed or not signed");
 
-        user = userTable.getOne(userID);
+        user = tables.getUserTable().getOne(userID);
 
     }
 
@@ -133,7 +133,7 @@ public class TrashDBBackend {
         try {
 
             // Try to add the user to the db
-            if (userTable.add(user) == -1)
+            if (tables.getUserTable().add(user) == -1)
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Failed to save user to database");
 
             return user;
@@ -153,7 +153,7 @@ public class TrashDBBackend {
     public Token logUserIn(String email, String passwordRaw) {
 
         // User with that email must exist
-        User user = userTable.getByEmail(email);
+        User user = tables.getUserTable().getByEmail(email);
         if (user == null)
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid email or password");
 
@@ -208,7 +208,7 @@ public class TrashDBBackend {
     public TrashDBFullnessResponse getBinsFullness(OffsetDateTime lastUpdated) {
 
 
-        List<Bin> bins = binTable.getBinsAfter(lastUpdated == null ? null : lastUpdated.toInstant());
+        List<Bin> bins = tables.getBinTable().getBinsAfter(lastUpdated == null ? null : lastUpdated.toInstant());
 
         // Map the bin to it's fullness
         HashMap<Integer, Integer> fullness = new HashMap<>();
@@ -243,7 +243,7 @@ public class TrashDBBackend {
 
 
         // Store
-        int id = trashTable.add(cleanedLog);
+        int id = tables.getTrashTable().add(cleanedLog);
 
         if (id == -1)
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to save log to database");
@@ -255,7 +255,7 @@ public class TrashDBBackend {
     /**
      * Update the user's information in the database
      *
-     * @param name The new name of the user
+     * @param name  The new name of the user
      * @param email The new email of the user
      * @return Success message if the user was uploaded fine, error otherwise
      */
@@ -267,7 +267,7 @@ public class TrashDBBackend {
 
         // Cant update to this email its taken
         boolean newEmail = !user.email().equals(email);
-        if (newEmail && userTable.getByEmail(email) != null)
+        if (newEmail && tables.getUserTable().getByEmail(email) != null)
             throw new ResponseStatusException(HttpStatus.CONFLICT, "User with email already exists");
 
         // Update the user (assumed logged in so clear reset code)
@@ -283,7 +283,7 @@ public class TrashDBBackend {
                 user.passwordHash(),
                 null
         );
-        userTable.update(cleanedUser);
+        tables.getUserTable().update(cleanedUser);
 
         ResponseSuccess success = new ResponseSuccess("User updated successfully");
         return success;
@@ -293,7 +293,7 @@ public class TrashDBBackend {
     /**
      * Change the pasword of the user
      *
-     * @param enteredPassword The user's current password to verify
+     * @param enteredPassword    The user's current password to verify
      * @param enteredPasswordNew The user's new password
      * @return Success message if the user password was changed fine, error otherwise
      */
@@ -319,7 +319,7 @@ public class TrashDBBackend {
                 PasswordHasher.hash(enteredPasswordNew),
                 null
         );
-        userTable.update(cleanedUser);
+        tables.getUserTable().update(cleanedUser);
 
 
         ResponseSuccess success = new ResponseSuccess("User updated successfully");
@@ -337,10 +337,169 @@ public class TrashDBBackend {
 
         // Get the user making the request
         User user = getUser();
-        userTable.delete(user.id());
+        tables.getUserTable().delete(user.id());
 
         ResponseSuccess success = new ResponseSuccess("User deleted successfully");
         return success;
 
+    }
+
+    /**
+     * Upload a status report to the database
+     *
+     * @param request The report to upload
+     * @return Success message if the report was uploaded fine, error otherwise
+     */
+    public ResponseSuccess addUserReport(StatusReport request) {
+
+        // Enforce the user id
+        User user = getUser();
+        StatusReport report = new StatusReport(
+                -1,
+                request.getBinId(),
+                user.id(),
+                request.getFullness(),
+                request.getIssue(),
+                request.getDescription(),
+                request.getSubmittedAt(),
+                Instant.now()
+        );
+
+
+        // Store
+        int id = tables.getStatusReportsTable().add(report);
+
+        if (id == -1)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to save report to database");
+
+
+        ResponseSuccess success = new ResponseSuccess("Trash logged successfully");
+        return success;
+    }
+
+    /**
+     * Get the amount of trash logged each month for the past 6 months
+     *
+     * @return The past 6 months of trashlogging totals
+     */
+    public TrashDBCleanlinessResponse getCollectiveCleanliness() {
+
+        // Get the counts
+        ArrayList<CommunityCleanliness> counts = new ArrayList<>(tables.getCleanlinessTable().getPastSixMonths());
+
+        int startYear = counts.getFirst().year();
+        int startMonth = counts.getFirst().month();
+
+        // Inject data for any months not known
+        while (counts.size() != 6) {
+
+            // Go to the prev month
+            startMonth -= 1;
+            if (startMonth == 0) {
+                startMonth = 12;
+                startYear -= 1;
+            }
+
+            CommunityCleanliness synthetic = new CommunityCleanliness(-1, startYear, startMonth, 0, null);
+            counts.addFirst(synthetic);
+        }
+
+        return new TrashDBCleanlinessResponse(counts);
+    }
+
+    /**
+     * Run the worker to calculate the community trash totals for this month (blocking)
+     */
+    public void runRecountCommunityTrash() {
+
+        CommunityCleanliness current = tables.getCleanlinessTable().getThisMonth();
+
+        // Count this month's logs
+        OffsetDateTime now = toOffsetTime(Instant.now()).withDayOfMonth(1);
+        int count = tables.getTrashTable().countSince(now.toInstant());
+
+        // Update to the new count
+        current = current.withNewCount(count);
+        tables.getCleanlinessTable().update(current);
+    }
+
+
+    public TrashDBLeaderboardResponse getLeaderboard() {
+
+
+        List<LeaderBoardEntry> entries = tables.getLeaderboardTable().getAll();
+        return new TrashDBLeaderboardResponse(entries, -1);
+
+    }
+
+    /**
+     * Run the worker to calculate the bin fullness (blocking)
+     */
+    public void runRecomputeFullness() {
+
+
+        // Only want recent reports of fullness
+        Instant startOfDay = LocalDate.now()
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant();
+
+        List<StatusReport> fullnessReports = tables.getStatusReportsTable().getAll().stream()
+                .filter(r -> r.getSubmittedAt().isAfter(startOfDay))
+                .toList();
+
+        // Get each bin's new fullness as an average of this week's reports
+        List<Bin> bins = tables.getBinTable().getAll();
+        bins.forEach(bin -> {
+            List<StatusReport> reportsFoBin = fullnessReports.stream().filter(r -> r.getBinId() == bin.getID()).toList();
+            bin.updateFullness(reportsFoBin);
+        });
+
+        // Save new fullnes to db
+        Map<Integer, BinFullness> fullness = bins.stream().collect(Collectors.toMap(
+                bin -> bin.getID(),
+                bin -> bin.getFullness()
+        ));
+
+        tables.getBinTable().updateFullness(fullness);
+    }
+
+    /**
+     * Run the worker to calculate the leaderboard positions (blocking)
+     */
+    public void runRecomputeLeaderboard(){
+
+        // Fetch all logs and bins (note: required here as some fancy sql cant be done due to the tree day emissions calcualtor,
+        // this shouldn't affect performance as all done in the background)
+        List<User> users = tables.getUserTable().getAll();
+        List<TrashLog> logs = tables.getTrashTable().getAll();
+
+        Map<User, List<TrashLog>> userLogs = users.stream().collect(Collectors.toMap(
+                user -> user,
+                user -> logs.stream().filter(log -> log.userID() == user.id()).toList()
+        ));
+
+        List<LeaderBoardEntry> calculated = userLogs.entrySet().stream().map(userAndLogs -> {
+
+                    User user = userAndLogs.getKey();
+                    int totalLogs = userAndLogs.getValue().size();
+                    double trees = getTreeDays(userAndLogs.getValue());
+
+                    return new LeaderBoardEntry(-1, user.id(), user.name(), totalLogs, trees, Instant.now());
+                }).toList();
+
+        // Update cache in db
+        LeaderboardDAO leaderboardTable = tables.getLeaderboardTable();
+        leaderboardTable.clear();
+        leaderboardTable.addBatch(toRankedOrder(calculated));
+    }
+
+
+    public List<TrashLog> getUserTrashLogs() {
+
+        return tables.getTrashTable().getByUser(getUser().id());
+    }
+
+    public List<StatusReport> getUserReports() {
+        return tables.getStatusReportsTable().getReportsByUserId(getUser().id());
     }
 }

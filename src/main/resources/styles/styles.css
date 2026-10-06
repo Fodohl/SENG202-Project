@@ -1012,3 +1012,7 @@
 .check-box:selected .mark {
     -fx-background-color: -bg-primary-light;
 }
+
+.spinner{
+    -fx-background-color: transparent;
+}

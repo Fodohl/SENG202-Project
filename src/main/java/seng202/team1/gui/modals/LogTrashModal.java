@@ -11,7 +11,6 @@ import javafx.scene.layout.VBox;
 import seng202.team1.helpers.StringHelpers;
 import seng202.team1.types.bin.Bin;
 import seng202.team1.types.bin.BinFullness;
-import seng202.team1.types.bin.BinCategory;
 import seng202.team1.types.status.ReportType;
 import seng202.team1.types.status.StatusReport;
 import seng202.team1.types.trashlog.TrashLog;
@@ -19,6 +18,8 @@ import seng202.team1.types.trashlog.TrashType;
 import seng202.team1.data.treedays.TreeDaysCalculator;
 import seng202.team1.gui.Router;
 import seng202.team1.gui.components.*;
+
+import static seng202.team1.data.bin.BinFullnessCalculator.refreshBinFullness;
 
 
 /**
@@ -187,21 +188,8 @@ public class LogTrashModal extends Modal {
         if (typeInput.isErroring() || weightInput.isErroring() || fullnessInput.isErroring())
             return;
 
-        Instant createdAt = Instant.now();
         // Save
-        int trashId = getState().getTrashLogDAO().add(new TrashLog(createdAt, createdAt, userID, binID, type, weight));
-        var session = getState().getAuth().getSession();
-
-        if (session != null && session.userDetails() != null) {
-            StatusReport reportToAdd = new StatusReport(binID, session.userDetails().id(), fullness, ReportType._FULLNESS_UPDATE, String.valueOf(trashId), createdAt);
-            getState().getStatusReportDAO().add(reportToAdd);
-        } else {
-            StatusReport reportToAdd = new StatusReport(binID, 0, fullness, ReportType._FULLNESS_UPDATE, String.valueOf(trashId), createdAt);
-            getState().getStatusReportDAO().add(reportToAdd);
-        }
-        getState().refreshBinFullness(bin);
-
-        getState().sync();
+        getState().getDataService().logTrash(bin, type, weight, fullness);
         closeModal();
     }
 

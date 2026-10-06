@@ -2,6 +2,7 @@ package seng202.team1.tasks.preflight;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import seng202.team1.state.GlobalState;
 import seng202.team1.tasks.Task;
 import seng202.team1.tasks.TaskManager;
 import seng202.team1.types.bin.BinFullness;
@@ -33,9 +34,9 @@ public class RefreshBinFullnessTask extends Task {
      * @param manager The task manager that triggered the task
      */
     @Override
-    public void task(TaskManager manager) {
+    public void task(GlobalState state) {
 
-        TrashDBFullnessResponse bins = manager.getGlobalState().getTaServer().getBinFullness(r -> {}).join();
+        TrashDBFullnessResponse bins = state.getAppClients().getTaServer().getBinFullness(r -> {}).join();
         HashMap<Integer, BinFullness> fullness = new HashMap<>();
 
         log.info("Refreshed {} bins", bins.bins().size());
@@ -45,6 +46,6 @@ public class RefreshBinFullnessTask extends Task {
             fullness.put(bin.getKey(), BinFullness.values()[bin.getValue()]);
         });
 
-        manager.getGlobalState().getBinDAO().updateFullness(fullness);
+        state.getLocalTables().getBinTable().updateFullness(fullness);
     }
 }

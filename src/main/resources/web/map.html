@@ -49,11 +49,11 @@
 
     onPointClicked = (id) => {
         setSelectedPoint(id);
-        callJavaAPI("onPointClicked", {id});
+        window.javaBridge.onPointClicked(id);
     }
 
     onPosClicked = (lat, lng) => {
-        callJavaAPI("onPosClicked", {lat, lng});
+        window.javaBridge.onPosClicked(lat, lng);
     }
 
     // Marker helpers
@@ -215,7 +215,7 @@
                 time: i.time
             }));
 
-            callJavaAPI("onMapRouted", {route: JSON.stringify(route)});
+            window.javaBridge.onMapRouted(JSON.stringify(route));
         });
     }
 

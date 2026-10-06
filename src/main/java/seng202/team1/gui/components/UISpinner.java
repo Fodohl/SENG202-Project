@@ -26,5 +26,7 @@ public class UISpinner extends UIImage {
         rt.setCycleCount(Animation.INDEFINITE);
         rt.setInterpolator(Interpolator.LINEAR);
         rt.play();
+
+        getStyleClass().add("spinner");
     }
 }

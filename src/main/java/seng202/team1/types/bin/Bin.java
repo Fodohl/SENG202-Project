@@ -138,14 +138,11 @@ public class Bin {
                 '}';
     }
 
-    //@todo should NOT be here
-    public void updateFullness(BinDAO db, List<StatusReport> reportsForBin) {
-
+    public void updateFullness(List<StatusReport> reportsForBin) {
 
         // Average with no values will fault with div by 0
         if(reportsForBin.isEmpty()){
             fullness = BinFullness.UNKNOWN;
-            db.update(this);
             return;
         }
 
@@ -161,8 +158,5 @@ public class Bin {
         for(BinFullness fullnessType : BinFullness.values())
             if(fullnessType.ordinal() == avg)
                 fullness = fullnessType;
-
-        // Store change
-        db.update(this);
     }
 }

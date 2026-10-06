@@ -19,6 +19,7 @@ import java.security.InvalidParameterException;
 import java.time.Instant;
 
 import static seng202.team1.TrashApp.GSON;
+import static seng202.team1.state.GlobalState.IS_TEST_MODE;
 
 /**
  * Persistently stores the current authentication state, and provides helpers for ensuring correct state values
@@ -44,7 +45,7 @@ public class AuthState {
      */
     public AuthState(GlobalState state) {
         this.state = state;
-        this.server = state.getTaServer();
+        this.server = state.getAppClients().getTaServer();
 
         load();
     }
@@ -311,10 +312,14 @@ public class AuthState {
      */
     private void onSessionLoaded() {
 
-        // fetch app data
-        state.fetchData();
+        // Now that user is authenticated, database can identify them and thus data can be fetched
+        state.getUiContext().fetchData();
+        state.getDataService().downloadMissingData();
 
-        // begin processing queued uploads
+        // Now that have latest data
+        state.getAppTasks().runWorkers();
+
+        // Begin processing queued uploads
         state.sync();
 
     }

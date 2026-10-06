@@ -1,18 +1,27 @@
 package seng202.team1.gui.components;
 
+import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import seng202.team1.state.GlobalState;
+import seng202.team1.types.gui.GraphPoint;
+import seng202.team1.types.trashdb.CommunityCleanliness;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
+import java.time.Month;
+import java.time.format.TextStyle;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import static seng202.team1.TrashApp.GSON;
 import static seng202.team1.state.GlobalState.IS_HEADLESS_MODE;
 
 /**
@@ -32,7 +41,7 @@ public class UIGraphLine extends UIWebRenderer {
         setMaxHeight(420);
 
         // Webviews dont run in CI without graphics
-        if(IS_HEADLESS_MODE)
+        if (IS_HEADLESS_MODE)
             return;
 
         webView.addEventFilter(ScrollEvent.SCROLL, event -> {
@@ -46,17 +55,35 @@ public class UIGraphLine extends UIWebRenderer {
 
         });
 
-        // Define the data
     }
 
     /**
-     * Handle webview function calls
+     * Sets the data for the graph and updates the WebView chart
      *
-     * @param function The function that was called
-     * @param params The parameters of the function call
+     * @param cleanlinessList List of cleanliness records
+     */
+    public void setData(List<CommunityCleanliness> cleanlinessList) {
+        if (IS_HEADLESS_MODE || cleanlinessList == null) {
+            return;
+        }
+
+        // Convert into a stringified JSON
+        List<GraphPoint> points = cleanlinessList.stream()
+                .map(c -> GraphPoint.fromCCleanliness(c))
+                .toList();
+
+        String jsonArray = GSON.toJson(points);
+
+        call(String.format("setGraphData(%s);", jsonArray));
+    }
+
+    /**
+     * Constructs a new blank object as the java bridge, not needed for the line graph
+     *
+     * @return empty object
      */
     @Override
-    public void handleFunctionCall(String function, Map<String, String> params) {
-        throw new IllegalArgumentException("Graph should not make any API calls");
+    protected Object newJavaBridge() {
+        return new Object();
     }
 }

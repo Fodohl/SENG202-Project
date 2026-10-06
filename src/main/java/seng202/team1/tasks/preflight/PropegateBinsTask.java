@@ -2,6 +2,7 @@ package seng202.team1.tasks.preflight;
 
 import seng202.team1.data.bin.BinDataset;
 import seng202.team1.database.DAO.BinDAO;
+import seng202.team1.state.GlobalState;
 import seng202.team1.tasks.Task;
 import seng202.team1.tasks.TaskManager;
 
@@ -25,10 +26,10 @@ public class PropegateBinsTask extends Task {
      * @param manager The task manager that triggered the task
      */
     @Override
-    public void task(TaskManager manager) {
+    public void task(GlobalState state) {
 
-        BinDAO binDB = manager.getGlobalState().getBinDAO();
-        BinDataset binDataset = manager.getGlobalState().getDataset();
+        BinDAO binDB = state.getLocalTables().getBinTable();
+        BinDataset binDataset = state.getDataService().getBinDataset();
 
         // Bins already propagated
         if (!binDB.getAll().isEmpty())

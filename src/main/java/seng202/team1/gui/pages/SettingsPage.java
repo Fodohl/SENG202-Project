@@ -152,7 +152,7 @@ public class SettingsPage extends Page {
 
     private void delete() {
 
-        getState().getTaServer().deleteUser(s -> {
+        getState().getAppClients().getTaServer().deleteUser(s -> {
 
             // Session now invalid
             logOut();
@@ -202,7 +202,7 @@ public class SettingsPage extends Page {
         if (userName.isErroring() || userEmail.isErroring())
             return;
 
-        getState().getTaServer().updateUser(enteredName, enteredEmail, s -> {
+        getState().getAppClients().getTaServer().updateUser(enteredName, enteredEmail, s -> {
 
             // Refresh whole app with new details
             getState().getAuth().updateUser(enteredName, enteredEmail);
@@ -239,7 +239,7 @@ public class SettingsPage extends Page {
         if (userPasswordOld.isErroring() || userPasswordNew.isErroring() || userPasswordNewConfirm.isErroring())
             return;
 
-        getState().getTaServer().updatePassword(enteredPassword, enteredPasswordNew, s -> {
+        getState().getAppClients().getTaServer().updatePassword(enteredPassword, enteredPasswordNew, s -> {
 
             // Clear form
             userPasswordOld.clear();

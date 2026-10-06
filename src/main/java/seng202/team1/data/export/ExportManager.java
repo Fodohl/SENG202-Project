@@ -14,6 +14,9 @@ import javafx.stage.Stage;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import seng202.team1.data.table.StringTable;
+import seng202.team1.state.GlobalState;
+import seng202.team1.types.status.StatusReport;
+import seng202.team1.types.trashlog.TrashLog;
 
 /**
  * Manages exporting data to csv

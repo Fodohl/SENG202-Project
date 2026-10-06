@@ -43,7 +43,7 @@ public class LogIssueStepDefs {
                 "testParkC"
         );
 
-        globalState.getBinDAO().add(bin);
+        globalState.getLocalTables().getBinTable().add(bin);
 
         modal = new LogIssueModal(globalState.getRouter());
         modal.getRendered();
@@ -88,7 +88,7 @@ public class LogIssueStepDefs {
     }
 
      private List<StatusReport> getReports() {
-        return globalState.getStatusReportDAO().getAll().stream()
+        return globalState.getLocalTables().getStatusReportsTable().getAll().stream()
                 .filter(r -> r.getBinId() == 1)
                 .filter(r -> r.getIssue() != ReportType._FULLNESS_UPDATE)
                 .toList();

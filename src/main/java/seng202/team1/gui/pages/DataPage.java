@@ -70,14 +70,14 @@ public class DataPage extends Page {
 
         tableData = new StringTableBuilder<Bin>(new ArrayList<>())
             .addColumn("binID", "ID")
-            .addColumn("fullness", "Fullness", val -> StringHelpers.enumNameToTitle(((BinFullness)val).name()))
+            .addColumn("fullness", "Fullness", bin -> StringHelpers.enumNameToTitle(bin.getFullness().name()))
             .addColumn("areaName", "Location")
-            .addColumn("type", "Type", val -> StringHelpers.enumNameToTitle(((BinCategory)val).name()))
+            .addColumn("type", "Type", bin -> StringHelpers.enumNameToTitle(bin.getCategory().name()))
             .sortBy(Comparator.comparing(Bin::getID));
 
         table = new UITable(tableData, false);
         table.getStyleClass().add("data-table");
-        table.setOnRowClick(row -> getState().goToBin(row.get("ID")));
+        table.setOnRowClick(row -> getState().getUiContext().goToBin(row.get("ID")));
 
         root = new VBox(20, pageTitle, exportButton, table);
         root.setAlignment(Pos.TOP_CENTER);
@@ -108,7 +108,7 @@ public class DataPage extends Page {
      */
     private void fillTable(){
 
-        tableData.updateData(getState().getBinDAO().getAll());
+        tableData.updateData(getState().getLocalTables().getBinTable().getAll());
         table.buildTableContent();
 
         root.setMinHeight(Region.USE_COMPUTED_SIZE);

@@ -27,13 +27,11 @@ public class DataStepDefs {
 
         TrashAppTest.initFx();
         globalState = new GlobalState(null);
-        globalState.getDatabaseManager().resetDB();
+        globalState.getLocalTables().getDatabaseManager().resetDB();
 
-        globalState.getDatabaseManager();
-
-        BinDAO binDAO = globalState.getBinDAO();
+        BinDAO binDAO = globalState.getLocalTables().getBinTable();
         if (binDAO.getAll().isEmpty())
-            binDAO.addBatch(globalState.getDataset().getBinDataset().subList(0, BIN_SUBSET));
+            binDAO.addBatch(globalState.getDataService().getBinDataset().getBinDataset().subList(0, BIN_SUBSET));
     }
 
 
@@ -56,7 +54,7 @@ public class DataStepDefs {
 
     @Then("all bins are shown in a table")
     public void allBinsAreShownInATable() {
-        int expected = globalState.getBinDAO().getAll().size();
+        int expected = globalState.getLocalTables().getBinTable().getAll().size();
 
         assertTrue(expected > 0);
         assertEquals(expected, dataTable.getData().dataSize());

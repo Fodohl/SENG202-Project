@@ -63,7 +63,7 @@ class StringTableBuilderTest extends TrashAppTest {
     @Test
     void formattersShouldApply() {
          StringTableBuilder<Bin> builder = new StringTableBuilder<>(testData())
-                .addColumn("binID", "ID", id -> "#" + id);
+                .addColumn("binID", "ID", bin -> "#" + bin.getID());
 
         StringTable table = builder.build();
 
