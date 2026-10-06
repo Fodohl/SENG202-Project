@@ -188,21 +188,8 @@ public class LogTrashModal extends Modal {
         if (typeInput.isErroring() || weightInput.isErroring() || fullnessInput.isErroring())
             return;
 
-        Instant createdAt = Instant.now();
         // Save
-        int trashId = getState().getTrashLogDAO().add(new TrashLog(createdAt, createdAt, userID, binID, type, weight));
-        var session = getState().getAuth().getSession();
-
-        if (session != null && session.userDetails() != null) {
-            StatusReport reportToAdd = new StatusReport(binID, session.userDetails().id(), fullness, ReportType._FULLNESS_UPDATE, String.valueOf(trashId), createdAt);
-            getState().getStatusReportDAO().add(reportToAdd);
-        } else {
-            StatusReport reportToAdd = new StatusReport(binID, 0, fullness, ReportType._FULLNESS_UPDATE, String.valueOf(trashId), createdAt);
-            getState().getStatusReportDAO().add(reportToAdd);
-        }
-
-        refreshBinFullness(bin, getState().getBinDAO(), getState().getStatusReportDAO());
-        getState().sync();
+        getState().getDataService().logTrash(bin, type, weight, fullness);
         closeModal();
     }
 

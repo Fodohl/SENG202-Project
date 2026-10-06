@@ -6,6 +6,8 @@ import seng202.team1.api.trashdb.TrashDBBackend;
 import seng202.team1.api.trashdb.TrashDBClient;
 import seng202.team1.database.DAO.StatusReportDAO;
 import seng202.team1.database.DAO.TrashLogDAO;
+import seng202.team1.database.TableCollection;
+import seng202.team1.state.GlobalState;
 import seng202.team1.tasks.Task;
 import seng202.team1.tasks.TaskManager;
 import seng202.team1.types.bin.Bin;
@@ -43,19 +45,19 @@ public class SyncToBackendTask extends Task {
     public SyncToBackendTask(TaskManager taskManager){
         super(taskManager, "data syncing");
 
-        logDAO = taskManager.getGlobalState().getTrashLogDAO();
-        statusReportDAO = taskManager.getGlobalState().getStatusReportDAO();
-        server = taskManager.getGlobalState().getTaServer();
+        TableCollection tables = taskManager.getGlobalState().getLocalTables();
+        logDAO = tables.getTrashTable();
+        statusReportDAO = tables.getStatusReportsTable();
+        server = taskManager.getGlobalState().getAppClients().getTaServer();
 
     }
 
     /**
      * The job this task carries out
      *
-     * @param manager The task manager that triggered the task
      */
     @Override
-    public void task(TaskManager manager) {
+    public void task(GlobalState state) {
 
         // Wait for any other sync tasks to complete as may pick up what this one is doing
         lock.lock();

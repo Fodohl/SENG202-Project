@@ -76,7 +76,7 @@ public class Main extends Application {
         stage.show();
 
          // Set up the window
-        state.getBackgroundTasks().runTask("Setup App Icon", e -> deferLoadAppIcon(stage));
+        state.getAppTasks().getBackgroundTasks().runTask("Setup App Icon", e -> deferLoadAppIcon(stage));
         stage.setTitle("TrashApp v1");
 
         JFRMarker guiReady = new JFRMarker("GUI Shown");

@@ -97,12 +97,12 @@ public class HomePage extends Page {
     public void updateContents() {
 
         // Get usage
-        List<TrashLog> uses = router.getGlobalState().getTrashLogDAO()
+        List<TrashLog> uses = getState().getLocalTables().getTrashTable()
                 .getAll().stream()
                 .sorted(Comparator.comparing(TrashLog::createdAt))
                 .toList();
         List<Bin> bins = uses.stream()
-                .map(b -> router.getGlobalState().getBinDAO().getOne(b.binID()))
+                .map(b -> getState().getLocalTables().getBinTable().getOne(b.binID()))
                 .toList();
 
         double treeDays = TreeDaysCalculator.getTreeDays(uses);

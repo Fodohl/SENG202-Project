@@ -78,13 +78,12 @@ public class UIGraphLine extends UIWebRenderer {
     }
 
     /**
-     * Handle webview function calls
+     * Constructs a new blank object as the java bridge, not needed for the line graph
      *
-     * @param function The function that was called
-     * @param params   The parameters of the function call
+     * @return empty object
      */
     @Override
-    public void handleFunctionCall(String function, Map<String, String> params) {
-        throw new IllegalArgumentException("Graph should not make any API calls");
+    protected Object newJavaBridge() {
+        return new Object();
     }
 }
