@@ -6,6 +6,10 @@ DROP TABLE IF EXISTS users;
 --SPLIT
 DROP TABLE IF EXISTS status_reports;
 --SPLIT
+DROP TABLE IF EXISTS community_cleanliness;
+--SPLIT
+DROP TABLE IF EXISTS leaderboard;
+--SPLIT
 CREATE TABLE bins (
     id INTEGER PRIMARY KEY,
     lat DECIMAL(11, 8) NOT NULL,
@@ -50,14 +54,39 @@ CREATE TABLE users (
 
 --SPLIT
 CREATE TABLE status_reports (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
     bin_id INTEGER,
     user_id INTEGER,
     fullness VARCHAR(255),
     issue VARCHAR(255),
     description VARCHAR(255),
-    created_at INTEGER NOT NULL,
-    CONSTRAINT fk_status_report_bin
-        FOREIGN KEY (bin_id)
-            REFERENCES bins(id)
-            ON DELETE CASCADE);
+    created_at BIGINT NOT NULL,
+    synced_at BIGINT,
+
+    CONSTRAINT fk_status_report_bin FOREIGN KEY (bin_id) REFERENCES bins(id) ON DELETE CASCADE,
+    CONSTRAINT fk_status_report_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+--SPLIT
+CREATE TABLE community_cleanliness (
+    id INTEGER PRIMARY KEY AUTO_INCREMENT,
+    year INTEGER NOT NULL,
+    month INTEGER NOT NULL,
+    log_count INTEGER NOT NULL DEFAULT 0,
+    updated_at BIGINT NOT NULL,
+
+    UNIQUE (year, month)
+);
+
+
+--SPLIT
+CREATE TABLE leaderboard (
+    place INTEGER PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    user_name VARCHAR(255) NOT NULL,
+    log_count INTEGER NOT NULL,
+    tree_days DECIMAL(10, 2) NOT NULL,
+    updated_at BIGINT NOT NULL,
+
+    CONSTRAINT fk_leaderboard_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);

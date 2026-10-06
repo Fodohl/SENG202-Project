@@ -90,6 +90,7 @@
         }
     })
     const area = React.createElement(Area, {
+        name: "Items of trash",
         type: "monotone",
         dataKey: "value",
         stroke: active,
@@ -108,7 +109,21 @@
         )
     );
 
-    ReactDOM.createRoot(document.getElementById("root")).render(chart);
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(chart);
+
+    setGraphData = (data) => {
+        const chart = React.createElement(ResponsiveContainer, {width: "97%", height: "86%"},
+            React.createElement(AreaChart, {data},
+                grid,
+                xaxis,
+                yaxis,
+                tooltip,
+                area
+            )
+        );
+        root.render(chart);
+    }
 
 </script>
 </body>

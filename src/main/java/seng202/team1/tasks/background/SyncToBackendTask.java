@@ -4,10 +4,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import seng202.team1.api.trashdb.TrashDBBackend;
 import seng202.team1.api.trashdb.TrashDBClient;
+import seng202.team1.database.DAO.StatusReportDAO;
 import seng202.team1.database.DAO.TrashLogDAO;
 import seng202.team1.tasks.Task;
 import seng202.team1.tasks.TaskManager;
 import seng202.team1.types.bin.Bin;
+import seng202.team1.types.status.StatusReport;
 import seng202.team1.types.trashlog.TrashLog;
 
 import java.util.List;
@@ -27,6 +29,9 @@ public class SyncToBackendTask extends Task {
     /// The reference to the local trash logs
     TrashLogDAO logDAO;
 
+    /// The reference to the local trash logs
+    StatusReportDAO statusReportDAO;
+
     /// The server to upload the trash logs onto
     TrashDBClient server;
 
@@ -39,6 +44,7 @@ public class SyncToBackendTask extends Task {
         super(taskManager, "data syncing");
 
         logDAO = taskManager.getGlobalState().getTrashLogDAO();
+        statusReportDAO = taskManager.getGlobalState().getStatusReportDAO();
         server = taskManager.getGlobalState().getTaServer();
 
     }
@@ -57,11 +63,17 @@ public class SyncToBackendTask extends Task {
 
             // Get items needing to be synced
             List<TrashLog> logs = logDAO.getUnsynced();
-            log.info(String.format("Syncing %d logs", logs.size()));
+            List<StatusReport> reports = statusReportDAO.getUnsynced();
+            log.info(String.format("Syncing %d logs, %d reports", logs.size(), reports.size()));
 
             for(TrashLog log : logs){
                 server.postLog(log, r-> {}).join();
                 logDAO.update(log.asSynced());
+            }
+
+            for(StatusReport report : reports){
+                server.postReport(report, r-> {}).join();
+                statusReportDAO.update(report.asSynced());
             }
 
 

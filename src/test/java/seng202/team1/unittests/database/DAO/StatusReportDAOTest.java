@@ -28,7 +28,9 @@ public class StatusReportDAOTest extends TrashAppTest {
                 BinFullness.UNKNOWN,
                 issue,
                 "test description",
-                Instant.now().truncatedTo(ChronoUnit.MILLIS));
+                Instant.now().truncatedTo(ChronoUnit.MILLIS),
+                null
+        );
     }
 
     private void assertReportsEqual(StatusReport expected, StatusReport actual) {
@@ -165,7 +167,7 @@ public class StatusReportDAOTest extends TrashAppTest {
     @Test
     void testUpdateStatusReportNoneFound() {
         StatusReport report = makeReport();
-        StatusReport falseReport = new StatusReport(-1, 1, 1, BinFullness.EMPTY, ReportType._FULLNESS_UPDATE, "Test Description 2", Instant.now());
+        StatusReport falseReport = new StatusReport(-1, 1, 1, BinFullness.EMPTY, ReportType._FULLNESS_UPDATE, "Test Description 2", Instant.now(), null);
         statusReportDAO.add(report);
         statusReportDAO.update(falseReport);
         assertEquals(1, statusReportDAO.getAll().size());

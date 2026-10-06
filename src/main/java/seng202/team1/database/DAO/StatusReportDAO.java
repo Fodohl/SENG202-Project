@@ -6,8 +6,11 @@ import seng202.team1.types.status.ReportType;
 import seng202.team1.types.status.StatusReport;
 import seng202.team1.types.trashlog.TrashLog;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -20,6 +23,7 @@ public class StatusReportDAO extends BaseDAO<StatusReport> {
 
     /**
      * Instantiates StatusReportDAO and gets a reference to the database singleton
+     *
      * @param databaseManager database singleton
      */
     public StatusReportDAO(DatabaseManager databaseManager) {
@@ -29,6 +33,7 @@ public class StatusReportDAO extends BaseDAO<StatusReport> {
 
     /**
      * Converts the string representation saved in the database to a {@link BinFullness}
+     *
      * @param binFullnessString String representation of bin fullness
      * @return BinFullness associated with the report
      */
@@ -49,11 +54,14 @@ public class StatusReportDAO extends BaseDAO<StatusReport> {
                 convertStringToBinFullness(rs.getString("fullness")),
                 convertStringToIssue(rs.getString("issue")),
                 rs.getString("description"),
-                getInstant(rs, "created_at"));
+                getInstant(rs, "created_at"),
+                getInstant(rs, "synced_at")
+        );
     }
 
     /**
      * Gets all status reports from the database
+     *
      * @return a list of all status reports
      */
     @Override
@@ -63,6 +71,7 @@ public class StatusReportDAO extends BaseDAO<StatusReport> {
 
     /**
      * Gets a status report related to a certain report id
+     *
      * @param id id of object to get
      * @return Status report related to id, or null if none
      */
@@ -73,6 +82,7 @@ public class StatusReportDAO extends BaseDAO<StatusReport> {
 
     /**
      * Gets all reports relating to a bin id
+     *
      * @param binId id of the desired bin
      * @return a list of StatusReports relating to the supplied bin id
      */
@@ -82,6 +92,7 @@ public class StatusReportDAO extends BaseDAO<StatusReport> {
 
     /**
      * Gets all reports relating to a user
+     *
      * @param userId id of the desired user
      * @return a list of StatusReports relating to the supplied user id
      */
@@ -91,6 +102,7 @@ public class StatusReportDAO extends BaseDAO<StatusReport> {
 
     /**
      * Gets all fullness reports relating to a certain bin
+     *
      * @param binId id of the desired bin
      * @return a list of fullness StatusReports relating to the supplied bin
      */
@@ -101,6 +113,7 @@ public class StatusReportDAO extends BaseDAO<StatusReport> {
 
     /**
      * Gets all non fullness reports
+     *
      * @return A list of StatusReports with issue other that ReportType._FULLNESS_UPDATE
      */
     public List<StatusReport> getNonFullnessReports() {
@@ -109,6 +122,7 @@ public class StatusReportDAO extends BaseDAO<StatusReport> {
 
     /**
      * Returns the fullness saved in StatusReport for a fullness update caused by a trash log
+     *
      * @param trashLog TrashLog that we want the fullness for
      * @return BinFullness related to the trashLog
      */
@@ -123,24 +137,28 @@ public class StatusReportDAO extends BaseDAO<StatusReport> {
 
     /**
      * Adds a StatusReport to the database
+     *
      * @param statusReportToAdd StatusReport to add
      * @return Report id in the database, or -1 on SQL error
      */
     @Override
     public int add(StatusReport statusReportToAdd) {
-        String sql = "INSERT INTO status_reports (bin_id, user_id, fullness, issue, description, created_at) "
-                + "VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO status_reports (bin_id, user_id, fullness, issue, description, created_at, synced_at) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
         return executeInsert(sql,
                 statusReportToAdd.getBinId(),
                 statusReportToAdd.getUserId(),
                 statusReportToAdd.getFullness(),
                 statusReportToAdd.getIssue(),
                 statusReportToAdd.getDescription(),
-                statusReportToAdd.getSubmittedAt());
+                statusReportToAdd.getSubmittedAt(),
+                statusReportToAdd.getSyncedAt()
+        );
     }
 
     /**
      * Deletes a StatusReport from the database
+     *
      * @param id id of StatusReport to delete
      */
     @Override
@@ -148,14 +166,16 @@ public class StatusReportDAO extends BaseDAO<StatusReport> {
         deleteById("status_reports", id);
     }
 
+
     /**
      * Updates the StatusReport in the database to the new StatusReport if they have the same id
+     *
      * @param statusReportToUpdate StatusReport that needs to be updated
      */
     @Override
     public void update(StatusReport statusReportToUpdate) {
         String sql = "UPDATE status_reports SET bin_id = ?, user_id = ?, fullness = ?, issue = ?, "
-                + "description = ?, created_at = ? WHERE id = ?";
+                + "description = ?, created_at = ?, synced_at = ? WHERE id = ?";
         int rows = executeUpdate(sql,
                 statusReportToUpdate.getBinId(),
                 statusReportToUpdate.getUserId(),
@@ -163,9 +183,14 @@ public class StatusReportDAO extends BaseDAO<StatusReport> {
                 statusReportToUpdate.getIssue(),
                 statusReportToUpdate.getDescription(),
                 statusReportToUpdate.getSubmittedAt(),
+                statusReportToUpdate.getSyncedAt(),
                 statusReportToUpdate.getId());
         if (rows == 0) {
             log.warn("Update affected 0 rows for status report id {}", statusReportToUpdate.getId());
         }
+    }
+
+    public List<StatusReport> getUnsynced() {
+        return queryList("SELECT * FROM status_reports WHERE synced_at IS NULL");
     }
 }

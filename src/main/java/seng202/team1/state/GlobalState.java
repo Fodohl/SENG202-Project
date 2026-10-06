@@ -1,10 +1,15 @@
 package seng202.team1.state;
 
 import javafx.stage.Stage;
+import seng202.team1.api.trashdb.TrashDBClient;
 import seng202.team1.tasks.background.SyncToBackendTask;
+import seng202.team1.tasks.workers.BinFullnessWorker;
+import seng202.team1.tasks.workers.CommunityCleanlinessWorker;
+import seng202.team1.tasks.workers.LeaderboardWorker;
 import seng202.team1.types.photon.Feature;
 import seng202.team1.api.photon.PhotonClient;
-import seng202.team1.api.trashdb.TrashDBClient;
+import seng202.team1.types.trashdb.CommunityCleanliness;
+import seng202.team1.types.trashdb.TrashDBCleanlinessResponse;
 import seng202.team1.types.trashdb.TrashDBLeaderboardResponse;
 import seng202.team1.database.DAO.StatusReportDAO;
 import seng202.team1.types.status.ReportType;
@@ -18,7 +23,6 @@ import seng202.team1.data.bin.BinDataset;
 import seng202.team1.types.bin.Bin;
 import seng202.team1.tasks.TaskManager;
 import seng202.team1.tasks.preflight.PreflightManager;
-import seng202.team1.types.status.StatusReport;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -81,6 +85,9 @@ public class GlobalState {
     /// The current leaderboard state
     private TrashDBLeaderboardResponse leaderboard;
 
+    /// The current community cleanliness state
+    private TrashDBCleanlinessResponse communityCleanliness;
+
     /// The current user and credentials
     private AuthState auth;
 
@@ -114,7 +121,6 @@ public class GlobalState {
         // Fetch data etc for cached sessions
         if (!IS_TEST_MODE)
             auth.tryTriggerLoadSession();
-
     }
 
 
@@ -123,12 +129,68 @@ public class GlobalState {
      */
     public void fetchData() {
 
-        taServer.getLeaderboard(leaderboard -> {
+        taServer.getLeaderboard(leaderboardResponse -> {
 
-            this.leaderboard = leaderboard;
+            leaderboard = leaderboardResponse;
             router.refreshPage(Pages.COMMUNITY);
 
         });
+
+        taServer.getCommunityCleanliness(communityCleanlinessResponse -> {
+
+            communityCleanliness = communityCleanlinessResponse;
+            router.refreshPage(Pages.COMMUNITY);
+
+        });
+
+
+        taServer.getUserLogs(logs -> {
+
+            List<Instant> localLogs = trashLogDAO.getAll().stream().map(l -> l.createdAt()).toList();
+
+            // Any unkown logs are added to the local db
+            logs.forEach(log -> {
+
+                // Log already stored here
+                if (localLogs.contains(log.createdAt()))
+                    return;
+
+                // Add to the local db (out of sync db id is fine becuase DAO ignores it)
+                trashLogDAO.add(log);
+            });
+
+        });
+
+        taServer.getUserReports(reports -> {
+
+            List<Instant> localReports = statusReportDAO.getAll().stream().map(r -> r.getSubmittedAt()).toList();
+
+            // Any unkown logs are added to the local db
+            reports.forEach(report -> {
+
+                // Log already stored here
+                if (localReports.contains(report.getSubmittedAt()))
+                    return;
+
+                // Add to the local db (out of sync db id is fine becuase DAO ignores it)
+                System.out.println("ADDING!");
+                statusReportDAO.add(report);
+            });
+
+        });
+
+        runWorkers();
+    }
+
+    /**
+     * Run the tasks that would realistically be periodically ran on the backed, this assumes that users are using the app
+     * regularly enough that the crowdsourced work is keeping the data fresh
+     */
+    private void runWorkers() {
+
+         backgroundTasks.runTask(new BinFullnessWorker(backgroundTasks));
+         backgroundTasks.runTask(new CommunityCleanlinessWorker(backgroundTasks));
+         backgroundTasks.runTask(new LeaderboardWorker(backgroundTasks));
     }
 
     /**
@@ -258,10 +320,19 @@ public class GlobalState {
     /**
      * Get the current leaderboard
      *
-     * @return The current leaderboard
+     * @return The current leaderboard or null if still loading
      */
-    public TrashDBLeaderboardResponse getCommunity() {
+    public TrashDBLeaderboardResponse getLeaderboard() {
         return leaderboard;
+    }
+
+     /**
+     * Get the current community collective data
+     *
+     * @return The current leaderboard or null if still loading
+     */
+    public TrashDBCleanlinessResponse getCommunityClealiness(){
+        return communityCleanliness;
     }
 
     /**
@@ -271,44 +342,6 @@ public class GlobalState {
      */
     public AuthState getAuth() {
         return auth;
-    }
-
-
-    public void refreshBinFullness() {
-
-        // No need to recalc fullness every test
-        if (IS_TEST_MODE)
-            return;
-
-        // Only want recent reports of fullness
-        Instant startOfDay = LocalDate.now()
-                .atStartOfDay(ZoneId.systemDefault())
-                .toInstant();
-        List<StatusReport> fullnessReports = statusReportDAO.getAll().stream()
-                                                    .filter(r -> r.getIssue() == ReportType._FULLNESS_UPDATE)
-                                                    .filter(r -> r.getSubmittedAt().isAfter(startOfDay))
-                                                    .toList();
-
-        // Get each bin's new fullness as an average of this week's reports
-        getBinDAO().getAll().stream().forEach(b -> {
-            List<StatusReport> reportsFoBin = fullnessReports.stream().filter(r -> r.getBinId() == b.getID()).toList();
-            refreshBinFullness(b, binDAO, reportsFoBin);
-        });
-    }
-
-    public void refreshBinFullness(Bin bin){
-        Instant startOfDay = LocalDate.now()
-                .atStartOfDay(ZoneId.systemDefault())
-                .toInstant();
-         // Only want recent reports of fullness
-        List<StatusReport> reportsFoBin = statusReportDAO.getFullnessReportsByBinId(bin.getID()).stream()
-                .filter(r -> r.getSubmittedAt().isAfter(startOfDay))
-                .toList();;
-        refreshBinFullness(bin, binDAO, reportsFoBin);
-    }
-
-    private void refreshBinFullness(Bin bin, BinDAO binDAO, List<StatusReport> reportsFoBin) {
-        bin.updateFullness(binDAO, reportsFoBin);
     }
 
 

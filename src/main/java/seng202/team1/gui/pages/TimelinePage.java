@@ -156,7 +156,7 @@ public class TimelinePage extends Page {
                 router.getGlobalState().getStatusReportDAO().getFullnessByTrashLog(t))));
 
         return new StringTableBuilder<>(exportEntries)
-                .addColumn("time", "Timestamp", o -> StringHelpers.toLocaleString((Instant) o))
+                .addColumn("time", "Timestamp", entry -> StringHelpers.toLocaleString(entry.time()))
                 .addColumn("source", "Type")
                 .addColumn("binId", "Bin ID")
                 .addColumn("fullness", "Fullness")

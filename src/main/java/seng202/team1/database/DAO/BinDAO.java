@@ -8,6 +8,7 @@ import seng202.team1.types.bin.BinCategory;
 import seng202.team1.types.bin.BinFullness;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.Instant;
@@ -18,6 +19,7 @@ import java.util.Map;
 
 /**
  * Handles all bin related actions to the database
+ *
  * @author Marcus Demafeliz
  */
 public class BinDAO extends BaseDAO<Bin> {
@@ -55,6 +57,7 @@ public class BinDAO extends BaseDAO<Bin> {
 
     /**
      * Gets individual bin from database from id
+     *
      * @param id id of object to get
      * @return bin matching the id, or null if none
      */
@@ -78,6 +81,7 @@ public class BinDAO extends BaseDAO<Bin> {
 
     /**
      * Add individual bin to the database
+     *
      * @param toAdd bin to add
      * @return returns id of new bin if no error, -1 if SQL error
      */
@@ -136,6 +140,7 @@ public class BinDAO extends BaseDAO<Bin> {
 
     /**
      * Deletes bin from database by id
+     *
      * @param id id of bin to delete
      */
     @Override
@@ -145,6 +150,7 @@ public class BinDAO extends BaseDAO<Bin> {
 
     /**
      * Updates bin from database by id
+     *
      * @param toUpdate Bin with the updated parameters, matching the id of the bin to update
      */
     @Override
@@ -169,25 +175,26 @@ public class BinDAO extends BaseDAO<Bin> {
      * Updates the fullness of several bins in a single transaction
      * @param fullness map of bin id to new fullness
      */
-    public void updateFullness(HashMap<Integer, BinFullness> fullness) {
+    public void updateFullness(Map<Integer, BinFullness> fullness) {
         // Fullness hasn't changed since last check
         if (fullness == null || fullness.isEmpty()) {
             return;
         }
 
         long nowMillis = Instant.now().toEpochMilli();
+        String sql = "UPDATE bins SET fullness = ?, updated_at = ? WHERE id = ?";
 
-        try (Connection conn = databaseManager.connect()) {
+        try (Connection conn = databaseManager.connect(); PreparedStatement ps = conn.prepareStatement(sql)) {
             DSLContext context = databaseManager.getDSLContext(conn);
             context.transaction(configuration -> {
-                DSLContext ctx = DSL.using(configuration);
-                for (Map.Entry<Integer, BinFullness> entry : fullness.entrySet()) {
-                    ctx.update(DSL.table("bins"))
-                            .set(DSL.field("fullness"), entry.getValue().toString())
-                            .set(DSL.field("updated_at"), nowMillis)
-                            .where(DSL.field("id").eq(entry.getKey()))
-                            .execute();
+                for (Map.Entry<Integer, BinFullness> e : fullness.entrySet()) {
+                    ps.setString(1, e.getValue().toString());
+                    ps.setLong(2, nowMillis);
+                    ps.setInt(3, e.getKey());
+                    ps.addBatch();
                 }
+                ps.executeBatch();
+                conn.commit();
             });
         } catch (Exception e) {
             log.error(e);

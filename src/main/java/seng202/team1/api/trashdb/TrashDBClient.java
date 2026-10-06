@@ -1,22 +1,29 @@
 package seng202.team1.api.trashdb;
 
 import seng202.team1.api.ApiBackend;
+import seng202.team1.database.DAO.CommunityCleanlinessDAO;
+import seng202.team1.database.DAO.TrashLogDAO;
 import seng202.team1.gui.components.BlockableUISet;
 import seng202.team1.helpers.DateHelpers;
-import seng202.team1.types.trashdb.ResponseSuccess;
-import seng202.team1.types.trashdb.TrashDBFullnessResponse;
-import seng202.team1.types.trashdb.TrashDBLeaderboardResponse;
+import seng202.team1.types.bin.BinFullness;
+import seng202.team1.types.status.ReportType;
+import seng202.team1.types.status.StatusReport;
+import seng202.team1.types.trashdb.*;
 import seng202.team1.types.trashlog.TrashLog;
+import seng202.team1.types.trashlog.TrashType;
 import seng202.team1.types.user.Session;
 import seng202.team1.types.user.Token;
 import seng202.team1.types.user.User;
 
+import java.time.Instant;
 import java.time.OffsetDateTime;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import static seng202.team1.TrashApp.GSON;
 import static seng202.team1.gui.GraphicsCommon.NO_LOADING_UI;
+import static seng202.team1.helpers.DateHelpers.toOffsetTime;
 
 /**
  * API client to abstract async communication with the trash app's database
@@ -96,6 +103,7 @@ public class TrashDBClient extends ApiBackend {
      * Get the fullness of the bins in the database
      *
      * @param callback The handler to run when the request completes
+     * @return The async request
      */
     public CompletableFuture<TrashDBFullnessResponse> getBinFullness(Consumer<TrashDBFullnessResponse> callback) {
 
@@ -110,87 +118,8 @@ public class TrashDBClient extends ApiBackend {
      */
     public void getLeaderboard(Consumer<TrashDBLeaderboardResponse> callback) {
 
-        String mockJson = """
-                    {
-                      "entries": [
-                        {
-                          "position": 1,
-                          "user_id": 101,
-                          "name": "Archie G",
-                          "items_logged": 450,
-                          "trees": 1.5
-                        },
-                        {
-                          "position": 2,
-                          "user_id": 102,
-                          "name": "Bob R",
-                          "items_logged": 422,
-                          "trees": 1.4
-                        },
-                        {
-                          "position": 3,
-                          "user_id": 103,
-                          "name": "Tony D",
-                          "items_logged": 420,
-                          "trees": 1.4
-                        },
-                        {
-                          "position": 4,
-                          "user_id": 104,
-                          "name": "Mike M",
-                          "items_logged": 400,
-                          "trees": 1.3
-                        },
-                        {
-                          "position": 5,
-                          "user_id": 105,
-                          "name": "Ryan W",
-                          "items_logged": 399,
-                          "trees": 1.3
-                        },
-                        {
-                          "position": 6,
-                          "user_id": 106,
-                          "name": "Carter C",
-                          "items_logged": 350,
-                          "trees": 1.2
-                        },
-                        {
-                          "position": 7,
-                          "user_id": 107,
-                          "name": "Steve L",
-                          "items_logged": 100,
-                          "trees": 1.0
-                        },
-                          {
-                          "position": 8,
-                          "user_id": 107,
-                          "name": "Steve L",
-                          "items_logged": 100,
-                          "trees": 1.0
-                        }
-                      ],
-                      "nextPage": null
-                    }
-                """;
 
-        callback.accept(GSON.fromJson(mockJson, TrashDBLeaderboardResponse.class));
-
-//
-//        Map<String, String> params = Map.of("page", "0",
-//                                            "limit", LIMIT_LEADERBOARD_ENTRIES.toString(),
-//                                            "add_user_row", "true"
-//                                            );
-//
-//        GET("leaderboard", params, json -> {
-//            try {
-//                callback.accept(GSON.fromJson(json, TrashDBLeaderboardResponse.class));
-//
-//            } catch (Exception e) {
-//                log.warn(String.format("Failed to parse PhotonLocationResponse: %s", e.getMessage()));
-//            }
-//
-//        });
+        sendAsync(() -> backend.getLeaderboard(), callback, NO_LOADING_UI);
     }
 
     /**
@@ -198,6 +127,7 @@ public class TrashDBClient extends ApiBackend {
      *
      * @param log      The log to upload
      * @param callback The handler to run when the request completes
+     * @return The async request
      */
     public CompletableFuture<ResponseSuccess> postLog(TrashLog log, Consumer<ResponseSuccess> callback) {
 
@@ -240,5 +170,62 @@ public class TrashDBClient extends ApiBackend {
      */
     public void deleteUser(Consumer<ResponseSuccess> callback, BlockableUISet frontend) {
         sendAsync(() -> backend.removeUser(), callback, frontend);
+    }
+
+    /**
+     * Upload a status report to the database
+     *
+     * @param report The report to upload
+     * @param callback The handler to run when the request completes
+     * @return The async request
+     */
+    public CompletableFuture<ResponseSuccess> postReport(StatusReport report, Consumer<ResponseSuccess> callback) {
+
+        return sendAsync(() -> backend.addUserReport(report), callback, NO_LOADING_UI);
+
+    }
+
+    /**
+     * Get the amount of trash logged each month for the past 6 months
+     *
+     * @param callback The handler to run when the request completes
+     */
+    public void getCommunityCleanliness(Consumer<TrashDBCleanlinessResponse> callback) {
+
+        sendAsync(() -> backend.getCollectiveCleanliness(), callback, NO_LOADING_UI);
+
+    }
+
+     public void getUserLogs(Consumer<List<TrashLog>> callback) {
+
+        sendAsync(() -> backend.getUserTrashLogs(), callback, NO_LOADING_UI);
+
+    }
+
+    public void getUserReports(Consumer<List<StatusReport>> callback) {
+
+        sendAsync(() -> backend.getUserReports(), callback, NO_LOADING_UI);
+
+    }
+
+    /**
+     * Run the worker to calculate the community trash totals for this month (blocking)
+     */
+    public void runRecountCommunityTrash() {
+        backend.runRecountCommunityTrash();
+    }
+
+    /**
+     * Run the worker to calculate the bin fullness (blocking)
+     */
+    public void runRecomputeFullness() {
+        backend.runRecomputeFullness();
+    }
+
+    /**
+     * Run the worker to calculate the leaderboard positions (blocking)
+     */
+    public void runRecomputeLeaderboard() {
+        backend.runRecomputeLeaderboard();
     }
 }

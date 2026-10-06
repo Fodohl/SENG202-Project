@@ -2,26 +2,34 @@ package seng202.team1.api.trashdb;
 
 import seng202.team1.api.HttpStatus;
 import seng202.team1.data.bin.BinDataset;
-import seng202.team1.database.DAO.BinDAO;
-import seng202.team1.database.DAO.TrashLogDAO;
-import seng202.team1.database.DAO.UserDAO;
+import seng202.team1.database.DAO.*;
 import seng202.team1.database.DatabaseManager;
 import seng202.team1.database.exceptions.DuplicateEntryException;
 import seng202.team1.state.GlobalState;
 import seng202.team1.types.bin.Bin;
-import seng202.team1.types.trashdb.ResponseSuccess;
-import seng202.team1.types.trashdb.TrashDBFullnessResponse;
+import seng202.team1.types.bin.BinFullness;
+import seng202.team1.types.status.ReportType;
+import seng202.team1.types.status.StatusReport;
+import seng202.team1.types.trashdb.*;
 import seng202.team1.types.trashlog.TrashLog;
 import seng202.team1.types.user.Token;
 import seng202.team1.types.user.User;
 
 import java.security.InvalidParameterException;
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static seng202.team1.api.trashdb.TokenService.EXPIRY_DAYS;
+import static seng202.team1.data.treedays.TreeDaysCalculator.getTreeDays;
+import static seng202.team1.helpers.DateHelpers.toOffsetTime;
+import static seng202.team1.helpers.LeaderBoardHelpers.toRankedOrder;
 import static seng202.team1.state.GlobalState.IS_TEST_MODE;
 
 /**
@@ -37,13 +45,22 @@ public class TrashDBBackend {
     private DatabaseManager db;
 
     /// The DAO responsible for bins
-    private BinDAO binTable;
+    protected BinDAO binTable;
 
     /// The DAO responsible for users
-    private UserDAO userTable;
+    protected UserDAO userTable;
 
     /// The DAO responsible for trash
-    private TrashLogDAO trashTable;
+    protected TrashLogDAO trashTable;
+
+    /// The DAO responsible for status reports
+    protected StatusReportDAO statusReportsTable;
+
+    /// The DAO responsible for community cleanliness
+    protected CommunityCleanlinessDAO cleanlinessTable;
+
+    /// The DAO responsible for the leaderboard
+    protected LeaderboardDAO leaderboardTable;
 
     /// The handler for securing user tokens
     private final TokenService tokenService = new TokenService();
@@ -64,7 +81,9 @@ public class TrashDBBackend {
         binTable = new BinDAO(db);
         userTable = new UserDAO(db);
         trashTable = new TrashLogDAO(db);
-
+        statusReportsTable = new StatusReportDAO(db);
+        cleanlinessTable = new CommunityCleanlinessDAO(db);
+        leaderboardTable = new LeaderboardDAO(db);
     }
 
     /**
@@ -255,7 +274,7 @@ public class TrashDBBackend {
     /**
      * Update the user's information in the database
      *
-     * @param name The new name of the user
+     * @param name  The new name of the user
      * @param email The new email of the user
      * @return Success message if the user was uploaded fine, error otherwise
      */
@@ -293,7 +312,7 @@ public class TrashDBBackend {
     /**
      * Change the pasword of the user
      *
-     * @param enteredPassword The user's current password to verify
+     * @param enteredPassword    The user's current password to verify
      * @param enteredPasswordNew The user's new password
      * @return Success message if the user password was changed fine, error otherwise
      */
@@ -342,5 +361,163 @@ public class TrashDBBackend {
         ResponseSuccess success = new ResponseSuccess("User deleted successfully");
         return success;
 
+    }
+
+    /**
+     * Upload a status report to the database
+     *
+     * @param request The report to upload
+     * @return Success message if the report was uploaded fine, error otherwise
+     */
+    public ResponseSuccess addUserReport(StatusReport request) {
+
+        // Enforce the user id
+        User user = getUser();
+        StatusReport report = new StatusReport(
+                -1,
+                request.getBinId(),
+                user.id(),
+                request.getFullness(),
+                request.getIssue(),
+                request.getDescription(),
+                request.getSubmittedAt(),
+                Instant.now()
+        );
+
+
+        // Store
+        int id = statusReportsTable.add(report);
+
+        if (id == -1)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Failed to save report to database");
+
+
+        ResponseSuccess success = new ResponseSuccess("Trash logged successfully");
+        return success;
+    }
+
+    /**
+     * Get the amount of trash logged each month for the past 6 months
+     *
+     * @return The past 6 months of trashlogging totals
+     */
+    public TrashDBCleanlinessResponse getCollectiveCleanliness() {
+
+        // Get the counts
+        ArrayList<CommunityCleanliness> counts = new ArrayList<>(cleanlinessTable.getPastSixMonths());
+
+        int startYear = counts.getFirst().year();
+        int startMonth = counts.getFirst().month();
+
+        // Inject data for any months not known
+        while (counts.size() != 6) {
+
+            // Go to the prev month
+            startMonth -= 1;
+            if (startMonth == 0) {
+                startMonth = 12;
+                startYear -= 1;
+            }
+
+            CommunityCleanliness synthetic = new CommunityCleanliness(-1, startYear, startMonth, 0, null);
+            counts.addFirst(synthetic);
+        }
+
+        return new TrashDBCleanlinessResponse(counts);
+    }
+
+    /**
+     * Run the worker to calculate the community trash totals for this month (blocking)
+     */
+    public void runRecountCommunityTrash() {
+
+        CommunityCleanliness current = cleanlinessTable.getThisMonth();
+
+        // Count this month's logs
+        OffsetDateTime now = toOffsetTime(Instant.now()).withDayOfMonth(1);
+        int count = trashTable.countSince(now.toInstant());
+
+        // Update to the new count
+        current = current.withNewCount(count);
+        cleanlinessTable.update(current);
+    }
+
+
+    public TrashDBLeaderboardResponse getLeaderboard() {
+
+
+        List<LeaderBoardEntry> entries = leaderboardTable.getAll();
+        return new TrashDBLeaderboardResponse(entries, -1);
+
+    }
+
+    /**
+     * Run the worker to calculate the bin fullness (blocking)
+     */
+    public void runRecomputeFullness() {
+
+
+        // Only want recent reports of fullness
+        Instant startOfDay = LocalDate.now()
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant();
+
+        List<StatusReport> fullnessReports = statusReportsTable.getAll().stream()
+                .filter(r -> r.getSubmittedAt().isAfter(startOfDay))
+                .toList();
+
+        // Get each bin's new fullness as an average of this week's reports
+        List<Bin> bins = binTable.getAll();
+        bins.forEach(bin -> {
+            List<StatusReport> reportsFoBin = fullnessReports.stream().filter(r -> r.getBinId() == bin.getID()).toList();
+            bin.updateFullness(reportsFoBin);
+        });
+
+        // Save new fullnes to db
+        Map<Integer, BinFullness> fullness = bins.stream().collect(Collectors.toMap(
+                bin -> bin.getID(),
+                bin -> bin.getFullness()
+        ));
+
+        binTable.updateFullness(fullness);
+    }
+
+    /**
+     * Run the worker to calculate the leaderboard positions (blocking)
+     */
+    public void runRecomputeLeaderboard(){
+
+        // Fetch all logs and bins (note: required here as some fancy sql cant be done due to the tree day emissions calcualtor,
+        // this shouldn't affect performance as all done in the background)
+        List<User> users = userTable.getAll();
+        List<TrashLog> logs = trashTable.getAll();
+
+        Map<User, List<TrashLog>> userLogs = users.stream().collect(Collectors.toMap(
+                user -> user,
+                user -> logs.stream().filter(log -> log.userID() == user.id()).toList()
+        ));
+
+        List<LeaderBoardEntry> calculated = userLogs.entrySet().stream().map(userAndLogs -> {
+
+                    User user = userAndLogs.getKey();
+                    int totalLogs = userAndLogs.getValue().size();
+                    double trees = getTreeDays(userAndLogs.getValue());
+
+                    return new LeaderBoardEntry(-1, user.id(), user.name(), totalLogs, trees, Instant.now());
+                }).toList();
+
+        // Update cache in db
+        leaderboardTable.clear();
+        leaderboardTable.addBatch(toRankedOrder(calculated));
+    }
+
+
+    public List<TrashLog> getUserTrashLogs() {
+
+        return trashTable.getByUser(getUser().id());
+    }
+
+    public List<StatusReport> getUserReports() {
+        return statusReportsTable.getReportsByUserId(getUser().id());
     }
 }

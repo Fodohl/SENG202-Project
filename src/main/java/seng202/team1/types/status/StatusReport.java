@@ -1,12 +1,9 @@
 package seng202.team1.types.status;
 
-import seng202.team1.types.user.User;
-import seng202.team1.types.bin.Bin;
 import seng202.team1.types.bin.BinFullness;
-import seng202.team1.types.status.ReportType;
+import seng202.team1.types.trashlog.TrashLog;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 
 /**
  * StatusReport
@@ -20,6 +17,7 @@ public class StatusReport {
     private final BinFullness fullness;
     private final ReportType issue;
     private final Instant submittedAt;
+    private final Instant syncedAt;
     private final String description;
 
     /**
@@ -31,6 +29,7 @@ public class StatusReport {
      * @param issue enum representing the issue with the bin
      * @param description String describing the issue
      * @param submittedAt Instant of when the report was submitted
+     * @param syncedAt Instant of when the report was synced to the db
      */
 
     public StatusReport(int reportId,
@@ -39,7 +38,8 @@ public class StatusReport {
                         BinFullness fullness,
                         ReportType issue,
                         String description,
-                        Instant submittedAt) {
+                        Instant submittedAt,
+                        Instant syncedAt) {
         this.id = reportId;
         this.binId = binId;
         this.userId = userId;
@@ -47,6 +47,7 @@ public class StatusReport {
         this.issue = issue;
         this.description = description;
         this.submittedAt = submittedAt;
+        this.syncedAt = syncedAt;
     }
 
     public StatusReport(int binId,
@@ -54,14 +55,9 @@ public class StatusReport {
                         BinFullness fullness,
                         ReportType issue,
                         String description,
-                        Instant submittedAt) {
-        this.id = -1;
-        this.binId = binId;
-        this.userId = userId;
-        this.fullness = fullness;
-        this.issue = issue;
-        this.description = description;
-        this.submittedAt = submittedAt;
+                        Instant submittedAt
+                        ) {
+        this(-1, binId, userId, fullness, issue, description, submittedAt, null);
     }
 
     public int getId() { return id; }
@@ -136,5 +132,18 @@ public class StatusReport {
                 ", issue=" + getIssue() +
                 ", description="+ description +
                 ", submittedAt=" + getSubmittedAt() + "}";
+    }
+
+    /**
+     * Get when the report was sycned
+     *
+     * @return Instant of successfully sync, null otherwise
+     */
+    public Instant getSyncedAt() {
+        return syncedAt;
+    }
+
+   public StatusReport asSynced(){
+        return new StatusReport(id, binId, userId, fullness, issue, description, submittedAt, Instant.now());
     }
 }

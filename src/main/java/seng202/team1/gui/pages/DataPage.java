@@ -74,9 +74,9 @@ public class DataPage extends Page {
         // Data
         StringTableBuilder<Bin> tableData = new StringTableBuilder<Bin>(getState().getBinDAO().getAll())
             .addColumn("binID", "ID")
-            .addColumn("fullness", "Fullness", val -> StringHelpers.enumNameToTitle(((BinFullness)val).name()))
+            .addColumn("fullness", "Fullness", bin -> StringHelpers.enumNameToTitle(bin.getFullness().name()))
             .addColumn("areaName", "Location")
-            .addColumn("type", "Type", val -> StringHelpers.enumNameToTitle(((BinCategory)val).name()))
+            .addColumn("type", "Type", bin -> StringHelpers.enumNameToTitle(bin.getCategory().name()))
             .sortBy(Comparator.comparing(Bin::getID));
 
         UIIconButton exportButton = new UIIconButton("/media/images/export.svg", "Export Data");

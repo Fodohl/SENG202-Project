@@ -4,8 +4,9 @@ import seng202.team1.database.DatabaseManager;
 import seng202.team1.types.trashlog.TrashLog;
 import seng202.team1.types.trashlog.TrashType;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -118,4 +119,26 @@ public class TrashLogDAO extends BaseDAO<TrashLog> {
             log.warn("Update affected 0 rows for trash id {}", trashLogToUpdate.trashLogId());
         }
     }
+
+
+    /**
+     * Counts trash logs since the given instant
+     *
+     * @param since start of region
+     * @return number of logs, -1 on SQL error
+     */
+    public int countSince(Instant since) {
+        return queryInt("SELECT COUNT(*) FROM trash_logs WHERE disposed_at >= ?", since);
+    }
+
+     /**
+     * Gets all trash logs from database by user id
+     *
+     * @param id user id of object to get
+     * @return TrashLog trash log from database that matches id, or null if none
+     */
+    public List<TrashLog> getByUser(int id) {
+        return queryList("SELECT * FROM trash_logs WHERE user_id = ?", id);
+    }
 }
+
