@@ -73,9 +73,9 @@ public class Main extends Application {
 
         // Setup app state
         GlobalState state = new GlobalState(stage);
+        stage.setMaximized(true);
         stage.show();
-
-         // Set up the window
+        // Set up the window
         state.getBackgroundTasks().runTask("Setup App Icon", e -> deferLoadAppIcon(stage));
         stage.setTitle("TrashApp v1");
 
