@@ -87,7 +87,7 @@ public class TimelinePage extends Page {
         exportButton.getStyleClass().add("data-button");
 
         exportButton.setOnMouseClicked(e -> {
-            List<StatusReport> reports = router.getGlobalState().getStatusReportDAO().getAll();
+            List<StatusReport> reports = router.getGlobalState().getStatusReportDAO().getNonFullnessReports();
             List<TrashLog> trash = router.getGlobalState().getTrashLogDAO().getAll();
             StringTable table = buildExportTable(reports, trash);
             ExportManager.exportToCSV(router.getStage(), ExportManager.exportName("timeline"), table);
@@ -151,7 +151,9 @@ public class TimelinePage extends Page {
     private StringTable buildExportTable(List<StatusReport> reports, List<TrashLog> trash) {
         List<ExportEntry> exportEntries = new ArrayList<>();
         reports.forEach(r -> exportEntries.add(ExportEntry.from(r)));
-        trash.forEach(t -> exportEntries.add(ExportEntry.from(t)));
+        /// TrashLog and BinFullness from associated StatusReport
+        trash.forEach(t -> exportEntries.add(ExportEntry.from(t,
+                router.getGlobalState().getStatusReportDAO().getFullnessByTrashLog(t))));
 
         return new StringTableBuilder<>(exportEntries)
                 .addColumn("time", "Timestamp", entry -> StringHelpers.toLocaleString(entry.time()))
