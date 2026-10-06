@@ -64,6 +64,7 @@ public class UIIconButton extends HBox {
 
         // Recreate the icon
         StackPane icon = new UIImage(iconPath, width, height);
+        icon.getStyleClass().add("iconbutton-icon");
 
         getChildren().removeFirst();
         getChildren().addFirst(icon);

@@ -651,6 +651,30 @@
     -fx-background-color: -bg-third;
 }
 
+.chip-button .iconbutton-icon .svg-icon * {
+    -fx-stroke: -active;
+}
+
+.chip-button .iconbutton-icon .svg-icon-fill * {
+    -fx-fill: -active;
+}
+
+.chip-button.active .iconbutton-icon .svg-icon * {
+    -fx-stroke: -active-dark;
+}
+
+.chip-button.active .iconbutton-icon .svg-icon-fill * {
+    -fx-fill: -active-dark;
+}
+
+.chip-button.active:hover .iconbutton-icon .svg-icon * {
+    -fx-stroke: -bg-primary-light;
+}
+
+.chip-button.active:hover .iconbutton-icon .svg-icon-fill * {
+    -fx-fill: -bg-primary-light;
+}
+
 .chip-button .iconbutton-text{
     -fx-font-size: 15px;
     -fx-padding: 0px 10px 0px 0px;
@@ -687,6 +711,18 @@
 
 .error  .active .svg-icon-fill * {
     -fx-fill: -bg-primary-light;
+}
+
+.error .chip-button .iconbutton-text {
+    -fx-text-fill: -text-primary;
+}
+
+.error .chip-button .svg-icon * {
+    -fx-stroke: -text-primary;
+}
+
+.error .chip-button .svg-icon-fill * {
+    -fx-fill: -text-primary;
 }
 
 .active{
