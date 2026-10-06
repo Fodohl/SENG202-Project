@@ -54,11 +54,9 @@ public class UIMap extends UIWebRenderer {
          * @param markerID The id of the maker clicked
          */
         public void onPointClicked(int markerID) {
-            Platform.runLater(() -> {
-                for (Consumer<Integer> callback : pointClickCallbacks) {
-                    callback.accept(markerID);
-                }
-            });
+            for (Consumer<Integer> callback : pointClickCallbacks) {
+                callback.accept(markerID);
+            }
         }
 
 
@@ -69,11 +67,9 @@ public class UIMap extends UIWebRenderer {
          * @param lng The longitudinal position of where the user clicked
          */
         public void onPosClicked(double lat, double lng) {
-            Platform.runLater(() -> {
-                for (BiConsumer<Double, Double> callback : posClickCallbacks) {
-                    callback.accept(lat, lng);
-                }
-            });
+            for (BiConsumer<Double, Double> callback : posClickCallbacks) {
+                callback.accept(lat, lng);
+            }
         }
 
         /**
@@ -82,12 +78,10 @@ public class UIMap extends UIWebRenderer {
          * @param routeJson Stringified JSON list of {@link RouteInstruction}
          */
         public void onMapRouted(String routeJson) {
-            Platform.runLater(() -> {
-                List<RouteInstruction> result = GSON.fromJson(routeJson, listType);
-                for (Consumer<List<RouteInstruction>> callback : mapRoutedCallbacks) {
-                    callback.accept(result);
-                }
-            });
+            List<RouteInstruction> result = GSON.fromJson(routeJson, listType);
+            for (Consumer<List<RouteInstruction>> callback : mapRoutedCallbacks) {
+                callback.accept(result);
+            }
         }
     }
 

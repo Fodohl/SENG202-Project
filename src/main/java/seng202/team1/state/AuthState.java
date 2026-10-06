@@ -48,10 +48,6 @@ public class AuthState {
         this.server = state.getAppClients().getTaServer();
 
         load();
-
-         // Fetch data etc for cached sessions
-        if (!IS_TEST_MODE)
-            tryTriggerLoadSession();
     }
 
     /**
@@ -316,7 +312,7 @@ public class AuthState {
 
         // Now that user is authenticated, database can identify them and thus data can be fetched
         state.getUiContext().fetchData();
-        state.getAppClients().downloadMissingData();
+        state.getDataService().downloadMissingData();
 
         // Now that have latest data
         state.getAppTasks().runWorkers();

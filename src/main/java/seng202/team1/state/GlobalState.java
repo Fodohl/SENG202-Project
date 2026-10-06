@@ -89,6 +89,10 @@ public class GlobalState {
         uiContext = new UIContext(this, stage);
         auth = new AuthState(this);
 
+         // Fetch data etc for cached sessions
+        if (!IS_TEST_MODE)
+           auth.tryTriggerLoadSession();
+
     }
 
     /**

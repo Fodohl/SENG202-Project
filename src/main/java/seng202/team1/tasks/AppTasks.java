@@ -13,7 +13,7 @@ public class AppTasks {
     private PreflightManager preflightManager;
 
     /// The handler for app background tasks
-    public TaskManager backgroundTasks;
+    private TaskManager backgroundTasks;
 
     public AppTasks(GlobalState state){
         preflightManager = new PreflightManager(state);
