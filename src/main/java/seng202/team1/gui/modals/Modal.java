@@ -23,6 +23,9 @@ public abstract class Modal extends LayoutElement implements Cloneable {
     /// The window ID for this modal (if pop up modal)
     private long modalWindow = -1;
 
+    /// The scrollable container holding the modal
+    private ScrollPane body;
+
        /**
      * Constructs a new Modal
      *
@@ -50,7 +53,7 @@ public abstract class Modal extends LayoutElement implements Cloneable {
 
 
         // Wrapper for children
-        ScrollPane body = new ScrollPane(buildBody());
+        body = new ScrollPane(buildBody());
         body.getStyleClass().add("body");
 
         // Only scrol verticaly
@@ -125,6 +128,10 @@ public abstract class Modal extends LayoutElement implements Cloneable {
         // Dont rerender if not being shown
         if(modalType != destModal)
             return;
+
+        // Start at the top
+        if(body != null)
+            body.setVvalue(0);
 
         // Update self
         updateContents();

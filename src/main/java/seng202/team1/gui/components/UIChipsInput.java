@@ -117,7 +117,12 @@ public class UIChipsInput extends VBox implements UIInputComponent {
      */
     @Override
     public void clear() {
-        selectChip(null);
+
+        // Unselect current chip
+        if(selectedChip != null)
+            GraphicsCommon.toggleClass(false, selectedChip, "active");
+
+        selectedChip = null;
         setError("");
     }
 
