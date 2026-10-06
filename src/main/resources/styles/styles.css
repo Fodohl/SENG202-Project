@@ -189,11 +189,11 @@
 }
 
 .active .iconbutton-icon .svg-icon * {
-    -fx-stroke: -active;
+    -fx-stroke: -text-primary;
 }
 
 .active .iconbutton-icon .svg-icon-fill * {
-    -fx-fill: -active;
+    -fx-fill: -text-primary;
 }
 
 .iconbutton-text{
